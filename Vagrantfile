@@ -12,7 +12,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #config.vm.box = "ubuntu/precise32"
 
   # For Heroku Deploy
-  config.vm.network :forwarded_port, guest:  5000, host: 5000 # API Port
+  config.vm.network :forwarded_port, guest:  5000, host: 5080 # API Port
 
   config.vm.network :private_network, ip: "192.168.100.10"
 
