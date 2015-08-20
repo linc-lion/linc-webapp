@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt_BR">
+  <head>
+    <meta charset="utf-8">
+    <title>LINC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    {% block head %}
+    {% end %}
+    <link rel="shortcut icon" href="{{ static_url("ico/favicon.png") }}">
+    <link href='//fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="{{ static_url("css/styles.css") }}" rel="stylesheet">
+    <link href="{{ static_url("css/angular-motion/angular-motion.min.css") }}" rel="stylesheet">
+    <style type="text/css">
+      {% block css %}
+      {% end %}
+    </style>
+
+
+    {% block js %}
+    {% end %}
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  {% block tag_body %}
+  <body>
+  {% end %}
+
+    <!-- alert box -->
+    {% block alertbox %}
+    {% end %}
+    <!-- Main hero unit for a primary marketing message or call to action -->
+    {% block hero %}
+    {% end %}
+
+    <div id="content">
+      {% block content %}
+      {% end %}
+    </div>
+
+    <footer>
+     </footer>
+
+
+  {% block bootstrap_load %}
+      <!-- Le javascript
+      ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+      <script src="{{ static_url("js/angular/angular.min.js") }}" ></script>
+      <!-- Bootstrap 3 - Twitter Typeahead -->
+      <script src="{{ static_url("js/angular-strap/angular-strap.min.js") }}" ></script>
+      <script src="{{ static_url("js/angular-strap/angular-strap.tpl.min.js") }}" ></script>
+
+  {% end %}
+
+    {% block include_js %}
+    {%end%}
+
+  </body>
+</html>
