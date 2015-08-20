@@ -1,3 +1,3 @@
 # linc-webapp
-LINC-webapp is the website thats allow Lion Guardians to identify lions in Africa.
+LINC-webapp is a website that allows Lion Guardians to identify lions in Africa.
 
