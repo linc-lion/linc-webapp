@@ -7,12 +7,85 @@
   {% end %}
 
   {% block tag_body %}
-  <body>
+    <body ng-controller="MainCtrl">
   {% end %}
 
   {% block hero %}
   {% end %}
 
   {% block content %}
-  Template Page Test
+    <div class="page-header">
+      <h1 id="modals">Demo Angular-strap</h1>
+    </div>
+
+    <h2 id="modals-examples">Examples</h2>
+    <p>Modals are streamlined, but flexible, dialog prompts with the minimum required functionality and smart defaults.</p>
+    <div class="bs-docs-section" ng-controller="ModalDemoCtrl">
+      <div class="bs-example" style="padding-bottom: 24px;" append-source>
+        <button type="button" class="btn btn-lg btn-primary" data-animation="am-fade-and-scale" data-placement="center" bs-modal="modal">Click to toggle modal
+          <br />
+          <small>(using an object)</small>
+        </button>
+        <button type="button" class="btn btn-lg btn-danger" data-animation="am-fade-and-slide-top" data-template-url="modal/docs/modal.demo.tpl.html" bs-modal="modal">Custom Modal
+          <br />
+          <small>(using data-template)</small>
+        </button>
+        <button type="button" class="btn btn-lg btn-danger" ng-click="showModal()">Modal
+          <br />
+          <small>(using service)</small>
+        </button>
+      </div>
+    </div>
+
+    <h2 id="asides-examples">Examples</h2>
+    <p>Asides are custom panels, drawers that inherit the behavior of modals.</p>
+    <div class="bs-docs-section" ng-controller="AsideDemoCtrl">
+      <button type="button" class="btn btn-lg btn-primary" bs-aside="aside">Click to toggle aside
+        <br />
+        <small>(using an object)</small>
+      </button>
+
+      <button type="button" class="btn btn-lg btn-danger" data-template-url="aside/docs/aside.demo.tpl.html" data-placement="left" data-animation="am-slide-left" bs-aside="aside" data-container="body">Custom aside
+        <br />
+        <small>(using data-template)</small>
+      </button>
+    </div>
+
+    <h2 id="modals-examples">Select Examples</h2>
+    <div class="bs-docs-section" ng-controller="SelectDemoCtrl">
+      <div class="bs-example" style="padding-bottom: 24px;" append-source>
+        <label>Single select:&nbsp;</label>
+        <button type="button" class="btn btn-default" ng-model="selectedIcon" data-html="1" bs-options="icon.value as icon.label for icon in icons" bs-select>
+          Action <span class="caret"></span>
+        </button>
+        <hr>
+        <label>Multiple select:&nbsp;</label>
+        <button type="button" class="btn btn-default" ng-model="selectedIcons" data-html="1" data-multiple="1" data-animation="am-flip-x" bs-options="icon.value as icon.label for icon in icons" bs-select>
+          Action <span class="caret"></span>
+        </button>
+      </div>
+    </div>
+
+    <h2 id="modals-examples">DropDown Examples</h2>
+    <div class="bs-docs-section" ng-controller="DropdownDemoCtrl">
+      <button type="button" class="btn btn-lg btn-primary" data-animation="am-flip-x" bs-dropdown="dropdown" aria-haspopup="true" aria-expanded="false">Click to toggle dropdown
+        <br />
+        <small>(using an object)</small>
+      </button>
+    </div>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+  {% end %}
+
+  {% block include_js %}
+    <script src="{{ static_url("js/app.js") }}" ></script>
+    <script src="{{ static_url("js/controllers.js") }}" ></script>
   {% end %}

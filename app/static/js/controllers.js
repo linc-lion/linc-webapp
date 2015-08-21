@@ -1,0 +1,57 @@
+'use strict';
+
+angular.module('lion.controllers', [])
+
+.controller('MainCtrl', function ($scope) {
+})
+
+// Modal Controller
+.controller('ModalDemoCtrl', ['$scope', '$modal', function ($scope, $modal) {
+  $scope.modal = {title: 'Title', content: 'Hello Modal<br />This is a multiline message!'};
+  function MyModalController($scope) {
+    $scope.title = 'Some Title';
+    $scope.content = 'Hello Modal<br />This is a multiline message from a controller!';
+  }
+  MyModalController.$inject = ['$scope'];
+  var myModal = $modal({controller: MyModalController, templateUrl: 'modal/docs/modal.demo.tpl.html', show: false});
+  $scope.showModal = function () {
+    myModal.$promise.then(myModal.show);
+  };
+  $scope.hideModal = function () {
+    myModal.$promise.then(myModal.hide);
+  };
+}])
+
+// ASide Controller
+.controller('AsideDemoCtrl', ['$scope', function ($scope) {
+  $scope.aside = {title: 'Title', content: 'Hello Aside<br />This is a multiline message!'};
+}])
+
+// Select Controller
+.controller('SelectDemoCtrl', function($scope, $http) {
+  $scope.selectedIcon = '';
+  $scope.selectedIcons = ['Globe', 'Heart'];
+  $scope.icons = [
+    {value: 'Gear', label: '<i class="fa fa-gear"></i> Gear'},
+    {value: 'Globe', label: '<i class="fa fa-globe"></i> Globe'},
+    {value: 'Heart', label: '<i class="fa fa-heart"></i> Heart'},
+    {value: 'Camera', label: '<i class="fa fa-camera"></i> Camera'}
+  ];
+  $scope.selectedMonth = 0;
+  $scope.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+})
+
+// Dropdown Controller
+.controller('DropdownDemoCtrl', function($scope, $alert) {
+  $scope.dropdown = [
+    {text: '<i class="fa fa-download"></i>&nbsp;Another action', href: '#anotherAction'},
+    {text: '<i class="fa fa-globe"></i>&nbsp;Display an alert', click: '$alert("Holy guacamole!")'},
+    {text: '<i class="fa fa-external-link"></i>&nbsp;External link', href: '/auth/facebook', target: '_self'},
+    {divider: true},
+    {text: 'Separated link', href: '#separatedLink'}
+  ];
+  $scope.$alert = function(title) {
+    $alert({title: title, content: 'Best check yo self, you\'re not looking too good.', placement: 'top', type: 'info', keyboard: true, show: true});
+  };
+})
+;
