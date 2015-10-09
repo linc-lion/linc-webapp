@@ -24,7 +24,10 @@ angular.module('lion.controllers', [])
 
 // ASide Controller
 .controller('AsideDemoCtrl', ['$scope', function ($scope) {
-  $scope.aside = {title: 'Title', content: 'Hello Aside<br />This is a multiline message!'};
+  $scope.aside = {
+    title: 'Menu',
+    templateUrl: 'aside.html'
+    };
 }])
 
 // Select Controller
