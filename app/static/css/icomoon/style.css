@@ -1,0 +1,113 @@
+@font-face {
+	font-family: 'icomoon';
+	src:url('fonts/icomoon.eot?4nptwh');
+	src:url('fonts/icomoon.eot?4nptwh#iefix') format('embedded-opentype'),
+		url('fonts/icomoon.ttf?4nptwh') format('truetype'),
+		url('fonts/icomoon.woff?4nptwh') format('woff'),
+		url('fonts/icomoon.svg?4nptwh#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-check_circle:before {
+	content: "\e81c";
+}
+.icon-arrow-left:before {
+	content: "\e800";
+}
+.icon-search:before {
+	content: "\e801";
+}
+.icon-chevron-down:before {
+	content: "\e802";
+}
+.icon-chevron-up:before {
+	content: "\e803";
+}
+.icon-select-arrows:before {
+	content: "\e804";
+}
+.icon-trash:before {
+	content: "\e805";
+}
+.icon-camera:before {
+	content: "\e806";
+}
+.icon-check:before {
+	content: "\e807";
+}
+.icon-circle-with-cross:before {
+	content: "\e808";
+}
+.icon-circle-with-plus:before {
+	content: "\e809";
+}
+.icon-clock:before {
+	content: "\e80a";
+}
+.icon-cog:before {
+	content: "\e80b";
+}
+.icon-cross:before {
+	content: "\e80c";
+}
+.icon-erase:before {
+	content: "\e80d";
+}
+.icon-eye:before {
+	content: "\e80e";
+}
+.icon-flash:before {
+	content: "\e80f";
+}
+.icon-funnel:before {
+	content: "\e810";
+}
+.icon-globe:before {
+	content: "\e811";
+}
+.icon-help-with-circle:before {
+	content: "\e812";
+}
+.icon-images:before {
+	content: "\e813";
+}
+.icon-info-with-circle:before {
+	content: "\e814";
+}
+.icon-location-pin:before {
+	content: "\e815";
+}
+.icon-mail:before {
+	content: "\e816";
+}
+.icon-menu:before {
+	content: "\e817";
+}
+.icon-pencil:before {
+	content: "\e818";
+}
+.icon-star:before {
+	content: "\e819";
+}
+.icon-user:before {
+	content: "\e81a";
+}
+.icon-users:before {
+	content: "\e81b";
+}
+
