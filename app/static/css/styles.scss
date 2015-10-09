@@ -1,11 +1,62 @@
 // min: styles.min.css
 
+@import url(icomoon/style.css);
 @import url(https://fonts.googleapis.com/css?family=Homenaje);
 
-body{
+$orange: #d95210;
 
+body{
+padding-top: 70px;
 }
 
-h1,h2,h3,h4{
+h1,h2,h3,h4, .btn{
   font-family: 'Homenaje', sans-serif;
+}
+a{
+  cursor:pointer;
+  color:$orange;
+}
+
+.navbar{
+  background: #fff;
+  box-shadow:0 2px 18px rgba(0,0,0,.1);
+  .navbar-brand{
+    height: auto;
+    padding: 10px 20px;
+  }
+  .icon{
+    font-size:30px;
+    color: $orange ;
+  }
+}
+
+.aside{
+  .aside-dialog{
+    .aside-header{background: #ddd;color:#444;}
+    .aside-footer{display:none}
+  }
+}
+
+
+.btn{
+
+  &.btn-default{
+    background: #fff;
+    color: $orange;
+    &:hover{
+      border-color:$orange;
+    }
+    &:active,&:focus{  background: #fff;}
+  }
+}
+
+/// PAGES
+.home{
+  padding: 18%;
+  p{
+    padding: 1em;
+  }
+  .text-right{
+    border-right: 1px solid #ddd;
+  }
 }
