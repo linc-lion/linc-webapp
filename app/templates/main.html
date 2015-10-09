@@ -10,13 +10,18 @@
     <body ng-controller="MainCtrl">
   {% end %}
 
-  {% block hero %}
-  {% end %}
-
   {% block content %}
-    <div class="page-header">
-      <h1 id="modals">Demo Angular-strap</h1>
+
+  <nav class="navbar navbar-default navbar-fixed-top" role="navigation" bs-navbar>
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#"><img src="static/logo.png" alt="logo" ></a>
     </div>
+    <ul class="nav navbar-nav navbar-right" ng-controller="AsideDemoCtrl">
+      <li><a bs-aside="aside">Menu</a></li>
+    </ul>
+  </nav>
+
+
 
     <h2 id="modals-examples">Examples</h2>
     <p>Modals are streamlined, but flexible, dialog prompts with the minimum required functionality and smart defaults.</p>
@@ -45,9 +50,8 @@
         <small>(using an object)</small>
       </button>
 
-      <button type="button" class="btn btn-lg btn-danger" data-template-url="aside/docs/aside.demo.tpl.html" data-placement="left" data-animation="am-slide-left" bs-aside="aside" data-container="body">Custom aside
-        <br />
-        <small>(using data-template)</small>
+      <button type="button" class="btn btn-lg btn-danger" data-template-url="templates/aside.html" data-placement="right" data-animation="am-slide-right" bs-aside="aside" data-container="body">
+      Menu
       </button>
     </div>
 
