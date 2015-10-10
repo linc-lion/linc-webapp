@@ -1,0 +1,25 @@
+{% extends "../templates/base.html" %}
+
+  {% block css %}
+  {% end %}
+
+  {% block js %}
+  {% end %}
+
+  {% block tag_body %}
+    <body ng-controller="NewLionCtrl">
+  {% end %}
+
+  {% block content %}
+
+  <!--HOME-->
+  <div class="home row">
+      <h1> New Lion</h1>
+  </div>
+
+  {% end %}
+
+  {% block include_js %}
+    <script src="{{ static_url("js/app.js") }}" ></script>
+    <script src="{{ static_url("js/controllers.js") }}" ></script>
+  {% end %}
