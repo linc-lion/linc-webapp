@@ -10,11 +10,10 @@
     {% end %}
 
     <link href="{{ static_url("css/bootstrap/bootstrap.min.css") }}" rel="stylesheet">
-
-    <link href="{{ static_url("css/libs.min.css") }}" rel="stylesheet">
-    <link href="{{ static_url("css/docs.min.css") }}" rel="stylesheet">
-
+    <link href="{{ static_url("css/font-awesome/css/font-awesome.min.css") }}" rel="stylesheet">
+    <!--<link href="{{ static_url("css/docs.min.css") }}" rel="stylesheet">-->
     <link href="{{ static_url("css/angular-motion/angular-motion.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("css/angular-motion//libs.min.css") }}" rel="stylesheet">
     <link href="{{ static_url("css/styles.min.css") }}" rel="stylesheet">
     <style type="text/css">
       {% block css %}
@@ -60,7 +59,17 @@
     {% block alertbox %}
     {% end %}
     <!-- Main hero unit for a primary marketing message or call to action -->
-
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation" bs-navbar>
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/"><img src="static/logo.png" alt="logo" ></a>
+        </div>
+        <ul class="nav navbar-nav navbar-right" ng-controller="AsideCtrl">
+          <!--<li><a bs-aside="aside" data-template-url="/static/side_menu.html" ><i class="icon icon-menu"></i></a></li>-->
+          <li><a bs-aside="aside" data-template-url="/sidemenu" ><i class="icon icon-menu"></i></a></li>
+        </ul>
+      </div>
+    </nav>
 
     <div id="content" class="container">
       {% block content %}

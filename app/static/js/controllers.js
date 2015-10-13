@@ -2,9 +2,31 @@
 
 angular.module('lion.controllers', [])
 
-.controller('MainCtrl', function ($scope) {
-})
+// ASide Controller Base.html
+.controller('AsideCtrl', ['$scope', function ($scope) {
+  /*$scope.aside = {
+    title: 'Menu',
+    templateUrl: 'aside.html'
+    };*/
+    $scope.aside = {title: 'Logged in as <b>justin@lg.org</b> of <b>Lion Guardians</b>', content: 'Hello Aside<br />This is a multiline message!'};
+}])
 
+.controller('MainCtrl', ['$scope', function ($scope) {
+}])
+
+.controller('NewLionCtrl', ['$scope', function ($scope) {
+}])
+
+.controller('SearchLionCtrl', ['$scope', function ($scope) {
+}])
+
+.controller('NewImageSetCtrl', ['$scope', function ($scope) {
+}])
+
+.controller('SearchImageSetCtrl', ['$scope', function ($scope) {
+}])
+
+/*
 // Modal Controller
 .controller('ModalDemoCtrl', ['$scope', '$modal', function ($scope, $modal) {
   $scope.modal = {title: 'Title', content: 'Hello Modal<br />This is a multiline message!'};
@@ -21,15 +43,9 @@ angular.module('lion.controllers', [])
     myModal.$promise.then(myModal.hide);
   };
 }])
+*/
 
-// ASide Controller
-.controller('AsideDemoCtrl', ['$scope', function ($scope) {
-  $scope.aside = {
-    title: 'Menu',
-    templateUrl: 'aside.html'
-    };
-}])
-
+/*
 // Select Controller
 .controller('SelectDemoCtrl',  ['$scope', '$http', function($scope, $http) {
   $scope.selectedIcon = '';
@@ -88,5 +104,7 @@ angular.module('lion.controllers', [])
       return res.data.results;
     });
   };
-}])
+}])*/
+
+
 ;
