@@ -8,7 +8,7 @@ angular.module('lion.controllers', [])
     title: 'Menu',
     templateUrl: 'aside.html'
     };*/
-    $scope.aside = {title: 'Logged in as <b>justin@lg.org</b> of <b>Lion Guardians</b>', content: 'Hello Aside<br />This is a multiline message!'};
+    $scope.aside = {title: 'Menu', content: 'Hello Aside<br />This is a multiline message!'};
 }])
 
 .controller('MainCtrl', ['$scope', function ($scope) {
@@ -26,6 +26,8 @@ angular.module('lion.controllers', [])
 .controller('SearchImageSetCtrl', ['$scope', function ($scope) {
 }])
 
+.controller('ConservationistsCtrl', ['$scope', function ($scope) {
+}])
 /*
 // Modal Controller
 .controller('ModalDemoCtrl', ['$scope', '$modal', function ($scope, $modal) {
