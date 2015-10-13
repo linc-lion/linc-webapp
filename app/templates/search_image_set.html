@@ -61,8 +61,14 @@
          </h4>
        </div>
        <div class="panel-collapse" role="tabpanel" bs-collapse-target>
-         <div class="panel-body">
-          <slider min="1" step="1" max="20" value="7" range="true"></slider>
+          <div class="panel-body">
+            <rzslider
+                rz-slider-floor="priceSlider.floor"
+                rz-slider-ceil="priceSlider.ceil"
+                rz-slider-model="priceSlider.min"
+                rz-slider-high="priceSlider.max"
+                rz-slider-step="1">
+            </rzslider>
          </div>
        </div>
 

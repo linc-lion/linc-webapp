@@ -24,6 +24,14 @@ angular.module('lion.controllers', [])
 }])
 
 .controller('SearchImageSetCtrl', ['$scope', function ($scope) {
+
+  $scope.priceSlider = {
+    min: 2,
+    max: 19,
+    ceil: 20,
+    floor: 1
+  };
+
 }])
 
 .controller('ConservationistsCtrl', ['$scope', function ($scope) {
