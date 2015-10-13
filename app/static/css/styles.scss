@@ -7,15 +7,27 @@ $orange: #d95210;
 
 body{
 padding-top: 70px;
+background: #F9F9F9;
+color: #333;
 }
 
+h1{
+  color: $orange;
+  font-size:55px;
+  .btn{
+    font-size: 24px;
+    margin-right: 10px
+  }
+}
 h1,h2,h3,h4, .btn{
   font-family: 'Homenaje', sans-serif;
 }
-a{
+a, .link{
   cursor:pointer;
   color:$orange;
+  &:hover{text-decoration: none;}
 }
+label{font-weight: normal; cursor:pointer}
 
 .navbar{
   background: #fff;
@@ -35,6 +47,7 @@ a{
     .aside-header{background: #ddd;color:#444;}
     .aside-footer{display:none}
   }
+  .nav{margin: 0 -15px;}
 }
 
 
@@ -48,8 +61,54 @@ a{
     }
     &:active,&:focus{  background: #fff;}
   }
+  &.btn-primary, &.btn-primary:focus, &.btn-primary:active{
+    color: #fff;
+    background: $orange !important;
+    border-color:$orange;
+    &:hover{
+    }
+    &:active,&:focus{  background: #fff;}
+  }
+  &.btn-icon{
+    border:0;
+    background: transparent;
+    color:$orange;
+    font-size:22px;
+  }
 }
 
+.btn-help{
+  margin-top:30px;
+}
+.line-right{
+  border-right: 1px solid #ddd;
+  padding-right: 20px;
+}
+.icon-cross{color:#a8180a}
+.icon-check{color:#258f06}
+
+.pagination{
+  li{
+    a,span{
+      border-radius: 50% !important;
+      width:46px;
+      height: 46px;
+      margin: 4px;
+      background: transparent !important;
+      color: $orange !important;
+      &:hover{
+      border-color: $orange;
+      }
+    }
+    &.active{
+      a,span,a:hover,span:hover{
+        background: #fff !important;
+        border-color: #999;
+        color:#999 !important;
+      }
+    }
+  }
+}
 /// PAGES
 .home{
   padding: 18%;
@@ -58,5 +117,17 @@ a{
   }
   .text-right{
     border-right: 1px solid #ddd;
+  }
+}
+
+.tablist{
+  h4{
+    margin: 20px 0 10px;
+    font-size: 20px;
+    a{display: block}
+  }
+  .panel-body{
+      padding: 0;
+      label{display: block}
   }
 }

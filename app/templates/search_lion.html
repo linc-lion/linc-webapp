@@ -12,9 +12,115 @@
 
   {% block content %}
 
-  <!--HOME-->
-  <div class="home row">
-      <h1> Search Lion</h1>
+  <button type="button" class="btn-help pull-right btn btn-icon" data-placement="left" title="" data-content="Search lions to view summaries of name, age, sex, and organization. Select a search result row to view a lion's primary image set, metadata, and click through to more lion information." data-trigger="focus" bs-popover><i class="icon icon-help-with-circle"></i></button>
+
+  <h1><a class="btn btn-default" href="javascript:history.back()"><i class="icon icon-arrow-left"></i></a> Search Lion</h1>
+
+  <div class="row">
+    <div class="col-sm-3 line-right">
+      <h3 class="text-muted">Refine by</h3>
+
+<div class="tablist" data-allow-multiple="true" role="tablist" aria-multiselectable="true" bs-collapse>
+
+    <div role="tab">
+      <h4>
+        <a bs-collapse-toggle><i class="pull-right icon icon-select-arrows"></i> Name or ID</a>
+      </h4>
+    </div>
+    <div class="panel-collapse" role="tabpanel" bs-collapse-target>
+      <div class="panel-body">
+        <input type="text" class="form-control" >
+      </div>
+    </div>
+
+
+
+    <div role="tab">
+      <h4 >
+        <a bs-collapse-toggle><i class="pull-right icon icon-select-arrows"></i> Organization</a>
+      </h4>
+    </div>
+    <div class="panel-collapse" role="tabpanel" bs-collapse-target>
+      <div class="panel-body">
+      <label>
+        <input type="checkbox"> Lion Guardians
+      </label>
+      <label>
+        <input type="checkbox"> Mara Lion Project
+      </label>
+      </div>
+    </div>
+
+
+
+   <div role="tab">
+     <h4 >
+       <a bs-collapse-toggle><i class="pull-right icon icon-select-arrows"></i> Age</a>
+     </h4>
+   </div>
+   <div class="panel-collapse" role="tabpanel" bs-collapse-target>
+     <div class="panel-body">
+     Vamos usar esse? https://github.com/seiyria/angular-bootstrap-slider
+     </div>
+   </div>
+
+
+
+
+  </div>
+
+    </div>
+
+    <div class="col-sm-9">
+      <div class="pull-right sort form-inline">
+        <label for="sorting" class="text-muted">Sort by </label>
+        <select class="form-control" id="sorting">
+          <option>Most recent</option>
+          <option>Most fun</option>
+        </select>
+      </div>
+      <h3>6 lions found</h3>
+
+      <table class="table table-hover">
+        <thead>
+          <tr>
+        <th>Photo</th>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Organization</th>
+        <th>Gender</th>
+        <th class="text-center">Verified</th>
+         <tr>
+      </thead>
+      <tbody  ng-init="lions=[1,2,3]">
+        <tr class="link" onclick="location='/lion'" ng-repeat="lion in lions">
+        <td>
+          <img src="square-small/lion1.jpg" >
+        </td>
+        <td>Ambogga</td>
+        <td>6 years old</td>
+        <td>Lion Guardians</td>
+        <td>Male</td>
+        <td class="text-center">
+          <i ng-if="lion.verified" class="icon icon-check"></i>
+          <i ng-if="!lion.verified" class="icon icon-cross"></i>
+        </td>
+      </tr>
+      </tbody>
+      </table>
+
+
+
+  <nav class="text-center">
+   <ul class="pagination pagination-lg">
+    <li class="active"><span>1</span></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+   </ul>
+  </nav>
+
+
+    </div>
   </div>
 
   {% end %}
