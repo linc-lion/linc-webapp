@@ -12,9 +12,37 @@
 
   {% block content %}
 
-  <!--HOME-->
-  <div class="home row">
-      <h1> New Image Set</h1>
+  <h1><a class="btn btn-default" href="javascript:history.back()"><i class="icon icon-arrow-left"></i></a> Image set</h1>
+
+
+  <div class="row">
+    <div class="col-sm-3 line-right">
+      <p><img src="square/lion1.jpg" class="img-responsive"></p>
+      <h4>Image Set ID</h4>
+      <p>10</p>
+      <h4>Organization</h4>
+      <p>Mara Lion Project</p>
+      <h4>Age</h4>
+      <p>12</p>
+      <h4>Gender</h4>
+      <p>Male</p>
+      <h4>Ear Markings</h4>
+      <p>Left</p>
+    </div>
+    <div class="col-sm-5">
+      <h4>Notes</h4>
+      <p>Blah blah blah blah blah blah blah blah blah blah blah</p>
+    </div>
+    <div class="col-sm-3 line-left">
+       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-camera"></i> IMAGE GALLERY</a></p>
+       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-location-pin"></i> POSITION ON MAP</a></p>
+       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-pencil"></i> EDIT METADATA</a></p>
+       <br>
+       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-flash"></i> VIEW CV RESULTS</a></p>
+       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-flash"></i> ASSOCIATE LION</a></p>
+       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE IMAGE SET</a></p>
+
+    </div>
   </div>
 
   {% end %}

@@ -11,6 +11,10 @@ background: #F9F9F9;
 color: #333;
 }
 
+
+h1,h2,h3,h4, .btn{
+  font-family: 'Homenaje', sans-serif;
+}
 h1{
   color: $orange;
   font-size:55px;
@@ -19,9 +23,7 @@ h1{
     margin-right: 10px
   }
 }
-h1,h2,h3,h4, .btn{
-  font-family: 'Homenaje', sans-serif;
-}
+h4{font-size: 20px;}
 a, .link{
   cursor:pointer;
   color:$orange;
@@ -52,7 +54,7 @@ label{font-weight: normal; cursor:pointer}
 
 
 .btn{
-
+  text-transform: uppercase;
   &.btn-default{
     background: #fff;
     color: $orange;
@@ -83,6 +85,10 @@ label{font-weight: normal; cursor:pointer}
 .line-right{
   border-right: 1px solid #ddd;
   padding-right: 20px;
+}
+.line-left{
+  border-left: 1px solid #ddd;
+  padding-left: 20px;
 }
 .icon-cross{color:#a8180a}
 .icon-check{color:#258f06}
@@ -123,7 +129,6 @@ label{font-weight: normal; cursor:pointer}
 .tablist{
   h4{
     margin: 20px 0 10px;
-    font-size: 20px;
     a{display: block}
   }
   .panel-body{
