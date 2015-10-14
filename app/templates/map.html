@@ -11,7 +11,7 @@
 <div class="row">
   <div class="col-sm-3">
     <div class="list-group" ng-init="imagesets=[1,2,3,4]">
-     <button type="button" class="list-group-item" ng-repeat="imageset in imagesets"><span class="badge">12/11</span> Image set 2</button>
+     <button type="button" class="list-group-item" ng-class="{active:imageset==1}" ng-repeat="imageset in imagesets"><span class="badge">12/11</span> Image set 2</button>
     </div>
   </div>
   <div class="col-sm-9">
@@ -21,10 +21,7 @@
 
 
       </div>
-      <!-- <div class="modal-footer">
-        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
-        <button type="button" class="btn btn-primary" ng-click="$hide()">Save changes</button>
-      </div> -->
+    
     </div>
   </div>
 </div>

@@ -57,9 +57,12 @@ angular.module('lion.controllers', [])
   $scope.modal = {title: 'Location History', content: 'Map'};
 }])
 .controller('EditMetadataCtrl', ['$scope', '$modal', function ($scope, $modal) {
-  $scope.modal = {title: 'Metadata', content: ''};
+  $scope.modal = {title: 'Metadata', content: 'Form'};
 }])
-
+.controller('CVResultsCtrl', ['$scope', '$modal', function ($scope, $modal) {
+  $scope.modal = {title: 'CV Results', content: 'Form'};
+  //$scope.modal2 = {title: 'Lion Search', content: 'Form'};
+}])
 
 
 /*

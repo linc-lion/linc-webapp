@@ -18,6 +18,7 @@ h1,h2,h3,h4, .btn{
 h1{
   color: $orange;
   font-size:55px;
+  margin: 15px 0 40px;
   .btn{
     font-size: 24px;
     margin-right: 10px
@@ -86,7 +87,7 @@ label{font-weight: normal; cursor:pointer}
 }
 
 .btn-help{
-  margin-top:30px;
+  //margin-top:30px;
 }
 .line-right{
   border-right: 1px solid #ddd;
@@ -167,10 +168,46 @@ label{font-weight: normal; cursor:pointer}
 .tablist{
   h4{
     margin: 20px 0 10px;
-    a{display: block}
+    a{
+      display: block;
+      &:hover{color: $orange}
+    }
   }
   .panel-body{
       padding: 0;
       label{display: block}
+  }
+}
+
+.list-group-item{
+  &.active, &.active:hover{
+    background-color: #aaa;
+    border-color:#aaa
+  }
+}
+.table{
+  tbody tr td{
+    vertical-align: middle;
+    padding: 1px;
+  }
+}
+
+rzslider{
+  span.rz-pointer{
+    width: 25px;
+    height:25px;
+    background: $orange;
+    top:-11px;
+    &:after{
+      top:9px;
+      left:9px;
+      background: #fff;
+    }
+    &.rz-active{
+      &:after{background: $orange}
+    }
+  }
+  span.rz-bar.rz-selection{
+    background: $orange;
   }
 }
