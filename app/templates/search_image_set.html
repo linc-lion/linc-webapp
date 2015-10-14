@@ -93,7 +93,7 @@
             </td>
             <td ng-controller="CVResultsCtrl">
               <button class="btn btn-primary" ng-if="lion.hasResults" data-animation="am-fade-and-slide-top" data-template-url="cvresults" bs-modal="modal"><i class="icon icon-flash"></i>CV Results</button>
-              <button class="btn btn-default" ng-if="!lion.hasResults && !lion.pending" ><i class="icon icon-flash"></i>Request CV</button>
+              <button class="btn btn-default" ng-if="!lion.hasResults && !lion.pending" data-animation="am-fade-and-slide-top" data-template-url="cvrefine" bs-modal="modal2"><i class="icon icon-flash"></i>Request CV</button>
               <span class="text-muted" ng-if="lion.pending"><i class="icon icon-clock"></i> CV Request pending</span>
             </td>
           </tr>

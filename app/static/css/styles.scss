@@ -25,8 +25,9 @@ h1{
   }
 }
 h3{color:$orange; margin: 5px 0 15px}
+h4{color:$orange; }
 h4{font-size: 20px;}
-a, .link{
+a, .link>td{
   cursor:pointer;
   color:$orange;
   &:hover{text-decoration: none;}
@@ -186,9 +187,14 @@ label{font-weight: normal; cursor:pointer}
   }
 }
 .table{
+  thead th{color:#666}
   tbody tr td{
     vertical-align: middle;
     padding: 1px;
+  }
+  .active>td{
+    background-color: #aaa !important;
+    color:#fff;
   }
 }
 
