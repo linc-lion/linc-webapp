@@ -75,9 +75,9 @@
           </tr>
         </thead>
         <tbody ng-init="lions=[{hasResults:true},{pending:true},{primary:true, verified:true}]">
-          <tr class="link" onclick="location='/lion'" ng-repeat="lion in lions">
+          <tr class="link"  ng-repeat="lion in lions">
             <td>
-              <img src="/static/images/square-small/lion1.jpg" >
+              <img src="/static/images/square-small/lion1.jpg" width="40" height="40">
             </td>
             <td>Ambogga</td>
             <td>6 years old</td>
@@ -91,9 +91,9 @@
               <i ng-if="lion.primary" class="icon icon-check"></i>
               <i ng-if="!lion.primary" class="icon icon-cross"></i>
             </td>
-            <td>
-              <button class="btn btn-primary" ng-if="lion.hasResults"><i class="icon icon-flash"></i>CV Results</button>
-              <button class="btn btn-default" ng-if="!lion.hasResults && !lion.pending"><i class="icon icon-flash"></i>Request CV</button>
+            <td ng-controller="CVResultsCtrl">
+              <button class="btn btn-primary" ng-if="lion.hasResults" data-animation="am-fade-and-slide-top" data-template-url="cvresults" bs-modal="modal"><i class="icon icon-flash"></i>CV Results</button>
+              <button class="btn btn-default" ng-if="!lion.hasResults && !lion.pending" ><i class="icon icon-flash"></i>Request CV</button>
               <span class="text-muted" ng-if="lion.pending"><i class="icon icon-clock"></i> CV Request pending</span>
             </td>
           </tr>

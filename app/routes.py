@@ -15,6 +15,7 @@ from handlers.main import ConservationistsHandler
 from handlers.main import ImageGalleryHandler
 from handlers.main import LocationHistoryHandler
 from handlers.main import EditMetadataHandler
+from handlers.main import CVResultsHandler
 
 # Defining routes
 url_patterns = [
@@ -33,5 +34,6 @@ url_patterns = [
     (r"/imagegallery", ImageGalleryHandler),
     (r"/map", LocationHistoryHandler),
     (r"/metadata", EditMetadataHandler),
+    (r"/cvresults", CVResultsHandler),
     (r"/", MainHandler)
 ]

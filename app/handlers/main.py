@@ -45,4 +45,8 @@ class LocationHistoryHandler(BaseHandler):
 
 class EditMetadataHandler(BaseHandler):
     def get(self):
-        self.render('metadata.html')        
+        self.render('metadata.html')
+
+class CVResultsHandler(BaseHandler):
+    def get(self):
+        self.render('cv_results.html')        
