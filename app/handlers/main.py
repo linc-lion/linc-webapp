@@ -49,4 +49,8 @@ class EditMetadataHandler(BaseHandler):
 
 class CVResultsHandler(BaseHandler):
     def get(self):
-        self.render('cv_results.html')        
+        self.render('cv_results.html')
+
+class CVRefineHandler(BaseHandler):
+    def get(self):
+        self.render('cv_refine.html')

@@ -65,7 +65,7 @@ angular.module('lion.controllers', [])
 }])
 .controller('CVResultsCtrl', ['$scope', '$modal', function ($scope, $modal) {
   $scope.modal = {title: 'CV Results', content: 'Form'};
-  //$scope.modal2 = {title: 'Lion Search', content: 'Form'};
+  $scope.modal2 = {title: 'Lion Search', content: 'Search'};
 }])
 
 
