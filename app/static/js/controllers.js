@@ -2,40 +2,61 @@
 
 angular.module('lion.controllers', [])
 
+.controller('MainCtrl', ['$scope', '$location', function ($scope, $location) {
+  //$scope.message = 'Everyone come and see how good I look!';
+  $location.path('menu');
+}])
+// Home Menu
+.controller('MenuCtrl', ['$scope', function ($scope) {
+}])
 // ASide Controller Base.html
 .controller('AsideCtrl', ['$scope', function ($scope) {
-  /*$scope.aside = {
-    title: 'Menu',
-    templateUrl: 'aside.html'
-    };*/
-    $scope.aside = {title: 'Menu', content: 'Hello Aside<br />This is a multiline message!'};
-}])
-
-.controller('MainCtrl', ['$scope', function ($scope) {
+    $scope.aside = {title: 'Menu', content: 'Menu'};
 }])
 
 .controller('NewLionCtrl', ['$scope', function ($scope) {
 }])
 
-.controller('SearchLionCtrl', ['$scope', function ($scope) {
-}])
-
 .controller('NewImageSetCtrl', ['$scope', function ($scope) {
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', function ($scope) {
+.controller('SearchLionCtrl', ['$scope', function ($scope) {
+}])
 
+.controller('SearchImageSetCtrl', ['$scope', function ($scope) {
   $scope.priceSlider = {
     min: 2,
     max: 19,
     ceil: 20,
     floor: 1
   };
-
 }])
 
 .controller('ConservationistsCtrl', ['$scope', function ($scope) {
 }])
+
+// Image Gallery Controller
+.controller('ImageGalleryCtrl', ['$scope', '$modal', function ($scope, $modal) {
+  $scope.modal = {title: 'Image Gallery', content: 'Image Galleryl<br />Contents!'};
+
+  // Alternative - Using ng-click()
+  /*function MyModalController($scope) {
+    $scope.title = 'Image Gallery';
+    $scope.content = 'Hello Modal<br />This is a multiline message from a controller!';
+  }
+  MyModalController.$inject = ['$scope'];
+  var myModal = $modal({controller: MyModalController, templateUrl: 'imagegallery', show: false});
+  $scope.showModal = function () {
+    myModal.$promise.then(myModal.show);
+  };
+  $scope.hideModal = function () {
+    myModal.$promise.then(myModal.hide);
+  };*/
+}])
+
+
+
+
 /*
 // Modal Controller
 .controller('ModalDemoCtrl', ['$scope', '$modal', function ($scope, $modal) {

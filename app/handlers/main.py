@@ -7,6 +7,10 @@ class MainHandler(BaseHandler):
     def get(self):
         self.render('main.html')
 
+class MenuHandler(BaseHandler):
+    def get(self):
+        self.render('menu.html')
+
 class SideMenuHandler(BaseHandler):
     def get(self):
         self.render('side_menu.html')
@@ -27,4 +31,10 @@ class SearchImageSetHandler(BaseHandler):
     def get(self):
         self.render('search_image_set.html')
 
+class ConservationistsHandler(BaseHandler):
+    def get(self):
+        self.render('conservationists.html')
 
+class ImageGalleryHandler(BaseHandler):
+    def get(self):
+        self.render('image_gallery.html')

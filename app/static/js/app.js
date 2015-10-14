@@ -27,7 +27,7 @@ app.config(['$modalProvider', '$asideProvider', '$dropdownProvider', function ($
   });
 }]);
 
-app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $urlRouterProvider) {
   // Redirects and Otherwise //
   // Use $urlRouterProvider to configure any redirects (when) and invalid urls (otherwise).
   /*$urlRouterProvider
@@ -44,38 +44,70 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   
 
         // Home
         .state("home", {
-          // Use a url of "/" to set a states as the "index".
           url: "/",
           controller: 'MainCtrl',
-          templateUrl: 'templates/main.html'
+          templateUrl: '/'
         })
-
+        // Home Menu
+        .state("menu", {
+          url: "/menu",
+          controller: 'MenuCtrl',
+          templateUrl: 'menu'
+        })
+        // Side Menu
         .state("sidemenu", {
-          // Use a url of "/" to set a states as the "index".
           url: "/sidemenu",
           controller: 'AsideCtrl',
-          templateUrl: 'templates/side_menu.html'
+          templateUrl: '/sidemenu'
         })
+        // New Lion
         .state("newlion", {
-          // Use a url of "/" to set a states as the "index".
           url: "/newlion",
           controller: 'NewLionCtrl',
-          templateUrl: 'templates/new_lion.html'
+          templateUrl: '/newlion'
         })
+        // New Image Set
+        .state("newimageset", {
+          url: "/newimageset",
+          controller: 'NewImageSetCtrl',
+          templateUrl: '/newimageset'
+        })
+        // Searcg Lion
+        .state("searchlion", {
+          url: "/searchlion",
+          controller: 'SearchLionCtrl',
+          templateUrl: '/searchlion'
+        })
+        // Search Image Set
+        .state("searchimageset", {
+          url: "/searchimageset",
+          controller: 'SearchImageSetCtrl',
+          templateUrl: '/searchimageset'
+        })
+        // Conservationists
+        .state("conservationists", {
+          url: "/conservationists",
+          controller: 'ConservationistsCtrl',
+          templateUrl: '/conservationists'
+        })
+        // Image Gallerys
+        /*.state("imagegallery", {
+          url: "/imagegallery",
+          controller: 'ImageGalleryCtrl',
+          templateUrl: '/imagegallery'
+        })*/
+
         // About //
         .state('about', {
           url: '/about',
           // Showing off how you could return a promise from templateProvider
           templateProvider: ['$timeout', function ($timeout) {
               return $timeout(function () {
-                return '<p class="lead">UI-Router Resources</p><ul>' +
-                         '<li><a href="https://github.com/angular-ui/ui-router/tree/master/sample">Source for this Sample</a></li>' +
-                         '<li><a href="https://github.com/angular-ui/ui-router">Github Main Page</a></li>' +
-                         '<li><a href="https://github.com/angular-ui/ui-router#quick-start">Quick Start</a></li>' +
-                         '<li><a href="https://github.com/angular-ui/ui-router/wiki">In-Depth Guide</a></li>' +
-                         '<li><a href="https://github.com/angular-ui/ui-router/wiki/Quick-Reference">API Reference</a></li>' +
-                       '</ul>';
+                return '<p class="lead">Lin-Lions</p><ul>' +
+                         '<li><a href="https://github.com/linc-lion/linc-webapp">Linc Lions</a></li>' +
+                         '</ul>';
               }, 100);
           }]
-      })
+        });
+      $urlRouterProvider.otherwise('/');
 }]);
