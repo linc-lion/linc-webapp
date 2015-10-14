@@ -1,24 +1,7 @@
-{% extends "../templates/base.html" %}
-
-  {% block css %}
-  {% end %}
-
-  {% block js %}
-  {% end %}
-
-  {% block tag_body %}
-    <body ng-controller="NewLionCtrl">
-  {% end %}
-
-  {% block content %}
-
-
   <h1><a class="btn btn-default" href="javascript:history.back()"><i class="icon icon-arrow-left"></i></a> Lion.Name</h1>
-
-
   <div class="row">
     <div class="col-sm-3 line-right">
-      <p><img src="square/lion1.jpg" class="img-responsive"></p>
+      <p><img src="/static/images/square/lion1.jpg" class="img-responsive"></p>
       <h4>Lion ID</h4>
       <p>10</p>
       <h4>Organization</h4>
@@ -34,20 +17,16 @@
       <h4>Notes</h4>
       <p>Blah blah blah blah blah blah blah blah blah blah blah</p>
     </div>
-    <div class="col-sm-3 line-left">
-       <p><a href="#" class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" data-template-url="templates/image_gallery.html" bs-modal="modal"><i class="icon icon-camera"></i> IMAGE GALLERY</a></p>
-       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-location-pin"></i> POSITION ON MAP</a></p>
-       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-pencil"></i> EDIT METADATA</a></p>
-       <br>
-       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-images"></i> SEARCH IMAGE SETS</a></p>
-       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE LION</a></p>
-
+    <div class="col-sm-3 line-left" ng-controller="ImageGalleryCtrl">
+      <p><a href="#" class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" data-template-url="imagegallery" bs-modal="modal"><i class="icon icon-camera"></i> IMAGE GALLERY</a></p>
+      <!-- Using ng-click()
+      <p><a href="#" class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ng-click="showModal()"><i class="icon icon-camera"></i> IMAGE GALLERY</a></p>
+      -->
+      <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-location-pin"></i> POSITION ON MAP</a></p>
+      <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-pencil"></i> EDIT METADATA</a></p>
+      <br>
+      <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-images"></i> SEARCH IMAGE SETS</a></p>
+      <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE LION</a></p>
     </div>
   </div>
 
-  {% end %}
-
-  {% block include_js %}
-    <script src="{{ static_url("js/app.js") }}" ></script>
-    <script src="{{ static_url("js/controllers.js") }}" ></script>
-  {% end %}
