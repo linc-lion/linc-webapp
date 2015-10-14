@@ -2,12 +2,12 @@
 
 angular.module('lion.controllers', [])
 
-.controller('MainCtrl', ['$scope', '$location', function ($scope, $location) {
-  //$scope.message = 'Everyone come and see how good I look!';
-  $location.path('menu');
+.controller('MainCtrl', ['$scope', '$state', function ($scope, $state) {
+    $state.go('menu');
 }])
 // Home Menu
 .controller('MenuCtrl', ['$scope', function ($scope) {
+
 }])
 // ASide Controller Base.html
 .controller('AsideCtrl', ['$scope', function ($scope) {
@@ -15,12 +15,15 @@ angular.module('lion.controllers', [])
 }])
 
 .controller('NewLionCtrl', ['$scope', function ($scope) {
+
 }])
 
 .controller('NewImageSetCtrl', ['$scope', function ($scope) {
+
 }])
 
 .controller('SearchLionCtrl', ['$scope', function ($scope) {
+
 }])
 
 .controller('SearchImageSetCtrl', ['$scope', function ($scope) {
@@ -33,6 +36,7 @@ angular.module('lion.controllers', [])
 }])
 
 .controller('ConservationistsCtrl', ['$scope', function ($scope) {
+
 }])
 
 // Image Gallery Controller

@@ -54,12 +54,6 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
           controller: 'MenuCtrl',
           templateUrl: 'menu'
         })
-        // Side Menu
-        .state("sidemenu", {
-          url: "/sidemenu",
-          controller: 'AsideCtrl',
-          templateUrl: '/sidemenu'
-        })
         // New Lion
         .state("newlion", {
           url: "/newlion",
@@ -109,5 +103,5 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
               }, 100);
           }]
         });
-      $urlRouterProvider.otherwise('/');
+      $urlRouterProvider.otherwise('menu');
 }]);
