@@ -13,6 +13,8 @@ from handlers.main import NewImageSetHandler
 from handlers.main import SearchImageSetHandler
 from handlers.main import ConservationistsHandler
 from handlers.main import ImageGalleryHandler
+from handlers.main import LocationHistoryHandler
+from handlers.main import EditMetadataHandler
 
 # Defining routes
 url_patterns = [
@@ -29,5 +31,7 @@ url_patterns = [
     (r"/searchimageset", SearchImageSetHandler),
     (r"/conservationists", ConservationistsHandler),
     (r"/imagegallery", ImageGalleryHandler),
+    (r"/map", LocationHistoryHandler),
+    (r"/metadata", EditMetadataHandler),
     (r"/", MainHandler)
 ]

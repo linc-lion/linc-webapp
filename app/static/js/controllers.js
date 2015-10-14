@@ -56,6 +56,9 @@ angular.module('lion.controllers', [])
 .controller('LocationHistoryCtrl', ['$scope', '$modal', function ($scope, $modal) {
   $scope.modal = {title: 'Location History', content: 'Map'};
 }])
+.controller('EditMetadataCtrl', ['$scope', '$modal', function ($scope, $modal) {
+  $scope.modal = {title: 'Metadata', content: ''};
+}])
 
 
 
