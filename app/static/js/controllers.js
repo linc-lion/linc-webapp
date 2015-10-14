@@ -53,7 +53,9 @@ angular.module('lion.controllers', [])
     myModal.$promise.then(myModal.hide);
   };*/
 }])
-
+.controller('LocationHistoryCtrl', ['$scope', '$modal', function ($scope, $modal) {
+  $scope.modal = {title: 'Location History', content: 'Map'};
+}])
 
 
 
