@@ -38,3 +38,11 @@ class ConservationistsHandler(BaseHandler):
 class ImageGalleryHandler(BaseHandler):
     def get(self):
         self.render('image_gallery.html')
+
+class LocationHistoryHandler(BaseHandler):
+    def get(self):
+        self.render('map.html')
+
+class EditMetadataHandler(BaseHandler):
+    def get(self):
+        self.render('metadata.html')        
