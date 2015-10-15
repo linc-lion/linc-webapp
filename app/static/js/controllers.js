@@ -25,10 +25,10 @@ angular.module('lion.controllers', [])
 .controller('SearchLionCtrl', ['$scope', function ($scope) {
 
   $scope.lionRange = {
-    min: 2,
-    max: 15,
+    min: 1,
+    max: 10,
     ceil: 20,
-    floor: 1
+    floor: 0
   };
 
   $scope.isCollapsed = true;
@@ -38,10 +38,10 @@ angular.module('lion.controllers', [])
 .controller('SearchImageSetCtrl', ['$scope', function ($scope) {
 
   $scope.imageSetRange = {
-    min: 2,
-    max: 15,
+    min: 1,
+    max: 10,
     ceil: 20,
-    floor: 1
+    floor: 0
   };
 
   $scope.isCollapsed = true;
