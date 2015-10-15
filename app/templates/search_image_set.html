@@ -34,20 +34,22 @@
 
         <div role="tab">
           <h4 >
-            <a bs-collapse-toggle><i class="pull-right icon icon-select-arrows"></i> Age</a>
-          </h4>
+            <a bs-collapse-toggle ng-click="isCollapsed = !isCollapsed"><i class="pull-right icon icon-select-arrows"></i> Age</a>
+            </h4>
         </div>
-        <div class="panel-collapse" role="tabpanel" bs-collapse-target>
+        <div uib-collapse="isCollapsed">
           <div class="panel-body">
             <rzslider
-              rz-slider-floor="priceSlider.floor"
-              rz-slider-ceil="priceSlider.ceil"
-              rz-slider-model="priceSlider.min"
-              rz-slider-high="priceSlider.max"
-              rz-slider-step="1">
+              rz-slider-floor="imageSetRange.floor"
+              rz-slider-ceil="imageSetRange.ceil"
+              rz-slider-model="imageSetRange.min"
+              rz-slider-high="imageSetRange.max"
+              rz-slider-step="1"
+              rz-slider-tpl-url="rzSliderTpl.html">
             </rzslider>
           </div>
         </div>
+
       </div>
     </div>
 
