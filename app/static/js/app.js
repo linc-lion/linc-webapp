@@ -1,5 +1,5 @@
 //angular.module('lion-guardians', [])  ['ngAnimate', 'ngSanitize', 'mgcrea.ngStrap']);
-var app = angular.module('lion.guardians', ['ngAnimate', 'ngSanitize', 'rzModule', 'ui.router', 'mgcrea.ngStrap', 'lion.controllers']);
+var app = angular.module('lion.guardians', ['ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'mgcrea.ngStrap', 'lion.controllers']);
 
 'use strict';
 

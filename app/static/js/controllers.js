@@ -24,15 +24,28 @@ angular.module('lion.controllers', [])
 
 .controller('SearchLionCtrl', ['$scope', function ($scope) {
 
-}])
-
-.controller('SearchImageSetCtrl', ['$scope', function ($scope) {
-  $scope.priceSlider = {
+  $scope.lionRange = {
     min: 2,
-    max: 19,
+    max: 15,
     ceil: 20,
     floor: 1
   };
+
+  $scope.isCollapsed = true;
+
+}])
+
+.controller('SearchImageSetCtrl', ['$scope', function ($scope) {
+
+  $scope.imageSetRange = {
+    min: 2,
+    max: 15,
+    ceil: 20,
+    floor: 1
+  };
+
+  $scope.isCollapsed = true;
+
 }])
 
 .controller('ConservationistsCtrl', ['$scope', function ($scope) {

@@ -27,6 +27,7 @@
     "angular-sanitize": "~1.4.4",
     "bootstrap": "~3.3.5",
     "angularjs-slider": "~1.0.0",
-    "angular-ui-router": "~0.2.15"
+    "angular-ui-router": "~0.2.15",
+    "angular-bootstrap": "~0.14.2"
   }
 }
