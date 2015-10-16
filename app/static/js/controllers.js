@@ -71,6 +71,35 @@ angular.module('lion.controllers', [])
     $window.history.back();
   };
 
+  $scope.photos = [
+    {
+      id: 1,
+      name: 'leão 1',
+      age: 14,
+      url: "/static/images/medium/lion1.jpg"
+    },
+    {
+      id: 2,
+      name: 'leão 2',
+      age: 14,
+      url: "/static/images/medium/lion1.jpg"
+    },
+    {
+      id: 3,
+      name: 'leão 3',
+      age: 14,
+      url: "/static/images/medium/lion1.jpg"
+    },
+  ];
+
+  /*$scope.photo_select = function($event, value){
+    value=!value;
+    $event.stopPropagation();
+  }*/
+  $scope.show_photo = function(url){
+    var win = window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=200, left=200, width=600, height=600");
+    win.focus();
+  }
 }])
 .controller('LocationHistoryCtrl', ['$scope', '$modal', '$window', function ($scope, $modal, $window) {
   //$scope.modal = {title: 'Location History', content: 'Map'};
