@@ -18,12 +18,14 @@
       <p>Blah blah blah blah blah blah blah blah blah blah blah</p>
     </div>
     <div class="col-sm-3 line-left" >
-      <p ng-controller="ImageGalleryCtrl"><a href="#" class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" data-template-url="imagegallery" bs-modal="modal"><i class="icon icon-camera"></i> IMAGE GALLERY</a></p>
-      <!-- Using ng-click()
-      <p><a href="#" class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ng-click="showModal()"><i class="icon icon-camera"></i> IMAGE GALLERY</a></p>
-      -->
+      <!--<p ng-controller="ImageGalleryCtrl"><a href="#" class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" data-template-url="imagegallery" bs-modal="modal"><i class="icon icon-camera"></i> IMAGE GALLERY</a></p>
+       Using ng-click()
       <p ng-controller="LocationHistoryCtrl"><a href="#" class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" data-template-url="map" bs-modal="modal"><i class="icon icon-location-pin"></i> POSITION ON MAP</a></p>
       <p ng-controller="EditMetadataCtrl"><a href="#" class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" data-template-url="metadata" bs-modal="modal"><i class="icon icon-pencil"></i> EDIT METADATA</a></p>
+      <br>-->
+      <p ng-controller="ImageGalleryCtrl"><a href="#" class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ng-click="showModal()"><i class="icon icon-camera"></i> IMAGE GALLERY</a></p>
+      <p ng-controller="LocationHistoryCtrl"><a href="#" class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ng-click="showModal()"><i class="icon icon-location-pin"></i> POSITION ON MAP</a></p>
+      <p ng-controller="EditMetadataCtrl"><a href="#" class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ng-click="showModal()"><i class="icon icon-pencil"></i> EDIT METADATA</a></p>
       <br>
       <p><a href="#/searchimageset" class="btn btn-lg btn-default btn-block"><i class="icon icon-images"></i> SEARCH IMAGE SETS</a></p>
       <p><a href="javascript:history.back()" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE LION</a></p>

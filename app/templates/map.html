@@ -1,8 +1,8 @@
-<div class="modal" tabindex="-1" role="dialog">
+<div ng-controller="LocationHistoryCtrl" class="modal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header" ng-show="title">
-        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <button type="button" class="close" ng-click="hideModal($hide)">&times;</button>
         <h4 class="modal-title" ng-bind-html="title"></h4>
       </div>
       <div class="modal-body" ng-show="content">
@@ -21,7 +21,7 @@
 
 
       </div>
-    
+
     </div>
   </div>
 </div>

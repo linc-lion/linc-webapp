@@ -53,28 +53,72 @@ angular.module('lion.controllers', [])
 }])
 
 // Image Gallery Controller
-.controller('ImageGalleryCtrl', ['$scope', '$modal', function ($scope, $modal) {
-  $scope.modal = {title: 'Image Gallery', content: 'Image Galleryl<br />Contents!'};
-
-  // Alternative - Using ng-click()
-  /*function MyModalController($scope) {
+.controller('ImageGalleryCtrl', ['$scope', '$modal', '$window', function ($scope, $modal, $window) {
+  //$scope.modal = {title: 'Image Gallery', content: 'Image Galleryl<br />Contents!'};
+  function MyController($scope) {
     $scope.title = 'Image Gallery';
-    $scope.content = 'Hello Modal<br />This is a multiline message from a controller!';
+    $scope.content = 'Image Galleryl<br />Contents!';
   }
-  MyModalController.$inject = ['$scope'];
-  var myModal = $modal({controller: MyModalController, templateUrl: 'imagegallery', show: false});
+  MyController.$inject = ['$scope'];
+  var myModal = $modal({controller: MyController, templateUrl: 'imagegallery', show: false});
+
   $scope.showModal = function () {
     myModal.$promise.then(myModal.show);
   };
-  $scope.hideModal = function () {
-    myModal.$promise.then(myModal.hide);
-  };*/
+
+  $scope.hideModal = function ($hide) {
+    myModal.$promise.then($hide);
+    $window.history.back();
+  };
+
 }])
-.controller('LocationHistoryCtrl', ['$scope', '$modal', function ($scope, $modal) {
-  $scope.modal = {title: 'Location History', content: 'Map'};
+.controller('LocationHistoryCtrl', ['$scope', '$modal', '$window', function ($scope, $modal, $window) {
+  //$scope.modal = {title: 'Location History', content: 'Map'};
+  function MyController($scope) {
+    $scope.title = 'Location History';
+    $scope.content = 'Map';
+  }
+  MyController.$inject = ['$scope'];
+  var myModal = $modal({controller: MyController, templateUrl: 'map', show: false});
+
+  $scope.showModal = function () {
+    myModal.$promise.then(myModal.show);
+  };
+
+  $scope.hideModal = function ($hide) {
+    myModal.$promise.then($hide);
+    $window.history.back();
+  };
+
 }])
-.controller('EditMetadataCtrl', ['$scope', '$modal', function ($scope, $modal) {
-  $scope.modal = {title: 'Metadata', content: 'Form'};
+.controller('EditMetadataCtrl', ['$scope', '$modal', '$window', function ($scope, $modal, $window) {
+  //$scope.modal = {title: 'Metadata', content: 'Form'};
+ function MyController($scope) {
+    $scope.title = 'Metadata';
+    $scope.content = 'Form';
+  }
+  MyController.$inject = ['$scope'];
+  var myModal = $modal({controller: MyController, templateUrl: 'metadata', show: false});
+
+  $scope.showModal = function () {
+    myModal.$promise.then(myModal.show);
+  };
+
+  $scope.hideModal = function ($hide) {
+    myModal.$promise.then($hide);
+    $window.history.back();
+  };
+
+  $scope.Cancel = function ($hide) {
+    myModal.$promise.then($hide);
+    $window.history.back();
+  };
+
+  $scope.Save = function ($hide) {
+    myModal.$promise.then($hide);
+    $window.history.back();
+  };
+
 }])
 .controller('CVResultsCtrl', ['$scope', '$modal', function ($scope, $modal) {
   $scope.modal = {title: 'CV Results', content: 'Form'};
