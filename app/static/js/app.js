@@ -58,31 +58,46 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
         .state("newlion", {
           url: "/newlion",
           controller: 'NewLionCtrl',
-          templateUrl: '/newlion'
+          templateUrl: '/newlion',
+          data: {
+            bodyClasses: 'newlion'
+          }
         })
         // New Image Set
         .state("newimageset", {
           url: "/newimageset",
           controller: 'NewImageSetCtrl',
-          templateUrl: '/newimageset'
+          templateUrl: '/newimageset',
+          data: {
+            bodyClasses: 'newimageset'
+          }
         })
         // Searcg Lion
         .state("searchlion", {
           url: "/searchlion",
           controller: 'SearchLionCtrl',
-          templateUrl: '/searchlion'
+          templateUrl: '/searchlion',
+          data: {
+            bodyClasses: 'searchlion'
+          }
         })
         // Search Image Set
         .state("searchimageset", {
           url: "/searchimageset",
           controller: 'SearchImageSetCtrl',
-          templateUrl: '/searchimageset'
+          templateUrl: '/searchimageset',
+          data: {
+            bodyClasses: 'searchimageset'
+          }
         })
         // Conservationists
         .state("conservationists", {
           url: "/conservationists",
           controller: 'ConservationistsCtrl',
-          templateUrl: '/conservationists'
+          templateUrl: '/conservationists',
+          data: {
+            bodyClasses: 'conservationists'
+          }
         })
         // Image Gallerys
         /*.state("imagegallery", {

@@ -5,6 +5,19 @@ angular.module('lion.controllers', [])
 .controller('MainCtrl', ['$scope', '$state', function ($scope, $state) {
     $state.go('menu');
 }])
+
+.controller('BodyCtrl', ['$scope', function ($scope){
+  $scope.bodyClasses = 'default';
+
+  // this'll be called on every state change in the app
+  $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+    if (toState.data != undefined && angular.isDefined(toState.data.bodyClasses)) {
+        $scope.bodyClasses = toState.data.bodyClasses;
+        return;
+    }
+    $scope.bodyClasses = 'default';
+  });
+}])
 // Home Menu
 .controller('MenuCtrl', ['$scope', function ($scope) {
 
