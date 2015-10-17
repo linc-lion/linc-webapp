@@ -42,17 +42,17 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
       // Use $stateProvider to configure your states.
       $stateProvider
 
-        // Home
-        .state("home", {
-          url: "/",
-          controller: 'MainCtrl',
-          templateUrl: '/'
+        .state('login', {
+          url: '/login',
+          controller: 'LoginCtrl',
+          controllerAs: 'vm',
+          templateUrl: 'login'
         })
         // Home Menu
-        .state("menu", {
-          url: "/menu",
-          controller: 'MenuCtrl',
-          templateUrl: 'menu'
+        .state("home", {
+          url: "/home",
+          controller: 'HomeCtrl',
+          templateUrl: 'home'
         })
         // New Lion
         .state("newlion", {
@@ -99,13 +99,6 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
             bodyClasses: 'conservationists'
           }
         })
-        // Image Gallerys
-        /*.state("imagegallery", {
-          url: "/imagegallery",
-          controller: 'ImageGalleryCtrl',
-          templateUrl: '/imagegallery'
-        })*/
-
         // About //
         .state('about', {
           url: '/about',
@@ -118,5 +111,5 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
               }, 100);
           }]
         });
-      $urlRouterProvider.otherwise('menu');
+      $urlRouterProvider.otherwise('login');
 }]);

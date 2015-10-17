@@ -5,7 +5,8 @@ from handlers.base import VersionHandler
 from handlers.error import ErrorHandler
 from handlers.auth import AuthHandler
 from handlers.main import MainHandler
-from handlers.main import MenuHandler
+from handlers.main import LoginHandler
+from handlers.main import HomeHandler
 from handlers.main import SideMenuHandler
 from handlers.main import NewLionHandler
 from handlers.main import SearchLionHandler
@@ -25,7 +26,8 @@ url_patterns = [
     #(r"/signal/", xHandler),
     #(r"/signal/(.*)", yHandler),
     (r"/version", VersionHandler),
-    (r"/menu", MenuHandler),
+    (r"/login", LoginHandler),
+    (r"/home", HomeHandler),
     (r"/sidemenu", SideMenuHandler),
     (r"/newlion", NewLionHandler),
     (r"/searchlion", SearchLionHandler),

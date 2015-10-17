@@ -7,9 +7,13 @@ class MainHandler(BaseHandler):
     def get(self):
         self.render('main.html')
 
-class MenuHandler(BaseHandler):
+class LoginHandler(BaseHandler):
     def get(self):
-        self.render('menu.html')
+        self.render('login.html')
+
+class HomeHandler(BaseHandler):
+    def get(self):
+        self.render('home.html')
 
 class SideMenuHandler(BaseHandler):
     def get(self):

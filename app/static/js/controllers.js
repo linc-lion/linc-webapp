@@ -2,8 +2,25 @@
 
 angular.module('lion.controllers', [])
 
-.controller('MainCtrl', ['$scope', '$state', function ($scope, $state) {
-    $state.go('menu');
+// Home
+.controller('HomeCtrl', ['$scope', function ($scope) {
+
+}])
+// Login
+.controller('LoginCtrl', ['$scope', '$state', '$timeout', function ($scope,$state, $timeout) {
+  $scope.email = '';
+  $scope.password = '';
+  $scope.dataLoading = false;
+  $scope.remember = true;
+
+  $scope.login = function() {
+    $scope.dataLoading = true;
+    $timeout(function() {
+      $scope.dataLoading = false;
+      $state.go("home");
+    }, 1000);
+  };
+
 }])
 
 .controller('BodyCtrl', ['$scope', function ($scope){
@@ -17,13 +34,11 @@ angular.module('lion.controllers', [])
     }
     $scope.bodyClasses = 'default';
   });
-}])
-// Home Menu
-.controller('MenuCtrl', ['$scope', function ($scope) {
 
 }])
-// ASide Controller Base.html
-.controller('AsideCtrl', ['$scope', function ($scope) {
+
+// Side Menu Controller Base.html
+.controller('SideMenuCtrl', ['$scope', function ($scope) {
     $scope.aside = {title: 'Menu', content: 'Menu'};
 }])
 
