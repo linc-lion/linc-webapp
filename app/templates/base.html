@@ -9,11 +9,10 @@
     {% block head %}
     {% end %}
 
-    <link href="{{ static_url("css/bootstrap/bootstrap.min.css") }}" rel="stylesheet">
-    <!--<link href="{{ static_url("css/docs.min.css") }}" rel="stylesheet">-->
-    <link href="{{ static_url("css/angular-motion/angular-motion.min.css") }}" rel="stylesheet">
-    <link href="{{ static_url("css/angular-motion//libs.min.css") }}" rel="stylesheet">
-    <link href="{{ static_url("css/angularjs-slider/rzslider.css") }}" rel="stylesheet">
+    <link href="{{ static_url("lib/bootstrap/bootstrap.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("lib/angular-motion/angular-motion.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("lib/angular-motion/libs.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("lib/angular-slider/rzslider.min.css") }}" rel="stylesheet">
     <link href="{{ static_url("css/styles.min.css") }}" rel="stylesheet">
 
     <script src="https://maps.googleapis.com/maps/api/js?sensor=true&libraries=geometry"></script>
@@ -73,18 +72,18 @@
       <!-- Le javascript
       ================================================== -->
       <!-- Placed at the end of the document so the pages load faster -->
-      <script src="{{ static_url("js/angular/angular.min.js") }}" ></script>
-      <script src="{{ static_url("js/angular-ui-router/angular-ui-router.min.js") }}" ></script>
-      <script src="{{ static_url("js/angular-animate/angular-animate.min.js") }}"></script>
-      <script src="{{ static_url("js/angular-sanitize/angular-sanitize.min.js") }}"></script>
-      <script src="{{ static_url("js/angularjs-slider/rzslider.min.js") }}"></script>
-      <script src="{{ static_url("js/angular-strap/angular-strap.min.js") }}"></script>
-      <script src="{{ static_url("js/angular-strap/angular-strap.tpl.min.js") }}"></script>
-      <script src="{{ static_url("js/angular-strap/angular-strap.docs.tpl.js") }}"></script>
-      <script src="{{ static_url("js/angular-bootstrap/ui-bootstrap-collapse.min.js") }}"></script>
-      <script src="{{ static_url("js/ngmap/ng-map.min.js") }}" ></script>
+      <script src="{{ static_url("lib/angular/angular.min.js") }}" ></script>
+      <script src="{{ static_url("lib/angular-ui-router/angular-ui-router.min.js") }}" ></script>
+      <script src="{{ static_url("lib/angular-animate/angular-animate.min.js") }}"></script>
+      <script src="{{ static_url("lib/angular-sanitize/angular-sanitize.min.js") }}"></script>
+      <script src="{{ static_url("lib/angular-slider/rzslider.min.js") }}"></script>
+      <script src="{{ static_url("lib/angular-strap/angular-strap.min.js") }}"></script>
+      <script src="{{ static_url("lib/angular-strap/angular-strap.tpl.min.js") }}"></script>
+      <!--<script src="{{ static_url("lib/angular-strap/angular-strap.docs.tpl.js") }}"></script>-->
+      <script src="{{ static_url("lib/angular-bootstrap/ui-bootstrap-collapse.min.js") }}"></script>
+      <script src="{{ static_url("lib/ngmap/ng-map.min.js") }}" ></script>
 
-      <script src="{{ static_url("js/ngstorage/ngStorage.min.js") }}" ></script>
+      <script src="{{ static_url("lib/ngstorage/ngStorage.min.js") }}" ></script>
   {% end %}
 
     {% block include_js %}
