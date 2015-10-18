@@ -1,9 +1,9 @@
 //angular.module('lion-guardians', [])  ['ngAnimate', 'ngSanitize', 'mgcrea.ngStrap']);
-var app = angular.module('lion.guardians', ['ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'mgcrea.ngStrap', 'lion.controllers']);
+var app = angular.module('lion.guardians', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'ngMap', 'mgcrea.ngStrap', 'lion.guardians.controllers']);
 
 'use strict';
 
-app.run(['$rootScope', '$state', '$stateParams', function ($rootScope,   $state,   $stateParams) {
+app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($rootScope,   $state,   $stateParams, $localStorage) {
 
     // It's very handy to add references to $state and $stateParams to the $rootScope
     // so that you can access them from any scope within your applications.For example,
@@ -11,6 +11,15 @@ app.run(['$rootScope', '$state', '$stateParams', function ($rootScope,   $state,
     // to active whenever 'contacts.list' or one of its decendents is active.
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
+
+    $rootScope.$on('$stateChangeStart',
+      function(event, toState, toParams, fromState, fromParams){
+        //console.log(toState);
+        if(!$localStorage.logged && toState.name != "login"){
+          event.preventDefault();
+          $state.go("login");
+        }
+    })
 }]);
 
 //app.config(['$modalProvider', function ($modalProvider) {
@@ -64,14 +73,14 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
           }
         })
         // New Image Set
-        .state("newimageset", {
+        /*.state("newimageset", {
           url: "/newimageset",
           controller: 'NewImageSetCtrl',
           templateUrl: '/newimageset',
           data: {
             bodyClasses: 'newimageset'
           }
-        })
+        })*/
         // Searcg Lion
         .state("searchlion", {
           url: "/searchlion",
@@ -113,3 +122,11 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
         });
       $urlRouterProvider.otherwise('login');
 }]);
+
+/*app.config(function(uiGmapGoogleMapApiProvider) {
+    uiGmapGoogleMapApiProvider.configure({
+        //    key: 'your api key',
+        v: '3.20', //defaults to latest 3.X anyhow
+        libraries: 'weather,geometry,visualization'
+    });
+})*/

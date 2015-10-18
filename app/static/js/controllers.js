@@ -1,25 +1,13 @@
 'use strict';
 
-angular.module('lion.controllers', [])
+angular.module('lion.guardians.controllers', ['lion.guardians.login.controllers',
+                                                               'lion.guardians.lions.controllers',
+                                                               'lion.guardians.image.set.controllers',
+                                                               'lion.guardians.metadata.controllers',
+                                                               'lion.guardians.conservationists.controllers'])
 
 // Home
 .controller('HomeCtrl', ['$scope', function ($scope) {
-
-}])
-// Login
-.controller('LoginCtrl', ['$scope', '$state', '$timeout', function ($scope,$state, $timeout) {
-  $scope.email = '';
-  $scope.password = '';
-  $scope.dataLoading = false;
-  $scope.remember = true;
-
-  $scope.login = function() {
-    $scope.dataLoading = true;
-    $timeout(function() {
-      $scope.dataLoading = false;
-      $state.go("home");
-    }, 1000);
-  };
 
 }])
 
@@ -34,153 +22,40 @@ angular.module('lion.controllers', [])
     }
     $scope.bodyClasses = 'default';
   });
-
 }])
 
 // Side Menu Controller Base.html
-.controller('SideMenuCtrl', ['$scope', function ($scope) {
-    $scope.aside = {title: 'Menu', content: 'Menu'};
-}])
+.controller('SideMenuCtrl', ['$scope', '$aside', '$state', '$localStorage', function ($scope, $aside, $state, $localStorage) {
 
-.controller('NewLionCtrl', ['$scope', function ($scope) {
+  $scope.$storage = $localStorage;
 
-}])
-
-.controller('NewImageSetCtrl', ['$scope', function ($scope) {
-
-}])
-
-.controller('SearchLionCtrl', ['$scope', function ($scope) {
-
-  $scope.lionRange = {
-    min: 1,
-    max: 10,
-    ceil: 20,
-    floor: 0
-  };
-
-  $scope.isCollapsed = true;
-
-}])
-
-.controller('SearchImageSetCtrl', ['$scope', function ($scope) {
-
-  $scope.imageSetRange = {
-    min: 1,
-    max: 10,
-    ceil: 20,
-    floor: 0
-  };
-
-  $scope.isCollapsed = true;
-
-}])
-
-.controller('ConservationistsCtrl', ['$scope', function ($scope) {
-
-}])
-
-// Image Gallery Controller
-.controller('ImageGalleryCtrl', ['$scope', '$modal', '$window', function ($scope, $modal, $window) {
-  //$scope.modal = {title: 'Image Gallery', content: 'Image Galleryl<br />Contents!'};
+    //$scope.aside = {title: 'Menu', content: 'Menu'};
   function MyController($scope) {
-    $scope.title = 'Image Gallery';
-    $scope.content = 'Image Galleryl<br />Contents!';
+    $scope.title = 'Menu';
+    $scope.content = 'Menu';
   }
   MyController.$inject = ['$scope'];
-  var myModal = $modal({controller: MyController, templateUrl: 'imagegallery', show: false});
+  //var myModal = $modal({controller: MyController, templateUrl: 'sidemenu', show: false});
+  var myASide = $aside({controller: MyController,   templateUrl: 'sidemenu', show: false});
 
   $scope.showModal = function () {
-    myModal.$promise.then(myModal.show);
+    myASide.$promise.then(myASide.show);
   };
 
   $scope.hideModal = function ($hide) {
-    myModal.$promise.then($hide);
-    $window.history.back();
+    myASide.$promise.then($hide);
+    //$window.history.back();
   };
 
-  $scope.photos = [
-    {
-      id: 1,
-      name: 'leão 1',
-      age: 14,
-      url: "/static/images/medium/lion1.jpg"
-    },
-    {
-      id: 2,
-      name: 'leão 2',
-      age: 14,
-      url: "/static/images/medium/lion1.jpg"
-    },
-    {
-      id: 3,
-      name: 'leão 3',
-      age: 14,
-      url: "/static/images/medium/lion1.jpg"
-    },
-  ];
-
-  /*$scope.photo_select = function($event, value){
-    value=!value;
-    $event.stopPropagation();
-  }*/
-  $scope.show_photo = function(url){
-    var win = window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=200, left=200, width=600, height=600");
-    win.focus();
+    $scope.logout = function($hide){
+      myASide.$promise.then($hide);
+      $scope.$storage.logged = false;
+      $state.go("login");
   }
 }])
-.controller('LocationHistoryCtrl', ['$scope', '$modal', '$window', function ($scope, $modal, $window) {
-  //$scope.modal = {title: 'Location History', content: 'Map'};
-  function MyController($scope) {
-    $scope.title = 'Location History';
-    $scope.content = 'Map';
-  }
-  MyController.$inject = ['$scope'];
-  var myModal = $modal({controller: MyController, templateUrl: 'map', show: false});
 
-  $scope.showModal = function () {
-    myModal.$promise.then(myModal.show);
-  };
 
-  $scope.hideModal = function ($hide) {
-    myModal.$promise.then($hide);
-    $window.history.back();
-  };
 
-}])
-.controller('EditMetadataCtrl', ['$scope', '$modal', '$window', function ($scope, $modal, $window) {
-  //$scope.modal = {title: 'Metadata', content: 'Form'};
- function MyController($scope) {
-    $scope.title = 'Metadata';
-    $scope.content = 'Form';
-  }
-  MyController.$inject = ['$scope'];
-  var myModal = $modal({controller: MyController, templateUrl: 'metadata', show: false});
-
-  $scope.showModal = function () {
-    myModal.$promise.then(myModal.show);
-  };
-
-  $scope.hideModal = function ($hide) {
-    myModal.$promise.then($hide);
-    $window.history.back();
-  };
-
-  $scope.Cancel = function ($hide) {
-    myModal.$promise.then($hide);
-    $window.history.back();
-  };
-
-  $scope.Save = function ($hide) {
-    myModal.$promise.then($hide);
-    $window.history.back();
-  };
-
-}])
-.controller('CVResultsCtrl', ['$scope', '$modal', function ($scope, $modal) {
-  $scope.modal = {title: 'CV Results', content: 'Form'};
-  $scope.modal2 = {title: 'Lion Search', content: 'Search'};
-}])
 
 
 /*

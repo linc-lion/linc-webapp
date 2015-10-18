@@ -9,7 +9,7 @@
         <p>
           Logged in as <b>justin@lg.org</b> of <b>Lion Guardians</b>
         </p>
-        <ul class="nav nav-stacked">
+        <ul class="nav nav-stacked" ng-controller="SideMenuCtrl">
           <li role="presentation" class="active"><a ui-sref="conservationists" ng-click="$hide()">Directory of conservationists</a></li>
           <li role="separator" class="divider"><hr></li>
           <!-- <li role="presentation"><a ui-sref="home" ng-click="$hide()">Home</a></li> -->
@@ -19,7 +19,7 @@
           <li role="presentation"><a ui-sref="searchimageset" ng-click="$hide()">Search Image sets</a></li>
           <li role="separator" class="divider"><hr></li>
           <li role="presentation"><a ui-sref="admin" ng-click="$hide()">Manage users</a></li>
-          <li role="presentation"><a ui-sref="#logout" ng-click="$hide()">Logout</a></li>
+          <li role="presentation"><a ng-click="logout($hide())">Logout</a></li>
         </ul>
       </div>
     </div>

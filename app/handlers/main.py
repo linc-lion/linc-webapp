@@ -43,7 +43,7 @@ class ImageGalleryHandler(BaseHandler):
     def get(self):
         self.render('image_gallery.html')
 
-class LocationHistoryHandler(BaseHandler):
+class MapHandler(BaseHandler):
     def get(self):
         self.render('map.html')
 
