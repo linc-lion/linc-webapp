@@ -1,4 +1,4 @@
-<div ng-controller="ImageGalleryCtrl" class="modal" tabindex="-1" role="dialog">
+<div class="modal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header" ng-show="title">
@@ -12,7 +12,7 @@
             <!--<a class="thumbnail" ng-repeat="photo in photos" ng-class="{active:photo.select}" href="/static/images/medium/lion1.jpg" target="_blank">-->
             <a class="thumbnail" ng-repeat="photo in photos" ng-class="{active:photo.select}" ng-click="show_photo(photo.url)" target="_blank">
               <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select; $event.stopPropagation();"></i>
-              <img src="/static/images/square/lion1.jpg" width="150" height="150">
+              <img ng-src="{{!photo.url}}" width="150" height="150">
               <div class="caption"><i class="icon icon-globe pull-right" ng-if="photo.isPublic"></i><i class="icon icon-star" ng-if="photo.isCover"></i>CV</div>
             </a>
             <p class="clearfix">
