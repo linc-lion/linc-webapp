@@ -73,14 +73,14 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
           }
         })
         // New Image Set
-        /*.state("newimageset", {
+        .state("newimageset", {
           url: "/newimageset",
           controller: 'NewImageSetCtrl',
           templateUrl: '/newimageset',
           data: {
             bodyClasses: 'newimageset'
           }
-        })*/
+        })
         // Searcg Lion
         .state("searchlion", {
           url: "/searchlion",
