@@ -12,14 +12,13 @@ app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($roo
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
 
-    $rootScope.$on('$stateChangeStart',
-      function(event, toState, toParams, fromState, fromParams){
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
         //console.log(toState);
         if(!$localStorage.logged && toState.name != "login"){
           event.preventDefault();
           $state.go("login");
         }
-    })
+    });
 }]);
 
 //app.config(['$modalProvider', function ($modalProvider) {
