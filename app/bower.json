@@ -28,6 +28,9 @@
     "bootstrap": "~3.3.5",
     "angularjs-slider": "~1.0.0",
     "angular-ui-router": "~0.2.15",
-    "angular-bootstrap": "~0.14.2"
+    "angular-bootstrap": "~0.14.2",
+    "ngstorage": "~0.3.9",
+    "ngmap": "~1.13.13",
+    "angular": "1.4.4"
   }
 }

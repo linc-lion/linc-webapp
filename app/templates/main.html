@@ -15,11 +15,12 @@
       <nav class="navbar navbar-default navbar-fixed-top" role="navigation" bs-navbar>
         <div class="container-fluid">
           <div class="navbar-header">
-            <a class="navbar-brand" ui-sref="home"><img src="static/logo.png" alt="logo" ></a>
+            <a class="navbar-brand" ng-disabled="!$storage.logged" ui-sref="home"><img src="static/logo.png" alt="logo" ></a>
           </div>
           <ul class="nav navbar-nav navbar-right" ng-controller="SideMenuCtrl">
             <!--<li><a bs-aside="aside" data-template-url="/static/side_menu.html" ><i class="icon icon-menu"></i></a></li>-->
-            <li><a bs-aside="aside" data-template-url="/sidemenu" ><i class="icon icon-menu"></i></a></li>
+            <!--<li><a bs-aside="aside" ng-show="logged" data-template-url="/sidemenu" ><i class="icon icon-menu"></i></a></li>-->
+            <li><a href="#" ng-click="showModal()" data-placement="right"><i class="icon icon-menu"></i></a></li>
           </ul>
         </div>
       </nav>
@@ -33,4 +34,12 @@
   {% block include_js %}
     <script src="{{ static_url("js/app.js") }}" ></script>
     <script src="{{ static_url("js/controllers.js") }}" ></script>
+    <script src="{{ static_url("js/login.controllers.js") }}" ></script>
+    <script src="{{ static_url("js/lion.controllers.js") }}" ></script>
+    <script src="{{ static_url("js/image.set.controllers.js") }}" ></script>
+    <script src="{{ static_url("js/image.gallery.controllers.js") }}" ></script>
+    <script src="{{ static_url("js/metadata.controllers.js") }}" ></script>
+    <script src="{{ static_url("js/map.controllers.js") }}" ></script>
+    <script src="{{ static_url("js/conservationists.controllers.js") }}" ></script>
+
   {% end %}
