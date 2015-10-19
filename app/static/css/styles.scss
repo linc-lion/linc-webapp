@@ -151,7 +151,8 @@ label{font-weight: normal; cursor:pointer}
     font-size: 22px;
     color: #fff;
     transition:all .2s;
-    &:hover{color: $orange}
+    text-shadow: 1px 0 6px rgba(0,0,0,.3);
+    &:hover{text-shadow: 2px 0 6px #000;}
   }
 }
 .clearfix{clear:both}

@@ -35,7 +35,13 @@ angular.module('lion.guardians.image.set.controllers', [])
                                   { id: 9, name: 'leão 9', age: 7, url: "/static/images/medium/lion9.jpg" },
                                   { id: 10, name: 'leão 10', age: 10, url: "/static/images/medium/lion10.jpeg" }];
         $scope.show_photo = function(url){
-            var win = window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=200, left=200, width=600, height=600");
+            var winW=600;
+            var winH=600;
+            var iMyWidth;
+        	  var iMyHeight;
+            iMyWidth = (window.screen.width/2) - ((winW/2)+ 10);
+        	  iMyHeight = (window.screen.height/2) - ((winH/2) + 50);
+            var win = window.open(url, "_blank", "status,toolbar=0,height="+winH+",width="+winW+",resizable=yes,left=" + iMyWidth + ",top=" + iMyHeight + ",screenX=" + iMyWidth + ",screenY=" + iMyHeight + ",scrollbars=yes");
             win.focus();
         }
     }
