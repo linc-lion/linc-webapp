@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('lion.guardians.login.controllers', [])
+angular.module('lion.guardians.login.controller', [])
 // Login
 .controller('LoginCtrl', ['$scope', '$state', '$timeout', '$localStorage', function ($scope, $state, $timeout, $localStorage) {
 

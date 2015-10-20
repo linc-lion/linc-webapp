@@ -2,14 +2,13 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header" ng-show="title">
-        <button type="button" class="close" ng-click="hideModal($hide)">&times;</button>
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
         <h4 class="modal-title" ng-bind-html="title"></h4>
       </div>
       <div class="modal-body" ng-show="content">
 
         <div class="row">
           <div class="col-sm-9">
-            <!--<a class="thumbnail" ng-repeat="photo in photos" ng-class="{active:photo.select}" href="/static/images/medium/lion1.jpg" target="_blank">-->
             <a class="thumbnail" ng-repeat="photo in photos" ng-class="{active:photo.select}" ng-click="show_photo(photo.url)" target="_blank">
               <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select; $event.stopPropagation();"></i>
               <img ng-src="{{!photo.url}}" width="150" height="150">

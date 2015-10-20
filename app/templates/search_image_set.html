@@ -94,8 +94,8 @@
               <i ng-if="!lion.primary" class="icon icon-cross"></i>
             </td>
             <td>
-              <button class="btn btn-primary" ng-if="lion.hasResults" data-animation="am-fade-and-slide-top" ng-click="showCVResults()"><i class="icon icon-flash"></i>CV Results</button>
-              <button class="btn btn-default" ng-if="!lion.hasResults && !lion.pending" data-animation="am-fade-and-slide-top" ng-click="showCVRefine()"><i class="icon icon-flash"></i>Request CV</button>
+              <cvresults-search ng-if="lion.hasResults"></cvresults-search>
+              <cvrefine ng-if="!lion.hasResults && !lion.pending"></cvrefine>
               <span class="text-muted" ng-if="lion.pending"><i class="icon icon-clock"></i> CV Request pending</span>
             </td>
           </tr>

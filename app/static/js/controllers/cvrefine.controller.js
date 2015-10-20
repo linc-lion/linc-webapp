@@ -1,17 +1,9 @@
 'use strict';
 
-angular.module('lion.guardians.image.set.controllers', [])
+angular.module('lion.guardians.cvrefine.controller', ['lion.guardians.cvrefine.directive'])
 
-.controller('NewImageSetCtrl', ['$scope', '$modal', '$window', function ($scope, $modal, $window) {
+.controller('CVRefineCtrl', ['$scope', '$window', function ($scope, $window) {
 
-}])
-
-.controller('SearchImageSetCtrl', ['$scope', '$modal', '$window', function ($scope, $modal, $window) {
-
-    $scope.imageSetRange = { min: 1, max: 10, ceil: 20, floor: 0 };
-    $scope.isCollapsed = true;
-
-    //ng-init="lions=[{hasResults:true},{pending:true},{primary:true, verified:true}]"
     $scope.lions = [{ id: 1, name: 'leão 1', age: 13, url_small: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false},
                            { id: 2, name: 'leão 2', age: 14, url_small: "/static/images/square-small/lion2.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: false, selected: false},
                            { id: 3, name: 'leão 3', age: 15, url_small: "/static/images/square-small/lion3.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: false, pending: false, primary: true, verified: true, selected: false},
@@ -23,4 +15,13 @@ angular.module('lion.guardians.image.set.controllers', [])
                            { id: 9, name: 'leão 9', age: 7, url_small: "/static/images/square-small/lion9.jpg", gender: 'female', organization: 'Lion Guardians', hasResults: false, pending: false, primary: false, verified: true, selected: false },
                            { id: 10, name: 'leão 10', age: 10, url_small: "/static/images/square-small/lion10.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: true, selected: false }];
 
+
+    $scope.title = 'Lion Search';
+    $scope.content = 'Search';
+    //ng-init="lions=[{hasResults:true},{pending:true},{ verified:true}]">
+    $scope.lions_filter = function() {
+      var filter = {hasResults: true, pending: true, verified: true}
+      return (filter);
+    };
 }]);
+

@@ -43,9 +43,9 @@ class ImageGalleryHandler(BaseHandler):
     def get(self):
         self.render('image_gallery.html')
 
-class MapHandler(BaseHandler):
+class LocationHistoryHandler(BaseHandler):
     def get(self):
-        self.render('map.html')
+        self.render('location_history.html')
 
 class EditMetadataHandler(BaseHandler):
     def get(self):
