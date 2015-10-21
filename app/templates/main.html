@@ -20,7 +20,8 @@
           <ul class="nav navbar-nav navbar-right" ng-show="$storage.logged">
             <!--<li><a bs-aside="aside" data-template-url="/static/side_menu.html" ><i class="icon icon-menu"></i></a></li>-->
             <!--<li><a bs-aside="aside" ng-show="logged" data-template-url="/sidemenu" ><i class="icon icon-menu"></i></a></li>-->
-            <li><a href="#" ng-click="showSideMenu()" data-placement="right"><i class="icon icon-menu"></i></a></li>
+            <!--<li><a href="#" ng-click="showSideMenu()" data-placement="right"><i class="icon icon-menu"></i></a></li>-->
+            <sidemenu></sidemenu>
           </ul>
         </div>
       </nav>
@@ -33,12 +34,13 @@
   {% block include_js %}
     <script src="{{ static_url("js/app.js") }}" ></script>
     <script src="{{ static_url("js/controllers/controllers.js") }}" ></script>
-    <script src="{{ static_url("js/controllers/home.controllers.js") }}" ></script>
+    <script src="{{ static_url("js/controllers/home.controller.js") }}" ></script>
     <script src="{{ static_url("js/controllers/login.controller.js") }}" ></script>
     <script src="{{ static_url("js/controllers/lion.controllers.js") }}" ></script>
     <script src="{{ static_url("js/controllers/image.set.controllers.js") }}" ></script>
     <script src="{{ static_url("js/controllers/conservationists.controller.js") }}" ></script>
-
+    <script src="{{ static_url("js/controllers/side.menu.controller.js") }}" ></script>
+    <script src="{{ static_url("js/directives/side.menu.directive.js") }}" ></script>
     <script src="{{ static_url("js/controllers/image.gallery.controller.js") }}" ></script>
     <script src="{{ static_url("js/directives/image.gallery.directive.js") }}" ></script>
     <script src="{{ static_url("js/controllers/location.history.controller.js") }}" ></script>

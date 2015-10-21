@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('lion.guardians.controllers', ['lion.guardians.login.controller',
-                                                               'lion.guardians.home.controllers',
+                                                               'lion.guardians.home.controller',
+                                                               'lion.guardians.side.menu.controller',
                                                                'lion.guardians.lions.controllers',
                                                                'lion.guardians.image.set.controllers',
                                                                'lion.guardians.conservationists.controller',
@@ -11,4 +12,16 @@ angular.module('lion.guardians.controllers', ['lion.guardians.login.controller',
                                                                'lion.guardians.cvresults.controller',
                                                                'lion.guardians.cvrefine.controller' ])
 
+.controller('BodyCtrl', ['$scope', '$state', '$localStorage', function ($scope, $state, $localStorage){
+    $scope.bodyClasses = 'home';
+    // this'll be called on every state change in the app
+    $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+        if (toState.data != undefined && angular.isDefined(toState.data.bodyClasses)) {
+            $scope.bodyClasses = toState.data.bodyClasses;
+            return;
+        }
+        $scope.bodyClasses = 'home';
+    });
+    $scope.$storage = $localStorage;
+}])
 ;

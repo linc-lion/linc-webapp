@@ -261,3 +261,9 @@ rzslider{
   width: 100%;
   height: 400px;
 }
+
+sidemenu>li>a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}
