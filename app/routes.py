@@ -4,27 +4,16 @@
 from handlers.base import VersionHandler
 from handlers.error import ErrorHandler
 from handlers.auth import AuthHandler
-from handlers.main import MainHandler
-from handlers.main import LoginHandler
-from handlers.main import HomeHandler
-from handlers.main import SideMenuHandler
-from handlers.main import NewLionHandler
-from handlers.main import SearchLionHandler
-from handlers.main import NewImageSetHandler
-from handlers.main import SearchImageSetHandler
-from handlers.main import ConservationistsHandler
-from handlers.main import ImageGalleryHandler
-from handlers.main import LocationHistoryHandler
-from handlers.main import EditMetadataHandler
-from handlers.main import CVResultsHandler
-from handlers.main import CVRefineHandler
+from handlers.main import MainHandler,LoginHandler,HomeHandler,SideMenuHandler,\
+    NewLionHandler,SearchLionHandler,NewImageSetHandler,SearchImageSetHandler,\
+    ConservationistsHandler,ImageGalleryHandler,LocationHistoryHandler,\
+    EditMetadataHandler,CVResultsHandler,CVRefineHandler
+from handlers.api import ImageSetsListHandler
 
 # Defining routes
 url_patterns = [
-    #(r"/auth/", AuthHandler),
-    #(r"/auth/(?P<id>[a-zA-Z0-9_]+)/?$", AuthQueryHandler),
-    #(r"/signal/", xHandler),
-    #(r"/signal/(.*)", yHandler),
+    # Handlers for the website
+    (r"/", MainHandler),
     (r"/version", VersionHandler),
     (r"/login", LoginHandler),
     (r"/home", HomeHandler),
@@ -39,5 +28,8 @@ url_patterns = [
     (r"/metadata", EditMetadataHandler),
     (r"/cvresults", CVResultsHandler),
     (r"/cvrefine", CVRefineHandler),
-    (r"/", MainHandler)
+
+    # Handlers for API comunication
+    (r"/imagesets/list", ImageSetsListHandler)
+
 ]

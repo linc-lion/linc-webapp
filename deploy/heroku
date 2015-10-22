@@ -1,0 +1,7 @@
+# This script will be composed to execute the deploy in Heroku.
+# At this moment it's just a reminder
+
+heroku login
+heroku git:remote -a linc-api
+#Deploy your application
+git push heroku master
