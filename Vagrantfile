@@ -14,7 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # For Heroku Deploy
   config.vm.network :forwarded_port, guest:  5000, host: 5080 # API Port
 
-  config.vm.network :private_network, ip: "192.168.100.10"
+  config.vm.network :private_network, ip: "192.168.100.20"
 
   config.vm.provider :virtualbox do |vb|
     vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/app", "1"]
