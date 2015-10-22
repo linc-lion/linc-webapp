@@ -8,7 +8,7 @@ from handlers.main import MainHandler,LoginHandler,HomeHandler,SideMenuHandler,\
     NewLionHandler,SearchLionHandler,NewImageSetHandler,SearchImageSetHandler,\
     ConservationistsHandler,ImageGalleryHandler,LocationHistoryHandler,\
     EditMetadataHandler,CVResultsHandler,CVRefineHandler
-from handlers.api import ImageSetsListHandler
+from handlers.api import ImageSetsListHandler,OrganizationsListHandler
 
 # Defining routes
 url_patterns = [
@@ -30,6 +30,7 @@ url_patterns = [
     (r"/cvrefine", CVRefineHandler),
 
     # Handlers for API comunication
-    (r"/imagesets/list", ImageSetsListHandler)
+    (r"/imagesets/list", ImageSetsListHandler),
+    (r"/organizations/list", OrganizationsListHandler)
 
 ]

@@ -2,28 +2,23 @@
 # coding: utf-8
 
 from tornado.web import asynchronous
-from tornado.gen import coroutine
+from tornado.gen import engine,coroutine,Task
 from handlers.base import BaseHandler
-from tornado.httpclient import AsyncHTTPClient,HTTPRequest
-from json import loads
 
 class ImageSetsListHandler(BaseHandler):
     @asynchronous
-    @coroutine
+    @engine
     def get(self):
-
-        AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
-        http_client = AsyncHTTPClient()
-        apiurl = self.settings['API_URL']
-        method = 'GET'
         resource_url = '/imagesets/list'
-        request = HTTPRequest(**{
-            'url' : self.settings['API_URL']+resource_url,
-            'method' : method
-        })
-        print(self.settings['API_URL']+resource_url)
-        response = yield http_client.fetch(request)
-
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
-        self.write(response.body)
-        self.finish()
+        self.finish(response.body)
+
+class OrganizationsListHandler(BaseHandler):
+    @asynchronous
+    @engine
+    def get(self):
+        resource_url = '/organizations/list'
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        self.set_status(response.code)
+        self.finish(response.body)
