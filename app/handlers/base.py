@@ -5,7 +5,7 @@ from json import load,loads,dumps,dump
 from tornado.web import RequestHandler,asynchronous
 from tornado.gen import engine,coroutine
 import string,os
-
+from tornado.httpclient import AsyncHTTPClient,HTTPRequest
 
 class BaseHandler(RequestHandler):
     """A class to collect common handler methods - all other handlers should
@@ -77,6 +77,18 @@ class BaseHandler(RequestHandler):
          self.set_status(404)
          self.write({'status':'fail','message':message})
          self.finish()
+
+    @asynchronous
+    @engine
+    def api(self,url,method,callback=None):
+        AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
+        http_client = AsyncHTTPClient()
+        request = HTTPRequest(**{
+            'url' : url,
+            'method' : method
+        })
+        response = yield http_client.fetch(request)
+        callback(response)
 
 class VersionHandler(BaseHandler):
     def get(self):
