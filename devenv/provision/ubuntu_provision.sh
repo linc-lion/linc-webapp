@@ -26,16 +26,19 @@ msg "Update packages database"
 sudo apt-get update > /dev/null
 
 msg "Installing common packages and dependencies"
-sudo apt-get -y install build-essential  python-pip python3-pip python-dev python3-dev python-virtualenv git supervisor sudo timedatectl > /dev/null
+sudo apt-get -y install build-essential  python-pip python3-pip python-dev python3-dev python-virtualenv git supervisor > /dev/null
 
-echo "Starting provision for python app..."
+msg "Starting provision for python app..."
 # dependencies for pycurl
-sudo apt-get -y install libcurl4-openssl-dev
+sudo apt-get -y install libcurl4-openssl-dev > /dev/null
+sudo rm -fr /home/vagrant/app/venv /home/vagrant/linc-webapp/venv 2> /dev/null
 virtualenv --python=python3 --prompt=" LINC-WebApp " /home/vagrant/linc-webapp/venv
+msg "Install Python Dependencies"
 source /home/vagrant/linc-webapp/venv/bin/activate
+pip install pip setuptools --upgrade
 pip install -r /home/vagrant/linc-webapp/requirements.txt --upgrade
 
-echo "Configuring supervisord to daemonize"
+msg "Configuring supervisord to daemonize"
 cat << EOF | sudo tee -a /etc/supervisor/conf.d/linc-webapp.conf
 [program:linc-webapp]
 command=/home/vagrant/linc-webapp/venv/bin/python /home/vagrant/app/linc-webapp.py
