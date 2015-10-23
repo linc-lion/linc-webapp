@@ -25,4 +25,44 @@ angular.module('lion.guardians.controllers', ['lion.guardians.login.controller',
     });
     $scope.$storage = $localStorage;
 }])
+
+.filter('offset', function() {
+  return function(input, start) {
+    start = parseInt(start, 10);
+    var res = _.slice(input, start);
+    return res
+  };
+})
+
+// Age Filter
+.filter('age_filter', function(){
+  return function(input, age) {
+    var filtered = _.filter(input, function(value){
+        return value.age >= age.min && value.age <= age.max;
+    });
+    return filtered;
+  };
+})
+// Name or Id Filter
+.filter('nameid_filter', function(){
+  return function(input, name, id) {
+    var filtered = _.filter(input, function(value){
+        if(!name.length)
+          return true;
+        return ((value.name.indexOf(name) !== -1) || (value.id.toString().indexOf(id) !== -1));
+    });
+    return filtered;
+  };
+})
+
+// Filter by Organization
+.filter('organization_filter', function(){
+  return function(input, organizations) {
+    var filtered = _.filter(input, function(value){
+        return (_.result(_.find(organizations, {'name': value.organization}), 'checked'));
+    });
+    return filtered;
+  };
+})
+
 ;

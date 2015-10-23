@@ -2,13 +2,6 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.filter('offset', function() {
-  return function(input, start) {
-    start = parseInt(start, 10);
-    return _.slice(input, start);
-  };
-})
-
 .controller('NewImageSetCtrl', ['$scope', '$modal', '$window', function ($scope, $modal, $window) {
 
 }])
@@ -22,17 +15,11 @@ angular.module('lion.guardians.image.set.controllers', [])
     // Order by
     $scope.sorting = "name";
     $scope.sortReverse = false;
-    // Age Filter
-    $scope.byAgeFilter = function(val) {
-        var filter = (val.age >= $scope.LionAge.min && val.age <= $scope.LionAge.max);
-        return (filter);
-    };
-    // Filter by Name OR Id
-    $scope.byName_or_Id = function(val) {
-        if(!$scope.name_or_id.length)
-            return true;
-        var filter = (val.name.indexOf($scope.name_or_id) !== -1) || (val.id.toString().indexOf($scope.name_or_id) !== -1);
-        return (filter);
+    // Order by
+    $scope.reverse = true;
+    $scope.order = function(predicate) {
+      $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+      $scope.predicate = predicate;
     };
 
     LincServices.getOrganizationsList()
@@ -41,11 +28,6 @@ angular.module('lion.guardians.image.set.controllers', [])
       $scope.organizations.forEach(function (element, index, array) {
         element["checked"] = true;
       });
-      // Filter by Organization
-      $scope.byOrganization = function(val) {
-        var filter = _.result(_.find($scope.organizations, {'name': val.organization}), 'checked');
-        return filter;
-      };
     })
     .error(function (error) {
       $scope.status = 'Unable to load organizations data: ' + error.message;
@@ -58,6 +40,26 @@ angular.module('lion.guardians.image.set.controllers', [])
     LincServices.getImageSetList()
     .success(function (list) {
       $scope.imagesets = list.data;
+
+      $scope.imagesets.forEach(function (element, index, array) {
+        //element["cvresults"] = true;
+        if(index == 52 || index == 55 || index == 59){
+          element["cvresults"] = true;
+        }
+        if(index == 53 || index == 54 || index == 58){
+          element.cvrequest = "request";
+        }
+        if(element.cvresults){
+          element["action"] = 'cvresults';
+        }
+        else if(element.cvrequest) {
+          element["action"] = 'cvpending';
+        }
+        else{
+            element["action"] = 'cvrefine';
+        }
+      });
+
       $scope.setPage = function(n) {
         $scope.currentPage = n;
       };
@@ -108,8 +110,6 @@ angular.module('lion.guardians.image.set.controllers', [])
         }
         return label;
       }
-
-
     })
     .error(function (error) {
         $scope.status = 'Unable to load image set data: ' + error.message;

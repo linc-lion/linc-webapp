@@ -13,5 +13,10 @@ angular.module('lion.guardians.services', [])
     dataFactory.getOrganizationsList = function () {
         return $http.get('/organizations/list');
     }
+    // Lions list
+    dataFactory.getLionsList = function () {
+        // Temporário
+        return $http.get('/imagesets/list');
+    }
     return dataFactory;
 }]);
