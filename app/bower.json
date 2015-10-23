@@ -31,6 +31,7 @@
     "angular-bootstrap": "~0.14.2",
     "ngstorage": "~0.3.9",
     "ngmap": "~1.13.13",
-    "angular": "1.4.4"
+    "angular": "1.4.4",
+    "lodash": "~3.10.1"
   }
 }

@@ -29,10 +29,10 @@ angular.module('lion.guardians.location.history.controller', ['lion.guardians.lo
     function add_circle(center, radius){
         var cityCircle = new google.maps.Circle({
                 strokeColor: '#FF0000',
-                strokeOpacity: 0.8,
+                strokeOpacity: 0.5,
                 strokeWeight: 2,
                 fillColor: '#FF0000',
-                fillOpacity: 0.35,
+                fillOpacity: 0.1,
                 map: $scope.map,
                 center: center,
                 radius: radius
@@ -41,9 +41,10 @@ angular.module('lion.guardians.location.history.controller', ['lion.guardians.lo
 
     function add_lions (){
         var i=0;
+        var lion_url = "/static/icons/lion-icon.ico";
         $scope.lions.forEach(function(lion){
             $timeout(function() {
-                var icon = new google.maps.MarkerImage(lion.url_small, null, null, null, new google.maps.Size(24, 24));
+                var icon = new google.maps.MarkerImage(lion_url, null, null, null, new google.maps.Size(24, 24));
                 var marker = new google.maps.Marker({
                     position: new google.maps.LatLng(lion.geopos[0], lion.geopos[1]),
                     map: $scope.map,
@@ -67,4 +68,3 @@ angular.module('lion.guardians.location.history.controller', ['lion.guardians.lo
         add_circle($scope.center_gep, 150000);
     });
 }]);
-

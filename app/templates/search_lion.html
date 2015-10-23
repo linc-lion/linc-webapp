@@ -13,7 +13,7 @@
         </div>
         <div class="panel-collapse" role="tabpanel" bs-collapse-target>
           <div class="panel-body">
-            <input type="text" class="form-control" >
+            <input type="text" class="form-control" ng-model="name_or_id">
           </div>
         </div>
 
@@ -24,11 +24,8 @@
         </div>
         <div class="panel-collapse" role="tabpanel" bs-collapse-target>
           <div class="panel-body">
-            <label>
-              <input type="checkbox"> Lion Guardians
-            </label>
-            <label>
-              <input type="checkbox"> Mara Lion Project
+            <label ng-repeat="organization in organizations">
+              <input type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">{{! organization.name}} {{! organization.checked}}
             </label>
           </div>
         </div>
@@ -41,11 +38,12 @@
         <div uib-collapse="isCollapsed">
           <div class="panel-body">
             <rzslider
-              rz-slider-floor="lionRange.floor"
-              rz-slider-ceil="lionRange.ceil"
-              rz-slider-model="lionRange.min"
-              rz-slider-high="lionRange.max"
-              rz-slider-step="1">
+              rz-slider-floor="LionAge.floor"
+              rz-slider-ceil="LionAge.ceil"
+              rz-slider-model="LionAge.min"
+              rz-slider-high="LionAge.max"
+              rz-slider-step="1"
+              rz-slider-tpl-url="rzSliderTpl.html">
             </rzslider>
           </div>
         </div>
@@ -56,9 +54,9 @@
     <div class="col-sm-9">
       <div class="pull-right sort form-inline">
         <label for="sorting" class="text-muted">Sort by </label>
-        <select class="form-control" id="sorting">
-          <option>Most recent</option>
-          <option>Most fun</option>
+        <select class="form-control" id="sorting" ng-model="sorting">
+          <option value="created" selected="selected">Most recent</option>
+          <option value="organization">Most fun</option>
         </select>
       </div>
       <h3>6 lions found</h3>
