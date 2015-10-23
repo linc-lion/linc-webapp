@@ -52,7 +52,7 @@
     </div>
 
     <div class="col-sm-9">
-      <div class="pull-right sort form-inline">
+      <!--<div class="pull-right sort form-inline">
         <label for="sorting" class="text-muted">Sort by </label>
         <select class="form-control" id="sorting" ng-model="sorting">
           <option value="name" selected="selected">Name</option>
@@ -61,35 +61,56 @@
           <option value="gender">Gender</option>
           <option value="is_verified">Verified</option>
           <option value="is_primary">Primary</option>
-          <!--<option value="actions">Actions</option>-->
+          <option value="actions">Actions</option>
         </select>
-      </div>
+      </div>-->
       <h3>{{! viewer_label()}}</h3>
 
       <table class="table table-hover">
         <thead>
           <tr>
-            <th>Photo</th>
-            <th>Name</th>
-            <!--<th>Created</th>-->
-            <th>Age</th>
-            <th>Organization</th>
-            <th>Gender</th>
-            <th class="text-center">Verified</th>
-            <th class="text-center">Primary</th>
-            <th>Actions</th>
+            <th class="text-center"><a ng-click="order('id')" ng-class="{'order_class': predicate === 'id'}">Id</a>
+              <span class="sortorder" ng-show="predicate === 'id'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th class="text-center">Photo</th>
+            <th class="text-center">
+              <a href="" ng-click="order('name')" ng-class="{'order_class': predicate === 'name'}">Name</a>
+              <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th class="text-center">
+              <a href="" ng-click="order('age')" ng-class="{'order_class': predicate === 'age'}">Age</a>
+              <span class="sortorder" ng-show="predicate === 'age'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th class="text-center">
+              <a href="" ng-click="order('organization')" ng-class="{'order_class': predicate === 'organization'}">Organization</a>
+              <span class="sortorder" ng-show="predicate === 'organization'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th class="text-center">
+              <a href="" ng-click="order('gender')" ng-class="{'order_class': predicate === 'gender'}">Gender</a>
+              <span class="sortorder" ng-show="predicate === 'gender'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th class="text-center">
+              <a href="" ng-click="order('is_verified')" ng-class="{'order_class': predicate === 'is_verified'}">Verified</a>
+              <span class="sortorder" ng-show="predicate === 'is_verified'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th class="text-center">
+              <a href="" ng-click="order('is_primary')" ng-class="{'order_class': predicate === 'is_primary'}">Primary</a>
+              <span class="sortorder" ng-show="predicate === 'is_primary'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th>
+              <a href="" ng-click="order('action')" ng-class="{'order_class': predicate === 'action'}">Actions</a>
+              <span class="sortorder" ng-show="predicate === 'action'" ng-class="{reverse:reverse}"></span>
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr class="link" ng-repeat="imageset in paginated_image_set = (filtered_image_sets = (imagesets | orderBy:sorting:sortReverse | filter: byName_or_Id | filter: byAgeFilter | filter: byOrganization) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)">
-            <td>
-              <img ng-src="{{!imageset.thumbnail}}" width="40" height="40">
-            </td>
-            <td>{{!imageset.name}}</td>
-            <!--<td>{{!imageset.created}}</td>-->
-            <td>{{!imageset.age}} years old</td>
-            <td>{{!imageset.organization}}</td>
-            <td>{{!imageset.gender}}</td>
+          <tr class="link" ng-repeat="imageset in paginated_image_set = (filtered_image_sets = (imagesets | orderBy:predicate:reverse | nameid_filter:name_or_id | age_filter:LionAge | organization_filter:organizations) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)">
+            <td class="text-center">{{! imageset.id}}</td>
+            <td class="text-center"><img ng-src="{{!imageset.thumbnail}}" width="40" height="40"></td>
+            <td class="text-center">{{!imageset.name}}</td>
+            <td class="text-center">{{!imageset.age}} years old</td>
+            <td class="text-center">{{!imageset.organization}}</td>
+            <td class="text-center">{{!imageset.gender}}</td>
             <td class="text-center">
               <i ng-if="imageset.is_verified" class="icon icon-check"></i>
               <i ng-if="!imageset.is_verified" class="icon icon-cross"></i>
@@ -99,9 +120,9 @@
               <i ng-if="!imageset.is_primary" class="icon icon-cross"></i>
             </td>
             <td>
-              <cvresults-search ng-if="imageset.cvresults"></cvresults-search>
-              <cvrefine ng-if="!imageset.cvresults && !imageset.cvrequest"></cvrefine>
-              <span class="text-muted" ng-if="!imageset.cvresults && imageset.cvrequest"><i class="icon icon-clock"></i> CV Request pending</span>
+              <cvresults-search ng-if="imageset.action == 'cvresults'"></cvresults-search>
+              <cvrefine ng-if="imageset.action == 'cvrefine'"></cvrefine>
+              <span class="text-muted" ng-if="imageset.action == 'cvpending'"><i class="icon icon-clock"></i> CV Request pending</span>
             </td>
           </tr>
         </tbody>

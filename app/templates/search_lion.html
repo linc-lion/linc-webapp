@@ -13,7 +13,7 @@
         </div>
         <div class="panel-collapse" role="tabpanel" bs-collapse-target>
           <div class="panel-body">
-            <input type="text" class="form-control" ng-model="name_or_id">
+            <input ng-change="setPage(0)" type="text" class="form-control" ng-model="name_or_id">
           </div>
         </div>
 
@@ -25,7 +25,7 @@
         <div class="panel-collapse" role="tabpanel" bs-collapse-target>
           <div class="panel-body">
             <label ng-repeat="organization in organizations">
-              <input type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">{{! organization.name}} {{! organization.checked}}
+              <input ng-click="setPage(0)" type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">{{! organization.name}} {{! organization.checked}}
             </label>
           </div>
         </div>
@@ -43,6 +43,7 @@
               rz-slider-model="LionAge.min"
               rz-slider-high="LionAge.max"
               rz-slider-step="1"
+              rz-slider-on-change="setPage(0)"
               rz-slider-tpl-url="rzSliderTpl.html">
             </rzslider>
           </div>
@@ -52,38 +53,60 @@
     </div>
 
     <div class="col-sm-9">
-      <div class="pull-right sort form-inline">
+      <!--<div class="pull-right sort form-inline">
         <label for="sorting" class="text-muted">Sort by </label>
         <select class="form-control" id="sorting" ng-model="sorting">
-          <option value="created" selected="selected">Most recent</option>
-          <option value="organization">Most fun</option>
+          <option value="name" selected="selected">Name</option>
+          <option value="age">Age</option>
+          <option value="organization">Organization</option>
+          <option value="gender">Gender</option>
+          <option value="is_verified">Verified</option>
+          <option value="is_primary">Primary</option>
+          <option value="actions">Actions</option>
         </select>
-      </div>
-      <h3>6 lions found</h3>
+      </div>-->
+      <h3>{{! viewer_label()}}</h3>
 
       <table class="table table-hover">
         <thead>
           <tr>
-            <th>Photo</th>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Organization</th>
-            <th>Gender</th>
-            <th class="text-center">Verified</th>
+            <th class="text-center"><a ng-click="order('id')" ng-class="{'order_class': predicate === 'id'}">Id</a>
+              <span class="sortorder" ng-show="predicate === 'id'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th class="text-center">Photo</th>
+            <th class="text-center">
+              <a href="" ng-click="order('name')" ng-class="{'order_class': predicate === 'name'}">Name</a>
+              <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th class="text-center">
+              <a href="" ng-click="order('age')" ng-class="{'order_class': predicate === 'age'}">Age</a>
+              <span class="sortorder" ng-show="predicate === 'age'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th class="text-center">
+              <a href="" ng-click="order('organization')" ng-class="{'order_class': predicate === 'organization'}">Organization</a>
+              <span class="sortorder" ng-show="predicate === 'organization'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th class="text-center">
+              <a href="" ng-click="order('gender')" ng-class="{'order_class': predicate === 'gender'}">Gender</a>
+              <span class="sortorder" ng-show="predicate === 'gender'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th class="text-center">
+              <a href="" ng-click="order('is_verified')" ng-class="{'order_class': predicate === 'is_verified'}">Verified</a>
+              <span class="sortorder" ng-show="predicate === 'is_verified'" ng-class="{reverse:reverse}"></span>
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr class="link" onclick="location='#/newlion'" ng-repeat="lion in lions">
-            <td>
-              <img ng-src="{{!lion.url_small}}" width="40" height="40" >
-            </td>
-            <td>{{!lion.name}}</td>
-            <td>{{!lion.age}} years old</td>
-            <td>{{!lion.organization}}</td>
-            <td>{{!lion.gender}}</td>
+          <tr class="link" onclick="location='#/newlion'" ng-repeat="lion in paginated_lions = (filtered_lions = (lions | orderBy:predicate:reverse | nameid_filter:name_or_id | age_filter:LionAge | organization_filter:organizations) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)">
+            <td class="text-center">{{! lion.id}}</td>
+            <td class="text-center"><img ng-src="{{!lion.thumbnail}}" width="40" height="40" ></td>
+            <td class="text-center">{{!lion.name}}</td>
+            <td class="text-center">{{!lion.age}} years old</td>
+            <td class="text-center">{{!lion.organization}}</td>
+            <td class="text-center">{{!lion.gender}}</td>
             <td class="text-center">
-              <i ng-if="lion.verified" class="icon icon-check"></i>
-              <i ng-if="!lion.verified" class="icon icon-cross"></i>
+              <i ng-if="lion.is_verified" class="icon icon-check"></i>
+              <i ng-if="!lion.is_verified" class="icon icon-cross"></i>
             </td>
           </tr>
         </tbody>
@@ -91,9 +114,11 @@
 
       <nav class="text-center">
         <ul class="pagination pagination-lg">
-          <li class="active"><span>1</span></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
+          <li ng-class="prevPageDisabled()"><a href ng-click="firstPage()">««</a></li>
+          <li ng-class="prevPageDisabled()"><a href ng-click="prevPage()">«</a></li>
+          <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)"><a href="#">{{! n+1}}</a></li>
+          <li ng-class="nextPageDisabled()"><a href ng-click="nextPage()">»</a></li>
+          <li ng-class="nextPageDisabled()"><a href ng-click="lastPage()">»»</a></li>
         </ul>
       </nav>
 

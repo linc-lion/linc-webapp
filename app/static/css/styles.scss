@@ -188,7 +188,10 @@ label{font-weight: normal; cursor:pointer}
   }
 }
 .table{
-  thead th{color:#666}
+  thead th{color:#666; white-space: nowrap;}
+  thead th a{color:#666;
+             &:hover{color: $orange; text-decoration: underline;font-size:110%;};
+           }
   tbody tr td{
     vertical-align: middle;
     padding: 1px;
@@ -267,3 +270,15 @@ sidemenu>li>a {
     display: block;
     padding: 10px 15px;
 }
+
+.sortorder:after {
+  content: '\25b2';
+}
+.sortorder.reverse:after {
+  content: '\25bc';
+}
+
+.order_class{
+  color: $orange !important;
+  text-decoration: underline;font-size:110% !important;
+};
