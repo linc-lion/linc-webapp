@@ -12,7 +12,7 @@
         </div>
         <div class="panel-collapse" role="tabpanel" bs-collapse-target>
           <div class="panel-body">
-            <input type="text" class="form-control" >
+            <input ng-change="setPage(0)" type="text" class="form-control" ng-model="name_or_id">
           </div>
         </div>
 
@@ -23,11 +23,8 @@
         </div>
         <div class="panel-collapse" role="tabpanel" bs-collapse-target>
           <div class="panel-body">
-            <label>
-              <input type="checkbox"> Lion Guardians
-            </label>
-            <label>
-              <input type="checkbox"> Mara Lion Project
+            <label ng-repeat="organization in organizations">
+              <input ng-click="setPage(0)" type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">{{! organization.name}} {{! organization.checked}}
             </label>
           </div>
         </div>
@@ -40,11 +37,12 @@
         <div uib-collapse="isCollapsed">
           <div class="panel-body">
             <rzslider
-              rz-slider-floor="imageSetRange.floor"
-              rz-slider-ceil="imageSetRange.ceil"
-              rz-slider-model="imageSetRange.min"
-              rz-slider-high="imageSetRange.max"
+              rz-slider-floor="LionAge.floor"
+              rz-slider-ceil="LionAge.ceil"
+              rz-slider-model="LionAge.min"
+              rz-slider-high="LionAge.max"
               rz-slider-step="1"
+              rz-slider-on-change="setPage(0)"
               rz-slider-tpl-url="rzSliderTpl.html">
             </rzslider>
           </div>
@@ -56,18 +54,24 @@
     <div class="col-sm-9">
       <div class="pull-right sort form-inline">
         <label for="sorting" class="text-muted">Sort by </label>
-        <select class="form-control" id="sorting">
-          <option>Most recent</option>
-          <option>Most fun</option>
+        <select class="form-control" id="sorting" ng-model="sorting">
+          <option value="name" selected="selected">Name</option>
+          <option value="age">Age</option>
+          <option value="organization">Organization</option>
+          <option value="gender">Gender</option>
+          <option value="is_verified">Verified</option>
+          <option value="is_primary">Primary</option>
+          <!--<option value="actions">Actions</option>-->
         </select>
       </div>
-      <h3>6 image sets found</h3>
+      <h3>{{! viewer_label()}}</h3>
 
       <table class="table table-hover">
         <thead>
           <tr>
             <th>Photo</th>
             <th>Name</th>
+            <!--<th>Created</th>-->
             <th>Age</th>
             <th>Organization</th>
             <th>Gender</th>
@@ -77,26 +81,27 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="link" ng-repeat="lion in lions">
+          <tr class="link" ng-repeat="imageset in paginated_image_set = (filtered_image_sets = (imagesets | orderBy:sorting:sortReverse | filter: byName_or_Id | filter: byAgeFilter | filter: byOrganization) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)">
             <td>
-              <img ng-src="{{!lion.url_small}}" width="40" height="40">
+              <img ng-src="{{!imageset.thumbnail}}" width="40" height="40">
             </td>
-            <td>{{!lion.name}}</td>
-            <td>{{!lion.age}} years old</td>
-            <td>{{!lion.organization}}</td>
-            <td>{{!lion.gender}}</td>
+            <td>{{!imageset.name}}</td>
+            <!--<td>{{!imageset.created}}</td>-->
+            <td>{{!imageset.age}} years old</td>
+            <td>{{!imageset.organization}}</td>
+            <td>{{!imageset.gender}}</td>
             <td class="text-center">
-              <i ng-if="lion.verified" class="icon icon-check"></i>
-              <i ng-if="!lion.verified" class="icon icon-cross"></i>
+              <i ng-if="imageset.is_verified" class="icon icon-check"></i>
+              <i ng-if="!imageset.is_verified" class="icon icon-cross"></i>
             </td>
             <td class="text-center">
-              <i ng-if="lion.primary" class="icon icon-check"></i>
-              <i ng-if="!lion.primary" class="icon icon-cross"></i>
+              <i ng-if="imageset.is_primary" class="icon icon-check"></i>
+              <i ng-if="!imageset.is_primary" class="icon icon-cross"></i>
             </td>
             <td>
-              <cvresults-search ng-if="lion.hasResults"></cvresults-search>
-              <cvrefine ng-if="!lion.hasResults && !lion.pending"></cvrefine>
-              <span class="text-muted" ng-if="lion.pending"><i class="icon icon-clock"></i> CV Request pending</span>
+              <cvresults-search ng-if="imageset.cvresults"></cvresults-search>
+              <cvrefine ng-if="!imageset.cvresults && !imageset.cvrequest"></cvrefine>
+              <span class="text-muted" ng-if="!imageset.cvresults && imageset.cvrequest"><i class="icon icon-clock"></i> CV Request pending</span>
             </td>
           </tr>
         </tbody>
@@ -104,10 +109,13 @@
 
       <nav class="text-center">
         <ul class="pagination pagination-lg">
-          <li class="active"><span>1</span></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
+          <li ng-class="prevPageDisabled()"><a href ng-click="firstPage()">««</a></li>
+          <li ng-class="prevPageDisabled()"><a href ng-click="prevPage()">«</a></li>
+          <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)"><a href="#">{{! n+1}}</a></li>
+          <li ng-class="nextPageDisabled()"><a href ng-click="nextPage()">»</a></li>
+          <li ng-class="nextPageDisabled()"><a href ng-click="lastPage()">»»</a></li>
         </ul>
       </nav>
+
     </div>
   </div>
