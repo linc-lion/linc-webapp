@@ -45,7 +45,8 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" ng-click="Cancel($hide)">Cancel</button>
-        <button type="button" class="btn btn-primary" ng-click="Save($hide)">Save changes</button>
+        <button ng-show="show.save" type="button" class="btn btn-primary" ng-click="Save($hide)">Save</button>
+        <upload-images ng-show="show.upload"></upload-images>
       </div>
     </div>
   </div>

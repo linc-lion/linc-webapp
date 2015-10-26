@@ -6,7 +6,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
    // MetaData
     $scope.title = 'Metadata';
     $scope.content = 'Form';
-
+    $scope.show = {save: true, upload: false};
+    $scope.upload = {btn_class: "btn btn-lg btn-default"};
     $scope.Cancel = function ($hide) {
         $hide();
     };
@@ -14,4 +15,3 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         $hide();
     };
 }]);
-

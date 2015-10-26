@@ -1,6 +1,20 @@
 'use strict';
 
-angular.module('lion.guardians.image.set.controllers', [])
+angular.module('lion.guardians.image.set.controllers', ['lion.guardians.image.set.directives'])
+
+.controller('NewImageSetMetadataCtrl', ['$scope', '$window', function ($scope, $window) {
+   // MetaData
+    $scope.title = 'Metadata';
+    $scope.content = 'Form';
+    $scope.show = {save: false, upload: true};
+    $scope.upload = {btn_class: "btn btn-lg btn-default"};
+    $scope.Cancel = function ($hide) {
+        $hide();
+    };
+    $scope.Save = function ($hide) {
+        $hide();
+    };
+}])
 
 .controller('NewImageSetCtrl', ['$scope', '$modal', '$window', function ($scope, $modal, $window) {
 

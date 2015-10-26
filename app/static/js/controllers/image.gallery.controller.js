@@ -4,10 +4,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
 
 .controller('ImageGalleryCtrl', ['$scope', '$window',function($scope, $window) {
     $scope.title = 'Image Gallery';
-    $scope.content = 'Image Galleryl<br />Contents!';
-
-    $scope.title = 'Image Gallery';
-    $scope.content = 'Image Galleryl<br />Contents!';
+    $scope.content = 'Image Gallery<br />Contents!';
     /*$scope.hideModal = function ($hide) {
         ImageGalleryModal.$promise.then($hide);
         $window.history.back();
@@ -27,4 +24,3 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
         win.focus();
     }
 }]);
-
