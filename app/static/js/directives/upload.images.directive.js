@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('lion.guardians.metadata.directive', [])
+angular.module('lion.guardians.upload.images.directive', [])
 
-.directive('metadata', function($modal) {
+.directive('uploadImages', function($modal) {
     return {
         transclude: true,
         restrict: 'EA',
-        template: '<p><a class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-pencil"></i> EDIT METADATA</a></p>',
+        template: '<a class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-camera"></i> ADD NEW IMAGE SET</a>',
         scope: {
            // 'hideModal': '&hideModal'
         },
@@ -14,11 +14,12 @@ angular.module('lion.guardians.metadata.directive', [])
             scope.show = function(){
                  var myModal = $modal(
                         {
-                            controller: 'MetadataCtrl',
-                            templateUrl: 'metadata',
+                            controller: 'UploadImagesCtrl',
+                            templateUrl: 'uploadimages',
                             show: true
                         }
                     );
+
             };
         }
     };

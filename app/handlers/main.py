@@ -58,3 +58,7 @@ class CVResultsHandler(BaseHandler):
 class CVRefineHandler(BaseHandler):
     def get(self):
         self.render('cv_refine.html')
+
+class UploadImagesHandler(BaseHandler):
+    def get(self):
+        self.render('upload_images.html')

@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('lion.guardians.metadata.directive', [])
+angular.module('lion.guardians.image.set.directives', [])
 
-.directive('metadata', function($modal) {
+.directive('newImagesetMetadata', function($modal) {
     return {
         transclude: true,
         restrict: 'EA',
-        template: '<p><a class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-pencil"></i> EDIT METADATA</a></p>',
+        template: '<p><a class="btn btn-lg btn-default" ng-click="show()"><i class="icon icon-circle-with-plus"></i> ADD NEW IMAGE SET</a></p>',
         scope: {
            // 'hideModal': '&hideModal'
         },
@@ -14,7 +14,7 @@ angular.module('lion.guardians.metadata.directive', [])
             scope.show = function(){
                  var myModal = $modal(
                         {
-                            controller: 'MetadataCtrl',
+                            controller: 'NewImageSetMetadataCtrl',
                             templateUrl: 'metadata',
                             show: true
                         }
