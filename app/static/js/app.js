@@ -3,7 +3,7 @@ var app = angular.module('lion.guardians', ['ngStorage', 'ngAnimate', 'ui.bootst
 
 'use strict';
 
-app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($rootScope,   $state,   $stateParams, $localStorage) {
+app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($rootScope,   $state, $stateParams, $localStorage) {
 
     // It's very handy to add references to $state and $stateParams to the $rootScope
     // so that you can access them from any scope within your applications.For example,
@@ -19,6 +19,15 @@ app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($roo
           $state.go("login");
         }
     });
+    var history = [];
+    $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+        history.push(toState.name);
+    });
+
+    $rootScope.go_back = function() {
+      var prevUrl = history.length > 1 ? history.splice(-2)[0] : "/";
+      $state.go(prevUrl);
+    };
 }]);
 
 //app.config(['$modalProvider', function ($modalProvider) {
