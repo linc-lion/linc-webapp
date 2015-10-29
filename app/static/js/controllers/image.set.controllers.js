@@ -2,18 +2,67 @@
 
 angular.module('lion.guardians.image.set.controllers', ['lion.guardians.image.set.directives'])
 
-.controller('NewImageSetMetadataCtrl', ['$scope', '$window', function ($scope, $window) {
+.controller('NewImageSetMetadataCtrl', ['$scope', '$window', 'LincServices', function ($scope, $window, LincServices) {
    // MetaData
-    $scope.title = 'Metadata';
+    $scope.title = 'Image Set Metadata';
     $scope.content = 'Form';
     $scope.show = {save: false, upload: true};
-    $scope.upload = {btn_class: "btn btn-lg btn-default"};
+    $scope.upload = {btn_class: 'btn btn-lg btn-default'};
     $scope.Cancel = function ($hide) {
         $hide();
     };
     $scope.Save = function ($hide) {
         $hide();
     };
+    //$scope.image_set = {id : 'li343sv465ds'};
+    LincServices.getOrganizationsList()
+    .then(function (response) {
+      $scope.organizations = response.data;
+    }, function(error) {
+      $scope.status = 'Unable to load organizations data: ' + error.message;
+    });
+
+    $scope.selected = {
+      organization: "",
+      age: "",
+      datastamp: new Date(),
+      geopos: {lat:"", lng: ""},
+      gender: "male",
+      markings: [],
+      teeth: [],
+      eye_damage: [],
+      nose_color: [],
+      scars: [],
+      notes: "Notes here"
+    }
+
+    $scope.genders = [{value: 'male', label: 'Male'},
+                      {value: 'female',label: 'Female'}];
+
+    $scope.markings = [{label: 'Ear Markings', value: 'ear',  allText : 'All Ear Markings',
+                        items: [ {value: 'left', label: 'Left'},{value: 'right', label: 'Right'} ]},
+                       {label: 'Mouth Markings', value: 'mount', allText: 'All Mouth Markings',
+                        items: [ {value: 'back', label: 'Back'}, {value: 'front', lbael: 'Front'}, {value: 'left', label: 'Left'}, {value: 'right', label: 'Right'} ]},
+                       {label: 'Tail Markings', value: 'tail', allText: 'All Tail Markings',
+                        items: [{value: 'missing', label: 'missing tuft'}]
+                      }];
+
+    $scope.eye_damage = [{value: 'left', label: 'Left'},{value: 'right', label: 'Right'}];
+
+    $scope.nose_color = [{value: 'black', label: 'Black'},{value: 'patchy', label: 'Patchy'},{value: 'pynk', label: 'Pynk'},{value: 'spotted', label: 'Spotted'}];
+
+    $scope.broken_teeth = [{label: 'Canine Left', value: 'canine_left'},
+                            {label: 'Canine Right', value: 'canine_right'},
+                            {label: 'Incisor Left', value: 'incisor_left'},
+                            {label: 'Incisor Right', value: 'incisor_right'}
+                          ];
+
+    $scope.scars = [{label: 'Body Left', value: 'body_left'},
+                    {label: 'Body Right', value: 'body_right'},
+                    {label: 'Face', value: 'face'},
+                    {label: 'Tail', value: 'tail'}
+                   ];
+    $scope.notes = "Notes here";
 }])
 
 .controller('NewImageSetCtrl', ['$scope', '$modal', '$window', function ($scope, $modal, $window) {
@@ -37,24 +86,22 @@ angular.module('lion.guardians.image.set.controllers', ['lion.guardians.image.se
     };
 
     LincServices.getOrganizationsList()
-    .success(function (list) {
-      $scope.organizations = list.data;
+    .then(function (response) {
+      $scope.organizations = response.data;
       $scope.organizations.forEach(function (element, index, array) {
         element["checked"] = true;
       });
-    })
-    .error(function (error) {
+    }, function(error) {
       $scope.status = 'Unable to load organizations data: ' + error.message;
     });
-
     // Pagination scopes
     $scope.itemsPerPage = 10;
     $scope.currentPage = 0;
 
-    LincServices.getImageSetList()
-    .success(function (list) {
-      $scope.imagesets = list.data;
 
+    LincServices.getImageSetList()
+    .then(function (response) {
+      $scope.imagesets = response.data;
       $scope.imagesets.forEach(function (element, index, array) {
         //element["cvresults"] = true;
         if(index == 52 || index == 55 || index == 59){
@@ -124,11 +171,9 @@ angular.module('lion.guardians.image.set.controllers', ['lion.guardians.image.se
         }
         return label;
       }
-    })
-    .error(function (error) {
-        $scope.status = 'Unable to load image set data: ' + error.message;
+    }, function(error) {
+      $scope.status = 'Unable to load image set data: ' + error.message;
     });
-
 }]);
 
 /*

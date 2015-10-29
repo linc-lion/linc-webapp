@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu.directive'])
 
-.controller('SideMenuCtrl', ['$scope', '$state', '$window', '$localStorage', function ($scope, $state, $window, $localStorage) {
+.controller('SideMenuCtrl', ['$scope', '$state', '$window', '$localStorage', 'notificationFactory', function ($scope, $state, $window, $localStorage, notificationFactory) {
     $scope.title = 'Menu';
     $scope.content = 'Menu';
 
@@ -20,6 +20,12 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
     $scope.logout = function($hide){
         $hide();
         $scope.$storage.logged = false;
+
+        notificationFactory.success({
+          title: "Logout", message:'Good bye.',
+          position: "right", // right, left, center
+          duration: 300000     // milisecond
+        });
         $state.go("login");
     }
 }]);

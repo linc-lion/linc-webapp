@@ -12,6 +12,7 @@ angular.module('lion.guardians.controllers', ['lion.guardians.login.controller',
                                                                'lion.guardians.cvresults.controller',
                                                                'lion.guardians.cvrefine.controller',
                                                                'lion.guardians.upload.images.controller',
+                                                               'lion.guardians.notification.factory',
                                                                'lion.guardians.services' ])
 
 .controller('BodyCtrl', ['$scope', '$state', '$localStorage', function ($scope, $state, $localStorage){

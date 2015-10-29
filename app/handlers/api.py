@@ -16,6 +16,24 @@ class ImageSetsListHandler(BaseHandler):
         self.set_status(response.code)
         self.finish(response.body)
 
+class ImagesListHandler(BaseHandler):
+    @asynchronous
+    @engine
+    def get(self):
+        resource_url = '/images/list'
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        self.set_status(response.code)
+        self.finish(response.body)
+
+class LionsListHandler(BaseHandler):
+    @asynchronous
+    @engine
+    def get(self):
+        resource_url = '/lions/list'
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        self.set_status(response.code)
+        self.finish(response.body)
+
 class OrganizationsListHandler(BaseHandler):
     @asynchronous
     @engine
