@@ -6,20 +6,19 @@ angular.module('lion.guardians.upload.images.directive', [])
     return {
         transclude: true,
         restrict: 'EA',
-        template: '<a class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-camera"></i> ADD NEW IMAGE SET</a>',
+        template: '<a class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-camera"></i> Upload Images</a>',
         scope: {
            // 'hideModal': '&hideModal'
         },
         link: function(scope, element, attrs) {
             scope.show = function(){
-                 var myModal = $modal(
+                 var modalInstance = $modal(
                         {
                             controller: 'UploadImagesCtrl',
                             templateUrl: 'uploadimages',
                             show: true
                         }
                     );
-
             };
         }
     };
