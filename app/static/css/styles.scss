@@ -299,3 +299,15 @@ sidemenu>li>a {
     text-align: center; filter: alpha(opacity=0); opacity: 0; outline: none;
     background: white; cursor: inherit; display: block; padding: 0px;
 }
+
+hr.style-line { margin-bottom: 10px !important; margin-top: 10px !important; margin-left: 0px !important; margin-right: 0px !important; border: 0; height: 1px; background: #333; background-image: linear-gradient(to right, #ccc, #333, #ccc); }
+
+.form-group-margin { @extend .form-group; margin-bottom: 5px !important; }
+.form-group-padding { @extend .form-group; padding-right: 20px !important; margin-bottom: 5px !important; }
+.form-group-padding1 { @extend .form-group; padding-right: 20px !important; margin-bottom: 10px !important;}
+
+.notify-icon, .pnotify-icon span { display: block; float: left; margin-right: .2em; }
+.notify-title { display: block; margin-bottom: .4em; margin-top: 0;}
+.notify-text { display: block; margin: 10px;}
+.cg-notify-message{min-width: 300px; right: 25px; top: 121px; opacity: 1; display: block; overflow: visible;text-align: left; padding: 10px;}
+.cg-notify-message-template h4 {margin-top: 0; color: inherit;}

@@ -22,13 +22,12 @@ angular.module('lion.guardians.lions.controllers', [])
   };
 
   LincServices.getOrganizationsList()
-  .success(function (list) {
-    $scope.organizations = list.data;
+  .then(function (response) {
+    $scope.organizations = response.data;
     $scope.organizations.forEach(function (element, index, array) {
       element["checked"] = true;
     });
-  })
-  .error(function (error) {
+  }, function(error) {
     $scope.status = 'Unable to load organizations data: ' + error.message;
   });
 
@@ -37,8 +36,8 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.currentPage = 0;
 
   LincServices.getLionsList()
-  .success(function (list) {
-    $scope.lions = list.data;
+  .then(function (response) {
+    $scope.lions = response.data;
     $scope.setPage = function(n) {
       $scope.currentPage = n;
     };
@@ -89,8 +88,7 @@ angular.module('lion.guardians.lions.controllers', [])
       }
       return label;
     }
-  })
-  .error(function (error) {
-      $scope.status = 'Unable to load lions data: ' + error.message;
+  }, function(error) {
+    $scope.status = 'Unable to load lions data: ' + error.message;
   });
 }]);
