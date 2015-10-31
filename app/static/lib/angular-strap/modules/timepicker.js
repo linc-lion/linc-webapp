@@ -35,14 +35,14 @@ angular.module('mgcrea.ngStrap.timepicker', [ 'mgcrea.ngStrap.helpers.dateParser
     iconDown: 'glyphicon glyphicon-chevron-down',
     arrowBehavior: 'pager'
   };
-  this.$get = [ '$window', '$document', '$rootScope', '$sce', '$dateFormatter', '$tooltip', '$timeout', function($window, $document, $rootScope, $sce, $dateFormatter, $tooltip, $timeout) {
+  this.$get = [ '$window', '$document', '$rootScope', '$sce', '$dateFormatter', '$bsTooltip', '$timeout', function($window, $document, $rootScope, $sce, $dateFormatter, $bsTooltip, $timeout) {
     var isNative = /(ip(a|o)d|iphone|android)/gi.test($window.navigator.userAgent);
     var isTouch = 'createTouch' in $window.document && isNative;
     if (!defaults.lang) {
       defaults.lang = $dateFormatter.getDefaultLocale();
     }
     function timepickerFactory(element, controller, config) {
-      var $timepicker = $tooltip(element, angular.extend({}, defaults, config));
+      var $timepicker = $bsTooltip(element, angular.extend({}, defaults, config));
       var parentScope = config.scope;
       var options = $timepicker.$options;
       var scope = $timepicker.$scope;

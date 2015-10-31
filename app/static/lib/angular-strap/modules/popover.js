@@ -24,10 +24,10 @@ angular.module('mgcrea.ngStrap.popover', [ 'mgcrea.ngStrap.tooltip' ]).provider(
     delay: 0,
     autoClose: false
   };
-  this.$get = [ '$tooltip', function($tooltip) {
+  this.$get = [ '$bsTooltip', function($bsTooltip) {
     function PopoverFactory(element, config) {
       var options = angular.extend({}, defaults, config);
-      var $popover = $tooltip(element, options);
+      var $popover = $bsTooltip(element, options);
       if (options.content) {
         $popover.$scope.content = options.content;
       }

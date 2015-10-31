@@ -2,19 +2,27 @@
 
 angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.directive'])
 
-.controller('MetadataCtrl', ['$scope', '$window', 'LincServices', 'notificationFactory', function ($scope, $window, LincServices, notificationFactory) {
+.controller('MetadataCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'notificationFactory', 'ShowBtnSave', 'ShowBtnUpdate', function ($scope, $window, $uibModalInstance, LincServices, notificationFactory, ShowBtnSave, ShowBtnUpdate) {
+
     $scope.debug = true;
-   // MetaData
+    // Btn Save and Update
+    $scope.show = {save: ShowBtnSave, upload: ShowBtnUpdate};
+    // Close
+    $scope.Close = function () {
+     $uibModalInstance.close('close');
+    };
+    $scope.Cancel = function () {
+     $uibModalInstance.dismiss('cancel');
+    };
+    // Save
+    $scope.Save = function(){
+      console.log("Save Imagesets");
+      $uibModalInstance.close("save");
+    }
+    // Title
     $scope.title = 'Metadata';
     $scope.content = 'Form';
-    $scope.show = {save: true, upload: false};
-    $scope.upload = {btn_class: "btn btn-lg btn-default"};
-    $scope.Cancel = function ($hide) {
-        $hide();
-    };
-    $scope.Save = function ($hide) {
-        $hide();
-    };
+
     //$scope.image_set = {id : 'li343sv465ds'};
     LincServices.getOrganizationsList()
     .then(function (response) {
