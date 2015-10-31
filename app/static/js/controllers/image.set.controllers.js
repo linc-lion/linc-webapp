@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.controller('NewImageSetCtrl', ['$scope', '$modal', '$window', 'notificationFactory', function ($scope, $modal, $window, notificationFactory) {
+.controller('ImageSetCtrl', ['$scope', '$modal', '$window', 'notificationFactory', function ($scope, $modal, $window, notificationFactory) {
 
 }])
 

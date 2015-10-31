@@ -58,21 +58,21 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
           templateUrl: 'home'
         })
         // New Lion
-        .state("newlion", {
-          url: "/newlion",
-          controller: 'NewLionCtrl',
-          templateUrl: '/newlion',
+        .state("lion", {
+          url: "/lion",
+          controller: 'LionCtrl',
+          templateUrl: '/lion',
           data: {
-            bodyClasses: 'newlion'
+            bodyClasses: 'lion'
           }
         })
         // New Image Set
-        .state("newimageset", {
-          url: "/newimageset",
-          controller: 'NewImageSetCtrl',
-          templateUrl: '/newimageset',
+        .state("imageset", {
+          url: "/imageset",
+          controller: 'ImageSetCtrl',
+          templateUrl: '/imageset',
           data: {
-            bodyClasses: 'newimageset'
+            bodyClasses: 'imageset'
           }
         })
         // Searcg Lion
