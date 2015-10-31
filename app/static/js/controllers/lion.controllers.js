@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.lions.controllers', [])
 
-.controller('NewLionCtrl', ['$scope', '$window', function ($scope, $window) {
+.controller('LionCtrl', ['$scope', '$window', function ($scope, $window) {
 
   $scope.lion = { id: 1, name: 'leão 1', age: 13, url_small: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
 

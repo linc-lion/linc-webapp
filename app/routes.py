@@ -5,7 +5,7 @@ from handlers.base import VersionHandler
 from handlers.error import ErrorHandler
 from handlers.auth import AuthHandler
 from handlers.main import MainHandler,LoginHandler,HomeHandler,SideMenuHandler,\
-    NewLionHandler,SearchLionHandler,NewImageSetHandler,SearchImageSetHandler,\
+    LionHandler,SearchLionHandler,ImageSetHandler,SearchImageSetHandler,\
     ConservationistsHandler,ImageGalleryHandler,LocationHistoryHandler,\
     EditMetadataHandler,CVResultsHandler,CVRefineHandler,UploadImagesHandler
 from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler, ImagesUploadHandler
@@ -18,9 +18,9 @@ url_patterns = [
     (r"/login", LoginHandler),
     (r"/home", HomeHandler),
     (r"/sidemenu", SideMenuHandler),
-    (r"/newlion", NewLionHandler),
+    (r"/lion", LionHandler),
     (r"/searchlion", SearchLionHandler),
-    (r"/newimageset", NewImageSetHandler),
+    (r"/imageset", ImageSetHandler),
     (r"/searchimageset", SearchImageSetHandler),
     (r"/conservationists", ConservationistsHandler),
     (r"/imagegallery", ImageGalleryHandler),
