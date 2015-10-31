@@ -6,76 +6,63 @@
   <form>
     <div class="row">
       <div class="col-sm-4 line-right">
-        <div class="form-group-margin">
-          <label for="id_organization">Organization</label>
+        <div class="form-group-margin text-right">
+          <label for="id_organization">Organization Name: </label>
           <button type="button" id="id_organization" placeholder="Select Organization" class="btn btn-default btn-sm" ng-model="selected.organization" data-html="1" bs-options="organization as organization.name for organization in organizations" bs-select>
             Action <span class="caret"></span>
           </button>
         </div>
         <pre ng-show="debug">{{!selected.organization}}</pre>
         <hr class="style-line">
-        <div class="form-group-margin">
-          <label for="id_age">Age <small>(years)</small></label>
-          <input type="number" class="form-control" min="0" id="id_age" ng-model="selected.age" placeholder="Lion Age here">
-        </div>
-        <pre ng-show="debug">{{!selected.age}}</pre>
-        <hr class="style-line">
-        <div class="form-group-margin" ng-class="{'has-error': datepickerForm.date2.$invalid}">
-          <label class="control-label"><i class="fa fa-calendar"></i> Data Stamp </label>
-          <input type="text" class="form-control" ng-model="selected.datastamp" data-date-format="yyyy-MM-dd" data-date-type="number" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date2" bs-datepicker placement= "top-left">
+        <div class="form-inline text-right" ng-class="{'has-error': datepickerForm.date.$invalid}">
+          <label class="control-label"><i class="fa fa-calendar"></i>Data Stamp: </label>
+          <input type="text" class="form-control" ng-model="selected.datastamp" data-date-format="yyyy-MM-dd" data-date-type="date" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date" bs-datepicker placement= "top-left">
         </div>
         <pre ng-show="debug">{{!selected.datastamp}}</pre>
         <hr class="style-line">
-        <div class="form-group-margin">
-          <div class="row">
-            <div class="col-sm-6">
-              <label for="id_geopos.lat">Latitude</label>
+        <div class="form-group text-right">
+          <div class="form-inline">
+            <div class="form-group">
+              <label for="id_geopos.lat">Latitude: </label>
               <input type="number" class="form-control" ng-model="selected.geopos.lat" step="0.1" id="id_geopos.lat" >
             </div>
-            <div class="col-sm-6">
-              <label for="id_geopos.lng">Longituden</label>
+          </div>
+          <div class="form-group">
+            <div class="form-inline">
+              <label for="id_geopos.lng">Longitude: </label>
               <input type="number" class="form-control" ng-model="selected.geopos.lng" step="0.1" id="id_geopos.lng" >
             </div>
           </div>
         </div>
         <pre ng-show="debug">{{!selected.geopos | json}}</pre>
-      </div>
-      <div class="col-sm-4">
-        <div class="form-group">
-          <label for="lion_name">Lion Name</label>
-          <input type="text" class="form-control" id="lion_name" ng-model="selected.name" placeholder="Put Lion Name Here">
-        </div>
-        <pre ng-show="debug">{{!selected.name}}</pre>
-        <h5 class="text-left">Gender</h5>
-        <div class="form-group-padding text-right">
+        <hr class="style-line">
+        <div class="form-group text-right">
           <label for="id_gender" >Gender</label>
           <button type="button" id="id_gender" placeholder="Select Gender" class="btn btn-default btn-sm" ng-model="selected.gender" data-html="1" bs-options="gen.value as gen.label for gen in genders" bs-select>
             Action <span class="caret"></span>
           </button>
         </div>
         <pre ng-show="debug">{{!selected.gender}}</pre>
-        <hr class="style-line">
-        <h5 class="text-left">Markings</h5>
-        <div class="form-group-padding1 text-right" ng-repeat="marking in markings">
-          <label for="id_{{!marking.value}}" >{{!marking.label}} Markings</label>
-          <button type="button" id="id_{{!marking.value}}" placeholder="Select {{!marking.label}} Markings" class="btn btn-default btn-sm" ng-model="selected.markings[marking.value]" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="{{!marking.allText}}" bs-options="mark.value as mark.label for mark in marking.items" bs-select>
-            Action <span class="caret"></span>
-          </button>
-          <pre ng-show="debug">{{!selected.markings[marking.value]}}</pre>
-        </div>
       </div>
-      <div class="col-sm-4 line-left">
-        <label class="text-left">Teeth</label>
-        <div class="form-group-padding text-right">
-          <label for="id_broken_teeth">Broken Teeth</label>
-          <button type="button" id="id_broken_teeth" placeholder="Select Broken Teeth" class="btn btn-default btn-sm" ng-model="selected.teeth" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Broken Teeth" bs-options="teeth.value as teeth.label for teeth in broken_teeth" bs-select>
-            Action <span class="caret"></span>
-          </button>
+      <div class="col-sm-4">
+        <div class="form-inline text-right">
+          <label for="lion_name">Lion Name:</label>
+          <input type="text" class="form-control" id="lion_name" ng-model="selected.name" placeholder="Lion Name here">
         </div>
-        <pre ng-show="debug">{{!selected.teeth}}</pre>
+        <pre ng-show="debug">{{!selected.name}}</pre>
         <hr class="style-line">
-        <label class="text-left">Eye</label>
-        <div class="form-group-padding text-right">
+        <div class="form-inline text-right" ng-class="{'has-error': datepickerForm.date1.$invalid}">
+          <label class="control-label"><i class="fa fa-calendar"></i>Date of Birth: </label>
+          <input type="text" class="form-control" ng-model="selected.dateOfBirth" ng-change='Calc_Age()' data-date-format="yyyy-MM-dd" data-date-type="date" data-max-date="today" data-autoclose="1" name="date1" bs-datepicker placement= "bottom-left">
+        </div>
+        <pre ng-show="debug">{{!selected.dateOfBirth}}</pre>
+        <div class="form-inline text-right">
+          <label for="id_age">Age <small>(years)</small></label>
+          <input type="number" class="form-control" min="0" id="id_age" ng-model="selected.age" placeholder="Age" readonly>
+        </div>
+        <pre ng-show="debug">{{!selected.age}}</pre>
+        <hr class="style-line">
+        <div class="form-group text-right">
           <label for="id_eye_damage">Eye Damage</label>
           <button type="button" id="id_eye_damage" placeholder="Select Eye Damage" class="btn btn-default btn-sm" ng-model="selected.eye_damage" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Eye Damage" bs-options="damage.value as damage.label for damage in eye_damage" bs-select>
             Action <span class="caret"></span>
@@ -83,8 +70,24 @@
         </div>
         <pre ng-show="debug">{{!selected.eye_damage}}</pre>
         <hr class="style-line">
-        <label class="text-left">Nose</label>
-        <div class="form-group-padding text-right">
+        <div class="form-group text-right">
+          <label for="id_broken_teeth">Broken Teeth</label>
+          <button type="button" id="id_broken_teeth" placeholder="Select Broken Teeth" class="btn btn-default btn-sm" ng-model="selected.teeth" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Broken Teeth" bs-options="teeth.value as teeth.label for teeth in broken_teeth" bs-select>
+            Action <span class="caret"></span>
+          </button>
+        </div>
+        <pre ng-show="debug">{{!selected.teeth}}</pre>
+      </div>
+      <div class="col-sm-4 line-left">
+        <div class="form-group text-right" ng-repeat="marking in markings">
+          <label for="id_{{!marking.value}}" >{{!marking.label}} Markings</label>
+          <button type="button" id="id_{{!marking.value}}" placeholder="Select {{!marking.label}} Markings" class="btn btn-default btn-sm" ng-model="selected.markings[marking.value]" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="{{!marking.allText}}" bs-options="mark.value as mark.label for mark in marking.items" bs-select>
+            Action <span class="caret"></span>
+          </button>
+          <pre ng-show="debug">{{!selected.markings[marking.value]}}</pre>
+        </div>
+        <hr class="style-line">
+        <div class="form-group text-right">
           <label for="id_nose_color">Nose Color</label>
           <button type="button" id="id_nose_color" placeholder="Select Nose Color" class="btn btn-default btn-sm" ng-model="selected.nose_color" data-html="1" bs-options="color.value as color.label for color in nose_color" bs-select>
             Action <span class="caret"></span>
@@ -92,8 +95,7 @@
         </div>
         <pre ng-show="debug">{{!selected.nose_color}}</pre>
         <hr class="style-line">
-        <label class="text-left">Scars</label>
-        <div class="form-group-padding text-right">
+        <div class="form-group text-right">
           <label for="id_scars">Scars Type</label>
           <button type="button" id="id_scars" placeholder="Select Scars" class="btn btn-default btn-sm" ng-model="selected.scars" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Scars Type" bs-options="scar.value as scar.label for scar in scars" bs-select>
             Action <span class="caret"></span>

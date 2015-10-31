@@ -22,8 +22,9 @@ angular.module('lion.guardians.metadata.directive', [])
       useTemplateUrl: '@',
       useCtrl: '@',
       formSize: '@',
-      showBtnSave: '=',
-      showBtnUpdate: '=',
+      modalOptions: '='
+      //showBtnSave: '=',
+      //showBtnUpdate: '=',
     },
     link: function(scope, element, attrs) {
       /*scope.dismiss = function() {
@@ -37,11 +38,8 @@ angular.module('lion.guardians.metadata.directive', [])
           controller:  scope.useCtrl,
           size: scope.formSize,
           resolve: {
-            ShowBtnSave: function () {
-              return scope.showBtnSave;
-            },
-            ShowBtnUpdate: function () {
-              return scope.showBtnUpdate;
+            modalOptions: function () {
+              return scope.modalOptions;
             }
           }
         });
