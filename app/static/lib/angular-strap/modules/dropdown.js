@@ -20,14 +20,14 @@ angular.module('mgcrea.ngStrap.dropdown', [ 'mgcrea.ngStrap.tooltip' ]).provider
     html: false,
     delay: 0
   };
-  this.$get = [ '$window', '$rootScope', '$tooltip', '$timeout', function($window, $rootScope, $tooltip, $timeout) {
+  this.$get = [ '$window', '$rootScope', '$bsTooltip', '$timeout', function($window, $rootScope, $bsTooltip, $timeout) {
     var bodyEl = angular.element($window.document.body);
     var matchesSelector = Element.prototype.matchesSelector || Element.prototype.webkitMatchesSelector || Element.prototype.mozMatchesSelector || Element.prototype.msMatchesSelector || Element.prototype.oMatchesSelector;
     function DropdownFactory(element, config) {
       var $dropdown = {};
       var options = angular.extend({}, defaults, config);
       var scope = $dropdown.$scope = options.scope && options.scope.$new() || $rootScope.$new();
-      $dropdown = $tooltip(element, options);
+      $dropdown = $bsTooltip(element, options);
       var parentEl = element.parent();
       $dropdown.$onKeyDown = function(evt) {
         if (!/(38|40)/.test(evt.keyCode)) return;

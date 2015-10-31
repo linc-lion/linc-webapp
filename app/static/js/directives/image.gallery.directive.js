@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.image.gallery.directive', [])
 
-.directive('imageGallery', function($modal) {
+.directive('imageGallery', function($uibModal) {
     return {
         transclude: true,
         restrict: 'EA',
@@ -11,17 +11,22 @@ angular.module('lion.guardians.image.gallery.directive', [])
            // 'hideModal': '&hideModal'
         },
         link: function(scope, element, attrs) {
-            scope.show = function(){
-                 var myModal = $modal(
-                        {
-                            controller: 'ImageGalleryCtrl',
-                            templateUrl: 'imagegallery',
-                            show: true
-                        }
-                    );
-
-            };
+          scope.show = function(){
+            var modalInstance = $uibModal.open({
+              animation: true,
+              backdrop: true,
+              templateUrl: 'imagegallery',
+              controller: 'ImageGalleryCtrl',
+              size: 'lg',
+              resolve: {
+              }
+            });
+            modalInstance.result.then(function (result) {
+              console.log('Modal close : ' + result);
+            }, function (result) {
+              console.log('Modal dismissed : ' + result);
+            });
+          }
         }
     };
 });
-

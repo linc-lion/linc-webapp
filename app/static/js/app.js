@@ -1,5 +1,5 @@
 //angular.module('lion-guardians', [])  ['ngAnimate', 'ngSanitize', 'mgcrea.ngStrap']);
-var app = angular.module('lion.guardians', ['ngStorage', 'ngAnimate', 'ui.bootstrap.collapse', 'ngSanitize', 'rzModule', 'ui.router', 'ngMap', 'mgcrea.ngStrap', 'angularFileUpload', 'cgNotify', 'lion.guardians.controllers']);
+var app = angular.module('lion.guardians', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'ngMap', 'mgcrea.ngStrap', 'angularFileUpload', 'cgNotify', 'lion.guardians.controllers']);
 
 'use strict';
 
@@ -25,23 +25,9 @@ app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($roo
     });
 
     $rootScope.go_back = function() {
-      var prevUrl = history.length > 1 ? history.splice(-2)[0] : "/";
+      var prevUrl = history.length > 1 ? history.splice(-2)[0] : "home";
       $state.go(prevUrl);
     };
-}]);
-
-//app.config(['$modalProvider', function ($modalProvider) {
-app.config(['$modalProvider', '$asideProvider', '$dropdownProvider', function ($modalProvider, $asideProvider, $dropdownProvider) {
-  angular.extend($modalProvider.defaults, {
-    html: true
-  });
-  angular.extend($asideProvider.defaults, {
-    container: 'body',
-    html: true
-  });
-  angular.extend($dropdownProvider.defaults, {
-    html: true
-  });
 }]);
 
 app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $urlRouterProvider) {

@@ -2,12 +2,15 @@
 
 angular.module('lion.guardians.upload.images.controller', ['lion.guardians.upload.images.directive', 'lion.guardians.thumbnail.directive'])
 
-.controller('UploadImagesCtrl', ['$scope', '$window', 'FileUploader', function ($scope, $window, FileUploader) {
+.controller('UploadImagesCtrl', ['$scope', '$window', '$uibModalInstance', 'FileUploader', function ($scope, $window, $uibModalInstance, FileUploader) {
   $scope.title = 'Upload Images';
   $scope.content = 'Upload Images<br />Contents!';
 
-  $scope.Cancel = function ($hide) {
-      $hide();
+  $scope.GoBack = function () {
+   $uibModalInstance.dismiss('cancel');
+  };
+  $scope.Finish = function () {
+   $uibModalInstance.close('finish');
   };
 
   $scope.ImageTypes = [

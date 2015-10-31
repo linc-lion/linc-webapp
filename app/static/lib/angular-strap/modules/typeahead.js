@@ -26,12 +26,12 @@ angular.module('mgcrea.ngStrap.typeahead', [ 'mgcrea.ngStrap.tooltip', 'mgcrea.n
     comparator: '',
     trimValue: true
   };
-  this.$get = [ '$window', '$rootScope', '$tooltip', '$$rAF', '$timeout', function($window, $rootScope, $tooltip, $$rAF, $timeout) {
+  this.$get = [ '$window', '$rootScope', '$bsTooltip', '$$rAF', '$timeout', function($window, $rootScope, $bsTooltip, $$rAF, $timeout) {
     var bodyEl = angular.element($window.document.body);
     function TypeaheadFactory(element, controller, config) {
       var $typeahead = {};
       var options = angular.extend({}, defaults, config);
-      $typeahead = $tooltip(element, options);
+      $typeahead = $bsTooltip(element, options);
       var parentScope = config.scope;
       var scope = $typeahead.$scope;
       scope.$resetMatches = function() {
