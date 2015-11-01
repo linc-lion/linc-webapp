@@ -10,7 +10,7 @@ angular.module('lion.guardians.controllers', ['lion.guardians.home.controller',
                                               'lion.guardians.metadata.controller',
                                               'lion.guardians.location.history.controller',
                                               'lion.guardians.cvresults.controller',
-                                              'lion.guardians.cvrefine.controller',
+                                              'lion.guardians.cvrequest.controller',
                                               'lion.guardians.upload.images.controller',
                                               'lion.guardians.notification.factory',
                                               'lion.guardians.services' ])

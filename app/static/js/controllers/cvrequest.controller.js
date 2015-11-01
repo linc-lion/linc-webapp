@@ -1,9 +1,18 @@
 'use strict';
 
-angular.module('lion.guardians.cvrefine.controller', ['lion.guardians.cvrefine.directive'])
+angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest.directive'])
 
-.controller('CVRefineCtrl', ['$scope', '$window', function ($scope, $window) {
+.controller('CVRequesCtrl', ['$scope', '$window', '$uibModalInstance', function ($scope, $window, $uibModalInstance) {
 
+  $scope.Close = function () {
+    $uibModalInstance.close("ok");
+  };
+  $scope.RequestCV= function () {
+    $uibModalInstance.close("RequestCV");
+  };
+  $scope.Cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
     $scope.lions = [{ id: 1, name: 'leão 1', age: 13, url_small: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false},
                            { id: 2, name: 'leão 2', age: 14, url_small: "/static/images/square-small/lion2.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: false, selected: false},
                            { id: 3, name: 'leão 3', age: 15, url_small: "/static/images/square-small/lion3.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: false, pending: false, primary: true, verified: true, selected: false},
@@ -24,4 +33,3 @@ angular.module('lion.guardians.cvrefine.controller', ['lion.guardians.cvrefine.d
       return (filter);
     };
 }]);
-

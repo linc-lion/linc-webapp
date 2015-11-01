@@ -12,12 +12,11 @@
         <th>Organization</th>
         <th>Gender</th>
         <th class="text-center">Verified</th>
-        <th class="text-center">CV</th>
         <th class="text-center">Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr class="link" ng-repeat="lion in lions | filter:  {hasResults: true, pending: true, verified: true}">
+      <tr class="link" ng-repeat="lion in lions | filter:  {hasResults: true, pending: true, verified: true}" ng-class="{active:lion.select}">
         <td>
           <img ng-src="{{!lion.url_small}}" width="40" height="40">
         </td>
@@ -30,16 +29,17 @@
           <i ng-if="!lion.verified" class="icon icon-cross"></i>
         </td>
         <td class="text-center">
-          <span class="badge">50%</span>
-        </td>
-        <td class="text-center">
-          <button class="btn btn-default" >Associate</button>
+          <label class="btn btn-default" ><input type="checkbox" ng-model="lion.select" > Select</label>
         </td>
       </tr>
     </tbody>
   </table>
+  <p class="clearfix">
+    <a href="#" class="btn btn-link">Select All</a>
+    <a href="#" class="btn btn-link">Select None</a>
+  </p>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" ng-click="Cancel()">Cancel</button>
-  <button type="button" class="btn btn-primary" ng-click="ClearResults()">Clear Results</button>
+  <button type="button" class="btn btn-primary" ng-click="RequestCV()"><i class="icon icon-flash"></i>Request CV</button>
 </div>

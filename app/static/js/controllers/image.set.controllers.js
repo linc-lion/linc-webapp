@@ -87,11 +87,11 @@ $scope.modalOptions = { btn: {save:true, update:false}, title:'Image Set Metadat
     });
     $scope.imagesets = _.map(data['imagesets'], function(element, index) {
       var elem = {};
-      if(index == 52 || index == 55 || index == 59) element["cvresults"] = true;
-      if(index == 53 || index == 54 || index == 58) element.cvrequest = "request";
+      //if(index == 52 || index == 55 || index == 59) element["cvresults"] = true;
+      //if(index == 53 || index == 54 || index == 58) element.cvrequest = "request";
       if(element.cvresults) elem["action"] = 'cvresults';
       else if(element.cvrequest) elem["action"] = 'cvpending';
-      else  elem["action"] = 'cvrefine';
+      else  elem["action"] = 'cvrequest';
       return _.extend({}, element, elem);
     });
   });

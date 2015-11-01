@@ -48,11 +48,11 @@ angular.module('lion.guardians.services', [])
         var key = names[index];
         dados[key] = result.data;
       })
-      notificationFactory.success({
+      /*notificationFactory.success({
         title: "Database", message:'Database Successfully Loaded',
         position: "right", // right, left, center
         duration: 2000     // milisecond
-      });
+      });*/
       fn(dados);
     },
     function (reason) {

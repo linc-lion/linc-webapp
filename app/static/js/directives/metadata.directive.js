@@ -18,13 +18,10 @@ angular.module('lion.guardians.metadata.directive', [])
     },
     scope: {
       gotoImagesetAction: '&',
-      //'hideModal': '&hideModal',
       useTemplateUrl: '@',
       useCtrl: '@',
       formSize: '@',
       modalOptions: '='
-      //showBtnSave: '=',
-      //showBtnUpdate: '=',
     },
     link: function(scope, element, attrs) {
       /*scope.dismiss = function() {
