@@ -7,7 +7,7 @@ from handlers.auth import AuthHandler
 from handlers.main import MainHandler,LoginHandler,HomeHandler,SideMenuHandler,\
     LionHandler,SearchLionHandler,ImageSetHandler,SearchImageSetHandler,\
     ConservationistsHandler,ImageGalleryHandler,LocationHistoryHandler,\
-    EditMetadataHandler,CVResultsHandler,CVRefineHandler,UploadImagesHandler
+    EditMetadataHandler,CVResultsHandler,CVRequestHandler,UploadImagesHandler
 from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler, ImagesUploadHandler
 
 # Defining routes
@@ -27,7 +27,7 @@ url_patterns = [
     (r"/locationhistory", LocationHistoryHandler),
     (r"/metadata", EditMetadataHandler),
     (r"/cvresults", CVResultsHandler),
-    (r"/cvrefine", CVRefineHandler),
+    (r"/cvrequest", CVRequestHandler),
     (r"/uploadimages", UploadImagesHandler),
     # Handlers for API comunication
     (r"/imagesets/list", ImageSetsListHandler),

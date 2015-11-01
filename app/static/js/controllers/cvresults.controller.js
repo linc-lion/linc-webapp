@@ -2,7 +2,17 @@
 
 angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults.directive'])
 
-.controller('CVResultsCtrl', ['$scope', '$window', function ($scope, $window) {
+.controller('CVResultsCtrl', ['$scope', '$window', '$uibModalInstance', function ($scope, $window, $uibModalInstance) {
+
+  $scope.Close = function () {
+    $uibModalInstance.close("ok");
+  };
+  $scope.ClearResults= function () {
+    $uibModalInstance.close("clearesultados");
+  };
+  $scope.Cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
 
     $scope.lions = [{ id: 1, name: 'leão 1', age: 13, url_small: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false},
                            { id: 2, name: 'leão 2', age: 14, url_small: "/static/images/square-small/lion2.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: false, selected: false},
@@ -22,4 +32,3 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
         return (filter);
     };
 }]);
-

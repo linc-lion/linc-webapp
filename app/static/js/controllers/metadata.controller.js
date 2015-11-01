@@ -30,7 +30,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     $scope.organizations = data['organizations'];
   });
   // Result Datas
-  $scope.selected = { name: "", organization: "", dateOfBirth: new Date(), datastamp: new Date(),
+  $scope.selected = { name: "", organization: "", dateOfBirth: new Date(), dateStamp: new Date(),
     geopos: {lat:"", lng: ""}, gender: "", markings: [],
     teeth: [], eye_damage: [], nose_color: [], scars: [], notes: "Notes here"
   }

@@ -55,9 +55,9 @@ class CVResultsHandler(BaseHandler):
     def get(self):
         self.render('cv_results.html')
 
-class CVRefineHandler(BaseHandler):
+class CVRequestHandler(BaseHandler):
     def get(self):
-        self.render('cv_refine.html')
+        self.render('cv_request.html')
 
 class UploadImagesHandler(BaseHandler):
     def get(self):

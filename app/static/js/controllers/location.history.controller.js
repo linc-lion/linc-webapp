@@ -2,13 +2,14 @@
 
 angular.module('lion.guardians.location.history.controller', ['lion.guardians.location.history.directive'])
 
-.controller('LocationHistoryCtrl', ['$scope', '$window', '$timeout', function ($scope, $window, $timeout) {
+.controller('LocationHistoryCtrl', ['$scope', '$window', '$timeout', '$uibModalInstance', function ($scope, $window, $timeout, $uibModalInstance) {
     $scope.title = 'Location History';
     $scope.content = 'Map';
-    /*$scope.hideModal = function ($hide) {
-        MapModal.$promise.then($hide);
-        $window.history.back();
-    };*/
+    // Close
+    $scope.Close = function () {
+     $uibModalInstance.close('close');
+    };
+    
     $scope.lions = [{ id: 1, name: 'leão 1', age: 13, geopos: [-2.728214, 37.020190], url_small: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false},
                            { id: 2, name: 'leão 2', age: 14, geopos: [-2.811887, 36.869128], url_small: "/static/images/square-small/lion2.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: false, selected: false},
                            { id: 3, name: 'leão 3', age: 15, geopos: [-2.704894, 36.836169], url_small: "/static/images/square-small/lion3.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: false, pending: false, primary: true, verified: true, selected: false},
