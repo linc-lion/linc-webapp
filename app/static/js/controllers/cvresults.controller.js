@@ -2,18 +2,21 @@
 
 angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults.directive'])
 
-.controller('CVResultsCtrl', ['$scope', '$window', '$uibModalInstance', function ($scope, $window, $uibModalInstance) {
+.controller('CVResultsCtrl', ['$scope', '$window', '$uibModalInstance', 'imagesetId', function ($scope, $window, $uibModalInstance, imagesetId) {
 
-  $scope.Close = function () {
-    $uibModalInstance.close("ok");
-  };
-  $scope.ClearResults= function () {
-    $uibModalInstance.close("clearesultados");
-  };
-  $scope.Cancel = function () {
-    $uibModalInstance.dismiss('cancel');
-  };
-
+    $scope.Close = function () {
+      $uibModalInstance.close("ok");
+    };
+    $scope.ClearResults= function () {
+      console.log("Clear Results");
+      //$uibModalInstance.close("clearesultados");
+    };
+    $scope.Cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+    $scope.Associate = function (id){
+      console.log("Associate Lion: " + id);
+    };
     $scope.lions = [{ id: 1, name: 'leão 1', age: 13, url_small: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false},
                            { id: 2, name: 'leão 2', age: 14, url_small: "/static/images/square-small/lion2.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: false, selected: false},
                            { id: 3, name: 'leão 3', age: 15, url_small: "/static/images/square-small/lion3.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: false, pending: false, primary: true, verified: true, selected: false},

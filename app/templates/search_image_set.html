@@ -120,8 +120,8 @@
               <i ng-if="!imageset.is_primary" class="icon icon-cross"></i>
             </td>
             <td>
-              <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults" form-size="lg" type="search" ng-if="imageset.action == 'cvresults'"></cvresults>
-              <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest" form-size="lg" ng-if="imageset.action == 'cvrequest'"></cvrequest>
+              <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults" form-size="lg" imageset-id="imageset.id" type="search" ng-if="imageset.action == 'cvresults'"></cvresults>
+              <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvrequest'"></cvrequest>
               <span class="text-muted" ng-if="imageset.action == 'cvpending'"><i class="icon icon-clock"></i> CV Request pending</span>
             </td>
           </tr>

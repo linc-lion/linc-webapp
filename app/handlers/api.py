@@ -15,6 +15,13 @@ class ImageSetsListHandler(BaseHandler):
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
         self.finish(response.body)
+    @asynchronous
+    @engine
+    def post(self, imgset_id=None, cvrequest=None):
+        resource_url = '/imagesets/' + imgset_id + '/cvrequest'
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
+        self.set_status(response.code)
+        self.finish(response.body)
 
 class ImagesListHandler(BaseHandler):
     @asynchronous

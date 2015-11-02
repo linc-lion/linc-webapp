@@ -78,7 +78,7 @@ appdir = os.path.dirname(os.path.realpath(__file__))
 config = {}
 config['debug'] = options.debug
 config['cookie_secret'] = '303e16bb8f9eb223d989fce3970052e63fdf30777e4fd53a014cbd1d581228f2'
-config['xsrf_cookies'] = True
+config['xsrf_cookies'] = False
 config['app_path'] = appdir
 config['default_handler_class'] = ErrorHandler
 config['default_handler_args'] = dict(status_code=404)

@@ -1,8 +1,8 @@
 angular.module('lion.guardians.services', [])
 
-.factory('LincServices', ['$http', '$cacheFactory', '$q', 'notificationFactory', function($http, $cacheFactory, $q, notificationFactory) {
+.factory('LincServices', ['$http', '$cacheFactory', '$q', '$cookies', 'notificationFactory', function($http, $cacheFactory, $q, $cookies, notificationFactory) {
 
-  var urlBase = 'http://localhost:5080';
+  //var urlBase = 'http://localhost:5080';
   var $httpcache = $cacheFactory.get('$http');
 
   var databases = {};
@@ -48,11 +48,6 @@ angular.module('lion.guardians.services', [])
         var key = names[index];
         dados[key] = result.data;
       })
-      /*notificationFactory.success({
-        title: "Database", message:'Database Successfully Loaded',
-        position: "right", // right, left, center
-        duration: 2000     // milisecond
-      });*/
       fn(dados);
     },
     function (reason) {
@@ -63,11 +58,52 @@ angular.module('lion.guardians.services', [])
     var names = Object.keys(databases);
     return (GetLists(names,fn));
   }
+
+  var RequestCV = function (request) {
+    var cookies = $cookies.get('_xsrf');
+
+    /*var data = {"lions": request.lions_id,"_xsrf": cookies};
+        $http.post('/imagesets/', data).success(function(data, status) {
+            fn(data);
+        }).error(function(data, status, headers, config) {
+			       alert( "failure message: " + JSON.stringify({data: data}));
+		    });*/
+
+    var req = { method: 'POST', url: '/imagesets/' + request.imageset_id + '/cvrequest',
+      headers: { 'Content-Type': 'application/json'},
+      data: {"lions": request.lions_id, '_xsrf': cookies}
+    }
+    $http(req)
+    //$http.post(url,data)
+    .then(function(result){
+      fn(result);
+    }, function(error){
+      if(error.status == 500){
+        notificationFactory.error({
+          title: "Denied", message: 'Request denied',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
+      console.log(error);
+    });
+  }
   // Get Datas
   var dataFactory = {};
 
   dataFactory.getlists = GetLists;
   dataFactory.getAlllists = Get_All_Lists;
 
+  dataFactory.requestCV = RequestCV;
   return dataFactory;
-}]);
+}])
+
+
+.factory('SelectedLion', function() {
+  var _lion = {};
+  return {
+    Selectedlion: _lion
+  };
+})
+
+;
