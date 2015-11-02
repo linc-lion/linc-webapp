@@ -10,6 +10,7 @@ angular.module('lion.guardians.services', [])
     databases['organizations'] = {label: 'Organizations List',  url: '/organizations/list'};
     databases['imagesets'] =     {label: 'Imagesets List', url: '/imagesets/list'};
     databases['images'] =        {label: 'Images List', url: '/images/list'};
+    databases['lion'] =         {label: 'Lion', url: 'localhost:5000/lion'};
 
   var Get = function (url, label){
     //var url = base + path;
@@ -34,7 +35,22 @@ angular.module('lion.guardians.services', [])
       });
     }
     return deferred.promise;
-  }
+  };
+
+  // Get Lion by Id
+  var GetLion = function (id,  fn) {
+    var url = databases['lion'].url + '/' + id;
+    var label = databases['lion'].label;
+    Get(url, label).then(function (results) {
+      var dados = {};
+      dados['lion'] = result.data;
+      fn(dados);
+    },
+    function (reason) {
+      console.log(reason);
+    });
+  };
+  // Get Lions, Image Sets, Organizations, List
   var GetLists = function(names, fn){
     var requests = [];
     var promises = names.map(function(name) {
@@ -54,10 +70,11 @@ angular.module('lion.guardians.services', [])
       console.log(reason);
     });
   };
+  // Get All Lists
   var Get_All_Lists = function (fn) {
     var names = Object.keys(databases);
     return (GetLists(names,fn));
-  }
+  };
 
   var RequestCV = function (request, fn) {
     var cookies = $cookies.get('_xsrf');
@@ -93,10 +110,11 @@ angular.module('lion.guardians.services', [])
       }
       console.log(error);
     });
-  }
+  };
   // Get Datas
   var dataFactory = {};
 
+  dataFactory.getLion = GetLion;
   dataFactory.getlists = GetLists;
   dataFactory.getAlllists = Get_All_Lists;
 

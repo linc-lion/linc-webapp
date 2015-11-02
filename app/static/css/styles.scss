@@ -270,6 +270,11 @@ sidemenu>li>a {
     display: block;
     padding: 10px 15px;
 }
+.nav>li>metadata>a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}
 
 .sortorder:after {
   content: '\25b2';

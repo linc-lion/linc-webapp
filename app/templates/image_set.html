@@ -23,7 +23,7 @@
       <br>
       <metadata use-ctrl="MetadataCtrl" use-template-url="metadata" form-size="lg" type="edit" modal-options="modalOptions"></metadata>
       <br>
-      <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults" form-size="lg" type="new"></cvresults>
+      <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults" form-size="lg" imageset-id="imageset.id" type="new" ng-if="imageset.action == 'cvresults'"></cvresults>
       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-flash"></i> ASSOCIATE LION</a></p>
       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE IMAGE SET</a></p>
     </div>

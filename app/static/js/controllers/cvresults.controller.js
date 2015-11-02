@@ -2,36 +2,39 @@
 
 angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults.directive'])
 
-.controller('CVResultsCtrl', ['$scope', '$window', '$uibModalInstance', 'imagesetId', function ($scope, $window, $uibModalInstance, imagesetId) {
+.controller('CVResultsCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'imagesetId', function ($scope, $window, $uibModalInstance, LincServices, imagesetId) {
 
-    $scope.Close = function () {
-      $uibModalInstance.close("ok");
-    };
-    $scope.ClearResults= function () {
-      console.log("Clear Results");
-      //$uibModalInstance.close("clearesultados");
-    };
-    $scope.Cancel = function () {
-      $uibModalInstance.dismiss('cancel');
-    };
-    $scope.Associate = function (id){
-      console.log("Associate Lion: " + id);
-    };
-    $scope.lions = [{ id: 1, name: 'leão 1', age: 13, url_small: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false},
-                           { id: 2, name: 'leão 2', age: 14, url_small: "/static/images/square-small/lion2.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: false, selected: false},
-                           { id: 3, name: 'leão 3', age: 15, url_small: "/static/images/square-small/lion3.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: false, pending: false, primary: true, verified: true, selected: false},
-                           { id: 4, name: 'leão 4', age: 8, url_small: "/static/images/square-small/lion4.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: true, selected: false },
-                           { id: 5, name: 'leão 5', age: 8, url_small: "/static/images/square-small/lion5.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false },
-                           { id: 6, name: 'leão 6', age: 9, url_small: "/static/images/square-small/lion6.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: false, pending: false, primary: true, verified: true, selected: false },
-                           { id: 7, name: 'leão 7', age: 6, url_small: "/static/images/square-small/lion7.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: false, pending: true, primary: true, verified: true, selected: false },
-                           { id: 8, name: 'leão 8', age: 2, url_small: "/static/images/square-small/lion8.jpeg", gender: 'female', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: true, selected: false },
-                           { id: 9, name: 'leão 9', age: 7, url_small: "/static/images/square-small/lion9.jpg", gender: 'female', organization: 'Lion Guardians', hasResults: false, pending: false, primary: false, verified: true, selected: false },
-                           { id: 10, name: 'leão 10', age: 10, url_small: "/static/images/square-small/lion10.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: true, selected: false }];
-    $scope.title = 'CV Results';
-    $scope.content = 'Form';
-    //ng-init="lions=[{hasResults:true},{pending:true},{ verified:true}]">
-    $scope.lions_filter = function() {
-        var filter = {hasResults: true, pending: true, verified: true}
-        return (filter);
-    };
+  $scope.title = 'CV Results';
+  $scope.content = 'Form';
+
+  $scope.Close = function () {
+    $uibModalInstance.dismiss("close");
+  };
+  $scope.ClearResults= function () {
+  //  var lions_id = _.pluck(_.filter($scope.lions, 'selected', true), 'id');
+//    var data = {imageset_id: imagesetId, lions_id: lions_id};
+
+  //  LincServices.requestCV(data, function(result){
+  //    $uibModalInstance.close(result);
+  //  });
+    console.log("Clear Results");
+    //$uibModalInstance.close("clearesultados");
+  };
+  $scope.Cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+  $scope.Associate = function (id){
+    _.forEach($scope.lions, function(lion) {
+      lion.selected = false;
+    });
+    var index = _.indexOf($scope.lions, _.find($scope.lions, {id: id}));
+    $scope.lions[index].selected = true;
+  };
+  LincServices.getlists(['lions'],function(data){
+    $scope.lions = _.map(data['lions'], function(element, index) {
+      var elem = {};
+      elem["selected"] = false;
+      return _.extend({}, element, elem);
+    });
+  });
 }]);
