@@ -32,7 +32,7 @@
           <i ng-if="!lion.is_verified" class="icon icon-cross"></i>
         </td>
         <td class="text-center">
-          <label class="btn btn-default" ><input type="checkbox" ng-model="lion.selected" ng-click="count(lion.selected)"> Select</label>
+          <label ng-class="{'btn btn-default': !lion.selected, 'btn btn-warning': lion.selected}" ><input type="checkbox" ng-model="lion.selected" ng-click="count(lion.selected)"> Select</label>
         </td>
       </tr>
     </tbody>

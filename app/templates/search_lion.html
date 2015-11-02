@@ -97,7 +97,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="link" onclick="location='#/lion'" ng-repeat="lion in paginated_lions = (filtered_lions = (lions | orderBy:predicate:reverse | nameid_filter:name_or_id | age_filter:LionAge | organization_filter:organizations) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)">
+          <tr class="link" ui-sref="lion({id: lion.id})" ng-repeat="lion in paginated_lions = (filtered_lions = (lions | orderBy:predicate:reverse | nameid_filter:name_or_id | age_filter:LionAge | organization_filter:organizations) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)">
             <td class="text-center">{{! lion.id}}</td>
             <td class="text-center"><img ng-src="{{!lion.thumbnail}}" width="40" height="40" ></td>
             <td class="text-center">{{!lion.name}}</td>

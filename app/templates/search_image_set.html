@@ -121,8 +121,7 @@
             </td>
             <td>
               <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults" form-size="lg" imageset-id="imageset.id" type="search" ng-if="imageset.action == 'cvresults'"></cvresults>
-              <!--<cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest" form-size="lg" imageset-id="imageset.id" cv-request-obj-id="cvreq_obj_id" cv-request-success="CVRequesteSuccess(imageset.id)" ng-if="imageset.action == 'cvrequest'"  modal-title="modalProps.title"></cvrequest>-->
-              <button ng-if="imageset.action == 'cvrequest'" class="btn btn-default" data-animation="am-fade-and-slide-top" ng-click="showCVRequest(imageset.id)"><i class="icon icon-flash"></i>Request CV</button>
+              <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_ObjId)"></cvrequest>
               <span class="text-muted" ng-if="imageset.action == 'cvpending'"><i class="icon icon-clock"></i> CV Request pending</span>
             </td>
           </tr>

@@ -2,13 +2,13 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.controller('ImageSetCtrl', ['$scope', '$uibModal', '$window', 'notificationFactory', function ($scope, $mouibModaldal, $window, notificationFactory) {
+.controller('ImageSetCtrl', ['$scope', '$window', 'notificationFactory', function ($scope, $window, notificationFactory) {
 
 $scope.modalOptions = { btn: {save:true, update:false}, title:'Image Set Metadata'};
 
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$uibModal', '$window', 'LincServices', function ($scope, $uibModal, $window, LincServices) {
+.controller('SearchImageSetCtrl', ['$scope', '$window', 'LincServices', function ($scope, $window, LincServices) {
   // Hide Filters
   $scope.isCollapsed = true;
   // Filters  scopes
@@ -79,8 +79,6 @@ $scope.modalOptions = { btn: {save:true, update:false}, title:'Image Set Metadat
     });
     $scope.imagesets = _.map(data['imagesets'], function(element, index) {
       var elem = {};
-      //if(index == 52 || index == 55 || index == 59) element["cvresults"] = true;
-      //if(index == 53 || index == 54 || index == 58) element.cvrequest = "request";
       if(element.cvresults) elem["action"] = 'cvresults';
       else if(element.cvrequest) elem["action"] = 'cvpending';
       else  elem["action"] = 'cvrequest';
@@ -88,22 +86,9 @@ $scope.modalOptions = { btn: {save:true, update:false}, title:'Image Set Metadat
     });
   });
 
-  $scope.showCVRequest = function(imageset_id){
-    var opts = { animation: true, backdrop: true,
-      templateUrl: 'cvrequest', controller: 'CVRequesCtrl', size: "lg",
-      resolve: {
-        imagesetId: function () {
-          return imageset_id;
-        }
-      }
-    }
-    $uibModal.open(opts).result.then(function (cvrequest) {
-      var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: imageset_id}));
+  $scope.CVReqSuccess = function (imageset_Id, requestObjId) {
+      var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: imageset_Id}));
       $scope.imagesets[index].action = 'cvpending';
-      $scope.imagesets[index].cvrequest = cvrequest.obj_id;
-        console.log('Modal ok ' + cvrequest.obj_id);
-    }, function () {
-        console.log('Modal dismissed at: ' + new Date());
-    });
+      $scope.imagesets[index].cvrequest = requestObjId;
   };
 }]);

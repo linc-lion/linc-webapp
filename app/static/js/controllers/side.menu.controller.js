@@ -13,10 +13,12 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
                             msg: $scope.$storage.logged ? 'Logged in as <b>' +
                             user.email + '</b> of <b>' + user.org + '</b>' : 'Not Logged In'};
 
-    /*$scope.hideModal = function ($hide) {
-        SideModal.$promise.then($hide);
-        $window.history.back();
-    };*/
+    $scope.options = {imageset: { btn: {save:true, update:true}, title: 'Image Set Metadata'},
+                         lions: { btn: {save:true, update:true}, title:'Lion Metadata'}};
+
+    $scope.goto_imageset = function ($hide) { $hide(); $state.go("imageset"); }
+    $scope.goto_lion = function ($hide) { $hide(); $state.go("lion"); }
+
     $scope.logout = function($hide){
         $hide();
         $scope.$storage.logged = false;

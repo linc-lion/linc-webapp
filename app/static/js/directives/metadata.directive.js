@@ -12,12 +12,17 @@ angular.module('lion.guardians.metadata.directive', [])
           return '<p><a class="btn btn-lg btn-default" ng-click="show()"><i class="icon icon-circle-with-plus"></i> ADD NEW IMAGE SET</a></p>';
         case 'add_lion':
           return '<p><a class="btn btn-lg btn-default" ng-click="show()"><i class="icon icon-circle-with-plus"></i> ADD NEW LION</a></p>';
+        case 'side_lion':
+          return '<a ng-click="show();">Add new Lion</a>';
+        case 'side_image_set':
+          return '<a ng-click="show();">Add new Image Set</a>';
         default:
           return '<p><a class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-pencil"></i> EDIT METADATA</a></p>';
       }
     },
     scope: {
       gotoImagesetAction: '&',
+      cancelAction: '&',
       useTemplateUrl: '@',
       useCtrl: '@',
       formSize: '@',
@@ -44,6 +49,7 @@ angular.module('lion.guardians.metadata.directive', [])
           scope.gotoImagesetAction();
           console.log('Modal ok' + result);
         }, function () {
+          scope.cancelAction();
           console.log('Modal dismissed at: ' + new Date());
         });
       }

@@ -58,8 +58,16 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
           templateUrl: 'home'
         })
         // New Lion
-        .state("lion", {
+        /*.state("lion", {
           url: "/lion",
+          controller: 'LionCtrl',
+          templateUrl: '/lion',
+          data: {
+            bodyClasses: 'lion'
+          }
+        })*/
+        .state("lion", {
+          url: "/lion/:id",
           controller: 'LionCtrl',
           templateUrl: '/lion',
           data: {
