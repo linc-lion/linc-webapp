@@ -3,7 +3,7 @@
 angular.module('lion.guardians.lions.controllers', [])
 
 .controller('LionCtrl', ['$scope', '$window', function ($scope, $window) {
-  
+
   $scope.modalOptions = { btn: {save:true, update:false}, title:'Lion Metadata'};
 
   $scope.lion = { id: 1, name: 'leão 1', age: 13, url_small: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
@@ -14,7 +14,7 @@ angular.module('lion.guardians.lions.controllers', [])
   // Hide Filters
   $scope.isCollapsed = true;
   // Filters  scopes
-  $scope.LionAge = { min: 1, max: 25, ceil: 30, floor: 0 };
+  $scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
   $scope.name_or_id ='';
   // Sort by
   //$scope.sorting = "name";

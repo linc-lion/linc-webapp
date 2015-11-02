@@ -12,7 +12,7 @@ $scope.modalOptions = { btn: {save:true, update:false}, title:'Image Set Metadat
   // Hide Filters
   $scope.isCollapsed = true;
   // Filters  scopes
-  $scope.LionAge = { min: 1, max: 25, ceil: 30, floor: 0 };
+  $scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
   $scope.name_or_id ='';
   // Sort by
   //$scope.sorting = "name";
@@ -95,4 +95,5 @@ $scope.modalOptions = { btn: {save:true, update:false}, title:'Image Set Metadat
       return _.extend({}, element, elem);
     });
   });
+
 }]);

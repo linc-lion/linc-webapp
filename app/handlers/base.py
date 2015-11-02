@@ -11,6 +11,19 @@ class BaseHandler(RequestHandler):
     """A class to collect common handler methods - all other handlers should
     inherit this one.
     """
+    def prepare(self):
+        self.input_data = dict()
+        print(self.request.body)
+        if self.request.headers["Content-Type"].startswith("application/json"):
+            try:
+                if self.request.body:
+                    self.input_data = json_decode(self.request.body.decode("utf-8"))
+                for k,v in self.request.arguments.items():
+                    if str(k) != str(self.request.body.decode("utf-8")):
+                        self.input_data[k] = v[0].decode("utf-8")
+                self.input_data = recursive_unicode(self.input_data)
+            except ValueError:
+                self.send_error(400, reason='Invalid input data.')
 
     def sanitizestr(self,strs):
         txt = "%s%s" % (string.ascii_letters, string.digits)
@@ -80,13 +93,16 @@ class BaseHandler(RequestHandler):
 
     @asynchronous
     @engine
-    def api(self,url,method,callback=None):
+    def api(self,url,method,body=None,callback=None):
         AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
         http_client = AsyncHTTPClient()
-        request = HTTPRequest(**{
+        params={
             'url' : url,
             'method' : method
-        })
+        }
+        if method == 'POST':
+            params['body']=body
+        request = HTTPRequest(**params)
         response = yield http_client.fetch(request)
         callback(response)
 

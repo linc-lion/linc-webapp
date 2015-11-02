@@ -6,40 +6,43 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th>Photo</th>
-        <th>Name</th>
-        <th>Age</th>
-        <th>Organization</th>
-        <th>Gender</th>
+        <th class="text-center">Id</th>
+        <th class="text-center">Photo</th>
+        <th class="text-center">Name</th>
+        <th class="text-center">Age</th>
+        <th class="text-center">Organization</th>
+        <th class="text-center">Gender</th>
         <th class="text-center">Verified</th>
         <th class="text-center">Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr class="link" ng-repeat="lion in lions | filter:  {hasResults: true, pending: true, verified: true}" ng-class="{active:lion.select}">
-        <td>
-          <img ng-src="{{!lion.url_small}}" width="40" height="40">
-        </td>
-        <td>{{!lion.name}}</td>
-        <td>{{!lion.age}} years old</td>
-        <td>{{!lion.organization}}</td>
-        <td>{{!lion.gender}}</td>
+      <!--<tr class="link" ng-repeat="lion in lions | filter: {hasResults: true, pending: true, verified: true}" ng-class="{active:lion.selected}">-->
+      <tr class="link" ng-repeat="lion in lions" ng-class="{active:lion.selected}">
+        <td class="text-center">{{!lion.id}}</td>
         <td class="text-center">
-          <i ng-if="lion.verified" class="icon icon-check"></i>
-          <i ng-if="!lion.verified" class="icon icon-cross"></i>
+          <img ng-src="{{!lion.thumbnail}}" width="40" height="40">
+        </td>
+        <td class="text-center">{{!lion.name}}</td>
+        <td class="text-center">{{!lion.age}} years old</td>
+        <td class="text-center">{{!lion.organization}}</td>
+        <td class="text-center">{{!lion.gender}}</td>
+        <td class="text-center">
+          <i ng-if="lion.is_verified" class="icon icon-check"></i>
+          <i ng-if="!lion.is_verified" class="icon icon-cross"></i>
         </td>
         <td class="text-center">
-          <label class="btn btn-default" ><input type="checkbox" ng-model="lion.select" > Select</label>
+          <label class="btn btn-default" ><input type="checkbox" ng-model="lion.selected" ng-click="count(lion.selected)"> Select</label>
         </td>
       </tr>
     </tbody>
   </table>
   <p class="clearfix">
-    <a href="#" class="btn btn-link">Select All</a>
-    <a href="#" class="btn btn-link">Select None</a>
+    <a href="#" class="btn btn-link" ng-click="checkAll(true)">Select All</a>
+    <a href="#" class="btn btn-link" ng-click="checkAll(false)">Select None</a>
   </p>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" ng-click="Cancel()">Cancel</button>
-  <button type="button" class="btn btn-primary" ng-click="RequestCV()"><i class="icon icon-flash"></i>Request CV</button>
+  <button type="button" ng-disabled="!checked_count" class="btn btn-primary" ng-click="requestCV()"><i class="icon icon-flash"></i>Request CV</button>
 </div>

@@ -9,11 +9,11 @@ angular.module('lion.guardians.cvrequest.directive', [])
         scope : true ,
         template:  '<button class="btn btn-default" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-flash"></i>Request CV</button>',
         scope: {
-          //gotoImagesetAction: '&',
+          //requestCV: '&requestCV',
           useTemplateUrl: '@',
           useCtrl: '@',
           formSize: '@',
-          modalOptions: '='
+          imagesetId: '='
         },
         link: function(scope, element, attrs) {
           scope.show = function(){
@@ -24,14 +24,15 @@ angular.module('lion.guardians.cvrequest.directive', [])
               controller:  scope.useCtrl,
               size: scope.formSize,
               resolve: {
-                modalOptions: function () {
-                  return scope.modalOptions;
+                imagesetId: function () {
+                  return scope.imagesetId;
                 }
               }
             });
             modalInstance.result.then(function (result) {
-              //scope.gotoImagesetAction();
-              console.log('Modal ok' + result);
+              //scope.imagesetId = items;
+              //scope.requestCV(items);
+              console.log('Modal ok ' + result);
             }, function () {
               console.log('Modal dismissed at: ' + new Date());
             });

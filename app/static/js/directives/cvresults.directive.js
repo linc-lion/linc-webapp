@@ -16,11 +16,10 @@ angular.module('lion.guardians.cvresults.directive', [])
           }
         },
         scope: {
-          //gotoImagesetAction: '&',
           useTemplateUrl: '@',
           useCtrl: '@',
           formSize: '@',
-          modalOptions: '='
+          imagesetId: '='
         },
         link: function(scope, element, attrs) {
           scope.show = function(){
@@ -31,8 +30,8 @@ angular.module('lion.guardians.cvresults.directive', [])
               controller:  scope.useCtrl,
               size: scope.formSize,
               resolve: {
-                modalOptions: function () {
-                  return scope.modalOptions;
+                imagesetId: function () {
+                  return scope.imagesetId;
                 }
               }
             });
