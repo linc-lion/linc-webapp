@@ -15,7 +15,7 @@ angular.module('lion.guardians.services', [])
     //var url = base + path;
     var cache = $httpcache.get(url);
     var deferred = $q.defer();
-    if(cache){
+    if(cache && cache.length>1){
       var responde = JSON.parse(cache[1]);
       deferred.resolve(responde);
     }
@@ -59,14 +59,15 @@ angular.module('lion.guardians.services', [])
     return (GetLists(names,fn));
   }
 
-  var RequestCV = function (request) {
+  var RequestCV = function (request, fn) {
     var cookies = $cookies.get('_xsrf');
 
     /*var data = {"lions": request.lions_id,"_xsrf": cookies};
-        $http.post('/imagesets/', data).success(function(data, status) {
-            fn(data);
-        }).error(function(data, status, headers, config) {
-			       alert( "failure message: " + JSON.stringify({data: data}));
+        $http.post('/imagesets/'+ request.imageset_id + '/cvrequest', data)
+        .success(function(result, status) {
+            fn(result);
+        }).error(function(result, status, headers, config) {
+			       alert( "failure message: " + JSON.stringify({data: result}));
 		    });*/
 
     var req = { method: 'POST', url: '/imagesets/' + request.imageset_id + '/cvrequest',
@@ -76,11 +77,16 @@ angular.module('lion.guardians.services', [])
     $http(req)
     //$http.post(url,data)
     .then(function(result){
-      fn(result);
+      notificationFactory.success({
+        title: "Success", message:'CV Request created with success',
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
+      fn(result.data.data);
     }, function(error){
       if(error.status == 500){
         notificationFactory.error({
-          title: "Denied", message: 'Request denied',
+          title: "Error", message: 'Request failed',
           position: 'right', // right, left, center
           duration: 5000   // milisecond
         });

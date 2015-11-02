@@ -2,21 +2,18 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.controller('ImageSetCtrl', ['$scope', '$modal', '$window', 'notificationFactory', function ($scope, $modal, $window, notificationFactory) {
+.controller('ImageSetCtrl', ['$scope', '$uibModal', '$window', 'notificationFactory', function ($scope, $mouibModaldal, $window, notificationFactory) {
 
 $scope.modalOptions = { btn: {save:true, update:false}, title:'Image Set Metadata'};
 
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$modal', '$window', 'LincServices', function ($scope, $modal, $window, LincServices) {
+.controller('SearchImageSetCtrl', ['$scope', '$uibModal', '$window', 'LincServices', function ($scope, $uibModal, $window, LincServices) {
   // Hide Filters
   $scope.isCollapsed = true;
   // Filters  scopes
   $scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
   $scope.name_or_id ='';
-  // Sort by
-  //$scope.sorting = "name";
-  //$scope.sortReverse = false;
   // Order by
   $scope.reverse = true;
   $scope.order = function(predicate) {
@@ -24,8 +21,7 @@ $scope.modalOptions = { btn: {save:true, update:false}, title:'Image Set Metadat
     $scope.predicate = predicate;
   };
   // Pagination scopes
-  $scope.itemsPerPage = 10;
-  $scope.currentPage = 0;
+  $scope.itemsPerPage = 10; $scope.currentPage = 0;
   $scope.setPage = function(n) {
     $scope.currentPage = n;
   };
@@ -77,10 +73,6 @@ $scope.modalOptions = { btn: {save:true, update:false}, title:'Image Set Metadat
     return label;
   }
 
-  //var newArr = _.map(arr, function(o) { return _.omit(o, 'c'); });
-  //var newArr = _.map(arr, function(o) { return _.pick(o, 'q'); });
-  //var newArr = _.map(arr, function(element) { return _.extend({}, element, {married: false});});
-
   LincServices.getlists(['imagesets','organizations'],function(data){
     $scope.organizations = _.map(data['organizations'], function(element) {
       return _.extend({}, element, {checked: true});
@@ -96,4 +88,22 @@ $scope.modalOptions = { btn: {save:true, update:false}, title:'Image Set Metadat
     });
   });
 
+  $scope.showCVRequest = function(imageset_id){
+    var opts = { animation: true, backdrop: true,
+      templateUrl: 'cvrequest', controller: 'CVRequesCtrl', size: "lg",
+      resolve: {
+        imagesetId: function () {
+          return imageset_id;
+        }
+      }
+    }
+    $uibModal.open(opts).result.then(function (cvrequest) {
+      var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: imageset_id}));
+      $scope.imagesets[index].action = 'cvpending';
+      $scope.imagesets[index].cvrequest = cvrequest.obj_id;
+        console.log('Modal ok ' + cvrequest.obj_id);
+    }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+    });
+  };
 }]);

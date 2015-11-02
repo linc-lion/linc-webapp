@@ -105,7 +105,7 @@
         </thead>
         <tbody>
           <tr class="link" ng-repeat="imageset in paginated_image_set = (filtered_image_sets = (imagesets | orderBy:predicate:reverse | nameid_filter:name_or_id | age_filter:LionAge | organization_filter:organizations) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)">
-            <td class="text-center">{{! imageset.id}}</td>
+            <td class="text-center">{{!imageset.id}}</td>
             <td class="text-center"><img ng-src="{{!imageset.thumbnail}}" width="40" height="40"></td>
             <td class="text-center">{{!imageset.name}}</td>
             <td class="text-center">{{!imageset.age}} years old</td>
@@ -121,7 +121,8 @@
             </td>
             <td>
               <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults" form-size="lg" imageset-id="imageset.id" type="search" ng-if="imageset.action == 'cvresults'"></cvresults>
-              <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvrequest'"></cvrequest>
+              <!--<cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest" form-size="lg" imageset-id="imageset.id" cv-request-obj-id="cvreq_obj_id" cv-request-success="CVRequesteSuccess(imageset.id)" ng-if="imageset.action == 'cvrequest'"  modal-title="modalProps.title"></cvrequest>-->
+              <button ng-if="imageset.action == 'cvrequest'" class="btn btn-default" data-animation="am-fade-and-slide-top" ng-click="showCVRequest(imageset.id)"><i class="icon icon-flash"></i>Request CV</button>
               <span class="text-muted" ng-if="imageset.action == 'cvpending'"><i class="icon icon-clock"></i> CV Request pending</span>
             </td>
           </tr>
