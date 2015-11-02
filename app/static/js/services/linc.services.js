@@ -10,9 +10,10 @@ angular.module('lion.guardians.services', [])
     databases['organizations'] = {label: 'Organizations List',  url: '/organizations/list'};
     databases['imagesets'] =     {label: 'Imagesets List', url: '/imagesets/list'};
     databases['images'] =        {label: 'Images List', url: '/images/list'};
-    databases['lion'] =         {label: 'Lion', url: 'localhost:5000/lion'};
+    databases['lion'] =         {label: 'Lion', url: '/lion'};
+    databases['imageset'] =         {label: 'Imageset', url: '/imageset'};
 
-  var Get = function (url, label){
+  var HTTPGet = function (url, label){
     //var url = base + path;
     var cache = $httpcache.get(url);
     var deferred = $q.defer();
@@ -37,11 +38,23 @@ angular.module('lion.guardians.services', [])
     return deferred.promise;
   };
 
+  var GetImageSet= function (id,  fn) {
+    var url = databases['imageset'].url + '/' + id;
+    var label = databases['imageset'].label;
+    HTTPGet(url, label).then(function (results) {
+      var dados = {};
+      dados['imageset'] = result.data;
+      fn(dados);
+    },
+    function (reason) {
+      console.log(reason);
+    });
+  };
   // Get Lion by Id
   var GetLion = function (id,  fn) {
     var url = databases['lion'].url + '/' + id;
     var label = databases['lion'].label;
-    Get(url, label).then(function (results) {
+    HTTPGet(url, label).then(function (results) {
       var dados = {};
       dados['lion'] = result.data;
       fn(dados);
@@ -56,7 +69,7 @@ angular.module('lion.guardians.services', [])
     var promises = names.map(function(name) {
       var url = databases[name].url;
       var label = databases[name].label;
-      return Get(url, label);
+      return HTTPGet(url, label);
     });
     $q.all(promises).then(function (results) {
       var dados = {};
@@ -78,21 +91,11 @@ angular.module('lion.guardians.services', [])
 
   var RequestCV = function (request, fn) {
     var cookies = $cookies.get('_xsrf');
-
-    /*var data = {"lions": request.lions_id,"_xsrf": cookies};
-        $http.post('/imagesets/'+ request.imageset_id + '/cvrequest', data)
-        .success(function(result, status) {
-            fn(result);
-        }).error(function(result, status, headers, config) {
-			       alert( "failure message: " + JSON.stringify({data: result}));
-		    });*/
-
     var req = { method: 'POST', url: '/imagesets/' + request.imageset_id + '/cvrequest',
       headers: { 'Content-Type': 'application/json'},
       data: {"lions": request.lions_id, '_xsrf': cookies}
     }
     $http(req)
-    //$http.post(url,data)
     .then(function(result){
       notificationFactory.success({
         title: "Success", message:'CV Request created with success',
@@ -115,10 +118,11 @@ angular.module('lion.guardians.services', [])
   var dataFactory = {};
 
   dataFactory.getLion = GetLion;
+  dataFactory.GetImageSet = GetImageSet;
   dataFactory.getlists = GetLists;
   dataFactory.getAlllists = Get_All_Lists;
-
   dataFactory.requestCV = RequestCV;
+  
   return dataFactory;
 }])
 

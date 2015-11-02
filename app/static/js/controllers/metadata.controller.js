@@ -20,7 +20,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   // Save
   $scope.Save = function(){
     console.log("Save Imagesets");
-    $uibModalInstance.close("save");
+    $scope.metadataId = {id: 5};
+    $uibModalInstance.close($scope.metadataId);
   }
   // Title
   $scope.title = modalOptions.title;

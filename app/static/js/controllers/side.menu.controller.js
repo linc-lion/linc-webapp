@@ -16,8 +16,12 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
     $scope.options = {imageset: { btn: {save:true, update:true}, title: 'Image Set Metadata'},
                          lions: { btn: {save:true, update:true}, title:'Lion Metadata'}};
 
-    $scope.goto_imageset = function ($hide) { $hide(); $state.go("imageset"); }
-    $scope.goto_lion = function ($hide) { $hide(); $state.go("lion"); }
+    $scope.goto_imageset = function (Id) {
+      $state.go("imageset", { id: Id });
+    }
+    $scope.goto_lion = function (Id) {
+      $state.go("lion", { id: Id });
+    }
 
     $scope.logout = function($hide){
         $hide();

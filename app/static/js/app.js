@@ -57,15 +57,6 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
           controller: 'HomeCtrl',
           templateUrl: 'home'
         })
-        // New Lion
-        /*.state("lion", {
-          url: "/lion",
-          controller: 'LionCtrl',
-          templateUrl: '/lion',
-          data: {
-            bodyClasses: 'lion'
-          }
-        })*/
         .state("lion", {
           url: "/lion/:id",
           controller: 'LionCtrl',
@@ -76,7 +67,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
         })
         // New Image Set
         .state("imageset", {
-          url: "/imageset",
+          url: "/imageset/:id",
           controller: 'ImageSetCtrl',
           templateUrl: '/imageset',
           data: {
