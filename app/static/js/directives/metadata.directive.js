@@ -21,12 +21,13 @@ angular.module('lion.guardians.metadata.directive', [])
       }
     },
     scope: {
-      gotoImagesetAction: '&',
+      //gotoImagesetAction: '&',
       cancelAction: '&',
       useTemplateUrl: '@',
       useCtrl: '@',
       formSize: '@',
-      modalOptions: '='
+      modalOptions: '=',
+      gotoImagesetAction:'&'
     },
     link: function(scope, element, attrs) {
       /*scope.dismiss = function() {
@@ -46,7 +47,7 @@ angular.module('lion.guardians.metadata.directive', [])
           }
         });
         modalInstance.result.then(function (result) {
-          scope.gotoImagesetAction();
+          scope.gotoImagesetAction({Id: result.id});
           console.log('Modal ok' + result);
         }, function () {
           scope.cancelAction();

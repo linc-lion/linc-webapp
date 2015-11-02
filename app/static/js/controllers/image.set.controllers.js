@@ -2,9 +2,17 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.controller('ImageSetCtrl', ['$scope', '$window', 'notificationFactory', function ($scope, $window, notificationFactory) {
+.controller('ImageSetCtrl', ['$scope', '$window', '$stateParams', 'notificationFactory', function ($scope, $window, $stateParams, notificationFactory) {
 
-$scope.modalOptions = { btn: {save:true, update:false}, title:'Image Set Metadata'};
+  $scope.modalOptions = { btn: {save:true, update:false}, title:'Image Set Metadata'};
+
+  $scope.id = $stateParams.id;
+  /*LincServices.GetImageSet($scope.id,function(data){
+    $scope.imageset = data['imageset'];
+  });*/
+
+  $scope.imageset = { id: 1, name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
+
 
 }])
 

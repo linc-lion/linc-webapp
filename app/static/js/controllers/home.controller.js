@@ -15,10 +15,10 @@ angular.module('lion.guardians.home.controller', [])
                               title:'Lion Metadata'}
                    };
   //});
-  $scope.goto_imageset = function () {
-    $state.go("imageset");
+  $scope.goto_imageset = function (Id) {
+    $state.go("imageset", { id: Id });
   }
-  $scope.goto_lion = function () {
-    $state.go("lion");
+  $scope.goto_lion = function (Id) {
+    $state.go("lion", { id: Id });
   }
 }]);
