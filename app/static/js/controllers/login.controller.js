@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.login.controller', [])
 // Login
-.controller('LoginCtrl', ['$scope', '$state', '$timeout', '$localStorage', 'notificationFactory', function ($scope, $state, $timeout, $localStorage, notificationFactory) {
+.controller('LoginCtrl', ['$scope', '$state', '$timeout', '$localStorage', 'NotificationFactory', function ($scope, $state, $timeout, $localStorage, NotificationFactory) {
 
   $scope.loginData = { email : 'teste@venidera.com' , password : '123123'};
   $scope.dataLoading = false;
@@ -43,7 +43,7 @@ angular.module('lion.guardians.login.controller', [])
           $scope.dataLoading = false;
 
           if (!$scope.$storage.logged){
-            notificationFactory.error({
+            NotificationFactory.error({
               title: 'Login', message: 'Login error.',
               position: 'left', // right, left, center
               duration: 10000   // milisecond
@@ -51,7 +51,7 @@ angular.module('lion.guardians.login.controller', [])
             console.log(error);
           }
           else{
-            notificationFactory.success({
+            NotificationFactory.success({
               title: "Login", message:'Successfully connected.',
               position: "right", // right, left, center
               duration: 3000     // milisecond

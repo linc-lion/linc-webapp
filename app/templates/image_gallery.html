@@ -32,6 +32,9 @@
         <button class="btn btn-default btn-block">Delete</button>
         <button class="btn btn-default btn-block">Download original</button>
         <button class="btn btn-primary btn-block">Upload images</button>
+
+        <upload-images ng-show="show.upload" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages" form-size="lg" options-set="optionsSet" save-metadata-action="Save()" close-action="Close()" type="gallery" ></upload-images>
+
       </p>
     </div>
   </div>

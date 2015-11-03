@@ -2,14 +2,20 @@
 
 angular.module('lion.guardians.upload.images.controller', ['lion.guardians.upload.images.directive', 'lion.guardians.thumbnail.directive'])
 
-.controller('UploadImagesCtrl', ['$scope', '$window', '$uibModalInstance', 'FileUploader', function ($scope, $window, $uibModalInstance, FileUploader) {
-  $scope.title = 'Upload Images';
+.controller('UploadImagesCtrl', ['$scope', '$window', '$uibModalInstance', 'FileUploader', 'NotificationFactory', 'optionsSet', function ($scope, $window, $uibModalInstance, FileUploader, NotificationFactory, optionsSet) {
+
+  $scope.optionsSet = optionsSet;
+  console.log("Option" + JSON.stringify($scope.optionsSet));
+  var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
+
+  $scope.title = 'Upload Images ' + '(' + titles[$scope.optionsSet.type] + ')';
   $scope.content = 'Upload Images<br />Contents!';
 
   $scope.GoBack = function () {
    $uibModalInstance.dismiss('cancel');
   };
   $scope.Finish = function () {
+    console.log("Option" + JSON.stringify($scope.optionsSet));
    $uibModalInstance.close('finish');
   };
 
@@ -84,6 +90,11 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   };
   uploader.onCompleteAll = function() {
       console.info('onCompleteAll');
+      NotificationFactory.success({
+        title: "Upload", message:'Images uploaded with success',
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
   };
 
   console.info('uploader', uploader);

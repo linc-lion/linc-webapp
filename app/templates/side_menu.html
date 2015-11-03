@@ -11,11 +11,11 @@
           <li role="presentation" class="active"><a ui-sref="conservationists" ng-click="$hide()">Directory of conservationists</a></li>
           <li role="separator" class="divider"><hr></li>
           <li role="presentation">
-            <metadata use-ctrl="MetadataCtrl" use-template-url="metadata" form-size="lg" type="side_lion" goto-imageset-action="goto_lion(Id); $hide()" cancel_action="$hide()" modal-options="options.lions"></metadata>
+            <metadata use-ctrl="MetadataCtrl" use-template-url="metadata" form-size="lg" type="side_lion" goto-imageset-action="goto_lion(Id); $hide()" cancel_action="$hide()" options-set="options.lions"></metadata>
           </li>
           <li role="presentation"><a ui-sref="searchlion" ng-click="$hide()">Search Lion</a></li>
           <li role="presentation">
-            <metadata use-ctrl="MetadataCtrl" use-template-url="metadata" form-size="lg" type="side_image_set"  goto_imageset_action="goto_imageset(Id); $hide()" cancel_action="$hide()" modal-options="options.imageset"></metadata>
+            <metadata use-ctrl="MetadataCtrl" use-template-url="metadata" form-size="lg" type="side_image_set"  goto-imageset-action="goto_imageset(Id); $hide()" cancel-action="$hide()" options-set="options.imageset"></metadata>
           </li>
           <li role="presentation"><a ui-sref="searchimageset" ng-click="$hide()">Search Image Sets</a></li>
           <li role="separator" class="divider"><hr></li>

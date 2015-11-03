@@ -29,7 +29,7 @@ angular.module('lion.guardians.cvrequest.directive', [])
           }
         });
         modalInstance.result.then(function (cvrequest) {
-          scope.cvRequestSuccess({imageset_Id: scope.imagesetId, request_ObjId: cvrequest.obj_id});
+          scope.cvRequestSuccess({imageset_Id: scope.imagesetId, request_Obj: cvrequest});
           console.log('Modal ok ' + cvrequest);
         }, function () {
           console.log('Modal dismissed at: ' + new Date());

@@ -104,9 +104,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="link" ui-sref="imageset({id: imageset.id})" ng-repeat="imageset in paginated_image_set = (filtered_image_sets = (imagesets | orderBy:predicate:reverse | nameid_filter:name_or_id | age_filter:LionAge | organization_filter:organizations) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)">
+          <tr class="link" ng-repeat="imageset in paginated_image_set = (filtered_image_sets = (imagesets | orderBy:predicate:reverse | nameid_filter:name_or_id | age_filter:LionAge | organization_filter:organizations) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)">
             <td class="text-center">{{!imageset.id}}</td>
-            <td class="text-center"><img ng-src="{{!imageset.thumbnail}}" width="40" height="40"></td>
+            <td class="text-center" ui-sref="imageset({id: imageset.id})"><img ng-src="{{!imageset.thumbnail}}" width="40" height="40"></td>
             <td class="text-center">{{!imageset.name}}</td>
             <td class="text-center">{{!imageset.age}} years old</td>
             <td class="text-center">{{!imageset.organization}}</td>
@@ -121,7 +121,7 @@
             </td>
             <td>
               <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults" form-size="lg" imageset-id="imageset.id" type="search" ng-if="imageset.action == 'cvresults'"></cvresults>
-              <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_ObjId)"></cvrequest>
+              <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)"></cvrequest>
               <span class="text-muted" ng-if="imageset.action == 'cvpending'"><i class="icon icon-clock"></i> CV Request pending</span>
             </td>
           </tr>
