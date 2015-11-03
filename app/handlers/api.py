@@ -41,6 +41,33 @@ class LionsListHandler(BaseHandler):
         self.set_status(response.code)
         self.finish(response.body)
 
+class LionsHandler(BaseHandler):
+    @asynchronous
+    @engine
+    def get(self, lions_id=None):
+        resource_url = '/lions/' + lions_id
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        self.set_status(response.code)
+        self.finish(response.body)
+
+class ImageSetsHandler(BaseHandler):
+    @asynchronous
+    @engine
+    def get(self, imagesets_id=None):
+        resource_url = '/imagesets/' + imagesets_id
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        self.set_status(response.code)
+        self.finish(response.body)
+
+class OrganizationsHandler(BaseHandler):
+    @asynchronous
+    @engine
+    def get(self, organizations_id=None):
+        resource_url = '/organizations/' + organizations_id
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        self.set_status(response.code)
+        self.finish(response.body)
+
 class OrganizationsListHandler(BaseHandler):
     @asynchronous
     @engine

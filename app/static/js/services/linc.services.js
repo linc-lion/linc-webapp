@@ -6,12 +6,10 @@ angular.module('lion.guardians.services', [])
   var $httpcache = $cacheFactory.get('$http');
 
   var databases = {};
-    databases['lions'] =         {label: 'Lions List', url: '/lions/list'};
-    databases['organizations'] = {label: 'Organizations List',  url: '/organizations/list'};
-    databases['imagesets'] =     {label: 'Imagesets List', url: '/imagesets/list'};
-    databases['images'] =        {label: 'Images List', url: '/images/list'};
-    databases['lion'] =         {label: 'Lion', url: '/lion'};
-    databases['imageset'] =         {label: 'Imageset', url: '/imageset'};
+    databases['lions'] =         {label: 'Lions', url: '/lions'};
+    databases['organizations'] = {label: 'Organizations',  url: '/organizations'};
+    databases['imagesets'] =     {label: 'Imagesets', url: '/imagesets'};
+    databases['images'] =        {label: 'Images', url: '/images'};
 
   var HTTPGet = function (url, label){
     //var url = base + path;
@@ -39,12 +37,10 @@ angular.module('lion.guardians.services', [])
   };
 
   var GetImageSet= function (id,  fn) {
-    var url = databases['imageset'].url + '/' + id;
-    var label = databases['imageset'].label;
+    var url = databases['imagesets'].url + '/' + id;
+    var label = databases['imagesets'].label;
     HTTPGet(url, label).then(function (results) {
-      var dados = {};
-      dados['imageset'] = result.data;
-      fn(dados);
+      fn(results);
     },
     function (reason) {
       console.log(reason);
@@ -52,12 +48,20 @@ angular.module('lion.guardians.services', [])
   };
   // Get Lion by Id
   var GetLion = function (id,  fn) {
-    var url = databases['lion'].url + '/' + id;
-    var label = databases['lion'].label;
+    var url = databases['lions'].url + '/' + id;
+    var label = databases['lions'].label;
     HTTPGet(url, label).then(function (results) {
-      var dados = {};
-      dados['lion'] = result.data;
-      fn(dados);
+      fn(results);
+    },
+    function (reason) {
+      console.log(reason);
+    });
+  };
+  var GetOrg = function (id,  fn) {
+    var url = databases['organizations'].url + '/' + id;
+    var label = databases['organizations'].label;
+    HTTPGet(url, label).then(function (results) {
+      fn(results.data);
     },
     function (reason) {
       console.log(reason);
@@ -67,8 +71,8 @@ angular.module('lion.guardians.services', [])
   var GetLists = function(names, fn){
     var requests = [];
     var promises = names.map(function(name) {
-      var url = databases[name].url;
-      var label = databases[name].label;
+      var url = databases[name].url + '/list';
+      var label = databases[name].label + ' List';
       return HTTPGet(url, label);
     });
     $q.all(promises).then(function (results) {
@@ -83,11 +87,11 @@ angular.module('lion.guardians.services', [])
       console.log(reason);
     });
   };
-  // Get All Lists
+  /*// Get All Lists
   var Get_All_Lists = function (fn) {
     var names = Object.keys(databases);
     return (GetLists(names,fn));
-  };
+  };*/
 
   var RequestCV = function (request, fn) {
     var cookies = $cookies.get('_xsrf');
@@ -118,11 +122,12 @@ angular.module('lion.guardians.services', [])
   var dataFactory = {};
 
   dataFactory.getLion = GetLion;
+  dataFactory.getOrganization = GetOrg;
   dataFactory.GetImageSet = GetImageSet;
   dataFactory.getlists = GetLists;
-  dataFactory.getAlllists = Get_All_Lists;
+  //dataFactory.getAlllists = Get_All_Lists;
   dataFactory.requestCV = RequestCV;
-  
+
   return dataFactory;
 }])
 
