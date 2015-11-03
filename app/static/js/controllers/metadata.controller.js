@@ -2,30 +2,66 @@
 
 angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.directive'])
 
-.controller('MetadataCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'notificationFactory', 'modalOptions', function ($scope, $window, $uibModalInstance, LincServices, notificationFactory, modalOptions) {
-
-  //$scope.selectedDate = new Date();
-  //$scope.selectedDateAsNumber = Date.UTC(1986, 1, 22);
+.controller('MetadataCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', '$timeout', '$q',  function ($scope, $window, $uibModalInstance, LincServices, NotificationFactory, optionsSet,  $timeout, $q) {
 
   $scope.debug = false;
-  // Btn Save and Update
-  $scope.show = {save: modalOptions.btn.save, upload: modalOptions.btn.update};
-  // Close
-  $scope.Close = function () {
-   $uibModalInstance.close('close');
-  };
+  $scope.optionsSet = optionsSet;
+  //var btn_types = {}; btn_types['edit'] = {save:true, upload:false};
+  //                    btn_types['new'] = {save:true, upload:true};
+  var titles = {}; titles['lions'] = 'Lion Metadata'; titles['imagesets'] = 'Image Set Metadata';
+
+  $scope.isImageSet = (optionsSet.type === 'imagesets');
+  $scope.isNew = (optionsSet.edit === 'new');
+  // Title
+  $scope.title = titles[optionsSet.type];
+  $scope.content = 'Form';
+  //$scope.show = btn_types[optionsSet.edit];
+
+  $scope.LoadMetaData = function (){
+    LincServices.getMetadata($scope.id,function(metadata){
+      $scope.selected = metadata;
+    });
+  }
+
+  //if(optionsSet.edit == 'edit') $scope.LoadMetaData();
+
   $scope.Cancel = function () {
    $uibModalInstance.dismiss('cancel');
   };
+  // Save and Close
+  $scope.SaveClose = function(){
+    console.log("Save Imagesets");
+    $scope.metadataId = {id: 5};
+    NotificationFactory.success({
+      title: "Save", message:'Metadata saved with success',
+      position: "right", // right, left, center
+      duration: 2000     // milisecond
+    });
+    $uibModalInstance.close($scope.metadataId);
+  }
   // Save
   $scope.Save = function(){
-    console.log("Save Imagesets");
+    var deferred = $q.defer();
+
+    $timeout(function() {
+       $scope.optionsSet.data = { id: 1, name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
+        ;
+        console.log("Save Imagesets");
+        NotificationFactory.success({
+          title: "Save", message:'Metadata saved with success',
+          position: "right", // right, left, center
+          duration: 2000     // milisecond
+        });
+        $scope.metadataId = {id: 5};
+        deferred.resolve($scope.optionsSet);
+    }, 1000);
+    return deferred.promise;
+  }
+  $scope.Close = function(){
+    console.log("Close UploadImages");
     $scope.metadataId = {id: 5};
     $uibModalInstance.close($scope.metadataId);
   }
-  // Title
-  $scope.title = modalOptions.title;
-  $scope.content = 'Form';
 
   LincServices.getlists(['organizations'],function(data){
     $scope.organizations = data['organizations'];

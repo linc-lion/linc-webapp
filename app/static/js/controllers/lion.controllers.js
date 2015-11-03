@@ -4,16 +4,15 @@ angular.module('lion.guardians.lions.controllers', [])
 
 .controller('LionCtrl', ['$scope', '$window', '$stateParams', 'LincServices', function ($scope, $window, $stateParams, LincServices) {
 
-  $scope.modalOptions = { btn: {save:true, update:false}, title:'Lion Metadata'};
   $scope.id = $stateParams.id;
-  LincServices.getLion($scope.id,function(lion){
-    LincServices.getOrganization(lion.organization_id, function(org){
-      var imageset = lion.imageset.primary_image_set_id
-      $scope.lion = {'id': lion.id, 'organization': org.name, 'age': lion.age};
+  /*LincServices.getLion($scope.id,function(data){
+    $scope.lion = data;
+      $scope.options = { type: 'lions'}, edit: 'edit', data: $scope.data};
     })
-  });
+  });*/
 
-  /*$scope.lion = { id: 1, name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};*/
+  $scope.lion = { id: 1, name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
+  $scope.options = { type: 'lions', edit: 'edit', data: $scope.lion};
 
 }])
 

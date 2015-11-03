@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu.directive'])
 
-.controller('SideMenuCtrl', ['$scope', '$state', '$window', '$localStorage', 'notificationFactory', function ($scope, $state, $window, $localStorage, notificationFactory) {
+.controller('SideMenuCtrl', ['$scope', '$state', '$window', '$localStorage', 'NotificationFactory', function ($scope, $state, $window, $localStorage, NotificationFactory) {
     $scope.title = 'Menu';
     $scope.content = 'Menu';
 
@@ -13,8 +13,8 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
                             msg: $scope.$storage.logged ? 'Logged in as <b>' +
                             user.email + '</b> of <b>' + user.org + '</b>' : 'Not Logged In'};
 
-    $scope.options = {imageset: { btn: {save:true, update:true}, title: 'Image Set Metadata'},
-                         lions: { btn: {save:true, update:true}, title:'Lion Metadata'}};
+    $scope.options = {imageset: { type: 'imagesets', edit: 'new' },
+                         lions: { type: 'lions', edit: 'new'}};
 
     $scope.goto_imageset = function (Id) {
       $state.go("imageset", { id: Id });
@@ -27,7 +27,7 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
         $hide();
         $scope.$storage.logged = false;
 
-        notificationFactory.success({
+        NotificationFactory.success({
           title: "Logout", message:'Good bye.',
           position: "right", // right, left, center
           duration: 300000     // milisecond

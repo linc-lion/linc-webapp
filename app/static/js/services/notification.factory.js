@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.notification.factory', [])
 
-.factory('notificationFactory', function(notify) {
+.factory('NotificationFactory', function(notify) {
 
   var icons = { success: 'icon icon-check',
                 error: 'icon icon-cross',
@@ -54,25 +54,25 @@ angular.module('lion.guardians.notification.factory', [])
 
 /*  // Exemplo
   // Success
-  notificationFactory.success({
+  NotificationFactory.success({
     title: "Succcess", message:'Succcess ao realizar o procedimento.',
     position: "right", // right, left, center
     duration: 3000     // milisecond
   });
   // Error
-  notificationFactory.error({
+  NotificationFactory.error({
     title: 'Error', message: 'Erro ao realizar o procedimento',
     position: 'left', // right, left, center
     duration: 10000   // milisecond
   });
   // Info
-  notificationFactory.info({
+  NotificationFactory.info({
     title: 'Info', message: 'Informação sobre o procedimento',
     position: 'left',  // right, left, center
     duration: 1000     // milisecond
   });
   // Warning
-  notificationFactory.warning({
+  NotificationFactory.warning({
     title: 'Warning',
     message: 'Warning ao realizar o procedimento !!',
     position: 'left',  // right, left, center

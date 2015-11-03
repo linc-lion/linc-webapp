@@ -26,7 +26,7 @@ angular.module('lion.guardians.metadata.directive', [])
       useTemplateUrl: '@',
       useCtrl: '@',
       formSize: '@',
-      modalOptions: '=',
+      optionsSet: '=',
       gotoImagesetAction:'&'
     },
     link: function(scope, element, attrs) {
@@ -41,8 +41,8 @@ angular.module('lion.guardians.metadata.directive', [])
           controller:  scope.useCtrl,
           size: scope.formSize,
           resolve: {
-            modalOptions: function () {
-              return scope.modalOptions;
+            optionsSet: function () {
+              return scope.optionsSet;
             }
           }
         });

@@ -8,13 +8,10 @@ angular.module('lion.guardians.home.controller', [])
   LincServices.getlists(['imagesets','lions','organizations'],function(dados){
 
   })
-  //LincServices.getAlllists(function(dados){
-  $scope.options = {imageset: { btn: {save:true, update:true},
-                              title: 'Image Set Metadata'},
-                       lions: { btn: {save:true, update:true},
-                              title:'Lion Metadata'}
-                   };
-  //});
+
+  $scope.options = { imageset: { type: 'imagesets', edit: 'new' },
+                        lions: { type: 'lions', edit: 'new'}};
+
   $scope.goto_imageset = function (Id) {
     $state.go("imageset", { id: Id });
   }

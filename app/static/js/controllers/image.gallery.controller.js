@@ -2,7 +2,14 @@
 
 angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image.gallery.directive'])
 
-.controller('ImageGalleryCtrl', ['$scope', '$window', '$uibModalInstance',function($scope, $window, $uibModalInstance) {
+.controller('ImageGalleryCtrl', ['$scope', '$window', '$uibModalInstance', 'optionsSet', function($scope, $window, $uibModalInstance, optionsSet) {
+
+  $scope.optionsSet = optionsSet;
+  var titles = {}; titles['lions'] = 'Lions'; titles['imagesets'] = 'Image Sets';
+
+  // Title
+  $scope.title = 'Image Gallery' + '(' + titles[optionsSet.type] + ')';
+  $scope.content = 'Image Gallery<br />Contents!';
 
   $scope.ok = function () {
     $uibModalInstance.close("ok");
@@ -10,9 +17,23 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   $scope.cancel = function () {
     $uibModalInstance.dismiss('cancel');
   };
-  $scope.title = 'Image Gallery';
-  $scope.content = 'Image Gallery<br />Contents!';
-
+  /*function create_zip() {
+    var zip = new JSZip();
+    zip.add("hello1.txt", "Hello First World\n");
+    zip.add("hello2.txt", "Hello Second World\n");
+    content = zip.generate();
+    location.href = "data:application/zip;base64," + content;
+  }*/
+  /*$scope.Download = function(){
+    $scope.selected_photos = _.filter($scope.photos, function(item) {
+      return _.contains(true, item['selected']);
+    });
+  }*/
+/*
+  LincServices.getImages(optionsSet.type, optionsSet.data,function(images){
+    $scope.photos = images;
+  });
+*/
   $scope.photos = [ { id: 1, name: 'leão 1', age: 13, url: "/static/images/medium/lion1.jpg" },
                     { id: 2, name: 'leão 2', age: 12, url: "/static/images/medium/lion2.jpeg" },
                     { id: 3, name: 'leão 3', age: 14, url: "/static/images/medium/lion3.jpeg" },

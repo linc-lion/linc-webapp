@@ -1,5 +1,5 @@
 <div class="modal-header" ng-show="title">
-  <button type="button" class="close" ng-click="Close()">&times;</button>
+  <button type="button" class="close" ng-click="Cancel()">&times;</button>
   <h4 class="modal-title" ng-bind-html="title"></h4>
 </div>
 <div class="modal-body" ng-show="content">
@@ -45,7 +45,7 @@
         <pre ng-show="debug">{{!selected.gender}}</pre>
       </div>
       <div class="col-sm-4">
-        <div class="form-inline text-right">
+        <div ng-show="!isImageSet" class="form-inline text-right">
           <label for="lion_name">Lion Name:</label>
           <input type="text" class="form-control" id="lion_name" ng-model="selected.name" placeholder="Lion Name here">
         </div>
@@ -113,7 +113,7 @@
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" ng-click="Cancel()">Cancel</button>
-  <button ng-show="show.save" type="button" class="btn btn-primary" ng-click="Save()">Save</button>
-  <upload-images ng-show="show.upload" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages" form-size="lg" close_action="Close()"></upload-images>
+  <button type="button" class="btn btn-primary" ng-click="SaveClose()">Save</button>
+  <upload-images ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages" form-size="lg" options-set="optionsSet" save-metadata-action="Save()" close-action="Close()" type="metadata" ></upload-images>
   <br>
 </div>

@@ -1,6 +1,6 @@
 angular.module('lion.guardians.services', [])
 
-.factory('LincServices', ['$http', '$cacheFactory', '$q', '$cookies', 'notificationFactory', function($http, $cacheFactory, $q, $cookies, notificationFactory) {
+.factory('LincServices', ['$http', '$cacheFactory', '$q', '$cookies', 'NotificationFactory', function($http, $cacheFactory, $q, $cookies, NotificationFactory) {
 
   //var urlBase = 'http://localhost:5080';
   var $httpcache = $cacheFactory.get('$http');
@@ -25,7 +25,7 @@ angular.module('lion.guardians.services', [])
         deferred.resolve(response);
       })
       .error(function (error) {
-        notificationFactory.error({
+        NotificationFactory.error({
           title: "Error", message: 'Unable to load ' + label + ' data',
           position: 'right', // right, left, center
           duration: 5000   // milisecond
@@ -101,7 +101,7 @@ angular.module('lion.guardians.services', [])
     }
     $http(req)
     .then(function(result){
-      notificationFactory.success({
+      NotificationFactory.success({
         title: "Success", message:'CV Request created with success',
         position: "right", // right, left, center
         duration: 2000     // milisecond
@@ -109,7 +109,7 @@ angular.module('lion.guardians.services', [])
       fn(result.data.data);
     }, function(error){
       if(error.status == 500){
-        notificationFactory.error({
+        NotificationFactory.error({
           title: "Error", message: 'Request failed',
           position: 'right', // right, left, center
           duration: 5000   // milisecond
