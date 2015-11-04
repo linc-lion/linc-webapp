@@ -19,7 +19,7 @@ class SideMenuHandler(BaseHandler):
     def get(self):
         self.render('side_menu.html')
 
-class LionHandler(BaseHandler):
+class LionMainHandler(BaseHandler):
     def get(self):
         self.render('lion.html')
 
@@ -27,7 +27,7 @@ class SearchLionHandler(BaseHandler):
     def get(self):
         self.render('search_lion.html')
 
-class ImageSetHandler(BaseHandler):
+class ImageSetMainHandler(BaseHandler):
     def get(self):
         self.render('image_set.html')
 
@@ -51,11 +51,11 @@ class EditMetadataHandler(BaseHandler):
     def get(self):
         self.render('metadata.html')
 
-class CVResultsHandler(BaseHandler):
+class CVResultsMainHandler(BaseHandler):
     def get(self):
         self.render('cv_results.html')
 
-class CVRequestHandler(BaseHandler):
+class CVRequestMainHandler(BaseHandler):
     def get(self):
         self.render('cv_request.html')
 
