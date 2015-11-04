@@ -23,6 +23,22 @@ class ImageSetsListHandler(BaseHandler):
         self.set_status(response.code)
         self.finish(response.body)
 
+class CVResultsHandler(BaseHandler):
+    @asynchronous
+    @engine
+    def get(self, res_id=None, xlist=None):
+        resource_url = '/cvresults/'+ res_id + '/list'
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        self.set_status(response.code)
+        self.finish(response.body)
+    @asynchronous
+    @engine
+    def post(self):
+        resource_url = '/cvresults'
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
+        self.set_status(response.code)
+        self.finish(response.body)
+
 class ImagesListHandler(BaseHandler):
     @asynchronous
     @engine

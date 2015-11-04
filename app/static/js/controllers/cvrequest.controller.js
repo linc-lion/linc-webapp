@@ -15,7 +15,8 @@ angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest
     var data = {imageset_id: imagesetId, lions_id: lions_id};
 
     LincServices.requestCV(data, function(result){
-      $uibModalInstance.close(result);
+      var requestObj = result.data.data;
+      $uibModalInstance.close(requestObj);
     });
   };
   $scope.Cancel = function () {
