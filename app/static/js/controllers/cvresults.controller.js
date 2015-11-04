@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults.directive'])
 
-.controller('CVResultsCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'imagesetId', function ($scope, $window, $uibModalInstance, LincServices, imagesetId) {
+.controller('CVResultsCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'imagesetId', 'cvresultsId', function ($scope, $window, $uibModalInstance, LincServices, imagesetId, cvresultsId) {
 
   $scope.title = 'CV Results';
   $scope.content = 'Form';
@@ -14,7 +14,7 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
   //  var lions_id = _.pluck(_.filter($scope.lions, 'selected', true), 'id');
 //    var data = {imageset_id: imagesetId, lions_id: lions_id};
 
-  //  LincServices.requestCV(data, function(result){
+  //  LincServices.xxx(data, function(result){
   //    $uibModalInstance.close(result);
   //  });
     console.log("Clear Results");
@@ -30,8 +30,9 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
     var index = _.indexOf($scope.lions, _.find($scope.lions, {id: id}));
     $scope.lions[index].selected = true;
   };
-  LincServices.getlists(['lions'],function(data){
-    $scope.lions = _.map(data['lions'], function(element, index) {
+  LincServices.getListCVResults(cvresultsId, function(result){
+    var data = result.data;
+    $scope.lions = _.map(data, function(element, index) {
       var elem = {};
       elem["selected"] = false;
       return _.extend({}, element, elem);

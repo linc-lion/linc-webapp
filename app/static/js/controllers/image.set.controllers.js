@@ -10,9 +10,42 @@ angular.module('lion.guardians.image.set.controllers', [])
     $scope.options = { type: 'imagesets'}, edit: 'edit', data: $scope.data};
   });*/
 
-  $scope.imageset = { id: 1, name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
+  $scope.imageset = { id: 1, lion_name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false, cvresults: null};
   $scope.options = { type: 'imagesets', edit: 'edit', data: $scope.data};
 
+  var labels = function (damages, labels){
+    var label = "";
+    labels.forEach(function (elem, i){
+      label += damages[elem];
+      if(i<labels.length-1)
+      label += ', ';
+    });
+    return label;
+  }
+  var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left', 'EYE_DAMAGE_RIGHT': 'Right'};
+  var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right',
+                        'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
+  var ear_markings   = {'EAR_MARKING_BOTH': 'Both', 'EAR_MARKING_LEFT': 'Left', 'EAR_MARKING_RIGHT': 'Right'};
+  var mount_markings = {'MOUTH_MARKING_BACK': 'Back', 'MOUTH_MARKING_FRONT': 'Front',
+                      'MOUTH_MARKING_LEFT': 'Left', 'MOUTH_MARKING_RIGHT': 'Right'};
+  var tail_markings  = {'TAIL_MARKING_MISSING_TUFT': 'Missing Tuft'};
+  var nose_color     = {'NOSE_COLOUR_BLACK': 'Black', 'NOSE_COLOUR_PATCHY': 'Patchy',
+                        'NOSE_COLOUR_PINK': 'Pynk', 'NOSE_COLOUR_SPOTTED': 'Spotted'};
+  var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right',
+                        'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
+
+  $scope.imageset.eye_damage = labels(eye_damages, ['EYE_DAMAGE_LEFT','EYE_DAMAGE_RIGHT']);
+  $scope.imageset.broken_teet = labels(broken_teeths, ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT',
+                                                   'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']);
+  $scope.imageset.ear_markings = labels(ear_markings, ['EAR_MARKING_BOTH','EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']);
+  $scope.imageset.mount_markings = labels(mount_markings, ['MOUTH_MARKING_BACK','MOUTH_MARKING_FRONT',
+                                                       'MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']);
+  $scope.imageset.tail_markings = labels(tail_markings, ['TAIL_MARKING_MISSING_TUFT']);
+
+  $scope.imageset.nose_color = labels(nose_color, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY',
+                                                 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']);
+  $scope.imageset.scars = labels(scars, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT',
+                                                 'SCARS_FACE', 'SCARS_TAIL']);
 }])
 
 .controller('SearchImageSetCtrl', ['$scope', '$window', '$timeout', '$interval', 'LincServices', function ($scope, $window, $timeout, $interval, LincServices) {
@@ -93,24 +126,43 @@ angular.module('lion.guardians.image.set.controllers', [])
     });
   });
 
-  var requestCVResults = function (index, ReqObjid){
-    LincServices.requestCVResults(ReqObjid, function(result){
-      var cvresult = result.data.data;
-      // created_at: "2015...."; cvrequest_id: 90; id: 29; match_probability []; obj_id: num; update_at
-      $scope.imagesets[index].action = 'cvresults';
-      $scope.imagesets[index].cvresults = cvresult.obj_id;
-      console.log('Success Results CV');
+  var cancel_intervals = function (){
+    if($scope.requesCVpromise != null){
       $interval.cancel($scope.requesCVpromise);
-        $scope.requesCVpromise = undefined;
-    });
+      $scope.requesCVpromise = undefined;
+      console.log('Interval cancel');
+    }
   }
+  /*var requestCVResults = function (index, ReqObjid){
+    LincServices.xxxx('PUT', ReqObjid, function(result){
+      var cvresult = result.data.data;
+      if(cvresult.status != "queued"){
+        $scope.imagesets[index].action = 'cvresults';
+        $scope.imagesets[index].cvresults = cvresult.obj_id;
+        cancel_intervals();
+      }
+    }, function(error){
+      cancel_intervals();
+    });
+  }*/
   $scope.CVReqSuccess = function (imageset_Id, requestObj) {
-      var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: imageset_Id}));
-      $scope.imagesets[index].action = 'cvpending';
-      $scope.imagesets[index].cvrequest = requestObj.obj_id;
-      console.log('Success CV Request');
-      $timeout(function() {
-        $scope.requesCVpromise = $interval(requestCVResults(index, requestObj.id), 5000);
-      }, 10000);
+    var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: imageset_Id}));
+    $scope.imagesets[index].action = 'cvpending';
+    $scope.imagesets[index].cvrequest = requestObj.obj_id;
+    console.log('Success CV Request');
+    $timeout(function() {
+      LincServices.postCVResults(requestObj.id, function(result){
+        var cvresult = result.data.data;
+        if(cvresult.status !== "queued"){
+          $scope.imagesets[index].action = 'cvresults';
+          $scope.imagesets[index].cvresults = cvresult.obj_id;
+          console.log('Success Results CV');
+        }
+        /*else{
+          $scope.requesCVpromise = $interval(
+            requestCVResults('PUT', index, requestObj.id), 10000);
+        };*/
+      });
+    }, 3000);
   };
 }]);

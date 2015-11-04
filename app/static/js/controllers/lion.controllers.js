@@ -14,6 +14,53 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.lion = { id: 1, name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
   $scope.options = { type: 'lions', edit: 'edit', data: $scope.lion};
 
+  /*$scope.markings = [{value: 'ear',  label: 'Ear', allText : 'All Ear Markings',
+                      items: [ //{value: 'EAR_MARKING_BOTH}', label: 'Both'},
+                               {value: 'EAR_MARKING_LEFT',  label: 'Left'},
+                               {value: 'EAR_MARKING_RIGHT', label: 'Right'}
+                              ]},
+                     {value: 'mount', label: 'Mouth', allText: 'All Mouth Markings',
+                      items: [ {value: 'MOUTH_MARKING_BACK',  label: 'Back'},
+                               {value: 'MOUTH_MARKING_FRONT', lbael: 'Front'},
+                               {value: 'MOUTH_MARKING_LEFT',  label: 'Left'},
+                               {value: 'MOUTH_MARKING_RIGHT', label: 'Right'} ]},
+                     {value: 'tail', label: 'Tail',  allText: 'All Tail Markings',
+                      items: [{value: 'TAIL_MARKING_MISSING_TUFT', label: 'Missing Tuft'}]}];
+*/
+  var labels = function (damages, labels){
+    var label = "";
+    labels.forEach(function (elem, i){
+      label += damages[elem];
+      if(i<labels.length-1)
+      label += ', ';
+    });
+    return label;
+  }
+  var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left', 'EYE_DAMAGE_RIGHT': 'Right'};
+  var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right',
+                        'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
+  var ear_markings   = {'EAR_MARKING_BOTH': 'Both', 'EAR_MARKING_LEFT': 'Left', 'EAR_MARKING_RIGHT': 'Right'};
+  var mount_markings = {'MOUTH_MARKING_BACK': 'Back', 'MOUTH_MARKING_FRONT': 'Front',
+                      'MOUTH_MARKING_LEFT': 'Left', 'MOUTH_MARKING_RIGHT': 'Right'};
+  var tail_markings  = {'TAIL_MARKING_MISSING_TUFT': 'Missing Tuft'};
+  var nose_color     = {'NOSE_COLOUR_BLACK': 'Black', 'NOSE_COLOUR_PATCHY': 'Patchy',
+                        'NOSE_COLOUR_PINK': 'Pynk', 'NOSE_COLOUR_SPOTTED': 'Spotted'};
+  var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right',
+                        'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
+
+  $scope.lion.eye_damage = labels(eye_damages, ['EYE_DAMAGE_LEFT','EYE_DAMAGE_RIGHT']);
+  $scope.lion.broken_teet = labels(broken_teeths, ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT',
+                                                   'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']);
+  $scope.lion.ear_markings = labels(ear_markings, ['EAR_MARKING_BOTH','EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']);
+  $scope.lion.mount_markings = labels(mount_markings, ['MOUTH_MARKING_BACK','MOUTH_MARKING_FRONT',
+                                                       'MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']);
+  $scope.lion.tail_markings = labels(tail_markings, ['TAIL_MARKING_MISSING_TUFT']);
+
+  $scope.lion.nose_color = labels(nose_color, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY',
+                                                 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']);
+  $scope.lion.scars = labels(scars, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT',
+                                                 'SCARS_FACE', 'SCARS_TAIL']);
+
 }])
 
 .controller('SearchLionCtrl', ['$scope', 'LincServices', function ($scope, LincServices) {

@@ -7,7 +7,7 @@
     <div class="row">
       <div class="col-sm-4 line-right">
         <div class="form-group-margin text-right">
-          <label for="id_organization">Organization Name: </label>
+          <label for="id_organization">Organization: </label>
           <button type="button" id="id_organization" placeholder="Select Organization" class="btn btn-default btn-sm" ng-model="selected.organization" data-html="1" bs-options="organization as organization.name for organization in organizations" bs-select>
             Action <span class="caret"></span>
           </button>
@@ -16,7 +16,7 @@
         <hr class="style-line">
         <div class="form-inline text-right" ng-class="{'has-error': datepickerForm.date.$invalid}">
           <label class="control-label"><i class="fa fa-calendar"></i>Date Stamp: </label>
-          <input type="text" class="form-control" ng-model="selected.dateStamp" data-date-format="yyyy-MM-dd" data-date-type="date" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date" bs-datepicker placement= "top-left">
+          <input type="text" class="form-control" ng-model="selected.dateStamp" data-date-format="yyyy-MM-dd" data-date-type="date" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date" bs-datepicker placement= "bottom-left">
         </div>
         <pre ng-show="debug">{{!selected.dateStamp}}</pre>
         <hr class="style-line">
@@ -45,12 +45,12 @@
         <pre ng-show="debug">{{!selected.gender}}</pre>
       </div>
       <div class="col-sm-4">
-        <div ng-show="!isImageSet" class="form-inline text-right">
+        <div ng-show="showLionName" class="form-inline text-right">
           <label for="lion_name">Lion Name:</label>
-          <input type="text" class="form-control" id="lion_name" ng-model="selected.name" placeholder="Lion Name here">
+          <input type="text" class="form-control" id="lion_name" ng-model="selected.name" ng-readonly="isReadOnly" placeholder="{{! isReadOnly ? '' : 'Lion Name'}}">
         </div>
         <pre ng-show="debug">{{!selected.name}}</pre>
-        <hr class="style-line">
+        <hr ng-show="showLionName" class="style-line">
         <div class="form-inline text-right" ng-class="{'has-error': datepickerForm.date1.$invalid}">
           <label class="control-label"><i class="fa fa-calendar"></i>Date of Birth: </label>
           <input type="text" class="form-control" ng-model="selected.dateOfBirth" ng-change='Calc_Age()' data-date-format="yyyy-MM-dd" data-date-type="date" data-max-date="today" data-autoclose="1" name="date1" bs-datepicker placement= "bottom-left">
@@ -96,7 +96,7 @@
         <pre ng-show="debug">{{!selected.nose_color}}</pre>
         <hr class="style-line">
         <div class="form-group text-right">
-          <label for="id_scars">Scars Type</label>
+          <label for="id_scars">Scars</label>
           <button type="button" id="id_scars" placeholder="Select Scars" class="btn btn-default btn-sm" ng-model="selected.scars" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Scars Type" bs-options="scar.value as scar.label for scar in scars" bs-select>
             Action <span class="caret"></span>
           </button>
