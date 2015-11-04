@@ -38,6 +38,13 @@ class CVResultsHandler(BaseHandler):
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
         self.set_status(response.code)
         self.finish(response.body)
+    @asynchronous
+    @coroutine
+    def put(self, res_id=None):
+        resource_url = '/cvresults/' + res_id
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(self.input_data))
+        self.set_status(response.code)
+        self.finish(response.body)
 
 class ImagesListHandler(BaseHandler):
     @asynchronous

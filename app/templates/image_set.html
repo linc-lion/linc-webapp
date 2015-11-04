@@ -4,14 +4,42 @@
       <p><img src="{{!imageset.thumbnail}}" class="img-responsive"></p>
       <h4>Image Set ID</h4>
       <p>{{!imageset.id}}</p>
+      <h4>Lion Name</h4>
+      <p>{{!imageset.lion_name}}</p>
       <h4>Organization</h4>
       <p>{{!imageset.organization}}</p>
       <h4>Age</h4>
       <p>{{!imageset.age}}</p>
       <h4>Gender</h4>
       <p>{{!imageset.gender}}</p>
-      <h4>Ear Markings</h4>
-      <p>Left</p>
+      <div ng-show="imageset.eye_damage">
+        <h4>Eye Damage</h4>
+        <p>{{!imageset.eye_damage}}</p>
+      </div>
+      <div ng-show="imageset.broken_teet">
+        <h4>Broken Teeth</h4>
+        <p>{{!imageset.broken_teet}}</p>
+      </div>
+      <div ng-show="imageset.ear_markings">
+        <h4>Ear Markings</h4>
+        <p>{{!imageset.ear_markings}}</p>
+      </div>
+      <div ng-show="imageset.mount_markings">
+        <h4>Mouth Markings</h4>
+        <p>{{!imageset.mount_markings}}</p>
+      </div>
+      <div ng-show="imageset.tail_markings">
+        <h4>Tail Markings</h4>
+        <p>{{!imageset.tail_markings}}</p>
+      </div>
+      <div ng-show="imageset.nose_color">
+        <h4>Nose Color</h4>
+        <p>{{!imageset.nose_color}}</p>
+      </div>
+      <div ng-show="imageset.scars">
+        <h4>Scars</h4>
+        <p>{{!imageset.scars}}</p>
+      </div>
     </div>
     <div class="col-sm-5">
       <h4>Notes</h4>
@@ -23,7 +51,7 @@
       <br>
       <metadata use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="options"></metadata>
       <br>
-      <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" type="new" ng-if="imageset.action == 'cvresults'"></cvresults>
+      <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" type="new" ng-if="imageset.cvresults"></cvresults>
       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-flash"></i> ASSOCIATE LION</a></p>
       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE IMAGE SET</a></p>
     </div>

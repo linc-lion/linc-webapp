@@ -19,6 +19,7 @@ angular.module('lion.guardians.cvresults.directive', [])
       useCtrl: '@',
       formSize: '@',
       imagesetId: '=',
+      cvresultsId: '=',
       cvRequesultSuccess:'&'
     },
     link: function(scope, element, attrs) {
@@ -32,6 +33,9 @@ angular.module('lion.guardians.cvresults.directive', [])
           resolve: {
             imagesetId: function () {
               return scope.imagesetId;
+            },
+            cvresultsId: function () {
+              return scope.cvresultsId;
             }
           }
         });

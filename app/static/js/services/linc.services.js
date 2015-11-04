@@ -4,7 +4,7 @@ angular.module('lion.guardians.services', [])
   // cache
   var $httpcache = $cacheFactory.get('$http');
   // default get
-  var HTTPGet = function (url, label){
+  var HTTPCacheGet = function (url, label){
     var cache = $httpcache.get(url);
     var deferred = $q.defer();
     if(cache && cache.length>1){
@@ -42,7 +42,7 @@ angular.module('lion.guardians.services', [])
     var promises = names.map(function(name) {
       var url = databases[name].url + '/list';
       var label = databases[name].label + ' List';
-      return HTTPGet(url, label);
+      return HTTPCacheGet(url, label);
     });
     $q.all(promises).then(function (results) {
       var dados = {};
@@ -56,16 +56,11 @@ angular.module('lion.guardians.services', [])
       console.log(error);
     });
   };
-  /*// Get All Lists
-  var Get_All_Lists = function (fn) {
-    var names = Object.keys(databases);
-    return (GetLists(names,fn));
-  };*/
 
   var GetImageSet= function (id,  fn) {
     var url = databases['imagesets'].url + '/' + id;
     var label = databases['imagesets'].label;
-    HTTPGet(url, label).then(function (results) {
+    HTTPCacheGet(url, label).then(function (results) {
       fn(results);
     },
     function (error) {
@@ -76,7 +71,7 @@ angular.module('lion.guardians.services', [])
   var GetLion = function (id,  fn) {
     var url = databases['lions'].url + '/' + id;
     var label = databases['lions'].label;
-    HTTPGet(url, label).then(function (results) {
+    HTTPCacheGet(url, label).then(function (results) {
       fn(results);
     },
     function (error) {
@@ -86,7 +81,7 @@ angular.module('lion.guardians.services', [])
   var GetOrg = function (id,  fn) {
     var url = databases['organizations'].url + '/' + id;
     var label = databases['organizations'].label;
-    HTTPGet(url, label).then(function (results) {
+    HTTPCacheGet(url, label).then(function (results) {
       fn(results.data);
     },
     function (error) {
@@ -94,85 +89,68 @@ angular.module('lion.guardians.services', [])
     });
   };
 
-  // POSTS AND PUTS
+  var HTTP = function (metod, url, data, success, error) {
+    if(metod == 'GET' || metod == 'DELETE'){
+      $http.get(url).then(success, error);
+    }
+    else{
+      var req = { method: metod, url: url, data: data,
+                  headers: { 'Content-Type': 'application/json'}};
+      $http(req).then(success, error);
+    }
+  }
 
-  var HTTPPutPost = function (url, metod, data) {
-    var deferred = $q.defer();
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
-    angular.merge(data, cookies);
-    $http({
-      method: metod,
-      headers: { 'Content-Type': 'application/json'},
-      url: url,
-      data: data
-    })
-    .then(function(result){
-      deferred.resolve(result);
-    }, function(error){
-      deferred.reject(error);
-    });
-    return deferred.promise;
-  };
-  var Post_RequestCV = function (request, fn) {
+  var PostImageSets = function (metod, request, success) {
     var url = '/imagesets/' + request.imageset_id + '/cvrequest';
-    var metod = 'POST';
+    var cookies = {'_xsrf': $cookies.get('_xsrf')};
     var data = {"lions": request.lions_id};
-
-    HTTPPutPost(url, metod, data).then(function (results) {
-      NotificationFactory.success({
-        title: "Success", message:'CV Request created with success',
-        position: "right", // right, left, center
-        duration: 2000     // milisecond
-      });
-      fn(results);
-    },
-    function (error) {
-      if(error.status == 500){
-        NotificationFactory.error({
-          title: "Error", message: 'Request failed',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
+    angular.merge(data, cookies);
+    return HTTP('POST', url, data,
+      function (results) {
+        NotificationFactory.success({
+          title: "Success", message:'CV Request created with success',
+          position: "right", // right, left, center
+          duration: 2000     // milisecond
         });
+        success(results);
+      },
+      function (error) {
+        if(error.status == 500){
+          NotificationFactory.error({
+            title: "Error", message: 'Request failed',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
+        fail(error);
+        console.log(error);
       }
-      console.log(error);
-    });
-  };
-  var Post_CVResults = function (cvrequest_id, fn) {
-    var url = '/cvresults/';
-    var metod = 'POST';
-    var data = {"cvrequest_id":cvrequest_id};
-
-    HTTPPutPost(url, metod, data, fn).then(function (results) {
-      NotificationFactory.success({
-        title: "Success", message:'CV Request created with success',
-        position: "right", // right, left, center
-        duration: 2000     // milisecond
-      });
-      fn(results);
-    },
-    function (error) {
-      if(error.status == 500){
-        NotificationFactory.error({
-          title: "Error", message: 'Request failed',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      }
-      console.log(error);
-    });
+    );
   };
 
-  var Get_CVResults = function (cvresults_id, fn) {
-    var url = '/cvresults/' + cvresults_id + '/list';
-    var label = 'CV Results'
-    HTTPGet(url).then(function (results) {
-      fn(results.data);
-    },
-    function (error) {
+  var GetCVResults = function (cvresults_id, fn) {
+    return HTTP('GET', '/cvresults/' + cvresults_id + '/list', null,
+    function (success){
+      fn(success.data);
+    }, function(error){
       NotificationFactory.error({
         title: "Error", message: 'Unable to load CV Results List',
         position: 'right', // right, left, center
         duration: 5000   // milisecond
+      });
+      console.log(error);
+    });
+  };
+  var PostCVResults = function (cvrequest_id, success){
+    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    var data = {"cvrequest_id":cvrequest_id};
+    angular.merge(data, cookies);
+    return HTTP('POST', '/cvresults/', data, success,
+    function(error){
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to Post CV Results',
+        position: 'right', // right, left, center
+        duration: 180000   // milisecond
       });
       console.log(error);
     });
@@ -184,19 +162,13 @@ angular.module('lion.guardians.services', [])
   dataFactory.GetImageSet = GetImageSet;
   dataFactory.getlists = GetLists;
 
-  dataFactory.requestCV = Post_RequestCV;
-  dataFactory.requestCVResults = Post_CVResults;
-  dataFactory.getListCVResults = Get_CVResults
+  dataFactory.requestCV = PostImageSets;
+
+  dataFactory.postCVResults = PostCVResults;
+  //dataFactory.updateCVResults = PutCVResults();
+  dataFactory.getListCVResults = GetCVResults;
 
   return dataFactory;
 }])
-
-
-.factory('SelectedLion', function() {
-  var _lion = {};
-  return {
-    Selectedlion: _lion
-  };
-})
 
 ;

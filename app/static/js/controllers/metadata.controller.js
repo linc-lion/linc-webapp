@@ -6,16 +6,15 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
   $scope.debug = false;
   $scope.optionsSet = optionsSet;
-  //var btn_types = {}; btn_types['edit'] = {save:true, upload:false};
-  //                    btn_types['new'] = {save:true, upload:true};
+
   var titles = {}; titles['lions'] = 'Lion Metadata'; titles['imagesets'] = 'Image Set Metadata';
 
-  $scope.isImageSet = (optionsSet.type === 'imagesets');
+  $scope.showLionName = (optionsSet.type === 'lions' || (optionsSet.type === 'imagesets' && optionsSet.edit === 'edit'));
+  $scope.isReadOnly = (optionsSet.edit === 'edit');
   $scope.isNew = (optionsSet.edit === 'new');
   // Title
   $scope.title = titles[optionsSet.type];
   $scope.content = 'Form';
-  //$scope.show = btn_types[optionsSet.edit];
 
   $scope.LoadMetaData = function (){
     LincServices.getMetadata($scope.id,function(metadata){
@@ -72,9 +71,6 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     teeth: [], eye_damage: [], nose_color: [], scars: [], notes: "Notes here"
   }
 
-  $scope.Calc_Age = function(){
-    $scope.selected.age = getAge($scope.selected.dateOfBirth);
-  }
   // Datas
   $scope.genders = [{value: 'male', label: 'Male'},
                     {value: 'female',label: 'Female'}];
@@ -86,7 +82,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
                               ]},
                      {value: 'mount', label: 'Mouth', allText: 'All Mouth Markings',
                       items: [ {value: 'MOUTH_MARKING_BACK',  label: 'Back'},
-                               {value: 'MOUTH_MARKING_FRONT', lbael: 'Front'},
+                               {value: 'MOUTH_MARKING_FRONT', label: 'Front'},
                                {value: 'MOUTH_MARKING_LEFT',  label: 'Left'},
                                {value: 'MOUTH_MARKING_RIGHT', label: 'Right'} ]},
                      {value: 'tail', label: 'Tail',  allText: 'All Tail Markings',
@@ -138,4 +134,9 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     }
     return age;
   }
+
+  $scope.Calc_Age = function(){
+    $scope.selected.age = getAge($scope.selected.dateOfBirth);
+  }
+
 }]);

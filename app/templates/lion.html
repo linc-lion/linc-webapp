@@ -4,14 +4,42 @@
       <p><img src="{{!lion.thumbnail}}" class="img-responsive"></p>
       <h4>Lion ID</h4>
       <p>{{!lion.id}}</p>
+      <h4>Lion Name</h4>
+      <p>{{!lion.name}}</p>
       <h4>Organization</h4>
       <p>{{!lion.organization}}</p>
       <h4>Age</h4>
       <p>{{!lion.age}}</p>
       <h4>Gender</h4>
       <p>{{!lion.gender}}</p>
-      <h4>Ear Markings</h4>
-      <p>Left</p>
+      <div ng-show="lion.eye_damage">
+        <h4>Eye Damage</h4>
+        <p>{{!lion.eye_damage}}</p>
+      </div>
+      <div ng-show="lion.broken_teet">
+        <h4>Broken Teeth</h4>
+        <p>{{!lion.broken_teet}}</p>
+      </div>
+      <div ng-show="lion.ear_markings">
+        <h4>Ear Markings</h4>
+        <p>{{!lion.ear_markings}}</p>
+      </div>
+      <div ng-show="lion.mount_markings">
+        <h4>Mouth Markings</h4>
+        <p>{{!lion.mount_markings}}</p>
+      </div>
+      <div ng-show="lion.tail_markings">
+        <h4>Tail Markings</h4>
+        <p>{{!lion.tail_markings}}</p>
+      </div>
+      <div ng-show="lion.nose_color">
+        <h4>Nose Color</h4>
+        <p>{{!lion.nose_color}}</p>
+      </div>
+      <div ng-show="lion.scars">
+        <h4>Scars</h4>
+        <p>{{!lion.scars}}</p>
+      </div>
     </div>
     <div class="col-sm-5">
       <h4>Notes</h4>
