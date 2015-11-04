@@ -5,18 +5,24 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
 .controller('ImageGalleryCtrl', ['$scope', '$window', '$uibModalInstance', 'optionsSet', function($scope, $window, $uibModalInstance, optionsSet) {
 
   $scope.optionsSet = optionsSet;
+  $scope.optionsSet.isMetadata = false;
   var titles = {}; titles['lions'] = 'Lions'; titles['imagesets'] = 'Image Sets';
 
   // Title
   $scope.title = 'Image Gallery' + '(' + titles[optionsSet.type] + ')';
   $scope.content = 'Image Gallery<br />Contents!';
 
-  $scope.ok = function () {
-    $uibModalInstance.close("ok");
+  $scope.Save = function(){
+    $uibModalInstance.close("salve");
   };
   $scope.cancel = function () {
     $uibModalInstance.dismiss('cancel');
   };
+  $scope.Close = function(){
+    console.log("Close UploadImages");
+    //$scope.metadataId = {id: 5};
+    $uibModalInstance.close("close");
+  }
   /*function create_zip() {
     var zip = new JSZip();
     zip.add("hello1.txt", "Hello First World\n");

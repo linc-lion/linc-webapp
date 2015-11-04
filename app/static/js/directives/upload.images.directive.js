@@ -11,7 +11,7 @@ angular.module('lion.guardians.upload.images.directive', [])
         case 'metadata':
           return '<a class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-camera"></i> Save & Add Images</a>';
         default:
-          return '<button class="btn btn-primary btn-block">Upload images</button>';
+          return '<button class="btn btn-primary btn-block" ng-click="open()">Upload images</button>';
       }
     },
     scope: {
@@ -43,6 +43,25 @@ angular.module('lion.guardians.upload.images.directive', [])
           }, function (result) {
             console.log('Modal dismissed at: ' + result);
           });
+        });
+      },
+      scope.open = function(){
+        var modalInstance = $uibModal.open({
+          animation: true,
+          backdrop: true,
+          templateUrl: scope.useTemplateUrl,
+          controller:  scope.useCtrl,
+          size: scope.formSize,
+          resolve: {
+            optionsSet: function () {
+              return scope.optionsSet;
+            }
+          }
+        });
+        modalInstance.result.then(function (result) {
+          console.log(result);
+        }, function (result) {
+          console.log('Modal dismissed at: ' + result);
         });
       }
     }

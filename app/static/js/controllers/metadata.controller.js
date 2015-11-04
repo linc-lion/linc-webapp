@@ -6,6 +6,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
   $scope.debug = false;
   $scope.optionsSet = optionsSet;
+  $scope.optionsSet.isMetadata = true;
 
   var titles = {}; titles['lions'] = 'Lion Metadata'; titles['imagesets'] = 'Image Set Metadata';
 

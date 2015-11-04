@@ -4,7 +4,7 @@ angular.module('lion.guardians.services', [])
   // cache
   var $httpcache = $cacheFactory.get('$http');
   // default get
-  var HTTPCacheGet = function (url, label){
+  var HTTPCachedGet = function (url, label){
     var cache = $httpcache.get(url);
     var deferred = $q.defer();
     if(cache && cache.length>1){
@@ -42,7 +42,7 @@ angular.module('lion.guardians.services', [])
     var promises = names.map(function(name) {
       var url = databases[name].url + '/list';
       var label = databases[name].label + ' List';
-      return HTTPCacheGet(url, label);
+      return HTTPCachedGet(url, label);
     });
     $q.all(promises).then(function (results) {
       var dados = {};
@@ -60,7 +60,7 @@ angular.module('lion.guardians.services', [])
   var GetImageSet= function (id,  fn) {
     var url = databases['imagesets'].url + '/' + id;
     var label = databases['imagesets'].label;
-    HTTPCacheGet(url, label).then(function (results) {
+    HTTPCachedGet(url, label).then(function (results) {
       fn(results);
     },
     function (error) {
@@ -71,7 +71,7 @@ angular.module('lion.guardians.services', [])
   var GetLion = function (id,  fn) {
     var url = databases['lions'].url + '/' + id;
     var label = databases['lions'].label;
-    HTTPCacheGet(url, label).then(function (results) {
+    HTTPCachedGet(url, label).then(function (results) {
       fn(results);
     },
     function (error) {
@@ -81,7 +81,7 @@ angular.module('lion.guardians.services', [])
   var GetOrg = function (id,  fn) {
     var url = databases['organizations'].url + '/' + id;
     var label = databases['organizations'].label;
-    HTTPCacheGet(url, label).then(function (results) {
+    HTTPCachedGet(url, label).then(function (results) {
       fn(results.data);
     },
     function (error) {
@@ -163,7 +163,6 @@ angular.module('lion.guardians.services', [])
   dataFactory.getlists = GetLists;
 
   dataFactory.requestCV = PostImageSets;
-
   dataFactory.postCVResults = PostCVResults;
   //dataFactory.updateCVResults = PutCVResults();
   dataFactory.getListCVResults = GetCVResults;

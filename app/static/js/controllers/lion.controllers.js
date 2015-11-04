@@ -12,21 +12,11 @@ angular.module('lion.guardians.lions.controllers', [])
   });*/
 
   $scope.lion = { id: 1, name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
+  // Metadata Options
   $scope.options = { type: 'lions', edit: 'edit', data: $scope.lion};
-
-  /*$scope.markings = [{value: 'ear',  label: 'Ear', allText : 'All Ear Markings',
-                      items: [ //{value: 'EAR_MARKING_BOTH}', label: 'Both'},
-                               {value: 'EAR_MARKING_LEFT',  label: 'Left'},
-                               {value: 'EAR_MARKING_RIGHT', label: 'Right'}
-                              ]},
-                     {value: 'mount', label: 'Mouth', allText: 'All Mouth Markings',
-                      items: [ {value: 'MOUTH_MARKING_BACK',  label: 'Back'},
-                               {value: 'MOUTH_MARKING_FRONT', lbael: 'Front'},
-                               {value: 'MOUTH_MARKING_LEFT',  label: 'Left'},
-                               {value: 'MOUTH_MARKING_RIGHT', label: 'Right'} ]},
-                     {value: 'tail', label: 'Tail',  allText: 'All Tail Markings',
-                      items: [{value: 'TAIL_MARKING_MISSING_TUFT', label: 'Missing Tuft'}]}];
-*/
+  // Location History
+  $scope.locationHistory = {};
+  
   var labels = function (damages, labels){
     var label = "";
     labels.forEach(function (elem, i){

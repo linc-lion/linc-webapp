@@ -2,25 +2,34 @@
 
 angular.module('lion.guardians.location.history.controller', ['lion.guardians.location.history.directive'])
 
-.controller('LocationHistoryCtrl', ['$scope', '$window', '$timeout', '$uibModalInstance', function ($scope, $window, $timeout, $uibModalInstance) {
+.controller('LocationHistoryCtrl', ['$scope', '$window', '$timeout', '$uibModalInstance', 'locationSets', function ($scope, $window, $timeout, $uibModalInstance, locationSets) {
     $scope.title = 'Location History';
     $scope.content = 'Map';
     // Close
     $scope.Close = function () {
      $uibModalInstance.close('close');
     };
-    
-    $scope.lions = [{ id: 1, name: 'leão 1', age: 13, geopos: [-2.728214, 37.020190], url_small: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false},
-                           { id: 2, name: 'leão 2', age: 14, geopos: [-2.811887, 36.869128], url_small: "/static/images/square-small/lion2.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: false, selected: false},
-                           { id: 3, name: 'leão 3', age: 15, geopos: [-2.704894, 36.836169], url_small: "/static/images/square-small/lion3.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: false, pending: false, primary: true, verified: true, selected: false},
-                           { id: 4, name: 'leão 4', age: 8, geopos: [-2.543016, 37.080614], url_small: "/static/images/square-small/lion4.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: true, selected: false },
-                           { id: 5, name: 'leão 5', age: 8, geopos: [-2.647856, 37.191164], url_small: "/static/images/square-small/lion5.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false },
-                           { id: 6, name: 'leão 6', age: 9, geopos: [-3.293193, 37.526870], url_small: "/static/images/square-small/lion6.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: false, pending: false, primary: true, verified: true, selected: false },
-                           { id: 7, name: 'leão 7', age: 6, geopos: [-2.014719, 36.141606], url_small: "/static/images/square-small/lion7.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: false, pending: true, primary: true, verified: true, selected: false },
-                           { id: 8, name: 'leão 8', age: 2, geopos: [-2.706266, 35.921880], url_small: "/static/images/square-small/lion8.jpeg", gender: 'female', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: true, selected: false },
-                           { id: 9, name: 'leão 9', age: 7, geopos: [-3.598955, 37.185796], url_small: "/static/images/square-small/lion9.jpg", gender: 'female', organization: 'Lion Guardians', hasResults: false, pending: false, primary: false, verified: true, selected: false },
-                           { id: 10, name: 'leão 10', age: 10, geopos: [0.974389, 34.654247], url_small: "/static/images/square-small/lion10.jpeg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: true, primary: true, verified: true, selected: false }];
 
+    $scope.imagesets  = [{ id: 1, date: (new Date('2008-04-06')).toLocaleDateString(), geopos: [-2.728214, 37.020190],
+                          thumbnail: "/static/images/square-small/lion1.jpg"},
+                        { id: 2, date: new Date('2008-09-26').toLocaleDateString(), geopos: [-2.811887, 36.869128],
+                          thumbnail: "/static/images/square-small/lion2.jpeg"},
+                        { id: 3, date: new Date('2009-04-16').toLocaleDateString(), geopos: [-2.704894, 36.836169],
+                          thumbnail: "/static/images/square-small/lion3.jpeg"},
+                        { id: 4,date: new Date('2010-11-21').toLocaleDateString(), geopos: [-2.543016, 37.080614],
+                          thumbnail: "/static/images/square-small/lion4.jpg"},
+                        { id: 5, date: new Date('2011-08-12').toLocaleDateString(), geopos: [-2.647856, 37.191164],
+                          thumbnail: "/static/images/square-small/lion5.jpg"},
+                        { id: 6, date: new Date('2012-04-02').toLocaleDateString(), geopos: [-3.293193, 37.526870],
+                          thumbnail: "/static/images/square-small/lion6.jpeg"},
+                        { id: 7,date: new Date('2013-08-11').toLocaleDateString(), geopos: [-2.014719, 36.141606],
+                          thumbnail: "/static/images/square-small/lion7.jpeg"},
+                        { id: 8, date: new Date('2014-05-20').toLocaleDateString(), geopos: [-2.706266, 35.921880],
+                          thumbnail: "/static/images/square-small/lion8.jpeg"},
+                        { id: 9, date: new Date('2014-12-16').toLocaleDateString(), geopos: [-3.598955, 37.185796],
+                          thumbnail: "/static/images/square-small/lion9.jpg"},
+                        { id: 10, date: new Date('2015-08-02').toLocaleDateString(), geopos: [0.974389, 34.654247],
+                          thumbnail: "/static/images/square-small/lion10.jpeg"}];
     $scope.mapa = {
         center: [-2.704894, 36.836169],
         zoom: 8,
@@ -43,18 +52,18 @@ angular.module('lion.guardians.location.history.controller', ['lion.guardians.lo
     function add_lions (){
         var i=0;
         var lion_url = "/static/icons/lion-icon.ico";
-        $scope.lions.forEach(function(lion){
+        $scope.imagesets.forEach(function(imageset){
             $timeout(function() {
                 var icon = new google.maps.MarkerImage(lion_url, null, null, null, new google.maps.Size(24, 24));
                 var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(lion.geopos[0], lion.geopos[1]),
+                    position: new google.maps.LatLng(imageset.geopos[0], imageset.geopos[1]),
                     map: $scope.map,
                     draggable: false,
                     animation: google.maps.Animation.DROP,
                     icon: icon
                 });
                 var handler = google.maps.event.addListener(marker, 'click', function(event) {
-                    alert('Lion name is :' + lion.name);
+                    alert('Imageset :' + imageset.id + ' - date: ' + imageset.date);
                 });
             }, i * 200);
             i++;

@@ -5,9 +5,10 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
 .controller('UploadImagesCtrl', ['$scope', '$window', '$uibModalInstance', 'FileUploader', 'NotificationFactory', 'optionsSet', function ($scope, $window, $uibModalInstance, FileUploader, NotificationFactory, optionsSet) {
 
   $scope.optionsSet = optionsSet;
-  console.log("Option" + JSON.stringify($scope.optionsSet));
-  var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
 
+  $scope.isFromMetaData = optionsSet.isMetadata;
+
+  var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
   $scope.title = 'Upload Images ' + '(' + titles[$scope.optionsSet.type] + ')';
   $scope.content = 'Upload Images<br />Contents!';
 
