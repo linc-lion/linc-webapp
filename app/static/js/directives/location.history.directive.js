@@ -10,7 +10,8 @@ angular.module('lion.guardians.location.history.directive', [])
         scope: {
           useTemplateUrl: '@',
           useCtrl: '@',
-          formSize: '@'
+          formSize: '@',
+          locationSets: '=',
         },
         link: function(scope, element, attrs) {
           scope.show = function(){
@@ -21,8 +22,8 @@ angular.module('lion.guardians.location.history.directive', [])
               controller:  scope.useCtrl,
               size: scope.formSize,
               resolve: {
-                modalOptions: function () {
-                  return scope.modalOptions;
+                locationSets: function () {
+                  return scope.locationSets;
                 }
               }
             });

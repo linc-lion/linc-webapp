@@ -11,7 +11,10 @@ angular.module('lion.guardians.image.set.controllers', [])
   });*/
 
   $scope.imageset = { id: 1, lion_name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false, cvresults: null};
+  // Metadata Options
   $scope.options = { type: 'imagesets', edit: 'edit', data: $scope.data};
+  // Location History
+  $scope.locationHistory = {};
 
   var labels = function (damages, labels){
     var label = "";
