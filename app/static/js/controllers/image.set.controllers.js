@@ -15,7 +15,7 @@ angular.module('lion.guardians.image.set.controllers', [])
 
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$window', 'LincServices', function ($scope, $window, LincServices) {
+.controller('SearchImageSetCtrl', ['$scope', '$window', '$timeout', '$interval', 'LincServices', function ($scope, $window, $timeout, $interval, LincServices) {
   // Hide Filters
   $scope.isCollapsed = true;
   // Filters  scopes
@@ -93,9 +93,24 @@ angular.module('lion.guardians.image.set.controllers', [])
     });
   });
 
+  var requestCVResults = function (index, ReqObjid){
+    LincServices.requestCVResults(ReqObjid, function(result){
+      var cvresult = result.data.data;
+      // created_at: "2015...."; cvrequest_id: 90; id: 29; match_probability []; obj_id: num; update_at
+      $scope.imagesets[index].action = 'cvresults';
+      $scope.imagesets[index].cvresults = cvresult.obj_id;
+      console.log('Success Results CV');
+      $interval.cancel($scope.requesCVpromise);
+        $scope.requesCVpromise = undefined;
+    });
+  }
   $scope.CVReqSuccess = function (imageset_Id, requestObj) {
       var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: imageset_Id}));
       $scope.imagesets[index].action = 'cvpending';
       $scope.imagesets[index].cvrequest = requestObj.obj_id;
+      console.log('Success CV Request');
+      $timeout(function() {
+        $scope.requesCVpromise = $interval(requestCVResults(index, requestObj.id), 5000);
+      }, 10000);
   };
 }]);
