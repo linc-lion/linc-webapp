@@ -15,7 +15,7 @@ angular.module('lion.guardians.side.menu.directive', [])
                  var myModal = $aside(
                         {
                             controller: 'SideMenuCtrl',
-                            templateUrl: 'sidemenu',
+                            templateUrl: 'sidemenu.html',
                             show: true
                         }
                     );

@@ -18,12 +18,12 @@
       <p>Blah blah blah blah blah blah blah blah blah blah blah</p>
     </div>
     <div class="col-sm-3 line-left">
-      <image-gallery use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery" form-size="lg" options-set="options"></image-gallery>
-      <location-history use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory" form-size="lg"></location-history>
+      <image-gallery use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="options"></image-gallery>
+      <location-history use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg"></location-history>
       <br>
-      <metadata use-ctrl="MetadataCtrl" use-template-url="metadata" form-size="lg" type="edit" options-set="options"></metadata>
+      <metadata use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="options"></metadata>
       <br>
-      <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults" form-size="lg" imageset-id="imageset.id" type="new" ng-if="imageset.action == 'cvresults'"></cvresults>
+      <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" type="new" ng-if="imageset.action == 'cvresults'"></cvresults>
       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-flash"></i> ASSOCIATE LION</a></p>
       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE IMAGE SET</a></p>
     </div>

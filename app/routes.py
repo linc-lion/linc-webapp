@@ -5,9 +5,9 @@ from handlers.base import VersionHandler
 from handlers.error import ErrorHandler
 from handlers.auth import AuthHandler
 from handlers.main import MainHandler,LoginHandler,HomeHandler,SideMenuHandler,\
-    LionHandler,SearchLionHandler,ImageSetHandler,SearchImageSetHandler,\
+    LionMainHandler,SearchLionHandler,ImageSetMainHandler,SearchImageSetHandler,\
     ConservationistsHandler,ImageGalleryHandler,LocationHistoryHandler,\
-    EditMetadataHandler,CVResultsHandler,CVRequestHandler,UploadImagesHandler
+    EditMetadataHandler,CVResultsMainHandler,CVRequestMainHandler,UploadImagesHandler
 from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler, ImagesUploadHandler, LionsHandler, ImageSetsHandler, OrganizationsHandler, CVResultsHandler
 
 # Defining routes
@@ -15,20 +15,20 @@ url_patterns = [
     # Handlers for the website
     (r"/", MainHandler),
     (r"/version", VersionHandler),
-    (r"/login", LoginHandler),
-    (r"/home", HomeHandler),
-    (r"/sidemenu", SideMenuHandler),
-    (r"/lion", LionHandler),
-    (r"/searchlion", SearchLionHandler),
-    (r"/imageset", ImageSetHandler),
-    (r"/searchimageset", SearchImageSetHandler),
-    (r"/conservationists", ConservationistsHandler),
-    (r"/imagegallery", ImageGalleryHandler),
-    (r"/locationhistory", LocationHistoryHandler),
-    (r"/metadata", EditMetadataHandler),
-    (r"/cvresults", CVResultsHandler),
-    (r"/cvrequest", CVRequestHandler),
-    (r"/uploadimages", UploadImagesHandler),
+    (r"/login.html", LoginHandler),
+    (r"/home.html", HomeHandler),
+    (r"/sidemenu.html", SideMenuHandler),
+    (r"/lion.html", LionMainHandler),
+    (r"/searchlion.html", SearchLionHandler),
+    (r"/imageset.html", ImageSetMainHandler),
+    (r"/searchimageset.html", SearchImageSetHandler),
+    (r"/conservationists.html", ConservationistsHandler),
+    (r"/imagegallery.html", ImageGalleryHandler),
+    (r"/locationhistory.html", LocationHistoryHandler),
+    (r"/metadata.html", EditMetadataHandler),
+    (r"/cvresults.html", CVResultsMainHandler),
+    (r"/cvrequest.html", CVRequestMainHandler),
+    (r"/uploadimages.html", UploadImagesHandler),
     # Handlers for API comunication
     (r"/imagesets/list", ImageSetsListHandler),
     (r"/imagesets/(\w+)/(cvrequest)$", ImageSetsListHandler),

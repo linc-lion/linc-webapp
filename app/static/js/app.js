@@ -49,18 +49,18 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
           url: '/login',
           controller: 'LoginCtrl',
           controllerAs: 'vm',
-          templateUrl: 'login'
+          templateUrl: 'login.html'
         })
         // Home Menu
         .state("home", {
           url: "/home",
           controller: 'HomeCtrl',
-          templateUrl: 'home'
+          templateUrl: 'home.html'
         })
         .state("lion", {
           url: "/lion/:id",
           controller: 'LionCtrl',
-          templateUrl: '/lion',
+          templateUrl: 'lion.html',
           data: {
             bodyClasses: 'lion'
           }
@@ -69,7 +69,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
         .state("imageset", {
           url: "/imageset/:id",
           controller: 'ImageSetCtrl',
-          templateUrl: '/imageset',
+          templateUrl: 'imageset.html',
           data: {
             bodyClasses: 'imageset'
           }
@@ -78,7 +78,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
         .state("searchlion", {
           url: "/searchlion",
           controller: 'SearchLionCtrl',
-          templateUrl: '/searchlion',
+          templateUrl: 'searchlion.html',
           data: {
             bodyClasses: 'searchlion'
           }
@@ -87,7 +87,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
         .state("searchimageset", {
           url: "/searchimageset",
           controller: 'SearchImageSetCtrl',
-          templateUrl: '/searchimageset',
+          templateUrl: 'searchimageset.html',
           data: {
             bodyClasses: 'searchimageset'
           }
@@ -96,7 +96,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
         .state("conservationists", {
           url: "/conservationists",
           controller: 'ConservationistsCtrl',
-          templateUrl: '/conservationists',
+          templateUrl: 'conservationists.html',
           data: {
             bodyClasses: 'conservationists'
           }
