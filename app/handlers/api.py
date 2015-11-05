@@ -101,23 +101,16 @@ class OrganizationsListHandler(BaseHandler):
         self.finish(response.body)
 
 class ImagesUploadHandler(BaseHandler):
-    @asynchronous
-    @engine
     def post(self):
-        #resource_url = '/organizations/list'
-        #response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
-        #self.set_status(response.code)
-        #self.finish(response.body)
-        bucket = "linc-test"
-        policy_document = {"expiration": "2200-01-01T00:00:00Z",
-                           "conditions": [
-                                    {"bucket": bucket},
-                                     ["starts-with", "$key", "uploads/"],
-                                     {"acl": "public"},
-                                     {"success_action_redirect": "http://localhost:5080/images/upload"},
-                                     ["starts-with", "$Content-Type", "image/jpeg"], #we will check content type
-                                    ["content-length-range", 0, 50048576]
-                                        ]}
-        AWS_SECRET_ACCESS_KEY = "AKIAIIMGBKV4ZZ5F5I2Q,buzX/qIu5LFjpepnxufnaBKrO5Tps/Y1UeE5Ykkp"
-        policy = base64.b64encode(policy_document)
-        signature = base64.b64encode(hmac.new(AWS_SECRET_ACCESS_KEY, policy, hashlib.sha1).digest())
+        fileinfo = self.request.files['file'][0]
+        #print("fileinfo is", fileinfo)
+        body = fileinfo['body'];
+        #print("body is", body)
+        fname = fileinfo['filename']
+        print("fname is", fname)
+        from os.path import realpath,dirname
+        dirfs= dirname(realpath(__file__))
+        print("dirfs is", dirfs)
+        fh = open(dirfs+'/'+fname, 'wb')
+        fh.write(body)
+        self.finish(dirfs+'/'+fname + " is uploaded!! Check %s folder" % dirfs)

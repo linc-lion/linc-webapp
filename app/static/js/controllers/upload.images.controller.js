@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.upload.images.controller', ['lion.guardians.upload.images.directive', 'lion.guardians.thumbnail.directive'])
 
-.controller('UploadImagesCtrl', ['$scope', '$window', '$uibModalInstance', 'FileUploader', 'NotificationFactory', 'optionsSet', function ($scope, $window, $uibModalInstance, FileUploader, NotificationFactory, optionsSet) {
+.controller('UploadImagesCtrl', ['$scope', '$window', '$cookies', '$uibModalInstance', 'FileUploader', 'NotificationFactory', 'optionsSet', function ($scope, $window, $cookies, $uibModalInstance, FileUploader, NotificationFactory, optionsSet) {
 
   $scope.optionsSet = optionsSet;
 
@@ -20,21 +20,14 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
    $uibModalInstance.close('finish');
   };
 
-  $scope.ImageTypes = [
-                        {"value":"cv","label":"CV Image"},
-                        {"value":"body","label":"Full Body"},
-                        {"value":"whisker","label":"Whisker"},
-                        {"value":"markings","label":"Markings"},
-                        {"value":"id","label":"General Id"}
-                      ];
+  $scope.ImageTypes = [{"value":"cv","label":"CV Image"},{"value":"body","label":"Full Body"},
+                       {"value":"whisker","label":"Whisker"},{"value":"markings","label":"Markings"},
+                       {"value":"id","label":"General Id"}];
 
-  $scope.ImageProperties = [
-                              {"value":"public","label":"Public"},
-                              {"value":"private","label":"Private"}
-                            ];
+  $scope.ImageProperties = [{"value":"public","label":"Public"},{"value":"private","label":"Private"}];
 
   var uploader = $scope.uploader = new FileUploader({
-    url: 'https://angular-file-upload-cors-srv.appspot.com/upload'
+    url: '/images/upload'
   });
 
   // FILTERS
@@ -45,6 +38,7 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
       return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
     }
   });
+  //uploader.headers = {'_xsrf': $cookies.get('_xsrf')};
   // CALLBACKS
   uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
     console.info('onWhenAddingFileFailed', item, filter, options);
@@ -56,7 +50,7 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
     console.info('onAfterAddingAll', addedFileItems);
   };
   uploader.onBeforeUploadItem = function(item) {
-    //console.info('onBeforeUploadItem', item);
+    console.info('onBeforeUploadItem', item);
   /*  formData = [{
         selectedImageType: '$scope.selectedImageType',
         selectedProperties: '$scope.selectedProperties',
