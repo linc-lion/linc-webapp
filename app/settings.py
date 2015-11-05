@@ -99,4 +99,4 @@ else:
 config['url'] = appurl
 
 # Settings for access to linc-api
-config['API_URL'] = 'http://192.168.100.10:5000'
+config['API_URL'] = 'https://linc-api.herokuapp.com'
