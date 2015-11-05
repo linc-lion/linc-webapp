@@ -5,8 +5,12 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
 .controller('UploadImagesCtrl', ['$scope', '$window', '$cookies', '$uibModalInstance', 'FileUploader', 'NotificationFactory', 'optionsSet', function ($scope, $window, $cookies, $uibModalInstance, FileUploader, NotificationFactory, optionsSet) {
 
   $scope.optionsSet = optionsSet;
-
   $scope.isFromMetaData = optionsSet.isMetadata;
+
+  $scope.select = {
+    isCover: '',
+    imageset_id: optionsSet.data.id
+  };
 
   var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
   $scope.title = 'Upload Images ' + '(' + titles[$scope.optionsSet.type] + ')';
@@ -20,16 +24,19 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
    $uibModalInstance.close('finish');
   };
 
-  $scope.ImageTypes = [{"value":"cv","label":"CV Image"},{"value":"body","label":"Full Body"},
-                       {"value":"whisker","label":"Whisker"},{"value":"markings","label":"Markings"},
-                       {"value":"id","label":"General Id"}];
-
-  $scope.ImageProperties = [{"value":"public","label":"Public"},{"value":"private","label":"Private"}];
+  $scope.Types = {'Images' : [{"value":"cv","label":"CV Image"},
+                             {"value":"full-body","label":"Full Body"},
+                             {"value":"whisker","label":"Whisker"},
+                             {"value":"main-id","label":"Main Id"},
+                             {"value":"markings","label":"Markings"}],
+                'Properties' : [{"value":true,"label":"Public"},
+                               {"value":false,"label":"Private"}]};
 
   var uploader = $scope.uploader = new FileUploader({
     url: '/images/upload'
   });
 
+  $scope.headers = { 'Content-Type': 'application/json' };
   // FILTERS
   uploader.filters.push({
     name: 'imageFilter',
@@ -51,19 +58,14 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   };
   uploader.onBeforeUploadItem = function(item) {
     console.info('onBeforeUploadItem', item);
-  /*  formData = [{
-        selectedImageType: '$scope.selectedImageType',
-        selectedProperties: '$scope.selectedProperties',
-        selectedCover: '$scope.selectedCover'
-    }];
+
+    var formData = [{'image_type' : item.file.ImageType},
+                    {'is_public': item.file.Properties},
+                    {'image_set_id': $scope.select.imageset_id},
+                    {'iscover': ($scope.select.isCover == item.$$hashKey)}];
+
     Array.prototype.push.apply(item.formData, formData);
-    //item.formData.push(formData);*/
-    /* Caso precise adicionar mais dados
-    item.formData.push({selectedImageType: '$scope.selectedImageType',
-    selectedProperties: '$scope.selectedProperties',
-    selectedCover: '$scope.selectedCover'});
-      console.log(item);
-    */
+
   };
   uploader.onProgressItem = function(fileItem, progress) {
       console.info('onProgressItem', fileItem, progress);
