@@ -7,6 +7,7 @@ from handlers.base import BaseHandler
 import base64
 import hmac, hashlib
 
+
 class ImageSetsListHandler(BaseHandler):
     @asynchronous
     @engine
@@ -107,10 +108,22 @@ class ImagesUploadHandler(BaseHandler):
         body = fileinfo['body'];
         #print("body is", body)
         fname = fileinfo['filename']
-        print("fname is", fname)
+        #print("fname is", fname)
         from os.path import realpath,dirname
         dirfs= dirname(realpath(__file__))
-        print("dirfs is", dirfs)
+        #print("dirfs is", dirfs)
         fh = open(dirfs+'/'+fname, 'wb')
         fh.write(body)
+
+        #data_body = self.request.body
+        #print("data_body is", data_body)
+        image_type = self.get_argument("image_type")
+        is_public = self.get_argument("is_public")
+        image_set_id = self.get_argument("image_set_id")
+        iscover = self.get_argument("iscover")
+        print('image_type ', image_type)
+        print('is_public ', is_public)
+        print('image_set_id ', image_set_id)
+        print('iscover ', iscover)
+
         self.finish(dirfs+'/'+fname + " is uploaded!! Check %s folder" % dirfs)

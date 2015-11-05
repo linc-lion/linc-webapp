@@ -145,7 +145,21 @@ angular.module('lion.guardians.services', [])
     var cookies = {'_xsrf': $cookies.get('_xsrf')};
     var data = {"cvrequest_id":cvrequest_id};
     angular.merge(data, cookies);
-    return HTTP('POST', '/cvresults/', data, success,
+    return HTTP('POST', '/cvresults', data, success,
+    function(error){
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to Post CV Results',
+        position: 'right', // right, left, center
+        duration: 180000   // milisecond
+      });
+      console.log(error);
+    });
+  };
+  var PutCVResults = function (cvrequest_id, success){
+    var data = {'_xsrf': $cookies.get('_xsrf')};
+    //var data = {"cvrequest_id":cvrequest_id};
+    //angular.merge(data, cookies);
+    return HTTP('PUT', '/cvresults/' + cvrequest_id, data, success,
     function(error){
       NotificationFactory.error({
         title: "Error", message: 'Unable to Post CV Results',

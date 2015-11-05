@@ -8,6 +8,10 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   $scope.optionsSet.isMetadata = false;
   var titles = {}; titles['lions'] = 'Lions'; titles['imagesets'] = 'Image Sets';
 
+  $scope.optionsSet.data = { id: 1, name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
+
+
+
   // Title
   $scope.title = 'Image Gallery' + '(' + titles[optionsSet.type] + ')';
   $scope.content = 'Image Gallery<br />Contents!';
