@@ -28,6 +28,13 @@ sudo apt-get update > /dev/null
 msg "Installing common packages and dependencies"
 sudo apt-get -y install build-essential  python-pip python3-pip python-dev python3-dev python-virtualenv git supervisor > /dev/null
 
+msg "Installing Python Image Tools"
+sudo apt-get -y install libjpeg-dev libzip2 > /dev/null
+## Adjusting for Pillow JPEG creation
+sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib > /dev/null
+sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib > /dev/null
+sudo ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib > /dev/null
+
 msg "Starting provision for python app..."
 # dependencies for pycurl
 sudo apt-get -y install libcurl4-openssl-dev > /dev/null
@@ -37,7 +44,7 @@ msg "Install Python Dependencies"
 source /home/vagrant/linc-webapp/venv/bin/activate
 pip install pip --upgrade
 pip install setuptools --upgrade
-pip install -r /home/vagrant/linc-api/requirements.txt --upgrade
+pip install -r /home/vagrant/linc-webapp/requirements.txt --upgrade
 pip install -I Pillow
 
 msg "Configuring supervisord to daemonize"
