@@ -136,18 +136,31 @@ angular.module('lion.guardians.image.set.controllers', [])
       console.log('Interval cancel');
     }
   }
-  /*var requestCVResults = function (index, ReqObjid){
-    LincServices.xxxx('PUT', ReqObjid, function(result){
+
+  var requestCVResults = function (index, ReqObjid){
+    NotificationFactory.info({
+      title: "Notify", message:'Trying to get CV Results',
+      position: "right", // right, left, center
+      duration: 2000     // milisecond
+    });
+    LincServices.putCVResults(ReqObjid, function(result){
       var cvresult = result.data.data;
-      if(cvresult.status != "queued"){
+      if(cvresult.status == "queued"){
         $scope.imagesets[index].action = 'cvresults';
         $scope.imagesets[index].cvresults = cvresult.obj_id;
         cancel_intervals();
       }
+      else if (cvresult.status == "error"){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to Get CV Results',
+          position: 'right', // right, left, center
+          duration: 180000   // milisecond
+        });
+      }
     }, function(error){
       cancel_intervals();
     });
-  }*/
+  }
   $scope.CVReqSuccess = function (imageset_Id, requestObj) {
     var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: imageset_Id}));
     $scope.imagesets[index].action = 'cvpending';
@@ -156,16 +169,23 @@ angular.module('lion.guardians.image.set.controllers', [])
     $timeout(function() {
       LincServices.postCVResults(requestObj.id, function(result){
         var cvresult = result.data.data;
-        if(cvresult.status !== "queued"){
+        if(cvresult.status == "finished"){
           $scope.imagesets[index].action = 'cvresults';
           $scope.imagesets[index].cvresults = cvresult.obj_id;
           console.log('Success Results CV');
         }
-        /*else{
+        else if (cvresult.status == "queued"){
           $scope.requesCVpromise = $interval(
-            requestCVResults('PUT', index, requestObj.id), 10000);
-        };*/
+            requestCVResults('PUT', index, requestObj.id), 60000);
+        }
+        else{
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Get CV Results',
+            position: 'right', // right, left, center
+            duration: 180000   // milisecond
+          });
+        }
       });
-    }, 3000);
+    }, 180000);
   };
 }]);

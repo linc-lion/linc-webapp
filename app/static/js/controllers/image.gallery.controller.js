@@ -34,8 +34,9 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     $uibModalInstance.close("close");
   }
   $scope.Select_All = function (val) {
-    $scope.photos.forEach(function(photo){
+    $scope.photos.forEach(function(photo, index){
       photo.select = val;
+      set_panel(photo.select, index);
     });
   }
   /*function create_zip() {
