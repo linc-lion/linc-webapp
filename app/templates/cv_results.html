@@ -35,7 +35,7 @@
           <span class="badge">{{!lion.cv}}</span>
         </td>
         <td class="text-center">
-          <button ng-model="lion.selected" ng-class="{'btn btn-default': !lion.selected, 'btn btn-warning': lion.selected}" ng-click="Associate(lion.id)">Associate</button>
+          <button ng-model="lion.selected" ng-class="{'btn btn-default': !lion.selected, 'btn btn-warning': lion.selected}" ng-click="Associate(lion.id)">{{!lion.associated ? "Associated" : "Associate"}}</button>
         </td>
       </tr>
     </tbody>
