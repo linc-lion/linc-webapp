@@ -5,28 +5,31 @@
 <div class="modal-body" ng-show="content">
   <div class="row">
     <div class="col-sm-9">
-      <a class="thumbnail" ng-repeat="photo in photos" ng-class="{active:photo.select}" ng-click="show_photo(photo.url)" target="_blank">
-        <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select; $event.stopPropagation();"></i>
+      <a class="thumbnail" ng-repeat="photo in photos | PropertiesFilter:Properties:HasFilter | TypeFilter:Selected.Type:HasFilter | CoverFilter:Selected.Cover:HasFilter" ng-class="{active:photo.select}" ng-click="show_photo(photo.url)" target="_blank">
+        <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select;set_panel(photo.select, photo.id); $event.stopPropagation();"></i>
         <img ng-src="{{!photo.url}}" width="150" height="150">
-        <div class="caption"><i class="icon icon-globe pull-right" ng-if="photo.isPublic"></i><i class="icon icon-star" ng-if="photo.isCover"></i>CV</div>
+        <div class="caption"><i class="icon icon-globe pull-right" ng-if="photo.isPublic"></i><i class="icon icon-star" ng-if="photo.isCover"></i>{{! ImageType[photo.image_type]}}</div>
       </a>
       <p class="clearfix">
-        <a href="#" class="btn btn-link">Select All</a>
-        <a href="#" class="btn btn-link">Select None</a>
+        <a href="#" class="btn btn-link" ng-click="Select_All(true)">Select All</a>
+        <a href="#" class="btn btn-link" ng-click="Select_All(false)">Select None</a>
       </p>
       <p class="text-center"><a href="#" class="btn btn-link">3 results returned. Load more? <b class="caret"></b></a></p>
     </div>
     <div class="col-sm-3 line-left">
+      <h3 ng-show="HasFilter">Filters</h3>
       <h4>Image type</h4>
-      <div class="radio"><label><input type="radio" name="type" checked> all</label></div>
-      <div class="radio"><label><input type="radio" name="type"> cv image</label></div>
-      <div class="radio"><label><input type="radio" name="type"> full body</label></div>
-      <div class="radio"><label><input type="radio" name="type"> whisker</label></div>
-      <div class="radio"><label><input type="radio" name="type"> markings</label></div>
-      <div class="radio"><label><input type="radio" name="type"> general id</label></div>
+
+      <div class="radio" ng-repeat="type in Image_Types">
+        <label><input type="radio" name="image_type" ng-model="Selected.Type" ng-value="type.key">{{!type.label}}</label>
+      </div>
       <h4>Properties</h4>
-      <div class="checkbox"><label><input type="checkbox" checked> Public</label></div>
-      <div class="checkbox"><label><input type="checkbox"> Cover image</label></div>
+      <div class="checkbox" ng-repeat="(key, property)  in Properties">
+        <label><input type="checkbox" ng-change="radio_check(key)" checked ng-model="property.checked">{{! property.name}}</label>
+      </div>
+      <div ng-show="ShowIsCover" class="checkbox">
+        <label><input type="checkbox" ng-model="Selected.Cover"> Cover image {{! Selected.IsCover}}</label>
+      </div>
       <br>
       <p>
         <button class="btn btn-default btn-block">Delete</button>
