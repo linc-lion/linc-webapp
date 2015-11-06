@@ -100,3 +100,5 @@ config['url'] = appurl
 
 # Settings for access to linc-api
 config['API_URL'] = 'https://linc-api.herokuapp.com'
+#Dev url 'http://192.168.100.10:5000'
+#Deploy test url 'https://linc-api.herokuapp.com'
