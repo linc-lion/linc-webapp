@@ -87,15 +87,15 @@ config['static_path'] = os.path.join(appdir, "static")
 config['template_path'] = os.path.join(appdir, "templates")
 config['autoescape'] = None
 
-# Setting URL
-ENV = os.environ.get("ENVIRONMENT","local")
-if ENV == 'heroku':
-    appurl = 'http://linc-webapp.venidera.net'
-    #newrelic.agent.initialize('newrelic.ini','staging')
-else:
-    #newrelic.agent.initialize(os.path.dirname(appdir)+'/newrelic.ini','staging')
-    appurl = "http://" + str(getHostIp()) + ":" + str(options.port)
-
+# # Setting URL
+# ENV = os.environ.get("ENVIRONMENT","local")
+# if ENV == 'heroku':
+#     appurl = 'http://linc-webapp.venidera.net'
+#     #newrelic.agent.initialize('newrelic.ini','staging')
+# else:
+#     #newrelic.agent.initialize(os.path.dirname(appdir)+'/newrelic.ini','staging')
+#     appurl = "http://" + str(getHostIp()) + ":" + str(options.port)
+appurl = "https://linc-website.herokuapp.com/"
 config['url'] = appurl
 
 # Settings for access to linc-api
