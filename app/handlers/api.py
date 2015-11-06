@@ -13,16 +13,22 @@ class ImageSetsListHandler(BaseHandler):
     @engine
     def get(self):
         resource_url = '/imagesets/list'
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        url = self.settings['API_URL']+resource_url
+        response = yield Task(self.api,url=url,method='GET')
         self.set_status(response.code)
         self.finish(response.body)
     @asynchronous
     @engine
     def post(self, imgset_id=None, cvrequest=None):
         resource_url = '/imagesets/' + imgset_id + '/cvrequest'
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
+        body = self.json_encode(self.input_data)
+        url = self.settings['API_URL']+resource_url
+        response = yield Task(self.api,url=url,method='POST',body=body)
         self.set_status(response.code)
-        self.finish(response.body)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish(self.json_encode({'status':'error','messagem':'Bad request'}))
 
 class CVResultsHandler(BaseHandler):
     @asynchronous
@@ -38,14 +44,20 @@ class CVResultsHandler(BaseHandler):
         resource_url = '/cvresults'
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
         self.set_status(response.code)
-        self.finish(response.body)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to access the cvresults POST'})
     @asynchronous
     @coroutine
     def put(self, res_id=None):
         resource_url = '/cvresults/' + res_id
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(self.input_data))
         self.set_status(response.code)
-        self.finish(response.body)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to access the cvresults PUT'})
 
 class ImagesListHandler(BaseHandler):
     @asynchronous

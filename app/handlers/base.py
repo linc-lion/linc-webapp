@@ -5,7 +5,8 @@ from json import load,loads,dumps,dump
 from tornado.web import RequestHandler,asynchronous
 from tornado.gen import engine,coroutine
 import string,os
-from tornado.httpclient import AsyncHTTPClient,HTTPRequest
+from tornado.httpclient import AsyncHTTPClient,HTTPRequest,HTTPError
+from tornado.httputil import HTTPHeaders
 
 class BaseHandler(RequestHandler):
     """A class to collect common handler methods - all other handlers should
@@ -24,19 +25,26 @@ class BaseHandler(RequestHandler):
                         self.input_data[k] = v[0].decode("utf-8")
             except ValueError:
                 self.dropError(400,'Fail to parse input data.')
-    #  def prepare(self):
-    #     self.input_data = dict()
-    #     print(self.request.body)
-    #     if self.request.headers["Content-Type"].startswith("application/json"):
-    #         try:
-    #             if self.request.body:
-    #                 self.input_data = json_decode(self.request.body.decode("utf-8"))
-    #             for k,v in self.request.arguments.items():
-    #                 if str(k) != str(self.request.body.decode("utf-8")):
-    #                     self.input_data[k] = v[0].decode("utf-8")
-    #             self.input_data = recursive_unicode(self.input_data)
-    #         except ValueError:
-    #             self.send_error(400, reason='Invalid input data.')
+
+    @asynchronous
+    @engine
+    def api(self,url,method,body=None,callback=None):
+        AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
+        http_client = AsyncHTTPClient()
+        h = HTTPHeaders({"content-type": "application/json"})
+        params={
+            'headers' : h,
+            'url' : url,
+            'method' : method        }
+        if method == 'POST':
+            params['body']=body
+        request = HTTPRequest(**params)
+        try:
+            response = yield http_client.fetch(request)
+        except HTTPError as e:
+            print("Error: " + str(e.code) + str(e.response))
+            response = e
+        callback(response)
 
     def sanitizestr(self,strs):
         txt = "%s%s" % (string.ascii_letters, string.digits)
@@ -59,18 +67,6 @@ class BaseHandler(RequestHandler):
         #key = self.get_argument('auth_key',None)
         #if key != self.settings['auth_key']:
         #    self.authfail()
-
-    # def prepare(self):
-    #     self.auth_check()
-    #     self.input_data = dict()
-    #     try:
-    #         if self.request.body:
-    #             self.input_data = loads(self.request.body.decode("utf-8"))
-    #         for k,v in self.request.arguments.items():
-    #             if str(k) != str(self.request.body.decode("utf-8")):
-    #                 self.input_data[k] = v[0].decode("utf-8")
-    #     except ValueError:
-    #         self.send_error(400, message='Failure parsing input data.') # Bad Request
 
     # http status code returned will be rechecked soon
     def authfail(self):
@@ -103,21 +99,6 @@ class BaseHandler(RequestHandler):
          self.set_status(404)
          self.write({'status':'fail','message':message})
          self.finish()
-
-    @asynchronous
-    @engine
-    def api(self,url,method,body=None,callback=None):
-        AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
-        http_client = AsyncHTTPClient()
-        params={
-            'url' : url,
-            'method' : method
-        }
-        if method == 'POST':
-            params['body']=body
-        request = HTTPRequest(**params)
-        response = yield http_client.fetch(request)
-        callback(response)
 
 class VersionHandler(BaseHandler):
     def get(self):
