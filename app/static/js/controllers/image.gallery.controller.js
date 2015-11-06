@@ -36,8 +36,12 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   $scope.Select_All = function (val) {
     $scope.photos.forEach(function(photo, index){
       photo.select = val;
-      set_panel(photo.select, index);
+      $scope.set_panel(photo.select, index);
     });
+    if(val){
+      $scope.Properties[0].checked = true;
+      $scope.Properties[1].checked = true;
+    }
   }
   /*function create_zip() {
     var zip = new JSZip();
@@ -100,8 +104,8 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
       $scope.HasFilter = !$scope.selected_photos.length;
 
       if($scope.selected_photos.length==1){
-        var photo_id = _.findIndex($scope.photos, {'id': id});
-        $scope.Selected.Cover = $scope.photos[photo_id].isCover;
+        //var photo_id = _.findIndex($scope.photos, {'id': id});
+        $scope.Selected.Cover = $scope.photos[id].isCover;
         $scope.ShowIsCover = true;
         $scope.Properties[1].checked = $scope.photos[id].isPublic;
       }

@@ -51,7 +51,7 @@ angular.module('lion.guardians.image.set.controllers', [])
                                                  'SCARS_FACE', 'SCARS_TAIL']);
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$window', '$timeout', '$interval', 'LincServices', function ($scope, $window, $timeout, $interval, LincServices) {
+.controller('SearchImageSetCtrl', ['$scope', '$window', '$timeout', '$interval', 'NotificationFactory','LincServices', function ($scope, $window, $timeout, $interval, NotificationFactory, LincServices) {
   // Hide Filters
   $scope.isCollapsed = true;
   // Filters  scopes
@@ -154,7 +154,7 @@ angular.module('lion.guardians.image.set.controllers', [])
         NotificationFactory.error({
           title: "Error", message: 'Unable to Get CV Results',
           position: 'right', // right, left, center
-          duration: 180000   // milisecond
+          duration: 5000   // milisecond
         });
       }
     }, function(error){
@@ -182,7 +182,7 @@ angular.module('lion.guardians.image.set.controllers', [])
           NotificationFactory.error({
             title: "Error", message: 'Unable to Get CV Results',
             position: 'right', // right, left, center
-            duration: 180000   // milisecond
+            duration: 5000   // milisecond
           });
         }
       });

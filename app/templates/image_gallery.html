@@ -5,8 +5,8 @@
 <div class="modal-body" ng-show="content">
   <div class="row">
     <div class="col-sm-9">
-      <a class="thumbnail" ng-repeat="photo in photos | PropertiesFilter:Properties:HasFilter | TypeFilter:Selected.Type:HasFilter | CoverFilter:Selected.Cover:HasFilter" ng-class="{active:photo.select}" ng-click="show_photo(photo.url)" target="_blank">
-        <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select;set_panel(photo.select, photo.id); $event.stopPropagation();"></i>
+      <a class="thumbnail" ng-repeat="(key, photo) in photos | PropertiesFilter:Properties:HasFilter | TypeFilter:Selected.Type:HasFilter | CoverFilter:Selected.Cover:HasFilter" ng-class="{active:photo.select}" ng-click="show_photo(photo.url)" target="_blank">
+        <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select;set_panel(photo.select, key); $event.stopPropagation();"></i>
         <img ng-src="{{!photo.url}}" width="150" height="150">
         <div class="caption"><i class="icon icon-globe pull-right" ng-if="photo.isPublic"></i><i class="icon icon-star" ng-if="photo.isCover"></i>{{! ImageType[photo.image_type]}}</div>
       </a>
