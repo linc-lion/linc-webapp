@@ -32,11 +32,13 @@ msg "Starting provision for python app..."
 # dependencies for pycurl
 sudo apt-get -y install libcurl4-openssl-dev > /dev/null
 sudo rm -fr /home/vagrant/app/venv /home/vagrant/linc-webapp/venv 2> /dev/null
-virtualenv --python=python3 --prompt=" LINC-WebApp " /home/vagrant/linc-webapp/venv
+virtualenv --python=python2.7 --prompt=" LINC-WebApp " /home/vagrant/linc-webapp/venv
 msg "Install Python Dependencies"
 source /home/vagrant/linc-webapp/venv/bin/activate
-pip install pip setuptools --upgrade
-pip install -r /home/vagrant/linc-webapp/requirements.txt --upgrade
+pip install pip --upgrade
+pip install setuptools --upgrade
+pip install -r /home/vagrant/linc-api/requirements.txt --upgrade
+pip install -I Pillow
 
 msg "Configuring supervisord to daemonize"
 cat << EOF | sudo tee -a /etc/supervisor/conf.d/linc-webapp.conf
