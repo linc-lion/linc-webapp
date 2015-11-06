@@ -31,10 +31,13 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
     $scope.lions[index].selected = true;
   };
   LincServices.getListCVResults(cvresultsId, function(result){
-    var data = result.data;
+    var data = result.data.table;
+    var associated_id = result.data.associated.id;
     $scope.lions = _.map(data, function(element, index) {
       var elem = {};
       elem["selected"] = false;
+      if(associated_id == element.id) elem["associated"] = true;
+      else elem["associated"] = false;
       return _.extend({}, element, elem);
     });
   });

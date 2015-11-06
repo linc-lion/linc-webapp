@@ -100,7 +100,7 @@ angular.module('lion.guardians.services', [])
     }
   }
 
-  var PostImageSets = function (metod, request, success) {
+  var PostImageSets = function (metod, request, success, fail) {
     var url = '/imagesets/' + request.imageset_id + '/cvrequest';
     var cookies = {'_xsrf': $cookies.get('_xsrf')};
     var data = {"lions": request.lions_id};
@@ -128,10 +128,10 @@ angular.module('lion.guardians.services', [])
     );
   };
 
-  var GetCVResults = function (cvresults_id, fn) {
+  var GetCVResults = function (cvresults_id, success) {
     return HTTP('GET', '/cvresults/' + cvresults_id + '/list', null,
-    function (success){
-      fn(success.data);
+    function (results){
+      success(results.data);
     }, function(error){
       NotificationFactory.error({
         title: "Error", message: 'Unable to load CV Results List',
