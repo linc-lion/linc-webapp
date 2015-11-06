@@ -178,7 +178,7 @@ angular.module('lion.guardians.services', [])
 
   dataFactory.requestCV = PostImageSets;
   dataFactory.postCVResults = PostCVResults;
-  //dataFactory.updateCVResults = PutCVResults();
+  dataFactory.putCVResults = PutCVResults;
   dataFactory.getListCVResults = GetCVResults;
 
   return dataFactory;
