@@ -5,7 +5,7 @@
       <h4>Image Set ID</h4>
       <p>{{!imageset.id}}</p>
       <h4>Lion Name</h4>
-      <p>{{!imageset.lion_name}}</p>
+      <p>{{!imageset.name}}</p>
       <h4>Organization</h4>
       <p>{{!imageset.organization}}</p>
       <h4>Age</h4>
@@ -51,8 +51,22 @@
       <br>
       <metadata use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="options"></metadata>
       <br>
-      <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" type="new" ng-if="imageset.cvresults"></cvresults>
-      <!--<p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-flash"></i> ASSOCIATE LION</a></p>-->
+
+
+      <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvresults'" ng-if="imageset.cvresults"></cvresults>
+
+
+
+
+      <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" cvresults-id="imageset.cvresults" type="search" ng-if="imageset.action == 'cvresults'" request-cv-results-action="Save()"></cvresults>
+
+      <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest.html" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)"></cvrequest>
+
+      <span class="text-muted" ng-if="imageset.action == 'cvpending'"><i class="icon icon-clock"></i> CV Request pending</span>
+
+
+
+      <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-flash"></i> ASSOCIATE LION</a></p>
       <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE IMAGE SET</a></p>
     </div>
   </div>

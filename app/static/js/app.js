@@ -58,7 +58,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
           templateUrl: 'home.html'
         })
         .state("lion", {
-          url: "/lion/:id",
+          url: "/lion/{id:int}",
           controller: 'LionCtrl',
           templateUrl: 'lion.html',
           data: {
@@ -67,7 +67,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
         })
         // New Image Set
         .state("imageset", {
-          url: "/imageset/:id",
+          url: "/imageset/{id:int}",
           controller: 'ImageSetCtrl',
           templateUrl: 'imageset.html',
           data: {
