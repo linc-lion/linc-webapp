@@ -52,7 +52,7 @@ class CVResultsHandler(BaseHandler):
     @coroutine
     def put(self, res_id=None):
         resource_url = '/cvresults/' + res_id
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(self.input_data))
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode({"message":"updating resources"}))
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
