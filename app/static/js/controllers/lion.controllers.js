@@ -5,10 +5,6 @@ angular.module('lion.guardians.lions.controllers', [])
 .controller('LionCtrl', ['$scope', '$stateParams', 'LincServices', function ($scope, $stateParams, LincServices) {
 
   $scope.id = $stateParams.id;
-  // Metadata Options
-  $scope.options = { type: 'lions', edit: 'edit', data: $scope.lion};
-  // Location History
-  $scope.locationHistory = {};
 
   var labels = function (damages, labels){
     var label = "";
@@ -68,6 +64,10 @@ angular.module('lion.guardians.lions.controllers', [])
     $scope.lion.scars = labels(scars,_.intersection(TAGS,
       ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE']));
 
+    // Metadata Options
+    $scope.options = { type: 'lions', edit: 'edit', data: $scope.lion};
+    // Location History
+    $scope.locationHistory = {};
   });
 }])
 

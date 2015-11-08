@@ -5,10 +5,13 @@
 <div class="modal-body" ng-show="content">
   <div class="row">
     <div class="col-sm-9">
-      <a class="thumbnail" ng-repeat="photo in paginated_photos = (photos |limitTo: itemsPerPage)" ng-class="{active:photo.select}" ng-click="show_photo(photo.url)" target="_blank">
-        <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select;Select_Properties(photo.select, photo); $event.stopPropagation();"></i>
+      <a class="thumbnail" ng-repeat="photo in paginated_photos = (filtered_photos = (photos | TypeFilter:Selected.Filter.Type | CoverFilter:Selected.Filter.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" ng-class="{active:photo.select}" ng-click="show_photo(photo.url)" target="_blank">
+
+        <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select;Image_Check(photo.select, photo); $event.stopPropagation();"></i>
+
         <img ng-src="{{!photo.url}}" width="150" height="150">
         <div class="caption"><i class="icon icon-globe pull-right" ng-if="photo.isPublic"></i><i class="icon icon-star" ng-if="photo.isCover"></i>{{!Type_Labels[photo.image_type]}}</div>
+
       </a>
       <p class="clearfix">
         <a href="#" class="btn btn-link" ng-click="Select_All(true)">Select All</a>
@@ -16,29 +19,47 @@
       </p>
       <p ng-show="itemsPerPage!=photos.length" class="text-center">
         <a ng-click="increase_pages();" class="btn btn-link">
-          {{!itemsPerPage}} of {{!photos.length}} results returned. Load more?
+          {{!itemsPerPage}} of {{!filtered_photos.length}} results returned. Load more?
         <b class="caret"></b></a>
       </p>
       <p ng-show="itemsPerPage==photos.length" disabled class="text-center"><a class="btn btn-link">
-        {{!itemsPerPage}} of {{!photos.length}} results.</a>
+        {{!itemsPerPage}} of {{!filtered_photos.length}} results.</a>
       </p>
     </div>
+
     <div class="col-sm-3 line-left">
-      <h4>Image type</h4>
-      <div class="radio" ng-repeat="item in Type_Items">
-        <label><input type="radio" name="image_type" ng-model="Selected.Type" ng-value="item.type" ng-click="count() && Update();">{{!item.label}}</label>
+      <div ng-show="HasFilter">
+        <h4>Image type</h4>
+        <div class="radio" ng-init="Selected.Filter.Type='all'" ng-repeat="item in Filters">
+          <label><input type="radio" name="image_type" ng-model="Selected.Filter.Type" ng-value="item.type" ng-click="calc_itemspage();">{{!item.label}}</label>
+        </div>
+        <h4>Properties</h4>
+        <div class="checkbox" ng-repeat="(key, property)  in Properties">
+          <label><input type="checkbox" checked ng-model="property.checked" ng-click="calc_itemspage()">{{! property.name}}</label>
+        </div>
+        <div class="checkbox">
+          <label><input type="checkbox" ng-model="Selected.Filter.isCover" ng-click="calc_itemspage()"> Cover image</label>
+        </div>
+        <br>
       </div>
-      <h4>Properties</h4>
-      <div class="checkbox">
-        <label><input type="checkbox" checked ng-model="Selected.isPublic">Public</label>
+
+      <div>
+        <h4>Image type</h4>
+        <div class="radio" ng-init="Selected.Select.Type='all'" ng-repeat="item in Selects">
+          <label><input type="radio" name="image_type1" ng-model="Selected.Select.Type" ng-value="item.type" ng-click="Update()">{{!item.label}}</label>
+        </div>
+        <h4>Properties</h4>
+        <div class="checkbox">
+          <label><input type="checkbox" checked ng-model="Selected.Select.isPublic" ng-click="check_cover();">Public</label>
+        </div>
+        <div class="checkbox">
+          <label><input ng-click="Update()" ng-disabled="!Selected.Select.isPublic || Selected_Count>1" type="checkbox" ng-model="Selected.Select.isCover"> Cover image</label>{{!Selected.Select.isCover}}
+        </div>
       </div>
-      <div class="checkbox">
-        <label><input ng-disabled="!Selected.isPublic || count()>1" type="checkbox" ng-model="Selected.isCover" ng-checked="!(!Selected.isPublic) && 0"> Cover image</label>
-      </div>
-      <br>
+
       <p>
-        <button ng-disabled="!count()" class="btn btn-default btn-block">Delete</button>
-        <button ng-disabled="!count()" class="btn btn-default btn-block">Download original</button>
+        <button ng-disabled="!Selected_Count" class="btn btn-default btn-block">Delete</button>
+        <button ng-disabled="!Selected_Count" class="btn btn-default btn-block">Download original</button>
         <upload-images use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" options-set="optionsSet" type="gallery" save-metadata-action="Save()" close-action="Close()" type="metadata" ></upload-images>
       </p>
     </div>

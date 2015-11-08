@@ -6,7 +6,14 @@ angular.module('lion.guardians.cvrequest.directive', [])
   return {
     transclude: true,
     restrict: 'EA',
-    template:  '<button class="btn btn-default" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-flash"></i>Request CV</button>',
+    template: function(element, attrs) {
+      switch (attrs.type) { //view selection. Put type='new' or type='search'
+        case 'search':
+          return '<button class="btn btn-default" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-flash"></i>Request CV</button>';
+          default:
+            return '<p><a class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-flash"></i> Request CV</a></p>';
+      }
+    },
     scope: {
       useTemplateUrl: '@',
       useCtrl: '@',

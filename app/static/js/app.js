@@ -21,12 +21,12 @@ app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($roo
     });
     var history = [];
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
-        history.push(toState.name);
+        history.push({name: toState.name, param: toParams});
     });
 
     $rootScope.go_back = function() {
-      var prevUrl = history.length > 1 ? history.splice(-2)[0] : "home";
-      $state.go(prevUrl);
+      var prevUrl = history.length > 1 ? history.splice(-2)[0] : {'name': 'home', 'param': {}};
+      $state.go(prevUrl.name, prevUrl.param);
     };
 }]);
 
