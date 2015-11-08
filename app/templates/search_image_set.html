@@ -120,7 +120,7 @@
               <i ng-if="!imageset.is_primary" class="icon icon-cross"></i>
             </td>
             <td>
-              <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id"cvresults-id="imageset.cvresults" type="search" ng-if="imageset.action == 'cvresults'" request-cv-results-action="Save()"></cvresults>
+              <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" cvresults-id="imageset.cvresults" type="search" ng-if="imageset.action == 'cvresults'"></cvresults>
 
               <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest.html" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)"></cvrequest>
 

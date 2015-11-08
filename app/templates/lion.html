@@ -46,12 +46,12 @@
       <p>Blah blah blah blah blah blah blah blah blah blah blah</p>
     </div>
     <div class="col-sm-3 line-left" >
-      <image-gallery use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="options"></image-gallery>
-      <location-history use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" location-sets="locationHistory"></location-history>
+      <image-gallery ng-show="lion" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="options"></image-gallery>
+      <location-history ng-show="lion" use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" location-sets="locationHistory"></location-history>
       <br>
-      <metadata use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="options"></metadata>
+      <metadata ng-show="lion" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="options"></metadata>
       <br>
-      <p><a href="#/searchimageset" class="btn btn-lg btn-default btn-block"><i class="icon icon-images"></i> SEARCH IMAGE SETS</a></p>
-      <p><a ng-click="go_back()" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE LION</a></p>
+      <p ng-show="lion"><a ui-sref="searchimageset" class="btn btn-lg btn-default btn-block"><i class="icon icon-images"></i> SEARCH IMAGE SETS</a></p>
+      <p ng-show="lion"><a ng-click="go_back()" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE LION</a></p>
     </div>
   </div>

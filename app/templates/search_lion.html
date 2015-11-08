@@ -114,11 +114,11 @@
 
       <nav class="text-center">
         <ul class="pagination pagination-lg">
-          <li ng-class="prevPageDisabled()"><a href ng-click="firstPage()">««</a></li>
-          <li ng-class="prevPageDisabled()"><a href ng-click="prevPage()">«</a></li>
-          <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)"><a href="#">{{! n+1}}</a></li>
-          <li ng-class="nextPageDisabled()"><a href ng-click="nextPage()">»</a></li>
-          <li ng-class="nextPageDisabled()"><a href ng-click="lastPage()">»»</a></li>
+          <li ng-class="prevPageDisabled()"><a ng-click="firstPage()">««</a></li>
+          <li ng-class="prevPageDisabled()"><a ng-click="prevPage()">«</a></li>
+          <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)"><a >{{! n+1}}</a></li>
+          <li ng-class="nextPageDisabled()"><a ng-click="nextPage()">»</a></li>
+          <li ng-class="nextPageDisabled()"><a ng-click="lastPage()">»»</a></li>
         </ul>
       </nav>
 

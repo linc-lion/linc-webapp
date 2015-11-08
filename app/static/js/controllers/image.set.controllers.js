@@ -2,13 +2,9 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.controller('ImageSetCtrl', ['$scope', '$stateParams', 'NotificationFactory', 'LincServices', function ($scope, $stateParams, NotificationFactory, LincServices) {
+.controller('ImageSetCtrl', ['$scope', '$stateParams', '$timeout', '$interval', 'NotificationFactory', 'LincServices', function ($scope, $stateParams, $timeout, $interval, NotificationFactory, LincServices) {
 
   $scope.id = $stateParams.id;
-  // Metadata Options
-  $scope.options = { type: 'imagesets', edit: 'edit', data: $scope.imageset};
-  // Location History
-  $scope.locationHistory = {};
 
   var labels = function (damages, labels){
     var label = "";
@@ -71,7 +67,64 @@ angular.module('lion.guardians.image.set.controllers', [])
     $scope.imageset.scars = labels(scars,_.intersection(TAGS,
       ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE']));
 
+    // Metadata Options
+    $scope.options = { type: 'imagesets', edit: 'edit', data: $scope.imageset};
+    // Location History
+    $scope.locationHistory = {};
   });
+
+
+
+  var requestCVResults = function (ReqObjid){
+    NotificationFactory.info({
+      title: "Notify", message:'Trying to get CV Results',
+      position: "right", // right, left, center
+      duration: 2000     // milisecond
+    });
+    LincServices.putCVResults(ReqObjid, function(result){
+      var cvresult = result.data.data;
+      if(cvresult.status == "queued"){
+        $scope.imageset.action = 'cvresults';
+        $scope.imageset.cvresults = cvresult.obj_id;
+        cancel_intervals();
+      }
+      else if (cvresult.status == "error"){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to Get CV Results',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
+    }, function(error){
+      cancel_intervals();
+    });
+  }
+  $scope.CVReqSuccess = function (imageset_Id, requestObj) {
+    $scope.imageset.action = 'cvpending';
+    $scope.imageset.cvrequest = requestObj.obj_id;
+    console.log('Success CV Request');
+    $timeout(function() {
+      LincServices.postCVResults(requestObj.id, function(result){
+        var cvresult = result.data.data;
+        if(cvresult.status == "finished"){
+          $scope.imageset.action = 'cvresults';
+          $scope.imageset.cvresults = cvresult.obj_id;
+          console.log('Success Results CV');
+        }
+        else if (cvresult.status == "queued"){
+          $scope.requesCVpromise = $interval(
+            requestCVResults('PUT', requestObj.id), 60000);
+        }
+        else{
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Get CV Results',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
+      });
+    }, 180000);
+  };
 }])
 
 .controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', 'NotificationFactory','LincServices', function ($scope, $timeout, $interval, NotificationFactory, LincServices) {
