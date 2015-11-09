@@ -1,3 +1,25 @@
+<script type="text/ng-template" id="InfoWindow.tmpl.html">
+  <div class="modal-header" ng-show="title">
+    <h4 class="modal-title">Location detail</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-3 ">
+        <p><img src="{{!thumbnail}}" class="img-responsive"></p>
+      </div>
+      <div class="col-sm-6 ">
+        <p ng-bind-html="infomsg"></p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="close()" data-dismiss="modal">Close
+    </button>
+    <button type="button" class="btn btn-primary" ng-click="doSomething()">Do Something
+    </button>
+  </div>
+</script>
+
 <div class="modal-header" ng-show="title">
   <button type="button" class="close" ng-click="Close()">&times;</button>
   <h4 class="modal-title" ng-bind-html="title"></h4>
@@ -6,7 +28,7 @@
   <div class="row">
     <div class="col-sm-3">
       <div class="list-group">
-        <button type="button" class="list-group-item" ng-class="{active:imageset==1}" ng-repeat="imageset in imagesets"><span class="badge">{{!imageset.date}}</span>Image Set {{!imageset.id}}</button>
+        <button type="button" ng-click="animate(imageset.id)" class="list-group-item" ng-class="{active:imageset==1}" ng-repeat="imageset in imagesets"><span class="badge">{{!imageset.date}}</span>Image Set {{!imageset.id}}</button>
       </div>
     </div>
     <div class="col-sm-9 map-container">
