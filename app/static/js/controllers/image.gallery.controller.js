@@ -18,8 +18,9 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   $scope.content = 'Image Gallery<br />Contents!';
 
   // Selects
-  $scope.Selected = {'Select': {Type: 'cv', isPublic: true, isCover: false},
-                     'Filter': {Type: 'cv', isPublic: true, isPrivate: true, isCover: false}};
+  $scope.FilterSel = {Type: 'cv', isPublic: true, isPrivate: true, isCover: false};
+  $scope.optionsSet.Selected = {Type: 'cv', isPublic: true, isCover: false};
+
   // Photo Caption
   $scope.Type_Labels = {'cv': 'CV Image', 'full-body': 'Full Body', 'whisker': 'Whisker',
                    'main-id': 'Main Id', 'markings': 'Markings'};
@@ -120,24 +121,24 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     else {
       if($scope.Selected_Count == 1){
         if(select){
-          $scope.Selected.Select.isPublic = photo.isPublic;
-          $scope.Selected.Select.Type = photo.image_type;
-          $scope.Selected.Select.isCover = photo.isCover;
+          $scope.optionsSet.Select.isPublic = photo.isPublic;
+          $scope.optionsSet.Select.Type = photo.image_type;
+          $scope.optionsSet.Select.isCover = photo.isCover;
         }
         else{
           var photo1 = _.filter($scope.photos, function(photo){
             return photo.select == true;
           });
-          $scope.Selected.Select.Type = photo1[0].image_type;
-          $scope.Selected.Select.isPublic = photo1[0].isPublic;
-          $scope.Selected.Select.isCover = photo1[0].isCover;
+          $scope.optionsSet.Select.Type = photo1[0].image_type;
+          $scope.optionsSet.Select.isPublic = photo1[0].isPublic;
+          $scope.optionsSet.Select.isCover = photo1[0].isCover;
         }
         console.log("Set Properties");
       }
       else{
-        $scope.Selected.Select.Type = "";
-        $scope.Selected.Select.isPublic = true;
-        $scope.Selected.Select.isCover = false;
+        $scope.optionsSet.Select.Type = "";
+        $scope.optionsSet.Select.isPublic = true;
+        $scope.optionsSet.Select.isCover = false;
         console.log("Unset Properties");
       }
       $scope.HasFilter = false;
@@ -158,9 +159,9 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
         }
       });
       if(calc_selected_count()>1){
-        $scope.Selected.Select.Type = "";
-        $scope.Selected.Select.isPublic = true;
-        $scope.Selected.Select.isCover = false;
+        $scope.optionsSet.Select.Type = "";
+        $scope.optionsSet.Select.isPublic = true;
+        $scope.optionsSet.Select.isCover = false;
       }
     }
     else{
@@ -176,8 +177,8 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     }
   }
   $scope.check_cover = function(){
-    if(!$scope.Selected.Select.isPublic)
-     $scope.Selected.Select.isCover = false;
+    if(!$scope.optionsSet.Select.isPublic)
+     $scope.optionsSet.Select.isCover = false;
     $scope.Update();
   }
   $scope.Update = function(){

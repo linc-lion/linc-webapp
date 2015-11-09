@@ -38,16 +38,13 @@ angular.module('lion.guardians.image.set.controllers', [])
                         'SCARS_BODY_RIGHT': 'Body Right',
                         'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
-  LincServices.getlists(['imagesets'],function(data){
-
-    $scope.imageset = _.find(data['imagesets'], {id: $scope.id});
+  LincServices.ImageSet($scope.id,function(data){
+    $scope.imageset = data;
     if($scope.imageset.cvresults) $scope.imageset["action"] = 'cvresults';
     else if($scope.imageset.cvrequest) $scope.imageset["action"] = 'cvpending';
     else $scope.imageset["action"] = 'cvrequest';
 
-    var TAGS = ['EYE_DAMAGE_BOTH','TEETH_BROKEN_CANINE_LEFT','TEETH_BROKEN_INCISOR_LEFT',
-                'EAR_MARKING_RIGHT', 'MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT',
-                'NOSE_COLOUR_BLACK', 'SCARS_FACE'];
+    var TAGS = JSON.parse(data.tags);
 
     $scope.imageset.eye_damage = labels(eye_damages,_.intersection(TAGS,
       ['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']));
@@ -68,12 +65,12 @@ angular.module('lion.guardians.image.set.controllers', [])
       ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE']));
 
     // Metadata Options
-    $scope.options = { type: 'imagesets', edit: 'edit', data: $scope.imageset};
+    $scope.metadata_options = { type: 'imageset', edit: 'edit', data: $scope.imageset};
+    // Image Gallery
+    $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.animal_iid};
     // Location History
     $scope.locationHistory = {};
   });
-
-
 
   var requestCVResults = function (ReqObjid){
     NotificationFactory.info({

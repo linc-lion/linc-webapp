@@ -38,13 +38,12 @@ angular.module('lion.guardians.lions.controllers', [])
                         'SCARS_BODY_RIGHT': 'Body Right',
                         'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
-  LincServices.getlists(['lions'],function(data){
+  LincServices.Lion($scope.id,function(data){
 
-    $scope.lion = _.find(data['lions'], {id: $scope.id});
+    $scope.lion =  data;
+    //_.find(data['lions'], {id: $scope.id});
 
-    var TAGS = ['EYE_DAMAGE_BOTH','TEETH_BROKEN_CANINE_LEFT','TEETH_BROKEN_INCISOR_LEFT',
-                'EAR_MARKING_RIGHT', 'MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT',
-                'NOSE_COLOUR_BLACK', 'SCARS_FACE'];
+    var TAGS = JSON.parse(data.tags);
 
     $scope.lion.eye_damage = labels(eye_damages,_.intersection(TAGS,
       ['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']));
@@ -65,7 +64,9 @@ angular.module('lion.guardians.lions.controllers', [])
       ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE']));
 
     // Metadata Options
-    $scope.options = { type: 'lions', edit: 'edit', data: $scope.lion};
+    $scope.metadata_options = { type: 'lion', edit: 'edit', data: $scope.lion};
+    // Image Gallery
+    $scope.gallery_options = { type: 'lion', edit: 'edit', id: $scope.lion.id};
     // Location History
     $scope.locationHistory = {};
   });
