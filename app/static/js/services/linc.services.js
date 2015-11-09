@@ -38,7 +38,6 @@ angular.module('lion.guardians.services', [])
 
   // Get Lions, Image Sets, Organizations, List
   var GetLists = function(names, fn){
-    var requests = [];
     var promises = names.map(function(name) {
       var url = databases[name].url + '/list';
       var label = databases[name].label + ' List';
@@ -61,7 +60,7 @@ angular.module('lion.guardians.services', [])
     var url = databases['imagesets'].url + '/' + id;
     var label = databases['imagesets'].label;
     HTTPCachedGet(url, label).then(function (results) {
-      fn(results);
+      fn(results.data);
     },
     function (error) {
       console.log(error);
@@ -72,7 +71,7 @@ angular.module('lion.guardians.services', [])
     var url = databases['lions'].url + '/' + id;
     var label = databases['lions'].label;
     HTTPCachedGet(url, label).then(function (results) {
-      fn(results);
+      fn(results.data);
     },
     function (error) {
       console.log(error);
@@ -171,11 +170,13 @@ angular.module('lion.guardians.services', [])
   };
 
   var dataFactory = {};
-  dataFactory.getLion = GetLion;
-  dataFactory.getOrganization = GetOrg;
-  dataFactory.GetImageSet = GetImageSet;
+  // List of ImageSets , Lions and Organizations
   dataFactory.getlists = GetLists;
-
+  // Lion to lion Profile
+  dataFactory.Lion = GetLion;
+  // ImageSet to ImageSet Profile
+  dataFactory.ImageSet = GetImageSet;
+  //dataFactory.getOrganization = GetOrg;
   dataFactory.requestCV = PostImageSets;
   dataFactory.postCVResults = PostCVResults;
   dataFactory.putCVResults = PutCVResults;

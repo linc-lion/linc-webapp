@@ -5,7 +5,7 @@
 <div class="modal-body" ng-show="content">
   <div class="row">
     <div class="col-sm-9">
-      <a class="thumbnail" ng-repeat="photo in paginated_photos = (filtered_photos = (photos | TypeFilter:Selected.Filter.Type | CoverFilter:Selected.Filter.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" ng-class="{active:photo.select}" ng-click="show_photo(photo.url)" target="_blank">
+      <a class="thumbnail" ng-repeat="photo in paginated_photos = (filtered_photos = (photos | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" ng-class="{active:photo.select}" ng-click="show_photo(photo.url)" target="_blank">
 
         <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select;Image_Check(photo.select, photo); $event.stopPropagation();"></i>
 
@@ -30,33 +30,32 @@
     <div class="col-sm-3 line-left">
       <div ng-show="HasFilter">
         <h4>Image type</h4>
-        <div class="radio" ng-init="Selected.Filter.Type='all'" ng-repeat="item in Filters">
-          <label><input type="radio" name="image_type" ng-model="Selected.Filter.Type" ng-value="item.type" ng-click="calc_itemspage();">{{!item.label}}</label>
+        <div class="radio" ng-init="FilterSel.Type='all'" ng-repeat="item in Filters">
+          <label><input type="radio" name="image_type" ng-model="FilterSel.Type" ng-value="item.type" ng-click="calc_itemspage();">{{!item.label}}</label>
         </div>
         <h4>Properties</h4>
         <div class="checkbox" ng-repeat="(key, property)  in Properties">
           <label><input type="checkbox" checked ng-model="property.checked" ng-click="calc_itemspage()">{{! property.name}}</label>
         </div>
         <div class="checkbox">
-          <label><input type="checkbox" ng-model="Selected.Filter.isCover" ng-click="calc_itemspage()"> Cover image</label>
+          <label><input type="checkbox" ng-model="FilterSel.isCover" ng-click="calc_itemspage()"> Cover image</label>
         </div>
         <br>
       </div>
 
-      <div>
+      <div ng-show="!HasFilter">
         <h4>Image type</h4>
-        <div class="radio" ng-init="Selected.Select.Type='all'" ng-repeat="item in Selects">
-          <label><input type="radio" name="image_type1" ng-model="Selected.Select.Type" ng-value="item.type" ng-click="Update()">{{!item.label}}</label>
+        <div class="radio" ng-init="optionsSet.Select.Type='all'" ng-repeat="item in Selects">
+          <label><input type="radio" name="image_type1" ng-model="optionsSet.Select.Type" ng-value="item.type" ng-click="Update()">{{!item.label}}</label>
         </div>
         <h4>Properties</h4>
         <div class="checkbox">
-          <label><input type="checkbox" checked ng-model="Selected.Select.isPublic" ng-click="check_cover();">Public</label>
+          <label><input type="checkbox" checked ng-model="optionsSet.Select.isPublic" ng-click="check_cover();">Public</label>
         </div>
         <div class="checkbox">
-          <label><input ng-click="Update()" ng-disabled="!Selected.Select.isPublic || Selected_Count>1" type="checkbox" ng-model="Selected.Select.isCover"> Cover image</label>{{!Selected.Select.isCover}}
+          <label><input ng-click="Update()" ng-disabled="!optionsSet.Select.isPublic || Selected_Count>1" type="checkbox" ng-model="optionsSet.Select.isCover"> Cover image</label>
         </div>
       </div>
-
       <p>
         <button ng-disabled="!Selected_Count" class="btn btn-default btn-block">Delete</button>
         <button ng-disabled="!Selected_Count" class="btn btn-default btn-block">Download original</button>

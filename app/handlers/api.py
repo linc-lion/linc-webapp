@@ -81,7 +81,7 @@ class LionsHandler(BaseHandler):
     @asynchronous
     @engine
     def get(self, lions_id=None):
-        resource_url = '/lions/' + lions_id
+        resource_url = '/lions/' + lions_id + '/profile'
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
         self.finish(response.body)
@@ -90,7 +90,7 @@ class ImageSetsHandler(BaseHandler):
     @asynchronous
     @engine
     def get(self, imagesets_id=None):
-        resource_url = '/imagesets/' + imagesets_id
+        resource_url = '/imagesets/' + imagesets_id + '/profile'
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
         self.finish(response.body)
