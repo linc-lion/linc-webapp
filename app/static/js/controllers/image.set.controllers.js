@@ -67,10 +67,20 @@ angular.module('lion.guardians.image.set.controllers', [])
     // Metadata Options
     $scope.metadata_options = { type: 'imageset', edit: 'edit', data: $scope.imageset};
     // Image Gallery
-    $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.animal_iid};
+    $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.lion_id};
     // Location History
-    $scope.locationHistory = {};
+    var label = 'Image Set ' + $scope.imageset.id;
+    var date = (new Date($scope.imageset.updated_at)).toLocaleDateString()
+    $scope.location_options = { type: 'imageset', edit: 'edit',
+      locations: [{'id': $scope.imageset.id, 'label': label, 'updated_at': date,
+                  'longitude': $scope.imageset.longitude, 'latitude': $scope.imageset.latitude
+                }]
+    };
   });
+
+  $scope.location_goto = function (imageset_id){
+    //
+  }
 
   var requestCVResults = function (ReqObjid){
     NotificationFactory.info({

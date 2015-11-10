@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.lions.controllers', [])
 
-.controller('LionCtrl', ['$scope', '$stateParams', 'LincServices', function ($scope, $stateParams, LincServices) {
+.controller('LionCtrl', ['$scope', '$state', '$stateParams', 'LincServices', function ($scope, $state, $stateParams, LincServices) {
 
   $scope.id = $stateParams.id;
 
@@ -68,8 +68,11 @@ angular.module('lion.guardians.lions.controllers', [])
     // Image Gallery
     $scope.gallery_options = { type: 'lion', edit: 'edit', id: $scope.lion.id};
     // Location History
-    $scope.locationHistory = {};
+    $scope.location_options = { type: 'lion', id: $scope.lion.id};
   });
+  $scope.location_goto = function (imageset_id){
+    $state.go("imageset", {id: imageset_id});
+  }
 }])
 
 .controller('SearchLionCtrl', ['$scope', 'LincServices', function ($scope, LincServices) {

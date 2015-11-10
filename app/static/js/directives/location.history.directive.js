@@ -12,6 +12,7 @@ angular.module('lion.guardians.location.history.directive', [])
           useCtrl: '@',
           formSize: '@',
           locationSets: '=',
+          locationGoto:'&'
         },
         link: function(scope, element, attrs) {
           scope.show = function(){
@@ -27,8 +28,9 @@ angular.module('lion.guardians.location.history.directive', [])
                 }
               }
             });
-            modalInstance.result.then(function (result) {
-              console.log('Modal ok' + result);
+            modalInstance.result.then(function (imagesetId) {
+              scope.locationGoto({imageset_Id: imagesetId});
+              console.log('Goto Imageset ' + imagesetId);
             }, function () {
               console.log('Modal dismissed at: ' + new Date());
             });

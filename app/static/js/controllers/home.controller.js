@@ -9,8 +9,8 @@ angular.module('lion.guardians.home.controller', [])
 
   })
 
-  $scope.options = { imageset: { type: 'imagesets', edit: 'new' },
-                        lions: { type: 'lions', edit: 'new'}};
+  $scope.options = { imageset: { type: 'imageset', edit: 'new' },
+                        lions: { type: 'lion', edit: 'new'}};
 
   $scope.goto_imageset = function (Id) {
     $state.go("imageset", { id: Id });

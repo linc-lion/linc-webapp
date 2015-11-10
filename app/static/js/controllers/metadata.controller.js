@@ -109,8 +109,6 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         markings:{'ear': _.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']),'mount': _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']),'tail': _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT'])},
         notes: optionsSet.data.notes
       }
-      if(optionsSet.type == "imageset")
-        $scope.selected.organization = optionsSet.data.owner_organization_id;
       $scope.selected.age = getAge($scope.selected.dateOfBirth);
     }
     else

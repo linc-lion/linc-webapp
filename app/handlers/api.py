@@ -80,11 +80,20 @@ class LionsListHandler(BaseHandler):
 class LionsHandler(BaseHandler):
     @asynchronous
     @engine
-    def get(self, lions_id=None):
-        resource_url = '/lions/' + lions_id + '/profile'
+    def get(self, lions_id=None, locations=None):
+        try:
+            iid=int(lions_id)
+            iid=str(iid) + '/profile'
+        except:
+            iid= lions_id
+        resource_url = '/lions/' + iid
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
-        self.set_status(response.code)
-        self.finish(response.body)
+        if response:
+            self.set_status(response.code)
+            if response.code == 200:
+                self.finish(response.body)
+            else:
+                self.finish({'status':'error','message':"fail to access lion's profile history GET"})
 
 class ImageSetsHandler(BaseHandler):
     @asynchronous
