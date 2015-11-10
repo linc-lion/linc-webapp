@@ -25,17 +25,20 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
   };
   $scope.Associate = function (id){
     _.forEach($scope.lions, function(lion) {
-      lion.selected = false;
+      //lion.selected = false;
+      lion.associated = false;
     });
     var index = _.indexOf($scope.lions, _.find($scope.lions, {id: id}));
-    $scope.lions[index].selected = true;
+    //$scope.lions[index].selected = true;
+    $scope.lions[index].associated = true;
   };
   LincServices.getListCVResults(cvresultsId, function(result){
     var data = result.data.table;
     var associated_id = result.data.associated.id;
+    console.log(result.data.associated);
     $scope.lions = _.map(data, function(element, index) {
       var elem = {};
-      elem["selected"] = false;
+      //elem["selected"] = false;
       if(associated_id == element.id) elem["associated"] = true;
       else elem["associated"] = false;
       return _.extend({}, element, elem);
