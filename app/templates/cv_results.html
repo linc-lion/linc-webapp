@@ -32,10 +32,11 @@
           <i ng-if="!lion.verified" class="icon icon-cross"></i>
         </td>
         <td class="text-center">
-          <span class="badge">{{!lion.cv}}</span>
+          <span class="badge">{{!lion.cv | percentage:2}}</span>
         </td>
         <td class="text-center">
-          <button ng-model="lion.associated" ng-class="{'btn btn-default': !lion.associated, 'btn btn-warning': lion.associated}" ng-click="Associate(lion.id)">{{!lion.associated ? "Associated" : "Associate"}}</button>
+        <button ng-if="!lion.associated" class="btn btn-default" ng-click="Associate(lion.id)"> Associate </button>
+        <button ng-if="lion.associated" class="btn btn-warning" ng-click="Dissociate(lion.id)"> Dissociate </button>
         </td>
       </tr>
     </tbody>
