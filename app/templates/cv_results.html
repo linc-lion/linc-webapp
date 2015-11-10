@@ -18,7 +18,7 @@
     </thead>
     <tbody>
       <!--<tr class="link" ng-repeat="lion in lions | filter:  {hasResults: true, pending: true, verified: true}">-->
-        <tr class="link" ng-repeat="lion in lions" ng-class="{active:lion.selected}">
+        <tr class="link" ng-repeat="lion in lions" ng-class="{active:lion.associated}">
         <td>
           <img ng-src="{{!lion.thumbnail}}" width="40" height="40">
         </td>
@@ -35,7 +35,7 @@
           <span class="badge">{{!lion.cv}}</span>
         </td>
         <td class="text-center">
-          <button ng-model="lion.selected" ng-class="{'btn btn-default': !lion.selected, 'btn btn-warning': lion.selected}" ng-click="Associate(lion.id)">{{!lion.associated ? "Associated" : "Associate"}}</button>
+          <button ng-model="lion.associated" ng-class="{'btn btn-default': !lion.associated, 'btn btn-warning': lion.associated}" ng-click="Associate(lion.id)">{{!lion.associated ? "Associated" : "Associate"}}</button>
         </td>
       </tr>
     </tbody>

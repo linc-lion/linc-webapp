@@ -82,7 +82,7 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
   $scope.name_or_id ='';
   // Order by
-  $scope.reverse = true;
+  $scope.reverse = false;
   $scope.predicate = 'id';
   $scope.order = function(predicate) {
     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
