@@ -47,11 +47,13 @@ angular.module('lion.guardians.controllers', ['lion.guardians.home.controller',
 })
 // Name or Id Filter
 .filter('nameid_filter', function(){
-  return function(input, name, id) {
+  return function(input, name_str, id_str) {
+    var name = name_str.toLowerCase();
+    var id = parseInt(id_str);
     var filtered = _.filter(input, function(value){
         if(!name.length)
           return true;
-        return ((value.name.indexOf(name) !== -1) || (value.id.toString().indexOf(id) !== -1));
+        return ((value.name.toLowerCase().indexOf(name) !== -1) || (value.id === id));
     });
     return filtered;
   };
@@ -67,4 +69,9 @@ angular.module('lion.guardians.controllers', ['lion.guardians.home.controller',
   };
 })
 
+.filter('percentage', ['$filter', function ($filter) {
+  return function (input, decimals) {
+    return $filter('number')(input * 100, decimals) + '%';
+  };
+}])
 ;
