@@ -77,6 +77,18 @@ angular.module('lion.guardians.services', [])
       console.log(error);
     });
   };
+  // Get Locations
+  var GetLocations = function (id,  fn) {
+    var url = databases['lions'].url + '/' + id + '/locations';
+    var label = databases['lions'].label;
+    HTTPCachedGet(url, label).then(function (results) {
+      fn(results.data);
+    },
+    function (error) {
+      console.log(error);
+    });
+  };
+
   var GetOrg = function (id,  fn) {
     var url = databases['organizations'].url + '/' + id;
     var label = databases['organizations'].label;
@@ -176,6 +188,8 @@ angular.module('lion.guardians.services', [])
   dataFactory.Lion = GetLion;
   // ImageSet to ImageSet Profile
   dataFactory.ImageSet = GetImageSet;
+  // Location History
+  dataFactory.LocationHistory = GetLocations;
   //dataFactory.getOrganization = GetOrg;
   dataFactory.requestCV = PostImageSets;
   dataFactory.postCVResults = PostCVResults;

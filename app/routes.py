@@ -35,10 +35,11 @@ url_patterns = [
     (r"/lions/list", LionsListHandler),
     (r"/organizations/list", OrganizationsListHandler),
     (r"/images/list", ImagesListHandler),
+
     (r"/images/upload", ImagesUploadHandler),
-    #(r"/upload", UploadHandler),
     (r"/lions/?$", LionsHandler),
     (r"/lions/(.*)$", LionsHandler),
+    (r"/lions/(\w+)/(locations)$", LionsHandler),
     (r"/imagesets/?$", ImageSetsHandler),
     (r"/imagesets/(.*)$", ImageSetsHandler),
     (r"/organizations/?$", OrganizationsHandler),
