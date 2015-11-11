@@ -30,7 +30,7 @@ app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($roo
     };
 }]);
 
-app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $urlRouterProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider,  $urlRouterProvider, $locationProvider) {
   // Redirects and Otherwise //
   // Use $urlRouterProvider to configure any redirects (when) and invalid urls (otherwise).
   /*$urlRouterProvider
@@ -113,7 +113,9 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
               }, 100);
           }]
         });
+
       $urlRouterProvider.otherwise('login');
+      $locationProvider.html5Mode(true);
 }]);
 
 /*app.config(function(uiGmapGoogleMapApiProvider) {
