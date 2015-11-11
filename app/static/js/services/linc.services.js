@@ -223,6 +223,14 @@ angular.module('lion.guardians.services', [])
       console.log(error);
     });
   };
+
+  var Login = function (data, success, error){
+    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    //var data = {"input_data": input_data};
+    angular.merge(data, cookies);
+    return HTTP('POST', '/login', data, success, error);
+  };
+
   var dataFactory = {};
   // List of ImageSets , Lions and Organizations
   dataFactory.getlists = GetLists;
@@ -244,6 +252,8 @@ angular.module('lion.guardians.services', [])
   dataFactory.ClearAllCaches = ClecarAllCaches;
   dataFactory.ClearAllImagesetsCaches = ClearAllImagesetsCaches;
   dataFactory.ClearImagesetProfileCache = ClearImagesetProfileCache;
+
+  dataFactory.Login = Login;
   return dataFactory;
 }])
 

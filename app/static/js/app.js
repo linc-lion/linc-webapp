@@ -115,7 +115,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         });
 
       $urlRouterProvider.otherwise('login');
-      $locationProvider.html5Mode(true);
+      //$locationProvider.html5Mode(true);
 }]);
 
 /*app.config(function(uiGmapGoogleMapApiProvider) {
