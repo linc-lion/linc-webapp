@@ -4,7 +4,7 @@ angular.module('lion.guardians.login.controller', [])
 // Login
 .controller('LoginCtrl', ['$scope', '$state', '$timeout', '$localStorage', 'NotificationFactory', function ($scope, $state, $timeout, $localStorage, NotificationFactory) {
 
-  $scope.loginData = { email : 'teste@venidera.com' , password : '123123'};
+  $scope.loginData = { email : '' , password : ''};
   $scope.dataLoading = false;
   $scope.remember = true;
 
@@ -33,7 +33,7 @@ angular.module('lion.guardians.login.controller', [])
         //var shaObj = new jsSHA($scope.loginData.email + $scope.loginData.password + $rootScope.secret, "TEXT");
         //var encrypted_pass = shaObj.getHash("SHA-512", "HEX");
         //$localStorage.logged = (result.data.data[0].password == encrypted_pass)
-        var result = {email: "teste@venidera.com", password: '123123'}
+        var result = {email: "linc-web@venidera.com", password: '123123'}
         var encrypted_pass = result.password;
         $timeout(function () {
           //$scope.$storage.logged = ("123123" == "123123");
