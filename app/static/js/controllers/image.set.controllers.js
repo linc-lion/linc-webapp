@@ -132,6 +132,11 @@ angular.module('lion.guardians.image.set.controllers', [])
       });
     }, 180000);
   };
+  $scope.Change_results = function (change, ImagesetId) {
+    $scope.imageset["action"] = 'cvrequest';
+    LincServices.ClearAllImagesetsCaches();
+    LincServices.ClearImagesetProfileCache(ImagesetId);
+  }
 }])
 
 .controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', 'NotificationFactory','LincServices', function ($scope, $timeout, $interval, NotificationFactory, LincServices) {
@@ -272,4 +277,10 @@ angular.module('lion.guardians.image.set.controllers', [])
       });
     }, 180000);
   };
+  $scope.Change_results = function (change, ImagesetId) {
+    var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
+    $scope.imagesets[index]["action"] = 'cvrequest';
+    LincServices.ClearAllImagesetsCaches();
+    LincServices.ClearImagesetProfileCache(ImagesetId);
+  }
 }]);

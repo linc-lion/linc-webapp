@@ -100,10 +100,25 @@ angular.module('lion.guardians.services', [])
     });
   };
 
+  var ClecarAllCaches = function (fn) {
+    $httpDefaultCache.removeAll();
+  };
+
+  var ClearAllImagesetsCaches = function () {
+    $httpcache.remove('/imagesets/list');
+  };
+
+  var ClearImagesetProfileCache = function (id) {
+    $httpcache.remove('/imagesets/' + id);
+  };
+
   var HTTP = function (metod, url, data, success, error) {
-    if(metod == 'GET' || metod == 'DELETE'){
+    if(metod == 'GET'){
       $http.get(url).then(success, error);
     }
+    /*else if(metod == 'DELETE'){
+      $http.delete(url).then(success, error);
+    }*/
     else{
       var req = { method: metod, url: url, data: data,
                   headers: { 'Content-Type': 'application/json'}};
@@ -152,6 +167,20 @@ angular.module('lion.guardians.services', [])
       console.log(error);
     });
   };
+  var PutImageSet = function (imageset_id, data, success){
+    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    //var data = {"cvrequest_id":cvrequest_id};
+    angular.merge(data, cookies);
+    return HTTP('PUT', '/imagesets/' + imageset_id, data, success,
+    function(error){
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to Put Datas in ImageSets',
+        position: 'right', // right, left, center
+        duration: 180000   // milisecond
+      });
+      console.log(error);
+    });
+  }
   var PostCVResults = function (cvrequest_id, success){
     var cookies = {'_xsrf': $cookies.get('_xsrf')};
     var data = {"cvrequest_id":cvrequest_id};
@@ -180,7 +209,20 @@ angular.module('lion.guardians.services', [])
       console.log(error);
     });
   };
-
+  var DeleteCVRequest = function (cvrequest_id, success){
+    var data = {'_xsrf': $cookies.get('_xsrf')};
+    //var data = {"cvrequest_id":cvrequest_id};
+    //angular.merge(data, cookies);
+    return HTTP('DELETE', '/cvrequest/' + cvrequest_id, data, success,
+    function(error){
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to Delete CV Results/CVRequest',
+        position: 'right', // right, left, center
+        duration: 180000   // milisecond
+      });
+      console.log(error);
+    });
+  };
   var dataFactory = {};
   // List of ImageSets , Lions and Organizations
   dataFactory.getlists = GetLists;
@@ -196,6 +238,12 @@ angular.module('lion.guardians.services', [])
   dataFactory.putCVResults = PutCVResults;
   dataFactory.getListCVResults = GetCVResults;
 
+  dataFactory.putImageSet = PutImageSet;
+  dataFactory.deleteCVRequest = DeleteCVRequest;
+
+  dataFactory.ClearAllCaches = ClecarAllCaches;
+  dataFactory.ClearAllImagesetsCaches = ClearAllImagesetsCaches;
+  dataFactory.ClearImagesetProfileCache = ClearImagesetProfileCache;
   return dataFactory;
 }])
 
