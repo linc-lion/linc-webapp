@@ -35,11 +35,11 @@ angular.module('lion.guardians.cvresults.directive', [])
             imagesetId: function () {
               return scope.imagesetId;
             },
-            cvresultsId: function () {
-              return scope.cvresultsId;
-            },
             cvrequestId: function () {
               return scope.cvrequestId;
+            },
+            cvresults: function(LincServices) {
+              return LincServices.getCVResults(scope.cvresultsId);
             }
           }
         });

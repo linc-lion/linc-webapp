@@ -2,10 +2,12 @@
 
 angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest.directive'])
 
-.controller('CVRequesCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'imagesetId', function ($scope, $window, $uibModalInstance, LincServices, imagesetId) {
+.controller('CVRequesCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'imagesetId', 'lions', function ($scope, $window, $uibModalInstance, LincServices, imagesetId, lions) {
 
   $scope.title = 'Lion Search';
   $scope.content = 'Search';
+
+  $scope.lions = lions;
 
   $scope.Close = function () {
     $uibModalInstance.dismiss("close");
@@ -31,10 +33,6 @@ angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest
     else $scope.checked_count--;
     console.log("checked" + $scope.checked_count);
   }
-
-  LincServices.getlists(['lions'],function(data){
-    $scope.lions = data['lions'];
-  });
 
   // Order by
   $scope.reverse = true;
