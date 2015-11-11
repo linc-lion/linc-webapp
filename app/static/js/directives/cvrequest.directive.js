@@ -32,6 +32,9 @@ angular.module('lion.guardians.cvrequest.directive', [])
           resolve: {
             imagesetId: function () {
               return scope.imagesetId;
+            },
+            lions: function(LincServices) {
+              return LincServices.Lions();
             }
           }
         });

@@ -2,9 +2,9 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.controller('ImageSetCtrl', ['$scope', '$stateParams', '$timeout', '$interval', 'NotificationFactory', 'LincServices', function ($scope, $stateParams, $timeout, $interval, NotificationFactory, LincServices) {
+.controller('ImageSetCtrl', ['$scope', '$timeout', '$interval', 'NotificationFactory', 'LincServices', 'imageset', function ($scope, $timeout, $interval, NotificationFactory, LincServices, imageset) {
 
-  $scope.id = $stateParams.id;
+  $scope.imageset = imageset;
 
   var labels = function (damages, labels){
     var label = "";
@@ -38,45 +38,46 @@ angular.module('lion.guardians.image.set.controllers', [])
                         'SCARS_BODY_RIGHT': 'Body Right',
                         'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
-  LincServices.ImageSet($scope.id,function(data){
-    $scope.imageset = data;
-    if($scope.imageset.cvresults) $scope.imageset["action"] = 'cvresults';
-    else if($scope.imageset.cvrequest) $scope.imageset["action"] = 'cvpending';
-    else $scope.imageset["action"] = 'cvrequest';
+  if($scope.imageset.cvresults) $scope.imageset["action"] = 'cvresults';
+  else if($scope.imageset.cvrequest) $scope.imageset["action"] = 'cvpending';
+  else $scope.imageset["action"] = 'cvrequest';
 
-    var TAGS = JSON.parse(data.tags);
+  var TAGS = JSON.parse($scope.imageset.tags);
 
-    $scope.imageset.eye_damage = labels(eye_damages,_.intersection(TAGS,
-      ['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']));
-    $scope.imageset.broken_teet = labels(broken_teeths,_.intersection(TAGS,
-      ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT',
-       'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']));
-    $scope.imageset.ear_markings = labels(ear_markings,_.intersection(TAGS,
-      ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']));
-    $scope.imageset.mount_markings =labels(mount_markings, _.intersection(TAGS,
-      ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT',
-       'MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']));
-    $scope.imageset.tail_markings = labels(tail_markings,_.intersection(TAGS,
-      ['TAIL_MARKING_MISSING_TUFT']));
-    $scope.imageset.nose_color = labels(nose_color,_.intersection(TAGS,
-      ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY',
-       'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']));
-    $scope.imageset.scars = labels(scars,_.intersection(TAGS,
-      ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE']));
+  $scope.imageset.eye_damage = labels(eye_damages,_.intersection(TAGS,
+    ['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']));
+  $scope.imageset.broken_teet = labels(broken_teeths,_.intersection(TAGS,
+    ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT',
+     'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']));
+  $scope.imageset.ear_markings = labels(ear_markings,_.intersection(TAGS,
+    ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']));
+  $scope.imageset.mount_markings =labels(mount_markings, _.intersection(TAGS,
+    ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT',
+     'MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']));
+  $scope.imageset.tail_markings = labels(tail_markings,_.intersection(TAGS,
+    ['TAIL_MARKING_MISSING_TUFT']));
+  $scope.imageset.nose_color = labels(nose_color,_.intersection(TAGS,
+    ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY',
+     'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']));
+  $scope.imageset.scars = labels(scars,_.intersection(TAGS,
+    ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE']));
 
-    // Metadata Options
-    $scope.metadata_options = { type: 'imageset', edit: 'edit', data: $scope.imageset};
-    // Image Gallery
-    $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.lion_id};
-    // Location History
-    var label = 'Image Set ' + $scope.imageset.id;
-    var date = (new Date($scope.imageset.updated_at)).toLocaleDateString()
-    $scope.location_options = { type: 'imageset', edit: 'edit',
-      locations: [{'id': $scope.imageset.id, 'label': label, 'updated_at': date,
-                  'longitude': $scope.imageset.longitude, 'latitude': $scope.imageset.latitude
-                }]
-    };
-  });
+  // Metadata Options
+  $scope.metadata_options = { type: 'imageset', edit: 'edit', data: $scope.imageset};
+  // Image Gallery
+  $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.lion_id};
+  // Location History
+  var label = 'Image Set ' + $scope.imageset.id;
+  var date = (new Date($scope.imageset.updated_at)).toLocaleDateString()
+  $scope.location_options = { type: 'imageset',
+      history: { count: 1,
+                 locations: [{'id': $scope.imageset.id,
+                              'label': label, 'updated_at': date,
+                              'longitude': $scope.imageset.longitude,
+                              'latitude': $scope.imageset.latitude
+                            }]
+               }
+  };
 
   $scope.location_goto = function (imageset_id){
     //
@@ -139,7 +140,20 @@ angular.module('lion.guardians.image.set.controllers', [])
   }
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', 'NotificationFactory','LincServices', function ($scope, $timeout, $interval, NotificationFactory, LincServices) {
+.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', 'NotificationFactory','LincServices', 'organizations', 'imagesets', function ($scope, $timeout, $interval, NotificationFactory, LincServices, organizations, imagesets) {
+
+  $scope.organizations =  _.map(organizations, function(element) {
+    return _.extend({}, element, {checked: true});
+  });
+  $scope.imagesets = _.map(imagesets, function(element, index) {
+    var elem = {};
+    if(element.cvresults) elem["action"] = 'cvresults';
+    else if(element.cvrequest) elem["action"] = 'cvpending';
+    else  elem["action"] = 'cvrequest';
+    return _.extend({}, element, elem);
+  });
+
+
   // Hide Filters
   $scope.isCollapsed = true;
   // Filters  scopes
@@ -204,19 +218,6 @@ angular.module('lion.guardians.image.set.controllers', [])
     }
     return label;
   }
-
-  LincServices.getlists(['imagesets','organizations'],function(data){
-    $scope.organizations = _.map(data['organizations'], function(element) {
-      return _.extend({}, element, {checked: true});
-    });
-    $scope.imagesets = _.map(data['imagesets'], function(element, index) {
-      var elem = {};
-      if(element.cvresults) elem["action"] = 'cvresults';
-      else if(element.cvrequest) elem["action"] = 'cvpending';
-      else  elem["action"] = 'cvrequest';
-      return _.extend({}, element, elem);
-    });
-  });
 
   var cancel_intervals = function (){
     if($scope.requesCVpromise != null){

@@ -2,11 +2,13 @@
 
 angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.directive'])
 
-.controller('MetadataCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', '$timeout', '$q',  function ($scope, $window, $uibModalInstance, LincServices, NotificationFactory, optionsSet,  $timeout, $q) {
+.controller('MetadataCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', '$timeout', '$q',  'organizations', function ($scope, $window, $uibModalInstance, LincServices, NotificationFactory, optionsSet,  $timeout, $q, organizations) {
 
   $scope.debug = false;
   $scope.optionsSet = optionsSet;
   $scope.optionsSet.isMetadata = true;
+
+  $scope.organizations = organizations;
 
   var titles = {}; titles['lion'] = 'Lion Metadata'; titles['imageset'] = 'Image Set Metadata';
 
@@ -24,7 +26,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   // Save and Close
   $scope.SaveClose = function(){
     console.log("Save Imageset");
-    $scope.metadataId = {id: 5};
+    $scope.metadataId = {id: 2};
     NotificationFactory.success({
       title: "Save", message:'Metadata saved with success',
       position: "right", // right, left, center
@@ -45,14 +47,14 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        $scope.metadataId = {id: 5};
+        $scope.metadataId = {id: 2};
         deferred.resolve($scope.optionsSet);
     }, 1000);
     return deferred.promise;
   }
   $scope.Close = function(){
     console.log("Close UploadImages");
-    $scope.metadataId = {id: 5};
+    $scope.metadataId = {id: 2};
     $uibModalInstance.close($scope.metadataId);
   }
 
@@ -87,39 +89,34 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   // Scars Markings
   $scope.scars = [{value: 'SCARS_BODY_LEFT', label: 'Body Left'}, {value: 'SCARS_BODY_RIGHT', label: 'Body Right'}, {value: 'SCARS_FACE', label: 'Face'}, {value: 'SCARS_TAIL', label: 'Tail'}];
 
-  // Organizations List
-  LincServices.getlists(['organizations'],function(data){
-    $scope.organizations = data['organizations'];
+  if(optionsSet.edit == 'edit'){
+    var TAGS = JSON.parse(optionsSet.data.tags);
 
-    if(optionsSet.edit == 'edit'){
-      var TAGS = JSON.parse(optionsSet.data.tags);
+    $scope.selected = {
+      name: optionsSet.data.name,
+      dateStamp: new Date(optionsSet.data.updated_at),
+      organization: optionsSet.data.organization_id,
+      dateOfBirth: new Date(optionsSet.data.date_of_birth),
 
-      $scope.selected = {
-        name: optionsSet.data.name,
-        dateStamp: new Date(optionsSet.data.updated_at),
-        organization: optionsSet.data.organization_id,
-        dateOfBirth: new Date(optionsSet.data.date_of_birth),
-
-        geopos: {lat: optionsSet.data.latitude, lng: optionsSet.data.longitude},
-        gender: optionsSet.data.gender,
-        eye_damage: _.intersection(TAGS,['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']),
-        broken_teeth: _.intersection(TAGS,['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT','TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']),
-        nose_color: _.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']),
-        scars: _.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE']),
-        markings:{'ear': _.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']),'mount': _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']),'tail': _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT'])},
-        notes: optionsSet.data.notes
-      }
-      $scope.selected.age = getAge($scope.selected.dateOfBirth);
+      geopos: {lat: optionsSet.data.latitude, lng: optionsSet.data.longitude},
+      gender: optionsSet.data.gender,
+      eye_damage: _.intersection(TAGS,['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']),
+      broken_teeth: _.intersection(TAGS,['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT','TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']),
+      nose_color: _.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']),
+      scars: _.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE']),
+      markings:{'ear': _.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']),'mount': _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']),'tail': _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT'])},
+      notes: optionsSet.data.notes
     }
-    else
-    {
-      // Result Datas
-      $scope.selected = { name: "", organization: "", dateOfBirth: new Date(), dateStamp: new Date(),
-        geopos: {lat:"", lng: ""}, gender: "", markings: [],
-        teeth: [], eye_damage: [], nose_color: [], scars: [], notes: "Notes here"
-      }
+    $scope.selected.age = getAge($scope.selected.dateOfBirth);
+  }
+  else
+  {
+    // Result Datas
+    $scope.selected = { name: "", organization: "", dateOfBirth: new Date(), dateStamp: new Date(),
+      geopos: {lat:"", lng: ""}, gender: "", markings: [],
+      teeth: [], eye_damage: [], nose_color: [], scars: [], notes: "Notes here"
     }
-  });
+  }
   // Calc Age Function
   function getAge(birthDate) {
     var now = new Date();

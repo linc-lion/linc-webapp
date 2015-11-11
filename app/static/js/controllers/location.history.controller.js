@@ -2,12 +2,20 @@
 
 angular.module('lion.guardians.location.history.controller', ['lion.guardians.location.history.directive'])
 
-.controller('LocationHistoryCtrl', ['$scope', '$uibModal', '$q', '$timeout', '$uibModalInstance', 'locationSets', 'LincServices', function ($scope, $uibModal, $q, $timeout, $uibModalInstance, locationSets, LincServices) {
+.controller('LocationHistoryCtrl', ['$scope', '$uibModal', '$q', '$timeout', '$uibModalInstance', 'LincServices', 'options', 'history', function ($scope, $uibModal, $q, $timeout, $uibModalInstance, LincServices, options, history) {
   $scope.title = 'Location History';
   $scope.content = 'Map';
 
-  $scope.locationSets = locationSets;
-  $scope.isLion = (locationSets.type == 'lion');
+  //$scope.locationSets = locationSets;
+  $scope.isLion = (options.type == 'lion');
+  $scope.GoBackMessage = $scope.isLion? "Go to Image Set" : "Go Back to Image Set";
+
+  $scope.locations = history.locations;
+  $scope.count = history.count;
+
+  $scope.Cancel = function () {
+   $uibModalInstance.dismiss();
+  };
 
   var add_circle = function (center, radius){
     var cityCircle = new google.maps.Circle({
@@ -16,10 +24,6 @@ angular.module('lion.guardians.location.history.controller', ['lion.guardians.lo
       center: center, radius: radius
     });
   }
-  // Close
-  $scope.Cancel = function () {
-   $uibModalInstance.dismiss();
-  };
   // Calc distance between 2 points
   var Calc_distancia = function (p1, p2){
     var lat1 = p1.lat();var lon1 = p1.lng()
@@ -86,7 +90,7 @@ angular.module('lion.guardians.location.history.controller', ['lion.guardians.lo
     });
   }
   // If is Lion, load from  url. If Imageset get by params
-  var load_imagesets = function (fn){
+/*  var load_imagesets = function (fn){
     if($scope.locationSets.type == "imageset"){
       $scope.GoBackMessage = "Go Back to Image Set";
       $scope.locations = locationSets.locations
@@ -95,16 +99,16 @@ angular.module('lion.guardians.location.history.controller', ['lion.guardians.lo
     }
     else{
       $scope.GoBackMessage = "Go to Image Set";
-      LincServices.LocationHistory(locationSets.id,function(data){
+      LincServices.LocationHistory(locationSets.id).then()
         $scope.locations = data.locations;
         $scope.count = data.count;
         fn();
       });
     }
-  }
+  }*/
   // Initialize map
   $scope.$on('mapInitialized', function(evt, evtMap) {
-    load_imagesets (function (){
+    //load_imagesets (function (){
       $scope.map = evtMap;
       $scope.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
       $scope.map.setZoom(8);
@@ -137,7 +141,7 @@ angular.module('lion.guardians.location.history.controller', ['lion.guardians.lo
           }
         }
       });
-    });
+  //  });
   });
   // On Click Marker
   $scope.click = function (id, event){

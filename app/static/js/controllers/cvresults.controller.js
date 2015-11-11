@@ -2,10 +2,12 @@
 
 angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults.directive'])
 
-.controller('CVResultsCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'imagesetId', 'cvresultsId', 'cvrequestId', function ($scope, $window, $uibModalInstance, LincServices, imagesetId, cvresultsId, cvrequestId) {
+.controller('CVResultsCtrl', ['$scope', '$uibModalInstance', 'LincServices', 'imagesetId', 'cvrequestId', 'cvresults', function ($scope, $uibModalInstance, LincServices, imagesetId, cvrequestId, cvresults) {
 
   $scope.title = 'CV Results';
   $scope.content = 'Form';
+
+  $scope.cvresults = cvresults;
 
   $scope.Close = function () {
     $uibModalInstance.dismiss("close");
@@ -17,35 +19,35 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
     });
   };
   $scope.Associate = function (id){
-    _.forEach($scope.lions, function(lion) {
+    _.forEach($scope.cvresults, function(lion) {
       lion.associated = false;
     });
-    var index = _.indexOf($scope.lions, _.find($scope.lions, {id: id}));
+    var index = _.indexOf($scope.cvresults, _.find($scope.cvresults, {id: id}));
     var data = {'lion_id': id};
     LincServices.Associate(imagesetId, data, function(){
-      $scope.lions[index].associated = true;
+      $scope.cvresults[index].associated = true;
       LincServices.ClearAllImagesetsCaches();
       LincServices.ClearImagesetProfileCache(ImagesetId);
     });
   };
   $scope.Dissociate = function (id){
-    var index = _.indexOf($scope.lions, _.find($scope.lions, {id: id}));
+    var index = _.indexOf($scope.cvresults, _.find($scope.cvresults, {id: id}));
     var data = {'lion_id': null};
     LincServices.Associate(imagesetId, data, function(){
-      $scope.lions[index].associated = false;
+      $scope.cvresults[index].associated = false;
       LincServices.ClearAllImagesetsCaches();
       LincServices.ClearImagesetProfileCache(ImagesetId);
     });
   };
-  LincServices.getListCVResults(cvresultsId, function(result){
+  /*LincServices.getListCVResults(cvresultsId, function(result){
     var data = result.data.table;
     var associated_id = result.data.associated.id;
 
-    $scope.lions = _.map(data, function(element, index) {
+    $scope.cvresults = _.map(data, function(element, index) {
       var elem = {};
       if(associated_id == element.id) elem["associated"] = true;
       else elem["associated"] = false;
       return _.extend({}, element, elem);
     });
-  });
+  });*/
 }]);

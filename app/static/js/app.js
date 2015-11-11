@@ -1,5 +1,5 @@
 //angular.module('lion-guardians', [])  ['ngAnimate', 'ngSanitize', 'mgcrea.ngStrap']);
-var app = angular.module('lion.guardians', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'ngMap', 'mgcrea.ngStrap', 'angularFileUpload', 'cgNotify', 'ngCookies', 'lion.guardians.controllers']);
+var app = angular.module('lion.guardians', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'ngMap', 'mgcrea.ngStrap', 'angularFileUpload', 'cgNotify', 'ngCookies', 'angular-loading-bar', 'lion.guardians.controllers', 'lion.guardians.services']);
 
 'use strict';
 
@@ -19,6 +19,7 @@ app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($roo
           $state.go("login");
         }
     });
+
     var history = [];
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
         history.push({name: toState.name, param: toParams});
@@ -63,6 +64,11 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           templateUrl: 'lion.html',
           data: {
             bodyClasses: 'lion'
+          },
+          resolve: {
+            lion: function($stateParams, LincServices) {
+              return LincServices.Lion($stateParams.id);
+            }
           }
         })
         // New Image Set
@@ -72,15 +78,28 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           templateUrl: 'imageset.html',
           data: {
             bodyClasses: 'imageset'
+          },
+          resolve: {
+            imageset: function($stateParams, LincServices) {
+              return LincServices.ImageSet($stateParams.id);
+            }
           }
         })
-        // Searcg Lion
+        // Search Lion
         .state("searchlion", {
           url: "/searchlion",
           controller: 'SearchLionCtrl',
           templateUrl: 'searchlion.html',
           data: {
             bodyClasses: 'searchlion'
+          },
+          resolve: {
+            organizations: function(LincServices) {
+              return LincServices.Organizations();
+            },
+            lions: function(LincServices) {
+              return LincServices.Lions();
+            }
           }
         })
         // Search Image Set
@@ -90,6 +109,14 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           templateUrl: 'searchimageset.html',
           data: {
             bodyClasses: 'searchimageset'
+          },
+          resolve: {
+            organizations: function(LincServices) {
+              return LincServices.Organizations();
+            },
+            imagesets: function(LincServices) {
+              return LincServices.ImageSets();
+            }
           }
         })
         // Conservationists
@@ -118,6 +145,10 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
       //$locationProvider.html5Mode(true);
 }]);
 
+app.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
+    cfpLoadingBarProvider.includeSpinner = true;
+    cfpLoadingBarProvider.includeBar = true;
+  }])
 /*app.config(function(uiGmapGoogleMapApiProvider) {
     uiGmapGoogleMapApiProvider.configure({
         //    key: 'your api key',

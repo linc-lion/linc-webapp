@@ -47,7 +47,7 @@
     </div>
     <div class="col-sm-3 line-left">
       <image-gallery ng-show="imageset" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="gallery_options"></image-gallery>
-      <location-history ng-show="imageset" use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" location-sets="location_options" location-goto="location_goto(imageset_Id)"></location-history>
+      <location-history ng-show="imageset" use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" type="imageset" options="location_options" location-goto="location_goto(imageset_Id)"></location-history>
       <br>
       <metadata ng-show="imageset" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options"></metadata>
       <br>

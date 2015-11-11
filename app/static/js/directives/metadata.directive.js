@@ -43,6 +43,9 @@ angular.module('lion.guardians.metadata.directive', [])
           resolve: {
             optionsSet: function () {
               return scope.optionsSet;
+            },
+            organizations: function(LincServices) {
+              return LincServices.Organizations();
             }
           }
         });
