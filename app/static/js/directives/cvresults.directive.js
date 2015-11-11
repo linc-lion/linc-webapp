@@ -19,8 +19,9 @@ angular.module('lion.guardians.cvresults.directive', [])
       useCtrl: '@',
       formSize: '@',
       imagesetId: '=',
-      cvresultsId: '='/*,
-      cvRequesultSuccess:'&'*/
+      cvresultsId: '=',
+      cvrequestId: '=',
+      cvResultErased: '&'
     },
     link: function(scope, element, attrs) {
       scope.show = function(){
@@ -36,11 +37,14 @@ angular.module('lion.guardians.cvresults.directive', [])
             },
             cvresultsId: function () {
               return scope.cvresultsId;
+            },
+            cvrequestId: function () {
+              return scope.cvrequestId;
             }
           }
         });
         modalInstance.result.then(function (result) {
-          //scope.cvRequesultSuccess({imageset_Id: scope.imagesetId, result_ObjId: cvresult.obj_id});
+          scope.cvResultErased({change: result, imagesetId: scope.imagesetId});
           console.log('Modal ok' + result);
         }, function () {
           console.log('Modal dismissed at: ' + new Date());
