@@ -179,3 +179,19 @@ class ImagesUploadHandler(BaseHandler):
         print('iscover ', iscover)
 
         self.finish(dirfs+'/'+fname + " is uploaded!! Check %s folder" % dirfs)
+
+class LoginHandler(BaseHandler):
+    @asynchronous
+    @engine
+    def post(self, input_data=None):
+        #print(self.input_data['username'])
+        #print(self.input_data['password'])
+        if self.input_data['username'] == 'linc-web@venidera.com' and self.input_data['password'] == '123123':
+            self.set_status(200)
+            self.finish('Successfully logged')
+        else:
+            self.set_status(400)
+            if self.input_data['username'] != 'linc-web@venidera.com':
+                self.finish("There isn't an account for this email")
+            else:
+                self.finish('Invalid password')
