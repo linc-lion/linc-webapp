@@ -19,9 +19,6 @@ angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest
       $uibModalInstance.close(requestObj);
     }, function(error){});
   };
-  $scope.Cancel = function () {
-    $uibModalInstance.dismiss('cancel');
-  };
   $scope.checkAll = function (check) {
     $scope.lions.forEach(function(lion){
       lion.selected = check;

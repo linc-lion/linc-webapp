@@ -16,24 +16,25 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
       $uibModalInstance.close(true);
     });
   };
-  $scope.Cancel = function () {
-    $uibModalInstance.dismiss('cancel');
-  };
   $scope.Associate = function (id){
     _.forEach($scope.lions, function(lion) {
       lion.associated = false;
     });
     var index = _.indexOf($scope.lions, _.find($scope.lions, {id: id}));
     var data = {'lion_id': id};
-    LincServices.putImageSet(imagesetId, data, function(){
+    LincServices.Associate(imagesetId, data, function(){
       $scope.lions[index].associated = true;
+      LincServices.ClearAllImagesetsCaches();
+      LincServices.ClearImagesetProfileCache(ImagesetId);
     });
   };
   $scope.Dissociate = function (id){
     var index = _.indexOf($scope.lions, _.find($scope.lions, {id: id}));
     var data = {'lion_id': null};
-    LincServices.putImageSet(imagesetId, data, function(){
+    LincServices.Associate(imagesetId, data, function(){
       $scope.lions[index].associated = false;
+      LincServices.ClearAllImagesetsCaches();
+      LincServices.ClearImagesetProfileCache(ImagesetId);
     });
   };
   LincServices.getListCVResults(cvresultsId, function(result){

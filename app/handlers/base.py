@@ -36,7 +36,7 @@ class BaseHandler(RequestHandler):
             'headers' : h,
             'url' : url,
             'method' : method        }
-        if method == 'POST':
+        if method in ['POST','PUT']:
             params['body']=body
         request = HTTPRequest(**params)
         try:

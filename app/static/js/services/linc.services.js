@@ -238,7 +238,7 @@ angular.module('lion.guardians.services', [])
   dataFactory.putCVResults = PutCVResults;
   dataFactory.getListCVResults = GetCVResults;
 
-  dataFactory.putImageSet = PutImageSet;
+  dataFactory.Associate = PutImageSet;
   dataFactory.deleteCVRequest = DeleteCVRequest;
 
   dataFactory.ClearAllCaches = ClecarAllCaches;
