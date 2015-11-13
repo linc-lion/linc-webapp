@@ -4,18 +4,20 @@
 from handlers.base import VersionHandler
 from handlers.error import ErrorHandler
 from handlers.auth import AuthHandler
-from handlers.main import MainHandler,LoginHandler,HomeHandler,SideMenuHandler,\
+from handlers.main import MainHandler,LoginMainHandler,HomeHandler,SideMenuHandler,\
     LionMainHandler,SearchLionHandler,ImageSetMainHandler,SearchImageSetHandler,\
     ConservationistsHandler,ImageGalleryHandler,LocationHistoryHandler,\
     EditMetadataHandler,CVResultsMainHandler,CVRequestMainHandler,UploadImagesHandler
-from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler, ImagesUploadHandler, LionsHandler, ImageSetsHandler, OrganizationsHandler, CVResultsHandler
+from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler,\
+    ImagesUploadHandler, LionsHandler, ImageSetsHandler, OrganizationsHandler, CVResultsHandler, CVRequestHandler,\
+    LoginHandler
 
 # Defining routes
 url_patterns = [
     # Handlers for the website
     (r"/", MainHandler),
     (r"/version", VersionHandler),
-    (r"/login.html", LoginHandler),
+    (r"/login.html", LoginMainHandler),
     (r"/home.html", HomeHandler),
     (r"/sidemenu.html", SideMenuHandler),
     (r"/lion.html", LionMainHandler),
@@ -34,11 +36,13 @@ url_patterns = [
     (r"/imagesets/(\w+)/(cvrequest)$", ImageSetsListHandler),
     (r"/lions/list", LionsListHandler),
     (r"/organizations/list", OrganizationsListHandler),
+    
     (r"/images/list", ImagesListHandler),
     (r"/images/upload", ImagesUploadHandler),
-    #(r"/upload", UploadHandler),
+
     (r"/lions/?$", LionsHandler),
     (r"/lions/(.*)$", LionsHandler),
+    (r"/lions/(\w+)/(locations)$", LionsHandler),
     (r"/imagesets/?$", ImageSetsHandler),
     (r"/imagesets/(.*)$", ImageSetsHandler),
     (r"/imagesets/(\w+)/(gallery)$", ImageSetsHandler),
@@ -48,5 +52,9 @@ url_patterns = [
 
     (r"/cvresults/?$", CVResultsHandler),
     (r"/cvresults/(\w+$)", CVResultsHandler),
-    (r"/cvresults/(\w+)/(list)$", CVResultsHandler)
+    (r"/cvresults/(\w+)/(list)$", CVResultsHandler),
+
+    (r"/cvrequest/?$", CVRequestHandler),
+    (r"/cvrequest/(\w+$)", CVRequestHandler),
+    (r"/login", LoginHandler)
 ]

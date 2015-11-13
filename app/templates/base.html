@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt_BR" ng-app="lion.guardians">
   <head>
+    <base href="/"></base>
     <meta charset="utf-8">
     <title>LionGuardians</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,15 +15,17 @@
     <link href="{{ static_url("lib/angular-motion/angular-motion.min.css") }}" rel="stylesheet">
     <link href="{{ static_url("lib/angular-motion/libs.min.css") }}" rel="stylesheet">
     <link href="{{ static_url("lib/angular-slider/rzslider.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("lib/angular-loading-bar/loading-bar.min.css") }}" rel="stylesheet">
+
     <link href="{{ static_url("css/styles.min.css") }}" rel="stylesheet">
-    <script src="https://maps.googleapis.com/maps/api/js?sensor=true&libraries=geometry"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry"></script>
 
     <style type="text/css">
       {% block css %}
       {% end %}
     </style>
 
-    <link rel="shortcut icon" href="{{ static_url("icons/favicon.png") }}">
+    <link rel="shortcut icon" href="{{ static_url("icons/favicon.ico") }}">
     <link rel="apple-touch-icon" sizes="57x57" href="{{ static_url("icons/apple-touch-icon-57x57.png") }}">
     <link rel="apple-touch-icon" sizes="60x60" href="{{ static_url("icons/apple-touch-icon-60x60.png") }}">
     <link rel="apple-touch-icon" sizes="72x72" href="{{ static_url("icons/apple-touch-icon-72x72.png") }}">
@@ -87,6 +90,8 @@
       <script src="{{ static_url("lib/angular-file-upload/angular-file-upload.min.js") }}"></script>
       <script src="{{ static_url("lib/angular-notify/angular-notify.js") }}"></script>
       <script src="{{ static_url("lib/angular-cookies/angular-cookies.min.js") }}"></script>
+      <script src="{{ static_url("lib/angular-loading-bar/loading-bar.min.js") }}"></script>
+
   {% end %}
 
     {% block include_js %}

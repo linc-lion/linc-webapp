@@ -1,11 +1,11 @@
   <h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a> Image set</h1>
   <div class="row">
     <div class="col-sm-3 line-right">
-      <p><img src="{{!imageset.thumbnail}}" class="img-responsive"></p>
+      <p><img src="{{!imageset.image}}" class="img-responsive"></p>
       <h4>Image Set ID</h4>
       <p>{{!imageset.id}}</p>
       <h4>Lion Name</h4>
-      <p>{{!imageset.lion_name}}</p>
+      <p>{{!imageset.name}}</p>
       <h4>Organization</h4>
       <p>{{!imageset.organization}}</p>
       <h4>Age</h4>
@@ -43,16 +43,17 @@
     </div>
     <div class="col-sm-5">
       <h4>Notes</h4>
-      <p>Blah blah blah blah blah blah blah blah blah blah blah</p>
+      <p>{{!imageset.notes}}</p>
     </div>
     <div class="col-sm-3 line-left">
-      <image-gallery use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="options"></image-gallery>
-      <location-history use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" location-sets="locationHistory"></location-history>
+      <image-gallery ng-show="imageset" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="gallery_options"></image-gallery>
+      <location-history ng-show="imageset" use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" type="imageset" options="location_options" location-goto="location_goto(imageset_Id)"></location-history>
       <br>
-      <metadata use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="options"></metadata>
+      <metadata ng-show="imageset" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options"></metadata>
       <br>
-      <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" type="new" ng-if="imageset.cvresults"></cvresults>
-      <!--<p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-flash"></i> ASSOCIATE LION</a></p>-->
-      <p><a href="#" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE IMAGE SET</a></p>
+      <cvresults ng-show="imageset" use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" cvresults-id="imageset.cvresults" cvrequest-id="imageset.cvrequest" ng-if="imageset.action == 'cvresults'" cv-result-erased="Change_results(change, imagesetId)"></cvresults>
+      <cvrequest ng-show="imageset" use-ctrl="CVRequesCtrl" use-template-url="cvrequest.html" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)"></cvrequest>
+  <!--    <p><a class="btn btn-lg btn-default btn-block text-muted" ng-show="imageset" ng-if="imageset.action == 'cvpending'"><span class="text-muted">CV Request pending</span></a></p> -->
+      <p ng-show="imageset"><a class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE IMAGE SET</a></p>
     </div>
   </div>

@@ -52,12 +52,24 @@ class CVResultsHandler(BaseHandler):
     @coroutine
     def put(self, res_id=None):
         resource_url = '/cvresults/' + res_id
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(self.input_data))
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode({"message":"updating resources"}))
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
         else:
             self.finish({'status':'error','message':'fail to access the cvresults PUT'})
+
+class CVRequestHandler(BaseHandler):
+    @asynchronous
+    @coroutine
+    def delete(self, req_id=None):
+        resource_url = '/cvrequests/' + req_id
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"updating resources"}))
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to delete cvresults (request) DELETE'})
 
 class ImagesListHandler(BaseHandler):
     @asynchronous
@@ -80,11 +92,20 @@ class LionsListHandler(BaseHandler):
 class LionsHandler(BaseHandler):
     @asynchronous
     @engine
-    def get(self, lions_id=None):
-        resource_url = '/lions/' + lions_id
+    def get(self, lions_id=None, locations=None):
+        try:
+            iid=int(lions_id)
+            iid=str(iid) + '/profile'
+        except:
+            iid= lions_id
+        resource_url = '/lions/' + iid
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
-        self.set_status(response.code)
-        self.finish(response.body)
+        if response:
+            self.set_status(response.code)
+            if response.code == 200:
+                self.finish(response.body)
+            else:
+                self.finish({'status':'error','message':"fail to access lion's profile history GET"})
 
 class ImageSetsHandler(BaseHandler):
     @asynchronous
@@ -95,6 +116,25 @@ class ImageSetsHandler(BaseHandler):
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
         self.finish(response.body)
+    @asynchronous
+    @coroutine
+    def put(self, imageset_id=None):
+        if imageset_id:
+            resource_url = '/imagesets/' + imageset_id
+            print(self.input_data)
+            data = dict(self.input_data)
+            if "_xsrf" in data.keys():
+                del data["_xsrf"]
+            print(data)
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(data))
+            self.set_status(response.code)
+            if response.code == 200:
+                self.finish(response.body)
+            else:
+                self.finish({'status':'error','message':'fail to save imageset data'})
+        else:
+            self.set_status(400)
+            self.finish({'status':'error','message':'you need provide an imageset id PUT'})
 
 class OrganizationsHandler(BaseHandler):
     @asynchronous
@@ -141,6 +181,25 @@ class ImagesUploadHandler(BaseHandler):
 
         self.finish(dirfs+'/'+fname + " is uploaded!! Check %s folder" % dirfs)
 
+<<<<<<< HEAD
         with open("t.png", "rb") as imageFile:
             str = convertImage(imageFile.read())
             print str
+=======
+class LoginHandler(BaseHandler):
+    @asynchronous
+    @engine
+    def post(self, input_data=None):
+        #print(self.input_data['username'])
+        #print(self.input_data['password'])
+        if self.input_data['username'] == 'linc-web@venidera.com' and self.input_data['password'] == '123123':
+            self.set_status(200)
+            self.finish({'id': 1, 'user': {'id': 1, 'name': self.input_data['username'], 'org' : 'Lion Guardians', 'role': 'admin'}})
+            #self.finish('Successfully logged')
+        else:
+            self.set_status(400)
+            if self.input_data['username'] != 'linc-web@venidera.com':
+                self.finish("There isn't an account for this email")
+            else:
+                self.finish('Invalid password')
+>>>>>>> e3a785acc67fdd758eadc5bf0addd5ab335997a1

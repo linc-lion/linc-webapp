@@ -2,68 +2,90 @@
 
 angular.module('lion.guardians.lions.controllers', [])
 
-.controller('LionCtrl', ['$scope', '$window', '$stateParams', 'LincServices', function ($scope, $window, $stateParams, LincServices) {
+.controller('LionCtrl', ['$scope', '$state', 'lion', function ($scope, $state, lion) {
 
-  $scope.id = $stateParams.id;
-  /*LincServices.getLion($scope.id,function(data){
-    $scope.lion = data;
-      $scope.options = { type: 'lions'}, edit: 'edit', data: $scope.data};
-    })
-  });*/
+  $scope.lion = lion;
 
-  $scope.lion = { id: 1, name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
-  // Metadata Options
-  $scope.options = { type: 'lions', edit: 'edit', data: $scope.lion};
-  // Location History
-  $scope.locationHistory = {};
-  
   var labels = function (damages, labels){
     var label = "";
     labels.forEach(function (elem, i){
       label += damages[elem];
       if(i<labels.length-1)
-      label += ', ';
+        label += ', ';
     });
     return label;
   }
-  var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left', 'EYE_DAMAGE_RIGHT': 'Right'};
-  var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right',
-                        'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
-  var ear_markings   = {'EAR_MARKING_BOTH': 'Both', 'EAR_MARKING_LEFT': 'Left', 'EAR_MARKING_RIGHT': 'Right'};
-  var mount_markings = {'MOUTH_MARKING_BACK': 'Back', 'MOUTH_MARKING_FRONT': 'Front',
-                      'MOUTH_MARKING_LEFT': 'Left', 'MOUTH_MARKING_RIGHT': 'Right'};
+
+  var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left',
+                        'EYE_DAMAGE_RIGHT': 'Right'};
+  var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left',
+                        'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right',
+                        'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left',
+                        'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
+  var ear_markings   = {'EAR_MARKING_BOTH': 'Both',
+                        'EAR_MARKING_LEFT': 'Left',
+                        'EAR_MARKING_RIGHT': 'Right'};
+  var mount_markings = {'MOUTH_MARKING_BACK': 'Back',
+                        'MOUTH_MARKING_FRONT': 'Front',
+                        'MOUTH_MARKING_LEFT': 'Left',
+                        'MOUTH_MARKING_RIGHT': 'Right'};
   var tail_markings  = {'TAIL_MARKING_MISSING_TUFT': 'Missing Tuft'};
-  var nose_color     = {'NOSE_COLOUR_BLACK': 'Black', 'NOSE_COLOUR_PATCHY': 'Patchy',
-                        'NOSE_COLOUR_PINK': 'Pynk', 'NOSE_COLOUR_SPOTTED': 'Spotted'};
-  var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right',
+  var nose_color     = {'NOSE_COLOUR_BLACK': 'Black',
+                        'NOSE_COLOUR_PATCHY': 'Patchy',
+                        'NOSE_COLOUR_PINK': 'Pynk',
+                        'NOSE_COLOUR_SPOTTED': 'Spotted'};
+  var scars          = {'SCARS_BODY_LEFT': 'Body Left',
+                        'SCARS_BODY_RIGHT': 'Body Right',
                         'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
-  $scope.lion.eye_damage = labels(eye_damages, ['EYE_DAMAGE_LEFT','EYE_DAMAGE_RIGHT']);
-  $scope.lion.broken_teet = labels(broken_teeths, ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT',
-                                                   'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']);
-  $scope.lion.ear_markings = labels(ear_markings, ['EAR_MARKING_BOTH','EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']);
-  $scope.lion.mount_markings = labels(mount_markings, ['MOUTH_MARKING_BACK','MOUTH_MARKING_FRONT',
-                                                       'MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']);
-  $scope.lion.tail_markings = labels(tail_markings, ['TAIL_MARKING_MISSING_TUFT']);
+  var TAGS = JSON.parse($scope.lion.tags);
 
-  $scope.lion.nose_color = labels(nose_color, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY',
-                                                 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']);
-  $scope.lion.scars = labels(scars, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT',
-                                                 'SCARS_FACE', 'SCARS_TAIL']);
+  $scope.lion.eye_damage = labels(eye_damages,_.intersection(TAGS,
+    ['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']));
+  $scope.lion.broken_teet = labels(broken_teeths,_.intersection(TAGS,
+    ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT',
+     'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']));
+  $scope.lion.ear_markings = labels(ear_markings,_.intersection(TAGS,
+    ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']));
+  $scope.lion.mount_markings =labels(mount_markings, _.intersection(TAGS,
+    ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT',
+     'MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']));
+  $scope.lion.tail_markings = labels(tail_markings,_.intersection(TAGS,
+    ['TAIL_MARKING_MISSING_TUFT']));
+  $scope.lion.nose_color = labels(nose_color,_.intersection(TAGS,
+    ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY',
+     'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']));
+  $scope.lion.scars = labels(scars,_.intersection(TAGS,
+    ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE']));
 
+  // Metadata Options
+  $scope.metadata_options = { type: 'lion', edit: 'edit', data: $scope.lion};
+  // Image Gallery
+  $scope.gallery_options = { type: 'lion', edit: 'edit', id: $scope.lion.id};
+  // Location History
+  $scope.location_options = { type: 'lion', lion_id: $scope.lion.id};
+
+  $scope.location_goto = function (imageset_id){
+    $state.go("imageset", {id: imageset_id});
+  }
 }])
 
-.controller('SearchLionCtrl', ['$scope', 'LincServices', function ($scope, LincServices) {
+.controller('SearchLionCtrl', ['$scope', 'lions', 'organizations', function ($scope, lions, organizations) {
+
+  $scope.organizations =  _.map(organizations, function(element) {
+    return _.extend({}, element, {checked: true});
+  });
+
+  $scope.lions = lions;
+
   // Hide Filters
   $scope.isCollapsed = true;
   // Filters  scopes
   $scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
   $scope.name_or_id ='';
-  // Sort by
-  //$scope.sorting = "name";
-  //$scope.sortReverse = false;
   // Order by
-  $scope.reverse = true;
+  $scope.reverse = false;
+  $scope.predicate = 'id';
   $scope.order = function(predicate) {
     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
     $scope.predicate = predicate;
@@ -122,11 +144,4 @@ angular.module('lion.guardians.lions.controllers', [])
     return label;
   }
 
-  LincServices.getlists(['lions','organizations'],function(data){
-    $scope.organizations = _.map(data['organizations'], function(element) {
-      return _.extend({}, element, {checked: true});
-    });
-    $scope.lions = data['lions'];
-  });
-
-}])
+}]);

@@ -3,14 +3,9 @@
 
 angular.module('lion.guardians.home.controller', [])
 // Home
-.controller('HomeCtrl', ['$scope', '$state', 'LincServices', function ($scope, $state, LincServices) {
-
-  LincServices.getlists(['imagesets','lions','organizations'],function(dados){
-
-  })
-
-  $scope.options = { imageset: { type: 'imagesets', edit: 'new' },
-                        lions: { type: 'lions', edit: 'new'}};
+.controller('HomeCtrl', ['$scope', '$state', function ($scope, $state) {
+  $scope.options = { imageset: { type: 'imageset', edit: 'new' },
+                        lions: { type: 'lion', edit: 'new'}};
 
   $scope.goto_imageset = function (Id) {
     $state.go("imageset", { id: Id });

@@ -17,8 +17,8 @@
       </tr>
     </thead>
     <tbody>
-      <!--<tr class="link" ng-repeat="lion in lions | filter:  {hasResults: true, pending: true, verified: true}">-->
-        <tr class="link" ng-repeat="lion in lions" ng-class="{active:lion.selected}">
+      <!--<tr class="link" ng-repeat="lion in cvresults | filter:  {hasResults: true, pending: true, verified: true}">-->
+        <tr class="link" ng-repeat="lion in cvresults" ng-class="{active:lion.associated}">
         <td>
           <img ng-src="{{!lion.thumbnail}}" width="40" height="40">
         </td>
@@ -32,16 +32,17 @@
           <i ng-if="!lion.verified" class="icon icon-cross"></i>
         </td>
         <td class="text-center">
-          <span class="badge">{{!lion.cv}}</span>
+          <span class="badge">{{!lion.cv | percentage:2}}</span>
         </td>
         <td class="text-center">
-          <button ng-model="lion.selected" ng-class="{'btn btn-default': !lion.selected, 'btn btn-warning': lion.selected}" ng-click="Associate(lion.id)">{{!lion.associated ? "Associated" : "Associate"}}</button>
+        <button ng-if="!lion.associated" class="btn btn-default" ng-click="Associate(lion.id)"> Associate </button>
+        <button ng-if="lion.associated" class="btn btn-warning" ng-click="Dissociate(lion.id)"> Dissociate </button>
         </td>
       </tr>
     </tbody>
   </table>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" ng-click="Cancel()">Cancel</button>
+  <button type="button" class="btn btn-default" ng-click="Close()">Close</button>
   <button type="button" class="btn btn-primary" ng-click="ClearResults()">Clear Results</button>
 </div>

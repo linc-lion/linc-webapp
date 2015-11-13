@@ -2,19 +2,9 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.controller('ImageSetCtrl', ['$scope', '$window', '$stateParams', 'NotificationFactory', function ($scope, $window, $stateParams, NotificationFactory) {
+.controller('ImageSetCtrl', ['$scope', '$timeout', '$interval', 'NotificationFactory', 'LincServices', 'imageset', function ($scope, $timeout, $interval, NotificationFactory, LincServices, imageset) {
 
-  $scope.id = $stateParams.id;
-  /*LincServices.GetImageSet($scope.id,function(data){
-    $scope.imageset = data;
-    $scope.options = { type: 'imagesets'}, edit: 'edit', data: $scope.data};
-  });*/
-
-  $scope.imageset = { id: 1, lion_name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false, cvresults: null};
-  // Metadata Options
-  $scope.options = { type: 'imagesets', edit: 'edit', data: $scope.data};
-  // Location History
-  $scope.locationHistory = {};
+  $scope.imageset = imageset;
 
   var labels = function (damages, labels){
     var label = "";
@@ -25,40 +15,153 @@ angular.module('lion.guardians.image.set.controllers', [])
     });
     return label;
   }
-  var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left', 'EYE_DAMAGE_RIGHT': 'Right'};
-  var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right',
-                        'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
-  var ear_markings   = {'EAR_MARKING_BOTH': 'Both', 'EAR_MARKING_LEFT': 'Left', 'EAR_MARKING_RIGHT': 'Right'};
-  var mount_markings = {'MOUTH_MARKING_BACK': 'Back', 'MOUTH_MARKING_FRONT': 'Front',
-                      'MOUTH_MARKING_LEFT': 'Left', 'MOUTH_MARKING_RIGHT': 'Right'};
+
+  var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left',
+                        'EYE_DAMAGE_RIGHT': 'Right'};
+  var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left',
+                        'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right',
+                        'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left',
+                        'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
+  var ear_markings   = {'EAR_MARKING_BOTH': 'Both',
+                        'EAR_MARKING_LEFT': 'Left',
+                        'EAR_MARKING_RIGHT': 'Right'};
+  var mount_markings = {'MOUTH_MARKING_BACK': 'Back',
+                        'MOUTH_MARKING_FRONT': 'Front',
+                        'MOUTH_MARKING_LEFT': 'Left',
+                        'MOUTH_MARKING_RIGHT': 'Right'};
   var tail_markings  = {'TAIL_MARKING_MISSING_TUFT': 'Missing Tuft'};
-  var nose_color     = {'NOSE_COLOUR_BLACK': 'Black', 'NOSE_COLOUR_PATCHY': 'Patchy',
-                        'NOSE_COLOUR_PINK': 'Pynk', 'NOSE_COLOUR_SPOTTED': 'Spotted'};
-  var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right',
+  var nose_color     = {'NOSE_COLOUR_BLACK': 'Black',
+                        'NOSE_COLOUR_PATCHY': 'Patchy',
+                        'NOSE_COLOUR_PINK': 'Pynk',
+                        'NOSE_COLOUR_SPOTTED': 'Spotted'};
+  var scars          = {'SCARS_BODY_LEFT': 'Body Left',
+                        'SCARS_BODY_RIGHT': 'Body Right',
                         'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
-  $scope.imageset.eye_damage = labels(eye_damages, ['EYE_DAMAGE_LEFT','EYE_DAMAGE_RIGHT']);
-  $scope.imageset.broken_teet = labels(broken_teeths, ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT',
-                                                   'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']);
-  $scope.imageset.ear_markings = labels(ear_markings, ['EAR_MARKING_BOTH','EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']);
-  $scope.imageset.mount_markings = labels(mount_markings, ['MOUTH_MARKING_BACK','MOUTH_MARKING_FRONT',
-                                                       'MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']);
-  $scope.imageset.tail_markings = labels(tail_markings, ['TAIL_MARKING_MISSING_TUFT']);
+  if($scope.imageset.cvresults) $scope.imageset["action"] = 'cvresults';
+  else if($scope.imageset.cvrequest) $scope.imageset["action"] = 'cvpending';
+  else $scope.imageset["action"] = 'cvrequest';
 
-  $scope.imageset.nose_color = labels(nose_color, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY',
-                                                 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']);
-  $scope.imageset.scars = labels(scars, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT',
-                                                 'SCARS_FACE', 'SCARS_TAIL']);
+  var TAGS = JSON.parse($scope.imageset.tags);
+
+  $scope.imageset.eye_damage = labels(eye_damages,_.intersection(TAGS,
+    ['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']));
+  $scope.imageset.broken_teet = labels(broken_teeths,_.intersection(TAGS,
+    ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT',
+     'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']));
+  $scope.imageset.ear_markings = labels(ear_markings,_.intersection(TAGS,
+    ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']));
+  $scope.imageset.mount_markings =labels(mount_markings, _.intersection(TAGS,
+    ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT',
+     'MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']));
+  $scope.imageset.tail_markings = labels(tail_markings,_.intersection(TAGS,
+    ['TAIL_MARKING_MISSING_TUFT']));
+  $scope.imageset.nose_color = labels(nose_color,_.intersection(TAGS,
+    ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY',
+     'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']));
+  $scope.imageset.scars = labels(scars,_.intersection(TAGS,
+    ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE']));
+
+  // Metadata Options
+  $scope.metadata_options = { type: 'imageset', edit: 'edit', data: $scope.imageset};
+  // Image Gallery
+  $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.lion_id};
+  // Location History
+  var label = 'Image Set ' + $scope.imageset.id;
+  var date = (new Date($scope.imageset.updated_at)).toLocaleDateString()
+  $scope.location_options = { type: 'imageset',
+      history: { count: 1,
+                 locations: [{'id': $scope.imageset.id,
+                              'label': label, 'updated_at': date,
+                              'longitude': $scope.imageset.longitude,
+                              'latitude': $scope.imageset.latitude
+                            }]
+               }
+  };
+
+  $scope.location_goto = function (imageset_id){
+    //
+  }
+
+  var requestCVResults = function (ReqObjid){
+    NotificationFactory.info({
+      title: "Notify", message:'Trying to get CV Results',
+      position: "right", // right, left, center
+      duration: 2000     // milisecond
+    });
+    LincServices.putCVResults(ReqObjid, function(result){
+      var cvresult = result.data.data;
+      if(cvresult.status == "queued"){
+        $scope.imageset.action = 'cvresults';
+        $scope.imageset.cvresults = cvresult.obj_id;
+        cancel_intervals();
+      }
+      else if (cvresult.status == "error"){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to Get CV Results',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
+    }, function(error){
+      cancel_intervals();
+    });
+  }
+  $scope.CVReqSuccess = function (imageset_Id, requestObj) {
+    $scope.imageset.action = 'cvpending';
+    $scope.imageset.cvrequest = requestObj.obj_id;
+    console.log('Success CV Request');
+    $timeout(function() {
+      LincServices.postCVResults(requestObj.id, function(result){
+        var cvresult = result.data.data;
+        if(cvresult.status == "finished"){
+          $scope.imageset.action = 'cvresults';
+          $scope.imageset.cvresults = cvresult.obj_id;
+          console.log('Success Results CV');
+        }
+        else if (cvresult.status == "queued"){
+          $scope.requesCVpromise = $interval(
+            requestCVResults('PUT', requestObj.id), 60000);
+        }
+        else{
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Get CV Results',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
+      });
+    }, 180000);
+  };
+  $scope.Change_results = function (change, ImagesetId) {
+    $scope.imageset["action"] = 'cvrequest';
+    LincServices.ClearAllImagesetsCaches();
+    LincServices.ClearImagesetProfileCache(ImagesetId);
+  }
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$window', '$timeout', '$interval', 'LincServices', function ($scope, $window, $timeout, $interval, LincServices) {
+.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', 'NotificationFactory','LincServices', 'organizations', 'imagesets', function ($scope, $timeout, $interval, NotificationFactory, LincServices, organizations, imagesets) {
+
+  $scope.organizations =  _.map(organizations, function(element) {
+    return _.extend({}, element, {checked: true});
+  });
+  $scope.imagesets = _.map(imagesets, function(element, index) {
+    var elem = {};
+    if(element.cvresults) elem["action"] = 'cvresults';
+    else if(element.cvrequest) elem["action"] = 'cvpending';
+    else  elem["action"] = 'cvrequest';
+    return _.extend({}, element, elem);
+  });
+
+
   // Hide Filters
   $scope.isCollapsed = true;
   // Filters  scopes
   $scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
   $scope.name_or_id ='';
   // Order by
-  $scope.reverse = true;
+  $scope.reverse = false;
+  $scope.predicate = 'id';
   $scope.order = function(predicate) {
     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
     $scope.predicate = predicate;
@@ -116,19 +219,6 @@ angular.module('lion.guardians.image.set.controllers', [])
     return label;
   }
 
-  LincServices.getlists(['imagesets','organizations'],function(data){
-    $scope.organizations = _.map(data['organizations'], function(element) {
-      return _.extend({}, element, {checked: true});
-    });
-    $scope.imagesets = _.map(data['imagesets'], function(element, index) {
-      var elem = {};
-      if(element.cvresults) elem["action"] = 'cvresults';
-      else if(element.cvrequest) elem["action"] = 'cvpending';
-      else  elem["action"] = 'cvrequest';
-      return _.extend({}, element, elem);
-    });
-  });
-
   var cancel_intervals = function (){
     if($scope.requesCVpromise != null){
       $interval.cancel($scope.requesCVpromise);
@@ -154,7 +244,7 @@ angular.module('lion.guardians.image.set.controllers', [])
         NotificationFactory.error({
           title: "Error", message: 'Unable to Get CV Results',
           position: 'right', // right, left, center
-          duration: 180000   // milisecond
+          duration: 5000   // milisecond
         });
       }
     }, function(error){
@@ -182,10 +272,16 @@ angular.module('lion.guardians.image.set.controllers', [])
           NotificationFactory.error({
             title: "Error", message: 'Unable to Get CV Results',
             position: 'right', // right, left, center
-            duration: 180000   // milisecond
+            duration: 5000   // milisecond
           });
         }
       });
     }, 180000);
   };
+  $scope.Change_results = function (change, ImagesetId) {
+    var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
+    $scope.imagesets[index]["action"] = 'cvrequest';
+    LincServices.ClearAllImagesetsCaches();
+    LincServices.ClearImagesetProfileCache(ImagesetId);
+  }
 }]);
