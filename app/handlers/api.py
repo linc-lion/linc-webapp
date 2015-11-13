@@ -181,11 +181,12 @@ class ImagesUploadHandler(BaseHandler):
 
         self.finish(dirfs+'/'+fname + " is uploaded!! Check %s folder" % dirfs)
 
-<<<<<<< HEAD
+        """
         with open("t.png", "rb") as imageFile:
             str = convertImage(imageFile.read())
             print str
-=======
+        """
+
 class LoginHandler(BaseHandler):
     @asynchronous
     @engine
