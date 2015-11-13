@@ -6,7 +6,7 @@ from tornado.gen import engine,coroutine,Task
 from handlers.base import BaseHandler
 import base64
 import hmac, hashlib
-
+from base64 import b64encode as convertImage
 
 class ImageSetsListHandler(BaseHandler):
     @asynchronous
@@ -89,7 +89,8 @@ class LionsHandler(BaseHandler):
 class ImageSetsHandler(BaseHandler):
     @asynchronous
     @engine
-    def get(self, imagesets_id=None):
+    def get(self, imagesets_id=None, param=None):
+        print(param)
         resource_url = '/imagesets/' + imagesets_id
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
@@ -139,3 +140,7 @@ class ImagesUploadHandler(BaseHandler):
         print('iscover ', iscover)
 
         self.finish(dirfs+'/'+fname + " is uploaded!! Check %s folder" % dirfs)
+
+        with open("t.png", "rb") as imageFile:
+            str = convertImage(imageFile.read())
+            print str

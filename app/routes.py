@@ -41,6 +41,8 @@ url_patterns = [
     (r"/lions/(.*)$", LionsHandler),
     (r"/imagesets/?$", ImageSetsHandler),
     (r"/imagesets/(.*)$", ImageSetsHandler),
+    (r"/imagesets/(\w+)/(gallery)$", ImageSetsHandler),
+
     (r"/organizations/?$", OrganizationsHandler),
     (r"/organizations/(.*)$", OrganizationsHandler),
 
