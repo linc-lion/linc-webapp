@@ -1,5 +1,5 @@
 //angular.module('lion-guardians', [])  ['ngAnimate', 'ngSanitize', 'mgcrea.ngStrap']);
-var app = angular.module('lion.guardians', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'ngMap', 'mgcrea.ngStrap', 'angularFileUpload', 'cgNotify', 'ngCookies', 'lion.guardians.controllers']);
+var app = angular.module('lion.guardians', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'ngMap', 'mgcrea.ngStrap', 'angularFileUpload', 'cgNotify', 'ngCookies', 'angular-loading-bar', 'lion.guardians.controllers', 'lion.guardians.services']);
 
 'use strict';
 
@@ -19,18 +19,19 @@ app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($roo
           $state.go("login");
         }
     });
+
     var history = [];
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
-        history.push(toState.name);
+        history.push({name: toState.name, param: toParams});
     });
 
     $rootScope.go_back = function() {
-      var prevUrl = history.length > 1 ? history.splice(-2)[0] : "home";
-      $state.go(prevUrl);
+      var prevUrl = history.length > 1 ? history.splice(-2)[0] : {'name': 'home', 'param': {}};
+      $state.go(prevUrl.name, prevUrl.param);
     };
 }]);
 
-app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $urlRouterProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider,  $urlRouterProvider, $locationProvider) {
   // Redirects and Otherwise //
   // Use $urlRouterProvider to configure any redirects (when) and invalid urls (otherwise).
   /*$urlRouterProvider
@@ -58,29 +59,47 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
           templateUrl: 'home.html'
         })
         .state("lion", {
-          url: "/lion/:id",
+          url: "/lion/{id:int}",
           controller: 'LionCtrl',
           templateUrl: 'lion.html',
           data: {
             bodyClasses: 'lion'
+          },
+          resolve: {
+            lion: function($stateParams, LincServices) {
+              return LincServices.Lion($stateParams.id);
+            }
           }
         })
         // New Image Set
         .state("imageset", {
-          url: "/imageset/:id",
+          url: "/imageset/{id:int}",
           controller: 'ImageSetCtrl',
           templateUrl: 'imageset.html',
           data: {
             bodyClasses: 'imageset'
+          },
+          resolve: {
+            imageset: function($stateParams, LincServices) {
+              return LincServices.ImageSet($stateParams.id);
+            }
           }
         })
-        // Searcg Lion
+        // Search Lion
         .state("searchlion", {
           url: "/searchlion",
           controller: 'SearchLionCtrl',
           templateUrl: 'searchlion.html',
           data: {
             bodyClasses: 'searchlion'
+          },
+          resolve: {
+            organizations: function(LincServices) {
+              return LincServices.Organizations();
+            },
+            lions: function(LincServices) {
+              return LincServices.Lions();
+            }
           }
         })
         // Search Image Set
@@ -90,6 +109,14 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
           templateUrl: 'searchimageset.html',
           data: {
             bodyClasses: 'searchimageset'
+          },
+          resolve: {
+            organizations: function(LincServices) {
+              return LincServices.Organizations();
+            },
+            imagesets: function(LincServices) {
+              return LincServices.ImageSets();
+            }
           }
         })
         // Conservationists
@@ -113,13 +140,14 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,  $
               }, 100);
           }]
         });
+
       $urlRouterProvider.otherwise('login');
+      //$locationProvider.html5Mode(true);
 }]);
 
-/*app.config(function(uiGmapGoogleMapApiProvider) {
-    uiGmapGoogleMapApiProvider.configure({
-        //    key: 'your api key',
-        v: '3.20', //defaults to latest 3.X anyhow
-        libraries: 'weather,geometry,visualization'
-    });
-})*/
+app.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
+    cfpLoadingBarProvider.includeSpinner = true;
+    cfpLoadingBarProvider.includeBar = true;
+    cfpLoadingBarProvider.latencyThreshold = 500;
+}])
+;

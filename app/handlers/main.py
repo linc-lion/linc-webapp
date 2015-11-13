@@ -7,7 +7,7 @@ class MainHandler(BaseHandler):
     def get(self):
         self.render('main.html')
 
-class LoginHandler(BaseHandler):
+class LoginMainHandler(BaseHandler):
     def get(self):
         self.render('login.html')
 

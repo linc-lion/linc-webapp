@@ -2,79 +2,176 @@
 
 angular.module('lion.guardians.location.history.controller', ['lion.guardians.location.history.directive'])
 
-.controller('LocationHistoryCtrl', ['$scope', '$window', '$timeout', '$uibModalInstance', 'locationSets', function ($scope, $window, $timeout, $uibModalInstance, locationSets) {
-    $scope.title = 'Location History';
-    $scope.content = 'Map';
-    // Close
-    $scope.Close = function () {
-     $uibModalInstance.close('close');
-    };
+.controller('LocationHistoryCtrl', ['$scope', '$uibModal', '$q', '$timeout', '$uibModalInstance', 'LincServices', 'options', 'history', function ($scope, $uibModal, $q, $timeout, $uibModalInstance, LincServices, options, history) {
+  $scope.title = 'Location History';
+  $scope.content = 'Map';
 
-    $scope.imagesets  = [{ id: 1, date: (new Date('2008-04-06')).toLocaleDateString(), geopos: [-2.728214, 37.020190],
-                          thumbnail: "/static/images/square-small/lion1.jpg"},
-                        { id: 2, date: new Date('2008-09-26').toLocaleDateString(), geopos: [-2.811887, 36.869128],
-                          thumbnail: "/static/images/square-small/lion2.jpeg"},
-                        { id: 3, date: new Date('2009-04-16').toLocaleDateString(), geopos: [-2.704894, 36.836169],
-                          thumbnail: "/static/images/square-small/lion3.jpeg"},
-                        { id: 4,date: new Date('2010-11-21').toLocaleDateString(), geopos: [-2.543016, 37.080614],
-                          thumbnail: "/static/images/square-small/lion4.jpg"},
-                        { id: 5, date: new Date('2011-08-12').toLocaleDateString(), geopos: [-2.647856, 37.191164],
-                          thumbnail: "/static/images/square-small/lion5.jpg"},
-                        { id: 6, date: new Date('2012-04-02').toLocaleDateString(), geopos: [-3.293193, 37.526870],
-                          thumbnail: "/static/images/square-small/lion6.jpeg"},
-                        { id: 7,date: new Date('2013-08-11').toLocaleDateString(), geopos: [-2.014719, 36.141606],
-                          thumbnail: "/static/images/square-small/lion7.jpeg"},
-                        { id: 8, date: new Date('2014-05-20').toLocaleDateString(), geopos: [-2.706266, 35.921880],
-                          thumbnail: "/static/images/square-small/lion8.jpeg"},
-                        { id: 9, date: new Date('2014-12-16').toLocaleDateString(), geopos: [-3.598955, 37.185796],
-                          thumbnail: "/static/images/square-small/lion9.jpg"},
-                        { id: 10, date: new Date('2015-08-02').toLocaleDateString(), geopos: [0.974389, 34.654247],
-                          thumbnail: "/static/images/square-small/lion10.jpeg"}];
-    $scope.mapa = {
-        center: [-2.704894, 36.836169],
-        zoom: 8,
-        mapTypeId  : google.maps.MapTypeId.HYBRID
-    };
+  //$scope.locationSets = locationSets;
+  $scope.isLion = (options.type == 'lion');
+  $scope.GoBackMessage = $scope.isLion? "Go to Image Set" : "Go Back to Image Set";
 
-    function add_circle(center, radius){
-        var cityCircle = new google.maps.Circle({
-                strokeColor: '#FF0000',
-                strokeOpacity: 0.5,
-                strokeWeight: 2,
-                fillColor: '#FF0000',
-                fillOpacity: 0.1,
-                map: $scope.map,
-                center: center,
-                radius: radius
-        });
-    }
+  $scope.locations = history.locations;
+  $scope.count = history.count;
 
-    function add_lions (){
-        var i=0;
-        var lion_url = "/static/icons/lion-icon.ico";
-        $scope.imagesets.forEach(function(imageset){
-            $timeout(function() {
-                var icon = new google.maps.MarkerImage(lion_url, null, null, null, new google.maps.Size(24, 24));
-                var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(imageset.geopos[0], imageset.geopos[1]),
-                    map: $scope.map,
-                    draggable: false,
-                    animation: google.maps.Animation.DROP,
-                    icon: icon
-                });
-                var handler = google.maps.event.addListener(marker, 'click', function(event) {
-                    alert('Imageset :' + imageset.id + ' - date: ' + imageset.date);
-                });
-            }, i * 200);
-            i++;
-        });
-    }
-    var map;
-    $scope.$on('mapInitialized', function(evt, evtMap) {
-        map = evtMap;
-        //marker = map.markers[0];
-        add_lions ();
-        $scope.center_gep = new google.maps.LatLng($scope.mapa.center[0], $scope.mapa.center[1]);
-        add_circle($scope.center_gep, 150000);
+  $scope.Cancel = function () {
+   $uibModalInstance.dismiss();
+  };
+
+  var add_circle = function (center, radius){
+    var cityCircle = new google.maps.Circle({
+      strokeColor: '#FF0000', strokeOpacity: 0.5, strokeWeight: 2,
+      fillColor: '#FF0000', fillOpacity: 0.1, map: $scope.map,
+      center: center, radius: radius
     });
+  }
+  // Calc distance between 2 points
+  var Calc_distancia = function (p1, p2){
+    var lat1 = p1.lat();var lon1 = p1.lng()
+    var lat2 = p2.lat();var lon2 = p2.lng()
+
+    var R = 6371; // km (change this constant to get miles)
+    var dLat = (lat2-lat1) * Math.PI / 180;
+    var dLon = (lon2-lon1) * Math.PI / 180;
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180 ) * Math.cos(lat2 * Math.PI / 180 ) *
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c;
+    return (Math.round(d*1000*100)/100);
+  }
+  var CircleToBounds = function (center, radius) {
+    var Spherical = google.maps.geometry.spherical;
+    var southwest = Spherical.computeOffset(center, radius * Math.sqrt(2.0), 225);
+    var northeast = Spherical.computeOffset(center, radius * Math.sqrt(2.0), 45);
+    return (new google.maps.LatLngBounds(southwest, northeast));
+  }
+  // Calc radius
+  var Calc_Radius = function (center){
+    var dist = 0;
+    $scope.locations.forEach(function(location){
+      var position = new google.maps.LatLng(location.latitude, location.longitude);
+      dist = Math.max(dist, Calc_distancia(center,position));
+    });
+    return (dist);
+  }
+  // Add Lion
+  var add_lion = function (location, i) {
+    var deferred = $q.defer();
+    var icon = new google.maps.MarkerImage("/static/icons/lion-icon.ico", null,
+                null, null, new google.maps.Size(24, 24));
+    $timeout(function() {
+      var position = new google.maps.LatLng(location.latitude, location.longitude);
+      $scope.bounds.extend(position);
+      var marker = new google.maps.Marker({
+        position: position, map: $scope.map, draggable: false,
+        animation: google.maps.Animation.DROP, icon: icon
+      });
+      $scope.markers.push({'id': location.id, 'marker': marker});
+      var handler_click = google.maps.event.addListener(marker, 'click', function(event) {
+          $scope.click(location.id, event);
+      });
+      deferred.resolve(marker);
+    }, i * 200);
+    return deferred.promise;
+  }
+  // Add Lions
+  var add_lions = function(fn){
+    var i=0;
+    $scope.markers = [];
+    $scope.bounds = new google.maps.LatLngBounds();
+    var promises = [];
+    $scope.locations.forEach(function(location){
+      var promise = add_lion(location, i);
+      promises.push(promise);
+      i++;
+    });
+    $q.all(promises).then(function (results) {
+      fn();
+    });
+  }
+  // If is Lion, load from  url. If Imageset get by params
+/*  var load_imagesets = function (fn){
+    if($scope.locationSets.type == "imageset"){
+      $scope.GoBackMessage = "Go Back to Image Set";
+      $scope.locations = locationSets.locations
+      $scope.count = 1;
+      fn();
+    }
+    else{
+      $scope.GoBackMessage = "Go to Image Set";
+      LincServices.LocationHistory(locationSets.id).then()
+        $scope.locations = data.locations;
+        $scope.count = data.count;
+        fn();
+      });
+    }
+  }*/
+  // Initialize map
+  $scope.$on('mapInitialized', function(evt, evtMap) {
+    //load_imagesets (function (){
+      $scope.map = evtMap;
+      $scope.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+      $scope.map.setZoom(8);
+      add_lions(function(){
+        // One Lion
+        if($scope.count == 1){
+          var center = $scope.markers[0].marker.getPosition();
+          var radius = 40000;
+          add_circle(center, radius);
+          $scope.bounds = CircleToBounds(center, radius);
+          $scope.map.fitBounds($scope.bounds);
+          $scope.map.setCenter(center);
+        }
+        else{
+          if($scope.bounds.getNorthEast().equals($scope.bounds.getSouthWest())){
+            var center = $scope.markers[0].marker.getPosition();
+            var radius = 40000;
+            add_circle(center, radius);
+            $scope.bounds = CircleToBounds(center, radius);
+            $scope.map.fitBounds($scope.bounds);
+            $scope.map.setCenter(center);
+          }
+          else{
+            var center = $scope.bounds.getCenter();
+            var radius = Math.max(40000, Calc_Radius(center));
+            add_circle(center, radius*1.1);
+            $scope.bounds = CircleToBounds(center, radius);
+            $scope.map.fitBounds($scope.bounds);
+            $scope.map.setCenter(center);
+          }
+        }
+      });
+  //  });
+  });
+  // On Click Marker
+  $scope.click = function (id, event){
+    var index = _.indexOf($scope.locations, _.find($scope.locations, {id: id}));
+    $scope.infomsg = $scope.locations[index].label;
+    $scope.date = 'Updated Date: ' + $scope.locations[index].updated_at;
+    $scope.imageset_id = id;
+    $scope.modalInstance = $uibModal.open({
+        templateUrl: 'InfoWindow.tmpl.html',
+        scope:$scope
+    });
+    $scope.modalInstance.result.then(function (result) {
+      $uibModalInstance.close($scope.imageset_id);
+    });
+  }
+  // Animate marker when I click label
+  $scope.animate = function(id){
+    if(typeof($scope.anime) != 'undefined'){
+      clearTimeout($scope.anime);
+      $scope.animated_marker.setAnimation(null);
+    }
+    $scope.animated_marker =  _.result(_.find($scope.markers, {id: id}), 'marker');
+    $scope.animated_marker.setAnimation(google.maps.Animation.BOUNCE);
+    $scope.anime = setTimeout(function() {$scope.animated_marker.setAnimation(null);}, 3000);
+  }
+  // Modal Functions
+  $scope.close=function(){
+    $scope.modalInstance.dismiss();
+  };
+  $scope.goto=function(){
+    $scope.modalInstance.close();
+  }
 }]);
