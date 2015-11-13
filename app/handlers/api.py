@@ -188,7 +188,7 @@ class LoginHandler(BaseHandler):
         #print(self.input_data['password'])
         if self.input_data['username'] == 'linc-web@venidera.com' and self.input_data['password'] == '123123':
             self.set_status(200)
-            self.finish({'user':self.input_data['username']})
+            self.finish({'id': 1, 'user': {'id': 1, 'name': self.input_data['username'], 'org' : 'Lion Guardians', 'role': 'admin'}})
             #self.finish('Successfully logged')
         else:
             self.set_status(400)
