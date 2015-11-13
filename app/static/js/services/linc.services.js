@@ -25,7 +25,7 @@ angular.module('lion.guardians.services', [])
       databases['organizations'] = {label: 'Organizations',  url: '/organizations'};
       databases['imagesets'] =     {label: 'Imagesets', url: '/imagesets'};
       databases['images'] =        {label: 'Images', url: '/images'};
-
+  // Get All Imagesets List
   var GetAllImageSets = function (id) {
     var deferred = $q.defer();
     var url = databases['imagesets'].url + '/list';
@@ -42,6 +42,7 @@ angular.module('lion.guardians.services', [])
     });
     return deferred.promise;
   };
+  // Get All Lions List
   var GetAllLions = function (id) {
     var deferred = $q.defer();
     var url = databases['lions'].url + '/list';
@@ -50,7 +51,7 @@ angular.module('lion.guardians.services', [])
     },
     function (error) {
       NotificationFactory.error({
-        title: "Error", message: 'Unable to load Lions data',
+        title: "Error", message: 'Unable to load Lions datas',
         position: 'right', // right, left, center
         duration: 5000   // milisecond
       });
@@ -58,6 +59,7 @@ angular.module('lion.guardians.services', [])
     });
     return deferred.promise;
   };
+  // Get All Organizations List
   var GetAllOrganizations = function (id) {
     var deferred = $q.defer();
     var url = databases['organizations'].url + '/list';
@@ -74,7 +76,7 @@ angular.module('lion.guardians.services', [])
     });
     return deferred.promise;
   };
-
+  // Get Imageset by Id
   var GetImageSet= function (id) {
     var deferred = $q.defer();
     var url = databases['imagesets'].url + '/' + id;
@@ -108,24 +110,7 @@ angular.module('lion.guardians.services', [])
     });
     return deferred.promise;
   };
-  // Get Lion by Id
-  var GetAllLions = function (id) {
-    var deferred = $q.defer();
-    var url = databases['lions'].url + '/list';
-    HTTPCachedGet(url, {}).then(function (results) {
-       deferred.resolve(results.data);
-    },
-    function (error) {
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to load Lion data',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
-      deferred.reject(error);
-    });
-    return deferred.promise;
-  };
-  // Get Locations
+  // Get Lion History Locations
   var GetLocations = function (id) {
     var deferred = $q.defer();
     var url = databases['lions'].url + '/' + id + '/locations';
@@ -142,58 +127,91 @@ angular.module('lion.guardians.services', [])
     });
     return deferred.promise;
   };
-
-  var ClearAllCaches = function (fn) {
-    $httpDefaultCache.removeAll();
-  };
-
-  var ClearAllImagesetsCaches = function () {
-    $httpcache.remove('/imagesets/list');
-  };
-
-  var ClearImagesetProfileCache = function (id) {
-    $httpcache.remove('/imagesets/' + id);
-  };
-
+  // Clean Caches
+  var ClearAllCaches = function (fn) { $httpDefaultCache.removeAll(); };
+  var ClearAllImagesetsCaches = function () { $httpcache.remove('/imagesets/list'); };
+  var ClearImagesetProfileCache = function (id) { $httpcache.remove('/imagesets/' + id); };
+  // Http without cache
   var HTTP = function (metod, url, data, config, success, error) {
-    if(metod == 'GET'){
-      $http.get(url, config).then(success, error);
-    }
-    else{
-      var req = { method: metod, url: url, data: data,
-                  headers: { 'Content-Type': 'application/json'},
-                  config: config};
-      $http(req).then(success, error);
-    }
+    if(metod == 'GET'){ $http.get(url, config).then(success, error); }
+    else{ var req = { method: metod, url: url, data: data, headers: { 'Content-Type': 'application/json'}, config: config}; $http(req).then(success, error); }
   }
-
-  var PostImageSets = function (metod, request, success, fail) {
-    var url = '/imagesets/' + request.imageset_id + '/cvrequest';
+  // Post Imageset (CV Request)
+  var RequestCV = function (imageset_id, data, success) {
     var cookies = {'_xsrf': $cookies.get('_xsrf')};
-    var data = {"lions": request.lions_id};
     angular.merge(data, cookies);
-    return HTTP('POST', url, data, {},
-      function (results) {
-        NotificationFactory.success({
-          title: "Success", message:'CV Request created with success',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        success(results);
-      },
-      function (error) {
-        if(error.status == 500){
-          NotificationFactory.error({
-            title: "Error", message: 'Request failed',
-            position: 'right', // right, left, center
-            duration: 5000   // milisecond
-          });
-        }
-        fail(error);
-        console.log(error);
-      }
-    );
+    return HTTP('POST', '/imagesets/' + imageset_id + '/cvrequest', data, {}, success,
+    function (error) {
+      NotificationFactory.error({
+        title: "Error", message: 'Request failed',
+        position: 'right', // right, left, center
+        duration: 5000   // milisecond
+      });
+      console.log(error);
+    });
   };
+  // Put ImageSet (Update Imageset)
+  var PutImageSet = function (imageset_id, data, success){
+    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    angular.merge(data, cookies);
+    return HTTP('PUT', '/imagesets/' + imageset_id, data, {}, success,
+    function(error){
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to Save ImageSet Datas',
+        position: 'right', // right, left, center
+        duration: 180000   // milisecond
+      });
+      console.log(error);
+    });
+  }
+    // Post ImageSet - New Imageset
+    var PostImageset = function (dados, success){
+      var cookies = {'_xsrf': $cookies.get('_xsrf')};
+      angular.merge(data, cookies);
+      return HTTP('POST', '/imagesets', data, {}, success,
+      function(error){
+        NotificationFactory.error({
+          title: "Error", message: "Unable to Post ImageSet's Data",
+          position: 'right', // right, left, center
+          duration: 180000   // milisecond
+        });
+        console.log(error);
+      });
+    };
+  // Put Lion (Update Lion)
+  var PutLion = function (lion_id, data, success){
+    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    angular.merge(data, cookies);
+    return HTTP('PUT', '/lions/' + lion_id, data, {}, success,
+    function(error){
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to Save Lion Datas',
+        position: 'right', // right, left, center
+        duration: 180000   // milisecond
+      });
+      console.log(error);
+    });
+  }
+    // Post Lion - New Lion
+    var PostLion = function (dados, success){
+      var cookies = {'_xsrf': $cookies.get('_xsrf')};
+      angular.merge(data, cookies);
+      return HTTP('POST', '/lion', data, {}, success,
+      function(error){
+        NotificationFactory.error({
+          title: "Error", message: "Unable to Post Lion's Data",
+          position: 'right', // right, left, center
+          duration: 180000   // milisecond
+        });
+        console.log(error);
+      });
+    };
+
+
+
+
+
+
 
   var GetCVResults = function (cvresults_id) {
     var deferred = $q.defer();
@@ -209,7 +227,6 @@ angular.module('lion.guardians.services', [])
         return _.extend({}, element, elem);
       });
       deferred.resolve(cvresults);
-
     }, function(error){
       NotificationFactory.error({
         title: "Error", message: 'Unable to load CV Results List',
@@ -220,20 +237,7 @@ angular.module('lion.guardians.services', [])
     });
     return deferred.promise;
   };
-  var PutImageSet = function (imageset_id, data, success){
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
-    //var data = {"cvrequest_id":cvrequest_id};
-    angular.merge(data, cookies);
-    return HTTP('PUT', '/imagesets/' + imageset_id, data, {}, success,
-    function(error){
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to Put Datas in ImageSets',
-        position: 'right', // right, left, center
-        duration: 180000   // milisecond
-      });
-      console.log(error);
-    });
-  }
+  // Post CVResults - Request CV Results
   var PostCVResults = function (cvrequest_id, success){
     var cookies = {'_xsrf': $cookies.get('_xsrf')};
     var data = {"cvrequest_id":cvrequest_id};
@@ -248,6 +252,7 @@ angular.module('lion.guardians.services', [])
       console.log(error);
     });
   };
+  // Put CVResults - Update Request CV Results
   var PutCVResults = function (cvrequest_id, success){
     var data = {'_xsrf': $cookies.get('_xsrf')};
     //var data = {"cvrequest_id":cvrequest_id};
@@ -262,6 +267,7 @@ angular.module('lion.guardians.services', [])
       console.log(error);
     });
   };
+  // Delete CVRequest / CVResults
   var DeleteCVRequest = function (cvrequest_id, success){
     var data = {'_xsrf': $cookies.get('_xsrf')};
     //var data = {"cvrequest_id":cvrequest_id};
@@ -289,24 +295,37 @@ angular.module('lion.guardians.services', [])
   dataFactory.Organizations = GetAllOrganizations;
   dataFactory.ImageSets = GetAllImageSets;
   dataFactory.Lions = GetAllLions;
-  // Lion to lion Profile
-  dataFactory.Lion = GetLion;
   // ImageSet to ImageSet Profile
   dataFactory.ImageSet = GetImageSet;
-
+  // Lion to lion Profile
+  dataFactory.Lion = GetLion;
   // Location History
   dataFactory.LocationHistory = GetLocations;
-  dataFactory.requestCV = PostImageSets;
-  dataFactory.postCVResults = PostCVResults;
-  dataFactory.putCVResults = PutCVResults;
-  dataFactory.getCVResults = GetCVResults;
-
-  dataFactory.Associate = PutImageSet;
-  dataFactory.deleteCVRequest = DeleteCVRequest;
-
+  // Clean Caches
   dataFactory.ClearAllCaches = ClearAllCaches;
   dataFactory.ClearAllImagesetsCaches = ClearAllImagesetsCaches;
   dataFactory.ClearImagesetProfileCache = ClearImagesetProfileCache;
+  // CV Request (Post Imageset w/ /request)
+  dataFactory.requestCV = RequestCV;
+  // Update Imageset
+  dataFactory.Associate = PutImageSet;
+  dataFactory.SaveImageset = PutImageSet;
+  dataFactory.CreateImageset = PostImageset;
+
+  // Update Lion
+  dataFactory.SaveLion = PutLion;
+  dataFactory.CreateLion = PostLion;
+
+  // Get List of CV Results
+  dataFactory.getCVResults = GetCVResults;
+  // Post CV Results - Request Results
+  dataFactory.postCVResults = PostCVResults;
+  // Update Request CV Results
+  dataFactory.putCVResults = PutCVResults;
+  // Delete CV Results and CV Request
+  dataFactory.deleteCVRequest = DeleteCVRequest;
+
+    //dataFactory.getImageGalleries = GetImages;
 
   dataFactory.Login = Login;
   return dataFactory;
