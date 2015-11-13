@@ -203,4 +203,3 @@ class LoginHandler(BaseHandler):
                 self.finish("There isn't an account for this email")
             else:
                 self.finish('Invalid password')
->>>>>>> e3a785acc67fdd758eadc5bf0addd5ab335997a1
