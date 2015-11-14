@@ -9,6 +9,7 @@ from os.path import realpath,dirname
 from os import remove
 from base64 import b64encode as convertImage
 from json import loads
+import logging
 
 class ImageSetsListHandler(BaseHandler):
     @asynchronous
@@ -177,11 +178,12 @@ class ImagesUploadHandler(BaseHandler):
                 image_set_id = self.get_argument("image_set_id")
                 iscover = self.get_argument("iscover",False)
                 body = {
-                    "image" : fileencoded,
                     "image_type" : image_type,
                     "is_public" : is_public,
                     "image_set_id" : int(image_set_id)
                 }
+                logging.info(body)
+                body["image"] = fileencoded
                 resource_url = '/images/upload'
                 response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(body))
                 if response.code == 200:
