@@ -74,6 +74,17 @@ class BaseHandler(RequestHandler):
         self.write({'status':'fail','message':'authentication failed'})
         self.finish()
 
+    def setSuccess(self,code=200,message="",data=None):
+        output_response = {'status':'success','message':message}
+        if data:
+            output_response['data'] = loads(self.json_encode(data))
+        self.set_status(code)
+        self.finish(output_response)
+
+    def dropError(self,code=400,message=""):
+        self.set_status(code)
+        self.finish({'status':'error', 'message':message})
+
     def success(self,message="",data=None,create=False):
         if create:
             self.set_status(201)

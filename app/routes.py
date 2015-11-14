@@ -36,7 +36,7 @@ url_patterns = [
     (r"/imagesets/(\w+)/(cvrequest)$", ImageSetsListHandler),
     (r"/lions/list", LionsListHandler),
     (r"/organizations/list", OrganizationsListHandler),
-    
+
     (r"/images/list", ImagesListHandler),
     (r"/images/upload", ImagesUploadHandler),
 
@@ -45,7 +45,6 @@ url_patterns = [
     (r"/lions/(\w+)/(locations)$", LionsHandler),
     (r"/imagesets/?$", ImageSetsHandler),
     (r"/imagesets/(.*)$", ImageSetsHandler),
-    (r"/imagesets/(\w+)/(gallery)$", ImageSetsHandler),
 
     (r"/organizations/?$", OrganizationsHandler),
     (r"/organizations/(.*)$", OrganizationsHandler),
