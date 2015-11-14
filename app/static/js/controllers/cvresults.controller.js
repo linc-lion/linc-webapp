@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults.directive'])
 
-.controller('CVResultsCtrl', ['$scope', '$uibModalInstance', 'LincServices', 'imagesetId', 'cvrequestId', 'cvresults', function ($scope, $uibModalInstance, LincServices, imagesetId, cvrequestId, cvresults) {
+.controller('CVResultsCtrl', ['$scope', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'imagesetId', 'cvrequestId', 'cvresults', function ($scope, $uibModalInstance, LincServices, NotificationFactory, imagesetId, cvrequestId, cvresults) {
 
   $scope.title = 'CV Results';
   $scope.content = 'Form';
@@ -28,8 +28,22 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
       $scope.cvresults[index].associated = true;
       LincServices.ClearAllImagesetsCaches();
       LincServices.ClearImagesetProfileCache(imagesetId);
+      NotificationFactory.success({
+        title: "Associate", message:'Lion (id: ' + id + ') was associated',
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
+    },
+    function(error){
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to Associate the Lion (id: ' + id + ') ',
+        position: 'right', // right, left, center
+        duration: 180000   // milisecond
+      });
+      console.log(error);
     });
   };
+
   $scope.Dissociate = function (id){
     var index = _.indexOf($scope.cvresults, _.find($scope.cvresults, {id: id}));
     var data = {'lion_id': null};
@@ -37,17 +51,19 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
       $scope.cvresults[index].associated = false;
       LincServices.ClearAllImagesetsCaches();
       LincServices.ClearImagesetProfileCache(imagesetId);
+      NotificationFactory.success({
+        title: "Dissociate", message:'Lion (id: ' + id + ') was dissociated',
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
+    },
+    function(error){
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to Dissociate the Lion (id: ' + id + ')',
+        position: 'right', // right, left, center
+        duration: 180000   // milisecond
+      });
+      console.log(error);
     });
   };
-  /*LincServices.getListCVResults(cvresultsId, function(result){
-    var data = result.data.table;
-    var associated_id = result.data.associated.id;
-
-    $scope.cvresults = _.map(data, function(element, index) {
-      var elem = {};
-      if(associated_id == element.id) elem["associated"] = true;
-      else elem["associated"] = false;
-      return _.extend({}, element, elem);
-    });
-  });*/
 }]);

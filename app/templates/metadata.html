@@ -7,26 +7,26 @@
     <div class="row">
       <div class="col-sm-4 line-right">
         <div class="form-group-margin text-right">
-          <label for="id_organization">Organization: </label>
-          <button type="button" id="id_organization" placeholder="Select Organization" class="btn btn-default btn-sm" ng-model="selected.organization_id" data-html="1" bs-options="organization.id as organization.name for organization in organizations" placement="bottom-right" bs-select>
+          <label for="owner_organization_id">Organization: </label>
+          <button type="button" id="owner_organization_id" placeholder="Select Organization" class="btn btn-default btn-sm" ng-model="selected.owner_organization_id" data-html="1" bs-options="organization.id as organization.name for organization in organizations" placement="bottom-right" bs-select>
             Action <span class="caret"></span>
           </button>
         </div>
-        <pre ng-show="debug">{{!selected.organization_id}}</pre>
+        <pre ng-show="debug">{{!selected.owner_organization_id}}</pre>
 
         <hr class="style-line">
         <div class="form-inline text-right" ng-class="{'has-error': datepickerForm.date.$invalid}">
           <label class="control-label"><i class="fa fa-calendar"></i>Date Stamp: </label>
-          <input type="text" class="form-control" ng-model="selected.updated_at" data-date-format="shortDate" data-date-type="date" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date" bs-datepicker placement="bottom-left">
+          <input type="text" class="form-control" ng-model="selected.date_stamp" data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date" bs-datepicker placement="bottom-left">
         </div>
-        <pre ng-show="debug">{{!selected.updated_at}}</pre>
+        <pre ng-show="debug">{{!selected.date_stamp}}</pre>
 
         <hr class="style-line">
         <div class="form-group text-right">
           <div class="form-inline">
             <div class="form-group">
               <label for="id_latitude">Latitude: </label>
-              <input disabled type="number" class="form-control" ng-model="selected.latitude" step="0.1" id="id_latitude" >
+              <input type="number" class="form-control" ng-model="selected.latitude" step="0.1" id="id_latitude" >
             </div>
           </div>
           <div class="form-group">
@@ -59,7 +59,7 @@
         <hr ng-show="showLionName" class="style-line">
         <div class="form-inline text-right" ng-class="{'has-error': datepickerForm.date1.$invalid}">
           <label class="control-label"><i class="fa fa-calendar"></i>Date of Birth: </label>
-          <input type="text" class="form-control" ng-model="selected.date_of_birth" ng-change='Calc_Age()' data-date-format="yyyy-MM-dd" data-date-type="date" data-max-date="today" data-autoclose="1" name="date1" bs-datepicker placement="bottom-right">
+          <input type="text" class="form-control" ng-model="selected.date_of_birth" ng-change='Calc_Age()' data-date-format="yyyy-MM-dd" data-date-type="iso" data-max-date="today" data-autoclose="1" name="date1" bs-datepicker placement="bottom-right">
         </div>
         <pre ng-show="debug">{{!selected.date_of_birth}}</pre>
 
@@ -127,7 +127,7 @@
   </form>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" ng-click="Cancel()">Cancel</button>
+  <button type="button" class="btn btn-default" ng-click="Cancel()">Close</button>
   <button type="button" class="btn btn-primary" ng-click="SaveClose()">Save</button>
   <upload-images ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" options-set="optionsSet" type="metadata" save-metadata-action="Save()" close-action="Close()" type="metadata" ></upload-images>
   <br>

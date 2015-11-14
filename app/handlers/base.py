@@ -57,6 +57,10 @@ class BaseHandler(RequestHandler):
         self.set_header('Content-Type','text/html; charset=UTF-8')
         #self.set_header('Content-Type', 'application/json; charset=UTF-8')
 
+    def set_json_output(self):
+        #self.set_header('Content-Type','text/html; charset=UTF-8')
+        self.set_header('Content-Type', 'application/json; charset=UTF-8')
+
     def write_error(self, status_code, **kwargs):
         self.write({'status':'error','message':'fail to execute request','code':str(status_code)})
         self.finish()

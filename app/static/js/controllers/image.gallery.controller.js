@@ -35,7 +35,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   $scope.Properties = [{'name': 'Public', 'checked': true},
                        {'name': 'Private', 'checked': true}];
   //TEMPORARIO
-  $scope.photos = [
+  $scope.gallery = [
     { id: 1, name: 'lion 1', age: 13, url: '/static/images/medium/lion1.jpg',
       isPublic: true, isCover: true, image_type: 'cv'},
     { id: 2, name: 'lion 2', age: 12, url: '/static/images/medium/lion2.jpeg',
@@ -95,19 +95,19 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     win.focus();
   }
   // Calc initial Itens per Page
-  $scope.itemsPerPage = Math.min(9, $scope.photos.length);
+  $scope.itemsPerPage = Math.min(9, $scope.gallery.length);
   // Recalc Itens per page on click properties or image types
   $scope.calc_itemspage = function (){
-    $scope.itemsPerPage = Math.min(9, $scope.filtered_photos.length);
+    $scope.itemsPerPage = Math.min(9, $scope.filtered_gallery.length);
   }
   // Increase Page Numbers on click
   $scope.increase_pages= function (){
-    var diff = $scope.filtered_photos.length - $scope.itemsPerPage;
+    var diff = $scope.filtered_gallery.length - $scope.itemsPerPage;
     $scope.itemsPerPage += Math.min(9, diff);
   }
   // Calc Count of Selected Images
   var calc_selected_count = function (){
-    var results = _.filter($scope.filtered_photos, function(photo){
+    var results = _.filter($scope.filtered_gallery, function(photo){
       return photo.select == true;
     });
     $scope.Selected_Count = results.length;
@@ -126,7 +126,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
           $scope.optionsSet.Select.isCover = photo.isCover;
         }
         else{
-          var photo1 = _.filter($scope.photos, function(photo){
+          var photo1 = _.filter($scope.gallery, function(photo){
             return photo.select == true;
           });
           $scope.optionsSet.Select.Type = photo1[0].image_type;
@@ -150,7 +150,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
       var type = 'cv';
       var ispublic = true;
       var iscover = false;
-      $scope.paginated_photos.forEach(function(photo, index){
+      $scope.paginated_gallery.forEach(function(photo, index){
         photo.select = val;
         if(!index){
           type = photo.image_type;
@@ -165,7 +165,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
       }
     }
     else{
-      $scope.photos.forEach(function(photo, index){
+      $scope.gallery.forEach(function(photo, index){
         photo.select = val;
       });
       $scope.Selected_Count = 0;

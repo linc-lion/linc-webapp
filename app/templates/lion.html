@@ -1,11 +1,9 @@
-  <h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a> Lion Name</h1>
+  <h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a>{{!lion.name}}</h1>
   <div class="row">
     <div class="col-sm-3 line-right">
       <p><img src="{{!lion.image}}" class="img-responsive"></p>
       <h4>Lion ID</h4>
       <p>{{!lion.id}}</p>
-      <h4>Lion Name</h4>
-      <p>{{!lion.name}}</p>
       <h4>Organization</h4>
       <p>{{!lion.organization}}</p>
       <h4>Age</h4>
@@ -47,11 +45,12 @@
     </div>
     <div class="col-sm-3 line-left" >
       <image-gallery ng-show="lion" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="gallery_options"></image-gallery>
-
       <location-history ng-show="lion" use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" type="lion" options="location_options" location-goto="location_goto(imageset_Id)"></location-history>
-
       <br>
-      <metadata ng-show="lion" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options"></metadata>
+
+      <metadata ng-show="lion" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options" update-action="update_lion(data)"></metadata>
+
+
       <br>
       <p ng-show="lion"><a ui-sref="searchimageset" class="btn btn-lg btn-default btn-block"><i class="icon icon-images"></i> SEARCH IMAGE SETS</a></p>
       <p ng-show="lion"><a ng-click="go_back()" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE LION</a></p>
