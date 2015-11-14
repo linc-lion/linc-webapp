@@ -10,79 +10,58 @@ angular.module('lion.guardians.image.set.controllers', [])
     var label = "";
     labels.forEach(function (elem, i){
       label += damages[elem];
-      if(i<labels.length-1)
-      label += ', ';
+      if(i<labels.length-1) label += ', ';
     });
     return label;
   }
 
-  var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left',
-                        'EYE_DAMAGE_RIGHT': 'Right'};
-  var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left',
-                        'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right',
-                        'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left',
-                        'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
-  var ear_markings   = {'EAR_MARKING_BOTH': 'Both',
-                        'EAR_MARKING_LEFT': 'Left',
-                        'EAR_MARKING_RIGHT': 'Right'};
-  var mount_markings = {'MOUTH_MARKING_BACK': 'Back',
-                        'MOUTH_MARKING_FRONT': 'Front',
-                        'MOUTH_MARKING_LEFT': 'Left',
-                        'MOUTH_MARKING_RIGHT': 'Right'};
+  var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left', 'EYE_DAMAGE_RIGHT': 'Right'};
+  var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
+  var ear_markings   = {'EAR_MARKING_BOTH': 'Both', 'EAR_MARKING_LEFT': 'Left', 'EAR_MARKING_RIGHT': 'Right'};
+  var mount_markings = {'MOUTH_MARKING_BACK': 'Back', 'MOUTH_MARKING_FRONT': 'Front', 'MOUTH_MARKING_LEFT': 'Left', 'MOUTH_MARKING_RIGHT': 'Right'};
   var tail_markings  = {'TAIL_MARKING_MISSING_TUFT': 'Missing Tuft'};
-  var nose_color     = {'NOSE_COLOUR_BLACK': 'Black',
-                        'NOSE_COLOUR_PATCHY': 'Patchy',
-                        'NOSE_COLOUR_PINK': 'Pynk',
-                        'NOSE_COLOUR_SPOTTED': 'Spotted'};
-  var scars          = {'SCARS_BODY_LEFT': 'Body Left',
-                        'SCARS_BODY_RIGHT': 'Body Right',
-                        'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
+  var nose_color     = {'NOSE_COLOUR_BLACK': 'Black', 'NOSE_COLOUR_PATCHY': 'Patchy', 'NOSE_COLOUR_PINK': 'Pynk', 'NOSE_COLOUR_SPOTTED': 'Spotted'};
+  var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right', 'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
-  if($scope.imageset.cvresults) $scope.imageset["action"] = 'cvresults';
-  else if($scope.imageset.cvrequest) $scope.imageset["action"] = 'cvpending';
-  else $scope.imageset["action"] = 'cvrequest';
+  var Set_Tags = function(){
+    if($scope.imageset.cvresults) $scope.imageset["action"] = 'cvresults';
+    else if($scope.imageset.cvrequest) $scope.imageset["action"] = 'cvpending';
+    else $scope.imageset["action"] = 'cvrequest';
 
-  var TAGS = JSON.parse($scope.imageset.tags);
-
-  $scope.imageset.eye_damage = labels(eye_damages,_.intersection(TAGS,
-    ['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']));
-  $scope.imageset.broken_teet = labels(broken_teeths,_.intersection(TAGS,
-    ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT',
-     'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']));
-  $scope.imageset.ear_markings = labels(ear_markings,_.intersection(TAGS,
-    ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']));
-  $scope.imageset.mount_markings =labels(mount_markings, _.intersection(TAGS,
-    ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT',
-     'MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']));
-  $scope.imageset.tail_markings = labels(tail_markings,_.intersection(TAGS,
-    ['TAIL_MARKING_MISSING_TUFT']));
-  $scope.imageset.nose_color = labels(nose_color,_.intersection(TAGS,
-    ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY',
-     'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']));
-  $scope.imageset.scars = labels(scars,_.intersection(TAGS,
-    ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE']));
-
+    var TAGS = JSON.parse($scope.imageset.tags);
+    $scope.imageset.eye_damage = labels(eye_damages,_.intersection(TAGS, ['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']));
+    $scope.imageset.broken_teet = labels(broken_teeths,_.intersection(TAGS, ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT', 'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']));
+    $scope.imageset.ear_markings = labels(ear_markings,_.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']));
+    $scope.imageset.mount_markings =labels(mount_markings, _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT', 'MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']));
+    $scope.imageset.tail_markings = labels(tail_markings,_.intersection(TAGS, ['TAIL_MARKING_MISSING_TUFT']));
+    $scope.imageset.nose_color = labels(nose_color,_.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']));
+    $scope.imageset.scars = labels(scars,_.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE']));
+  };
+  Set_Tags();
   // Metadata Options
   $scope.metadata_options = { type: 'imageset', edit: 'edit', data: $scope.imageset};
+  // Updated in Metadata
+  $scope.update_imageset = function (data){
+
+    _.merge($scope.imageset, $scope.imageset, data);
+    //var data2 = _.extend({}, $scope.imageset, data);
+    Set_Tags();
+  }
   // Image Gallery
   $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.lion_id};
   // Location History
   var label = 'Image Set ' + $scope.imageset.id;
-  var date = (new Date($scope.imageset.updated_at)).toLocaleDateString()
-  $scope.location_options = { type: 'imageset',
-      history: { count: 1,
-                 locations: [{'id': $scope.imageset.id,
-                              'label': label, 'updated_at': date,
-                              'longitude': $scope.imageset.longitude,
-                              'latitude': $scope.imageset.latitude
-                            }]
-               }
+  var date = (new Date($scope.imageset.updated_at)).toLocaleDateString();
+  $scope.location_options = { type: 'imageset', history: { count: 1,
+                 locations: [{'id': $scope.imageset.id, 'label': label, 'updated_at': date, 'longitude': $scope.imageset.longitude, 'latitude': $scope.imageset.latitude }]}
   };
 
   $scope.location_goto = function (imageset_id){
     //
   }
+  $scope.Delete = function (){
 
+  }
   var requestCVResults = function (ReqObjid){
     NotificationFactory.info({
       title: "Notify", message:'Trying to get CV Results',
@@ -133,6 +112,7 @@ angular.module('lion.guardians.image.set.controllers', [])
       });
     }, 180000);
   };
+
   $scope.Change_results = function (change, ImagesetId) {
     $scope.imageset["action"] = 'cvrequest';
     LincServices.ClearAllImagesetsCaches();

@@ -79,7 +79,7 @@ angular.module('lion.guardians.services', [])
   // Get Imageset by Id
   var GetImageSet= function (id) {
     var deferred = $q.defer();
-    var url = databases['imagesets'].url + '/' + id;
+    var url = databases['imagesets'].url + '/' + id + '/profile';
     HTTPCachedGet(url, {}).then(function (results) {
       deferred.resolve(results.data);
     },
@@ -96,7 +96,7 @@ angular.module('lion.guardians.services', [])
   // Get Lion by Id
   var GetLion = function (id) {
     var deferred = $q.defer();
-    var url = databases['lions'].url + '/' + id;
+    var url = databases['lions'].url + '/' + id + '/profile';
     HTTPCachedGet(url, {}).then(function (results) {
        deferred.resolve(results.data);
     },
@@ -150,69 +150,37 @@ angular.module('lion.guardians.services', [])
       console.log(error);
     });
   };
+  // Associate  (Update Imageset)
+  var Associate = function (imageset_id, data, success, error){
+    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    angular.merge(data, cookies);
+    return HTTP('PUT', '/imagesets/' + imageset_id, data, {}, success, error);
+  }
   // Put ImageSet (Update Imageset)
-  var PutImageSet = function (imageset_id, data, success){
+  var PutImageSet = function (imageset_id, data, success, error){
     var cookies = {'_xsrf': $cookies.get('_xsrf')};
     angular.merge(data, cookies);
-    return HTTP('PUT', '/imagesets/' + imageset_id, data, {}, success,
-    function(error){
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to Save ImageSet Datas',
-        position: 'right', // right, left, center
-        duration: 180000   // milisecond
-      });
-      console.log(error);
-    });
+    return HTTP('PUT', '/imagesets/' + imageset_id, data, {}, success, error);
   }
-    // Post ImageSet - New Imageset
-    var PostImageset = function (dados, success){
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
-      return HTTP('POST', '/imagesets', data, {}, success,
-      function(error){
-        NotificationFactory.error({
-          title: "Error", message: "Unable to Post ImageSet's Data",
-          position: 'right', // right, left, center
-          duration: 180000   // milisecond
-        });
-        console.log(error);
-      });
-    };
+  // Post ImageSet - New Imageset
+  var PostImageset = function (dados, success, error){
+    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    angular.merge(data, cookies);
+    return HTTP('POST', '/imagesets', data, {}, success, error);
+  };
   // Put Lion (Update Lion)
-  var PutLion = function (lion_id, data, success){
+  var PutLion = function (lion_id, data, success, error){
     var cookies = {'_xsrf': $cookies.get('_xsrf')};
     angular.merge(data, cookies);
-    return HTTP('PUT', '/lions/' + lion_id, data, {}, success,
-    function(error){
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to Save Lion Datas',
-        position: 'right', // right, left, center
-        duration: 180000   // milisecond
-      });
-      console.log(error);
-    });
+    return HTTP('PUT', '/lions/' + lion_id, data, {}, success, error);
   }
-    // Post Lion - New Lion
-    var PostLion = function (dados, success){
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
-      return HTTP('POST', '/lion', data, {}, success,
-      function(error){
-        NotificationFactory.error({
-          title: "Error", message: "Unable to Post Lion's Data",
-          position: 'right', // right, left, center
-          duration: 180000   // milisecond
-        });
-        console.log(error);
-      });
-    };
-
-
-
-
-
-
-
+  // Post Lion - New Lion
+  var PostLion = function (dados, success, error){
+    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    angular.merge(data, cookies);
+    return HTTP('POST', '/lion', data, {}, success, error);
+  };
+  // Get CV Results
   var GetCVResults = function (cvresults_id) {
     var deferred = $q.defer();
     var url = '/cvresults/' + cvresults_id + '/list';
@@ -308,7 +276,7 @@ angular.module('lion.guardians.services', [])
   // CV Request (Post Imageset w/ /request)
   dataFactory.requestCV = RequestCV;
   // Update Imageset
-  dataFactory.Associate = PutImageSet;
+  dataFactory.Associate = Associate;
   dataFactory.SaveImageset = PutImageSet;
   dataFactory.CreateImageset = PostImageset;
 

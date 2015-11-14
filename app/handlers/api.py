@@ -96,29 +96,40 @@ class LionsHandler(BaseHandler):
     @asynchronous
     @engine
     def get(self, lions_id=None, locations=None):
-        try:
-            iid=int(lions_id)
-            iid=str(iid) + '/profile'
-        except:
-            iid= lions_id
-        resource_url = '/lions/' + iid
+        resource_url = '/lions/' + lions_id
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
-        if response:
+        self.set_status(response.code)
+        self.set_json_output()
+        self.finish(response.body)
+    @asynchronous
+    @coroutine
+    def put(self, lions_id=None):
+        if imageset_id:
+            resource_url = '/lions/' + lions_id
+            print(self.input_data)
+            data = dict(self.input_data)
+            if "_xsrf" in data.keys():
+                del data["_xsrf"]
+            print(data)
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(data))
             self.set_status(response.code)
             if response.code == 200:
                 self.finish(response.body)
             else:
-                self.finish({'status':'error','message':"fail to access lion's profile history GET"})
-
+                self.finish({'status':'error','message':'fail to save lion data'})
+        else:
+            self.set_status(400)
+            self.finish({'status':'error','message':'you need provide an lion id PUT'})
 class ImageSetsHandler(BaseHandler):
     @asynchronous
     @engine
     def get(self, imagesets_id=None, param=None):
+        print(param)
         resource_url = '/imagesets/' + imagesets_id
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
+        self.set_json_output()
         self.finish(response.body)
-
     @asynchronous
     @coroutine
     def put(self, imageset_id=None):
