@@ -42,7 +42,7 @@ angular.module('lion.guardians.lions.controllers', [])
     Set_Tags();
   }
   // Image Gallery
-  $scope.gallery_options = { type: 'lion', edit: 'edit', id: $scope.lion.id};
+  $scope.gallery_options = { type: 'lion', edit: 'edit', id: $scope.lion.primary_image_set_id};
   // Location History
   $scope.location_options = { type: 'lion', lion_id: $scope.lion.id};
 

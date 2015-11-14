@@ -46,7 +46,7 @@ angular.module('lion.guardians.image.set.controllers', [])
     Set_Tags();
   }
   // Image Gallery
-  $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.lion_id};
+  $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.id};
   // Location History
   var label = 'Image Set ' + $scope.imageset.id;
   var date = (new Date($scope.imageset.updated_at)).toLocaleDateString();

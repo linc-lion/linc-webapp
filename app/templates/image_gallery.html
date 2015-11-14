@@ -5,13 +5,10 @@
 <div class="modal-body" ng-show="content">
   <div class="row">
     <div class="col-sm-9">
-      <a class="thumbnail" ng-repeat="photo in paginated_gallery = (filtered_gallery = (gallery | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" ng-class="{active:photo.select}" ng-click="show_photo(photo.url)" target="_blank">
-
+      <a class="thumbnail" ng-repeat="photo in paginated_gallery = (filtered_gallery = (gallery | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" ng-class="{active:photo.select}" ng-click="show_photo(photo.medium)" target="_blank">
         <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select;Image_Check(photo.select, photo); $event.stopPropagation();"></i>
-
-        <img ng-src="{{!photo.url}}" width="150" height="150">
-        <div class="caption"><i class="icon icon-globe pull-right" ng-if="photo.isPublic"></i><i class="icon icon-star" ng-if="photo.isCover"></i>{{!Type_Labels[photo.image_type]}}</div>
-
+        <img ng-src="{{!photo.thumbnail}}" width="150" height="150">
+        <div class="caption"><i class="icon icon-globe pull-right" ng-if="photo.is_public"></i><i class="icon icon-star" ng-if="photo.cover"></i>{{!Type_Labels[photo.type]}}</div>
       </a>
       <p class="clearfix">
         <a href="#" class="btn btn-link" ng-click="Select_All(true)">Select All</a>
@@ -31,7 +28,7 @@
       <div ng-show="HasFilter">
         <h4>Image type</h4>
         <div class="radio" ng-init="FilterSel.Type='all'" ng-repeat="item in Filters">
-          <label><input type="radio" name="image_type" ng-model="FilterSel.Type" ng-value="item.type" ng-click="calc_itemspage();">{{!item.label}}</label>
+          <label><input type="radio" ng-model="FilterSel.Type" ng-value="item.type" ng-click="calc_itemspage();">{{!item.label}}</label>
         </div>
         <h4>Properties</h4>
         <div class="checkbox" ng-repeat="(key, property)  in Properties">
@@ -45,21 +42,21 @@
 
       <div ng-show="!HasFilter">
         <h4>Image type</h4>
-        <div class="radio" ng-init="optionsSet.Select.Type='all'" ng-repeat="item in Selects">
-          <label><input type="radio" name="image_type1" ng-model="optionsSet.Select.Type" ng-value="item.type" ng-click="Update()">{{!item.label}}</label>
+        <div class="radio" ng-init="Selected.Type='all'" ng-repeat="item in Selects">
+          <label><input type="radio" ng-model="Selected.Type" ng-value="item.type" ng-click="Update()">{{!item.label}}</label>
         </div>
         <h4>Properties</h4>
         <div class="checkbox">
-          <label><input type="checkbox" checked ng-model="optionsSet.Select.isPublic" ng-click="check_cover();">Public</label>
+          <label><input type="checkbox" checked ng-model="Selected.isPublic" ng-click="check_cover();">Public</label>
         </div>
         <div class="checkbox">
-          <label><input ng-click="Update()" ng-disabled="!optionsSet.Select.isPublic || Selected_Count>1" type="checkbox" ng-model="optionsSet.Select.isCover"> Cover image</label>
+          <label><input ng-click="Update()" ng-disabled="!Selected.isPublic || Selected_Count>1" type="checkbox" ng-model="Selected.isCover"> Cover image</label>
         </div>
       </div>
       <p>
         <button ng-disabled="!Selected_Count" class="btn btn-default btn-block">Delete</button>
         <button ng-disabled="!Selected_Count" class="btn btn-default btn-block">Download original</button>
-        <upload-images use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" options-set="optionsSet" type="gallery" save-metadata-action="Save()" close-action="Close()" type="metadata" ></upload-images>
+        <upload-images ng-show="!Selected_Count" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" options-set="optionsSet" type="gallery" save-metadata-action="Save()" close-action="Close()" type="metadata" ></upload-images>
       </p>
     </div>
   </div>

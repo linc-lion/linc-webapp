@@ -24,6 +24,9 @@ angular.module('lion.guardians.image.gallery.directive', [])
           resolve: {
             optionsSet: function () {
               return scope.optionsSet;
+            },
+            gallery: function(LincServices) {
+              return LincServices.getImageGallery(scope.optionsSet.id);
             }
           }
         });

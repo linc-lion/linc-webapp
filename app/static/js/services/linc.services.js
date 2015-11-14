@@ -26,7 +26,7 @@ angular.module('lion.guardians.services', [])
       databases['imagesets'] =     {label: 'Imagesets', url: '/imagesets'};
       databases['images'] =        {label: 'Images', url: '/images'};
   // Get All Imagesets List
-  var GetAllImageSets = function (id) {
+  var GetAllImageSets = function () {
     var deferred = $q.defer();
     var url = databases['imagesets'].url + '/list';
     HTTPCachedGet(url, {}).then(function (results) {
@@ -43,7 +43,7 @@ angular.module('lion.guardians.services', [])
     return deferred.promise;
   };
   // Get All Lions List
-  var GetAllLions = function (id) {
+  var GetAllLions = function () {
     var deferred = $q.defer();
     var url = databases['lions'].url + '/list';
     HTTPCachedGet(url, {}).then(function (results) {
@@ -60,7 +60,7 @@ angular.module('lion.guardians.services', [])
     return deferred.promise;
   };
   // Get All Organizations List
-  var GetAllOrganizations = function (id) {
+  var GetAllOrganizations = function () {
     var deferred = $q.defer();
     var url = databases['organizations'].url + '/list';
     HTTPCachedGet(url, {}).then(function (results) {
@@ -86,6 +86,23 @@ angular.module('lion.guardians.services', [])
     function (error) {
       NotificationFactory.error({
         title: "Error", message: 'Unable to load Imageset data',
+        position: 'right', // right, left, center
+        duration: 5000   // milisecond
+      });
+      deferred.reject(error);
+    });
+    return deferred.promise;
+  };
+  // Get Images Gallery
+  var GetImageGallery = function (id) {
+    var deferred = $q.defer();
+    var url = databases['imagesets'].url + '/' + id + '/gallery';
+    HTTPCachedGet(url,{ignoreLoadingBar: true}).then(function (results) {
+        deferred.resolve(results.data);
+    },
+    function (error) {
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to load Image Gallery',
         position: 'right', // right, left, center
         duration: 5000   // milisecond
       });
@@ -127,6 +144,7 @@ angular.module('lion.guardians.services', [])
     });
     return deferred.promise;
   };
+
   // Clean Caches
   var ClearAllCaches = function (fn) { $httpDefaultCache.removeAll(); };
   var ClearAllImagesetsCaches = function () { $httpcache.remove('/imagesets/list'); };
@@ -293,7 +311,7 @@ angular.module('lion.guardians.services', [])
   // Delete CV Results and CV Request
   dataFactory.deleteCVRequest = DeleteCVRequest;
 
-    //dataFactory.getImageGalleries = GetImages;
+  dataFactory.getImageGallery = GetImageGallery;
 
   dataFactory.Login = Login;
   return dataFactory;
