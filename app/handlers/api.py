@@ -197,6 +197,7 @@ class ImagesUploadHandler(BaseHandler):
                             method='PUT',body=self.json_encode({'main_image_id':newimg_id}))
                         if response.code == 200:
                             msg = msg + 'new image '+str(newimg_id)+' defined as main_image of the imageset '+str(imgset_id)+'.'
+                    logging.info('\n\n'+msg)
                     self.setSuccess(201,msg)
                 else:
                     self.dropError(500,'fail to upload image')
