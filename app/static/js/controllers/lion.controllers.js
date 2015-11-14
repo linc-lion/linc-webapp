@@ -38,7 +38,7 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.metadata_options = { type: 'lion', edit: 'edit', data: $scope.lion};
   // Updated in Metadata
   $scope.update_lion = function (data){
-    $scope.lion = data;
+    _.merge($scope.lion, $scope.lion, data);
     Set_Tags();
   }
   // Image Gallery
@@ -49,8 +49,6 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.location_goto = function (imageset_id){
     $state.go("imageset", {id: imageset_id});
   }
-
-
 }])
 
 .controller('SearchLionCtrl', ['$scope', 'lions', 'organizations', function ($scope, lions, organizations) {

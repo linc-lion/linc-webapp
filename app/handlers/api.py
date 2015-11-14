@@ -104,7 +104,8 @@ class LionsHandler(BaseHandler):
     @asynchronous
     @coroutine
     def put(self, lions_id=None):
-        if imageset_id:
+        print(lions_id)
+        if lions_id:
             resource_url = '/lions/' + lions_id
             print(self.input_data)
             data = dict(self.input_data)

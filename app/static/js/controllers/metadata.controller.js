@@ -37,27 +37,36 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     var TAGS = JSON.stringify(concat.value());
     if(!concat.value().length) TAGS = "null";
 
-    //Selected Dates
-    var sel_data = { "owner_organization_id": selected.owner_organization_id,
-      "date_stamp": selected.date_stamp,
-      "latitude": selected.latitude, "longitude": selected.longitude,
-      "gender": selected.gender,
-      "date_of_birth": selected.date_of_birth,
-      "tags": TAGS, 'notes': selected.notes
-    }
-    if($scope.showLionName){ sel_data.name = selected.name; }
-    // Check Changed Datas
-    var data = _.reduce(sel_data, function(result, n, key) {
-      if (sel_data[key] && optionsSet.data[key] && sel_data[key] != optionsSet.data[key]) {
-          result[key] = sel_data[key];
+    if(optionsSet.type === 'lion'){
+      //Selected Dates
+      var lion_sel_data = {
+          "owner_organization_id": selected.owner_organization_id,
+          "name" : selected.name
       }
-      return result;
-    }, {});
-
-    if(Object.keys(data).length){
-      if(optionsSet.type === 'lion'){
+      var imageset_sel_data = {
+        "date_stamp": selected.date_stamp,
+        "latitude": selected.latitude, "longitude": selected.longitude,
+        "gender": selected.gender,
+        "date_of_birth": selected.date_of_birth,
+        "tags": TAGS, 'notes': selected.notes
+      }
+      // Check Changed Datas
+      var lion_data = _.reduce(lion_sel_data, function(result, n, key) {
+        if (lion_sel_data[key] && lion_sel_data[key] != optionsSet.data[key]) {
+            result[key] = lion_sel_data[key];
+        }
+        return result;
+      }, {});
+      var imageset_data = _.reduce(imageset_sel_data, function(result, n, key) {
+        if (imageset_sel_data[key] && imageset_sel_data[key] != optionsSet.data[key]) {
+            result[key] = imageset_sel_data[key];
+        }
+        return result;
+      }, {});
+      if(Object.keys(lion_data).length || Object.keys(imageset_data).length){
         if(optionsSet.edit === 'edit'){
           var id = optionsSet.data.id;
+          var data = {"lion": lion_data, "imageset": imageset_data};
           LincServices.SaveLion(id, data, function(){
             deferred.resolve({type: 'save', 'data': data, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
           },
@@ -76,6 +85,28 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         }
       }
       else{
+        deferred.resolve({type: 'no_change'});
+      }
+    }
+    else{
+      //Selected Dates
+      var sel_data = {
+        "owner_organization_id": selected.owner_organization_id,
+        "date_stamp": selected.date_stamp,
+        "latitude": selected.latitude, "longitude": selected.longitude,
+        "gender": selected.gender,
+        "date_of_birth": selected.date_of_birth,
+        "tags": TAGS, 'notes': selected.notes
+      }
+      if($scope.showLionName){ sel_data.name = selected.name; }
+      // Check Changed Datas
+      var data = _.reduce(sel_data, function(result, n, key) {
+        if (sel_data[key] && sel_data[key] != optionsSet.data[key]) {
+            result[key] = sel_data[key];
+        }
+        return result;
+      }, {});
+      if(Object.keys(data).length){
         if(optionsSet.edit === 'edit'){
           var id = optionsSet.data.id;
           //var data = {'tags': TAGS};
@@ -96,9 +127,9 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           });
         }
       }
-    }
-    else{
-      deferred.resolve({type: 'no_change'});
+      else{
+        deferred.resolve({type: 'no_change'});
+      }
     }
     return deferred.promise;
   };

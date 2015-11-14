@@ -42,9 +42,7 @@ angular.module('lion.guardians.image.set.controllers', [])
   $scope.metadata_options = { type: 'imageset', edit: 'edit', data: $scope.imageset};
   // Updated in Metadata
   $scope.update_imageset = function (data){
-
     _.merge($scope.imageset, $scope.imageset, data);
-    //var data2 = _.extend({}, $scope.imageset, data);
     Set_Tags();
   }
   // Image Gallery
