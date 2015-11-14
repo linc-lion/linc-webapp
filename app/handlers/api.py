@@ -4,9 +4,11 @@
 from tornado.web import asynchronous
 from tornado.gen import engine,coroutine,Task
 from handlers.base import BaseHandler
-import base64
 import hmac, hashlib
+from os.path import realpath,dirname
+from os import remove
 from base64 import b64encode as convertImage
+from json import loads
 
 class ImageSetsListHandler(BaseHandler):
     @asynchronous
@@ -111,11 +113,11 @@ class ImageSetsHandler(BaseHandler):
     @asynchronous
     @engine
     def get(self, imagesets_id=None, param=None):
-        print(param)
         resource_url = '/imagesets/' + imagesets_id
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
         self.finish(response.body)
+
     @asynchronous
     @coroutine
     def put(self, imageset_id=None):
@@ -155,37 +157,47 @@ class OrganizationsListHandler(BaseHandler):
         self.finish(response.body)
 
 class ImagesUploadHandler(BaseHandler):
+    @asynchronous
+    @engine
     def post(self):
-        fileinfo = self.request.files['file'][0]
-        #print("fileinfo is", fileinfo)
-        body = fileinfo['body'];
-        #print("body is", body)
-        fname = fileinfo['filename']
-        #print("fname is", fname)
-        from os.path import realpath,dirname
-        dirfs= dirname(realpath(__file__))
-        #print("dirfs is", dirfs)
-        fh = open(dirfs+'/'+fname, 'wb')
-        fh.write(body)
-
-        #data_body = self.request.body
-        #print("data_body is", data_body)
-        image_type = self.get_argument("image_type")
-        is_public = self.get_argument("is_public")
-        image_set_id = self.get_argument("image_set_id")
-        iscover = self.get_argument("iscover")
-        print('image_type ', image_type)
-        print('is_public ', is_public)
-        print('image_set_id ', image_set_id)
-        print('iscover ', iscover)
-
-        self.finish(dirfs+'/'+fname + " is uploaded!! Check %s folder" % dirfs)
-
-        """
-        with open("t.png", "rb") as imageFile:
-            str = convertImage(imageFile.read())
-            print str
-        """
+        if self.request.files:
+            fileinfo = self.request.files['file'][0]
+            body = fileinfo['body'];
+            fname = fileinfo['filename']
+            dirfs= dirname(realpath(__file__))
+            fh = open(dirfs+'/'+fname, 'wb')
+            fh.write(body)
+            fh.close()
+            with open(dirfs+'/'+fname, "rb") as imageFile:
+                fileencoded = convertImage(imageFile.read())
+            if fileencoded:
+                remove(dirfs+'/'+fname)
+                image_type = self.get_argument("image_type","cv")
+                is_public = self.get_argument("is_public",True)
+                image_set_id = self.get_argument("image_set_id")
+                iscover = self.get_argument("iscover",False)
+                body = {
+                    "image" : fileencoded,
+                    "image_type" : image_type,
+                    "is_public" : is_public,
+                    "image_set_id" : int(image_set_id)
+                }
+                resource_url = '/images/upload'
+                response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(body))
+                if response.code == 200:
+                    msg = 'new image uploaded with success.'
+                    if iscover:
+                        respdata = loads(response.body)
+                        imgset_id = respdata['data']['image_set_id']
+                        newimg_id = respdata['data']['id']
+                        resource_url = '/imagesets/'+str(imgset_id)
+                        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,\
+                            method='PUT',body=self.json_encode({'main_image_id':newimg_id}))
+                        if response.code == 200:
+                            msg = msg + 'new image '+str(newimg_id)+' defined as main_image of the imageset '+str(imgset_id)+'.'
+                    self.setSuccess(201,msg)
+                else:
+                    self.dropError(500,'fail to upload image')
 
 class LoginHandler(BaseHandler):
     @asynchronous
