@@ -9,7 +9,7 @@ angular.module('lion.guardians.upload.images.directive', [])
     template: function(element, attrs) {
       switch (attrs.type) {
         case 'new':
-          return '<a class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showNew()"><i class="icon icon-camera"></i> Save & Add Images</a>';
+          return '<a class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showNew()" ng-disabled="disabledBtn"><i class="icon icon-camera"></i> Save & Add Images</a>';
         default:
           return '<button class="btn btn-primary btn-block" ng-click="ShowOpen()" ng-disabled="disabledBtn">Upload images</button>';
       }
