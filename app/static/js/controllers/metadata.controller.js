@@ -4,7 +4,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
 .controller('MetadataCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', '$timeout', '$q',  'organizations', function ($scope, $window, $uibModalInstance, LincServices, NotificationFactory, optionsSet, $timeout, $q, organizations) {
 
-  $scope.debug = false;
+  $scope.debug = true;
   $scope.optionsSet = optionsSet;
   //$scope.optionsSet.isMetadata = true;
   $scope.organizations = organizations;
