@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.controller('ImageSetCtrl', ['$scope', '$timeout', '$interval', 'NotificationFactory', 'LincServices', 'imageset', function ($scope, $timeout, $interval, NotificationFactory, LincServices, imageset) {
+.controller('ImageSetCtrl', ['$scope', '$timeout', '$interval', 'NotificationFactory', 'LincServices', 'organizations', 'imageset', function ($scope, $timeout, $interval, NotificationFactory, LincServices, organizations, imageset) {
 
   $scope.imageset = imageset;
 
@@ -43,6 +43,7 @@ angular.module('lion.guardians.image.set.controllers', [])
   // Updated in Metadata
   $scope.update_imageset = function (data){
     _.merge($scope.imageset, $scope.imageset, data);
+    $scope.imageset.organization = _.find(organizations, {'id': $scope.imageset.owner_organization_id}).name;
     Set_Tags();
   }
   // Image Gallery

@@ -59,7 +59,7 @@
         <hr ng-show="showLionName" class="style-line">
         <div class="form-inline text-right" ng-class="{'has-error': datepickerForm.date1.$invalid}">
           <label class="control-label"><i class="fa fa-calendar"></i>Date of Birth: </label>
-          <input type="text" class="form-control" ng-model="selected.date_of_birth" ng-change='Calc_Age()' data-date-format="yyyy-MM-dd" data-date-type="iso" data-max-date="today" data-autoclose="1" name="date1" bs-datepicker placement="bottom-right">
+          <input type="text" class="form-control" ng-model="selected.date_of_birth" ng-change='Calc_Age()' data-date-format="yyyy-MM-dd" data-date-type="string" data-max-date="today" data-autoclose="1" name="date1" bs-datepicker placement="bottom-right">
         </div>
         <pre ng-show="debug">{{!selected.date_of_birth}}</pre>
 
@@ -123,11 +123,10 @@
       <textarea class="form-control" rows="5" ng-model="selected.notes"></textarea>
     </div>
     <pre ng-show="debug">{{!selected.notes}}</pre>
-
   </form>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" ng-click="Cancel()">Close</button>
+  <!--<button type="button" class="btn btn-default" ng-click="Cancel()">Close</button>-->
   <button type="button" class="btn btn-primary" ng-click="SaveClose()">Save</button>
   <upload-images ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new" save-metadata-action="SaveUpload()" close-action="Close()"></upload-images>
   <br>

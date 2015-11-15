@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image.gallery.directive'])
 
-.controller('ImageGalleryCtrl', ['$scope', '$window', '$uibModalInstance', 'NotificationFactory', 'optionsSet', 'gallery', function($scope, $window, $uibModalInstance, NotificationFactory, optionsSet, gallery) {
+.controller('ImageGalleryCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', 'gallery', function($scope, $window, $uibModalInstance, LincServices, NotificationFactory, optionsSet, gallery) {
 
   //$scope.optionsSet = optionsSet;
   $scope.gallery = gallery.images;
@@ -148,8 +148,53 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     $scope.Update();
   }
   $scope.Update = function(){
-    alert('Update');
-    console.log($scope.Selected);
+    var updated = [];
+    $scope.paginated_gallery.forEach(function(photo, index){
+      var update = {};
+      if(photo.select){
+        if($scope.Selected.Type != photo.type)
+          update.image_type = photo.type;
+        if($scope.Selected.isPublic != photo.is_public)
+          update.is_public = photo.isPublic;
+        if($scope.Selected.isCover != photo.cover)
+          update.cover = photo.isCover;
+        updated.push({'image_id': photo.id, 'data': update});
+      }
+    });
+    if(updated.length==1){
+      var update = updated[0];
+      LincServices.UpdateImage(update.image_id , update.data, function(result){
+        NotificationFactory.success({
+          title: "Update", message: "Image was updated",
+          position: "right", // right, left, center
+          duration: 2000     // milisecond
+        });
+      },
+      function(error){
+        NotificationFactory.error({
+          title: "Error", message: "Unable to Update Image data",
+          position: 'right', // right, left, center
+          duration: 180000   // milisecond
+        });
+      });
+    }else{
+      LincServices.UpdateImages(updated, function(result){
+        NotificationFactory.success({
+          title: "Update", message: "All Images have been updated",
+          position: "right", // right, left, center
+          duration: 2000     // milisecond
+        });
+    },
+    function(error){
+      NotificationFactory.error({
+        title: "Error", message: "Unable to Update Image data",
+        position: 'right', // right, left, center
+        duration: 180000   // milisecond
+      });
+    });
+    }
+
+
   /*  console.log("update");
     NotificationFactory.success({
       title: "Success", message:'Images Updated with success',

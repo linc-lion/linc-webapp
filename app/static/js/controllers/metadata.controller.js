@@ -44,7 +44,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       }
       var imageset_sel_data = {
         "date_stamp": selected.date_stamp,
-        "latitude": selected.latitude, "longitude": selected.longitude,
+        "latitude": selected.latitude,
+        "longitude": selected.longitude,
         "gender": selected.gender,
         "date_of_birth": selected.date_of_birth,
         "tags": TAGS, 'notes': selected.notes
@@ -157,7 +158,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        $uibModalInstance.close({'data': result.data});
+        //$uibModalInstance.close({'data': result.data});
       },
       function(result){
         NotificationFactory.error({
@@ -250,7 +251,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     var ear_marks = _.includes(_.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']),'EAR_MARKING_BOTH') ? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] : _.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']);
 
     //optionsSet.data.date_of_birth = (new Date(Date.parse(optionsSet.data.date_of_birth))).toJSON();
-
+    optionsSet.data.date_of_birth = new Date(optionsSet.data.date_of_birth).toJSON().slice(0,10);
+    optionsSet.data.date_stamp = new Date(optionsSet.data.date_stamp).toJSON().slice(0,10);
     $scope.selected = {
       "name": optionsSet.data.name,
       "date_stamp": optionsSet.data.date_stamp,

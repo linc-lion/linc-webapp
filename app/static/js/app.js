@@ -66,6 +66,9 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             bodyClasses: 'lion'
           },
           resolve: {
+            organizations: function(LincServices) {
+              return LincServices.Organizations();
+            },
             lion: function($stateParams, LincServices) {
               return LincServices.Lion($stateParams.id);
             }
@@ -80,6 +83,9 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             bodyClasses: 'imageset'
           },
           resolve: {
+            organizations: function(LincServices) {
+              return LincServices.Organizations();
+            },
             imageset: function($stateParams, LincServices) {
               return LincServices.ImageSet($stateParams.id);
             }
@@ -149,5 +155,4 @@ app.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
     cfpLoadingBarProvider.includeSpinner = true;
     cfpLoadingBarProvider.includeBar = true;
     cfpLoadingBarProvider.latencyThreshold = 500;
-}])
-;
+}]);

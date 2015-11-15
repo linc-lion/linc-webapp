@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.lions.controllers', [])
 
-.controller('LionCtrl', ['$scope', '$state', 'lion', function ($scope, $state, lion) {
+.controller('LionCtrl', ['$scope', '$state', 'organizations', 'lion', function ($scope, $state, organizations, lion) {
 
   $scope.lion = lion;
 
@@ -39,6 +39,7 @@ angular.module('lion.guardians.lions.controllers', [])
   // Updated in Metadata
   $scope.update_lion = function (data){
     _.merge($scope.lion, $scope.lion, data);
+    $scope.lion.organization = organizations[$scope.lion.owner_organization_id];
     Set_Tags();
   }
   // Image Gallery
