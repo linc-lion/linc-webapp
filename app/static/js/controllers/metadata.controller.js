@@ -6,11 +6,12 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
   $scope.debug = true;
   $scope.optionsSet = optionsSet;
-  $scope.optionsSet.isMetadata = true;
+  //$scope.optionsSet.isMetadata = true;
   $scope.organizations = organizations;
   var titles = {}; titles['lion'] = 'Lion Metadata'; titles['imageset'] = 'Image Set Metadata';
   $scope.showLionName = (optionsSet.type === 'lion' || (optionsSet.type === 'imageset' && optionsSet.edit === 'edit'));
   $scope.isNew = (optionsSet.edit === 'new');
+
   // Title
   $scope.title = titles[optionsSet.type];
   $scope.content = 'Form';
@@ -19,10 +20,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
    $uibModalInstance.dismiss('cancel');
   };
 
-  var Save_metadata = function (){
-    var deferred = $q.defer();
+  var Metadata = function() {
     var selected = $scope.selected;
-
     var eyes_dams = _.includes(selected.eye_damage, "EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT") ? ["EYE_DAMAGE_BOTH"] : selected.eye_damage;
     var ear_marks = _.includes(selected.markings['ear'], "EAR_MARKING_LEFT", "EAR_MARKING_RIGHT") ? ["EAR_MARKING_BOTH"] : selected.markings['ear'];
 
@@ -36,7 +35,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     concat = _(concat).concat(selected.scars);
     var TAGS = JSON.stringify(concat.value());
     if(!concat.value().length) TAGS = "null";
-
+    var data = {};
     if(optionsSet.type === 'lion'){
       //Selected Dates
       var lion_sel_data = {
@@ -50,42 +49,24 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         "date_of_birth": selected.date_of_birth,
         "tags": TAGS, 'notes': selected.notes
       }
-      // Check Changed Datas
-      var lion_data = _.reduce(lion_sel_data, function(result, n, key) {
-        if (lion_sel_data[key] && lion_sel_data[key] != optionsSet.data[key]) {
-            result[key] = lion_sel_data[key];
-        }
-        return result;
-      }, {});
-      var imageset_data = _.reduce(imageset_sel_data, function(result, n, key) {
-        if (imageset_sel_data[key] && imageset_sel_data[key] != optionsSet.data[key]) {
-            result[key] = imageset_sel_data[key];
-        }
-        return result;
-      }, {});
-      if(Object.keys(lion_data).length || Object.keys(imageset_data).length){
-        if(optionsSet.edit === 'edit'){
-          var id = optionsSet.data.id;
-          var data = {"lion": lion_data, "imageset": imageset_data};
-          LincServices.SaveLion(id, data, function(){
-            deferred.resolve({type: 'save', 'data': data, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
-          },
-          function(error){
-            deferred.reject({'message': "Unable to Save Lion's Metadata"});
-          });
-        }
-        else{
-          LincServices.CreateLion(data, function(){
-            //deferred.resolve($scope.optionsSet);
-            deferred.resolve({type: 'create', 'data': data, 'title': 'Create', 'message': "Lion's Metadata created with success"});
-          },
-          function(error){
-            deferred.reject({'message': "Unable to create new Lion's Metadata"});
-          });
-        }
-      }
-      else{
-        deferred.resolve({type: 'no_change'});
+      if(optionsSet.edit === 'new'){
+          data = {"lion": lion_sel_data, "imageset": imageset_sel_data};
+      }else{
+        // Check Changed Datas
+        var lion_data = _.reduce(lion_sel_data, function(result, n, key) {
+          if (lion_sel_data[key] && lion_sel_data[key] != optionsSet.data[key]) {
+              result[key] = lion_sel_data[key];
+          }
+          return result;
+        }, {});
+        var imageset_data = _.reduce(imageset_sel_data, function(result, n, key) {
+          if (imageset_sel_data[key] && imageset_sel_data[key] != optionsSet.data[key]) {
+              result[key] = imageset_sel_data[key];
+          }
+          return result;
+        }, {});
+        if(Object.keys(lion_data).length || Object.keys(imageset_data).length)
+          data = {"lion": lion_data, "imageset": imageset_data};
       }
     }
     else{
@@ -98,59 +79,107 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         "date_of_birth": selected.date_of_birth,
         "tags": TAGS, 'notes': selected.notes
       }
-      if($scope.showLionName){ sel_data.name = selected.name; }
-      // Check Changed Datas
-      var data = _.reduce(sel_data, function(result, n, key) {
-        if (sel_data[key] && sel_data[key] != optionsSet.data[key]) {
-            result[key] = sel_data[key];
-        }
-        return result;
-      }, {});
-      if(Object.keys(data).length){
-        if(optionsSet.edit === 'edit'){
-          var id = optionsSet.data.id;
-          //var data = {'tags': TAGS};
-          LincServices.SaveImageset(id, data, function(){
-            deferred.resolve({type: 'save', 'data': data, 'title': 'Save', 'message': "Image Set's Metadata saved with success"});
-          },
-          function(error){
-            deferred.reject({'message': "Unable to Save Image Set's Metadata"});
-          });
-        }
-        else{
-          LincServices.CreateImageset(data, function(){
-            //deferred.resolve($scope.optionsSet);
-            deferred.resolve({type: 'create', 'data': data, 'title': 'Create', 'message': "Image Set's Metadata created with success"});
-          },
-          function(error){
-            deferred.reject({'message': "Unable to create new Image Set's Metadata"});
-          });
-        }
+      if(optionsSet.edit === 'new'){
+          data = sel_data;
+      }else{
+
+        if($scope.showLionName){ sel_data.name = selected.name; }
+        // Check Changed Datas
+        var imageset_data = _.reduce(sel_data, function(result, n, key) {
+          if (sel_data[key] && sel_data[key] != optionsSet.data[key]) {
+              result[key] = sel_data[key];
+          }
+          return result;
+        }, {});
+        if(Object.keys(imageset_data).length)
+          data = imageset_data;
+      }
+    }
+    return data;
+  }
+
+  var Save_Metadata = function (data){
+    var deferred = $q.defer();
+    if(optionsSet.type === 'lion'){
+      if(optionsSet.edit === 'edit'){
+        var id = optionsSet.data.id;
+        LincServices.SaveLion(id, data, function(){
+          deferred.resolve({type: 'save', 'data': data, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
+        },
+        function(error){
+          deferred.reject({'message': "Unable to Save Lion's Metadata"});
+        });
       }
       else{
-        deferred.resolve({type: 'no_change'});
+        LincServices.CreateLion(data, function(){
+          deferred.resolve({type: 'create', 'data': data, 'title': 'Create', 'message': "Lion's Metadata created with success"});
+        },
+        function(error){
+          deferred.reject({'message': "Unable to create new Lion's Metadata"});
+        });
+      }
+    }
+    else{
+      if(optionsSet.edit === 'edit'){
+        var id = optionsSet.data.id;
+        LincServices.SaveImageset(id, data, function(){
+          deferred.resolve({type: 'save', 'data': data, 'title': 'Save', 'message': "Image Set's Metadata saved with success"});
+        },
+        function(error){
+          deferred.reject({'message': "Unable to Save Image Set's Metadata"});
+        });
+      }
+      else{
+        LincServices.CreateImageset(data, function(){
+          deferred.resolve({type: 'create', 'data': data, 'title': 'Create', 'message': "Image Set's Metadata created with success"});
+        },
+        function(error){
+          deferred.reject({'message': "Unable to create new Image Set's Metadata"});
+        });
       }
     }
     return deferred.promise;
   };
   // Save and Close
   $scope.SaveClose = function(){
-    Save_metadata().then(function(result) {
-      if(result.type == 'no_change'){
-        NotificationFactory.warning({
-          title: "Warning", message: "There is no change in the data",
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-      }
-      else{
+    var data = Metadata();
+    if(!Object.keys(data).length){
+      NotificationFactory.warning({
+        title: "Warning", message: "There is no change in the data",
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
+    }
+    else{
+      Save_Metadata(data).then(function(result) {
         NotificationFactory.success({
           title: result.title, message: result.message,
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
         $uibModalInstance.close({'data': result.data});
-      }
+      },
+      function(result){
+        NotificationFactory.error({
+          title: "Error", message: result.message,
+          position: 'right', // right, left, center
+          duration: 180000   // milisecond
+        });
+        //$uibModalInstance.dismiss("error");
+      });
+    }
+  }
+  // Save and Upload
+  $scope.SaveUpload = function(){
+    var deferred = $q.defer();
+    var data = Metadata();
+    /*Save_Metadata(data).then(function(result) {
+      NotificationFactory.success({
+        title: result.title, message: result.message,
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
+      deferred.resolve({'data': result.data});
     },
     function(result){
       NotificationFactory.error({
@@ -158,14 +187,13 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         position: 'right', // right, left, center
         duration: 180000   // milisecond
       });
-      //$uibModalInstance.dismiss("error");
-    });
-  }
-  // Save
-  $scope.Save = function(){
-    var deferred = $q.defer();
+      deferred.reject({message: result.message});
+    });*/
+    deferred.resolve({'imagesetId': 4});
+    return deferred.promise;
+
     //timeout(function() {
-       $scope.optionsSet.data = { id: 1, name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
+    /*   $scope.optionsSet.data = { id: 1, name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
 
         console.log("Save Imagesets");
         NotificationFactory.success({
@@ -176,7 +204,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         $scope.metadataId = {id: 2};
         deferred.resolve($scope.optionsSet);
     //}, 1000);
-    return deferred.promise;
+    return deferred.promise;*/
   }
   $scope.Close = function(){
     console.log("Close UploadImages");

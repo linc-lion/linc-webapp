@@ -8,23 +8,23 @@ angular.module('lion.guardians.upload.images.directive', [])
     restrict: 'EA',
     template: function(element, attrs) {
       switch (attrs.type) {
-        case 'metadata':
-          return '<a class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-camera"></i> Save & Add Images</a>';
+        case 'new':
+          return '<a class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showNew()"><i class="icon icon-camera"></i> Save & Add Images</a>';
         default:
-          return '<button class="btn btn-primary btn-block" ng-click="open()">Upload images</button>';
+          return '<button class="btn btn-primary btn-block" ng-click="ShowOpen()">Upload images</button>';
       }
     },
     scope: {
       useTemplateUrl: '@',
       useCtrl: '@',
       formSize: '@',
-      optionsSet: '=',
+      imagesetId: '=',
       saveMetadataAction:'&',
       closeAction:'&'
     },
     link: function(scope, element, attrs) {
-      scope.show = function(){
-        scope.saveMetadataAction().then(function (results) {
+      scope.showNew = function(){
+        scope.saveMetadataAction().then(function (result) {
           var modalInstance = $uibModal.open({
             animation: true,
             backdrop: true,
@@ -32,8 +32,8 @@ angular.module('lion.guardians.upload.images.directive', [])
             controller:  scope.useCtrl,
             size: scope.formSize,
             resolve: {
-              optionsSet: function () {
-                return scope.optionsSet;
+              options: function () {
+                return ({'isNew': attrs.type == 'new', 'imagesetId': result.imagesetId});
               }
             }
           });
@@ -45,7 +45,7 @@ angular.module('lion.guardians.upload.images.directive', [])
           });
         });
       },
-      scope.open = function(){
+      scope.ShowOpen = function(){
         var modalInstance = $uibModal.open({
           animation: true,
           backdrop: true,
@@ -53,8 +53,8 @@ angular.module('lion.guardians.upload.images.directive', [])
           controller:  scope.useCtrl,
           size: scope.formSize,
           resolve: {
-            optionsSet: function () {
-              return scope.optionsSet;
+            options: function () {
+              return ({'isnew': attrs.type == 'new', 'imagesetId': scope.imagesetId});
             }
           }
         });
