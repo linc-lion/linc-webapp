@@ -214,6 +214,36 @@ class ImagesUploadHandler(BaseHandler):
                 else:
                     self.dropError(500,'fail to upload image')
 
+
+class ImagesHandler(BaseHandler):
+    @asynchronous
+    @engine
+    def get(self, images_id=None, locations=None):
+        resource_url = '/images/' + images_id
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        self.set_status(response.code)
+        self.set_json_output()
+        self.finish(response.body)
+    @asynchronous
+    @coroutine
+    def put(self, images_id=None):
+        print(images_id)
+        if images_id:
+            resource_url = '/images/' + images_id
+            print(self.input_data)
+            data = dict(self.input_data)
+            if "_xsrf" in data.keys():
+                del data["_xsrf"]
+            print(data)
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(data))
+            self.set_status(response.code)
+            if response.code == 200:
+                self.finish(response.body)
+            else:
+                self.finish({'status':'error','message':'fail to save images data'})
+        else:
+            self.set_status(400)
+            self.finish({'status':'error','message':'you need provide an images id PUT'})
 class LoginHandler(BaseHandler):
     @asynchronous
     @engine

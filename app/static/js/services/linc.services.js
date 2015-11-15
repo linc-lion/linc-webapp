@@ -198,6 +198,66 @@ angular.module('lion.guardians.services', [])
     angular.merge(data, cookies);
     return HTTP('POST', '/lion', data, {}, success, error);
   };
+  // Put Lion (Update Lion)
+  var PutImage = function (image_id, data, success, error){
+    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    angular.merge(data, cookies);
+    return HTTP('PUT', '/images/' + image_id, data, {}, success, error);
+  }
+
+  var PutImages = function (items, success, error){
+    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    var promises = items.map(function(item) {
+      var deferred = $q.defer();
+      var data = item.data;
+      angular.merge(data, cookies);
+      var req = { method: 'PUT',
+                  url: '/images/' + item.image_id,
+                  data: item.data,
+                  headers: { 'Content-Type': 'application/json'},
+                  config: {ignoreLoadingBar: true}};
+      return $http.get(url, config)
+        .success(function (response) {deferred.resolve(response);})
+        .error(function (error) {deferred.reject(error);});
+    });
+    $q.all(promises).then(function (results) {
+      var dados = {};
+      results.forEach( function (result, index) {
+        var key = names[index];
+        dados[key] = result.data;
+      })
+      success(dados);
+    },
+    function (reason) {
+      error(reason);
+    });
+  }
+  /*
+  var GetLists = function(names, fn){
+    var requests = [];
+    var promises = names.map(function(name) {
+      var url = databases[name].url;
+      var label = databases[name].label;
+      return Get(url, label);
+    });
+    $q.all(promises).then(function (results) {
+      var dados = {};
+      results.forEach( function (result, index) {
+        var key = names[index];
+        dados[key] = result.data;
+      })
+      notificationFactory.success({
+        title: "Database", message:'Database Successfully Loaded',
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
+      fn(dados);
+    },
+    function (reason) {
+      console.log(reason);
+    });
+  };
+  */
   // Get CV Results
   var GetCVResults = function (cvresults_id) {
     var deferred = $q.defer();
@@ -297,7 +357,8 @@ angular.module('lion.guardians.services', [])
   dataFactory.Associate = Associate;
   dataFactory.SaveImageset = PutImageSet;
   dataFactory.CreateImageset = PostImageset;
-
+  dataFactory.UpdateImages = PutImages;
+  dataFactory.UpdateImage = PutImage;
   // Update Lion
   dataFactory.SaveLion = PutLion;
   dataFactory.CreateLion = PostLion;
