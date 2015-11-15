@@ -132,6 +132,16 @@ class ImageSetsHandler(BaseHandler):
         self.set_json_output()
         self.finish(response.body)
     @asynchronous
+    @engine
+    def post(self):
+        resource_url = '/imagesets'
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to create new imageset POST'})
+    @asynchronous
     @coroutine
     def put(self, imageset_id=None):
         if imageset_id:
@@ -224,6 +234,16 @@ class ImagesHandler(BaseHandler):
         self.set_status(response.code)
         self.set_json_output()
         self.finish(response.body)
+    @asynchronous
+    @coroutine
+    def delete(self, images_id=None):
+        resource_url = '/images/' + images_id
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"delete image"}))
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to delete image DELETE'})
     @asynchronous
     @coroutine
     def put(self, images_id=None):

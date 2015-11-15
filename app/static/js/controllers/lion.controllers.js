@@ -24,7 +24,12 @@ angular.module('lion.guardians.lions.controllers', [])
   var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right', 'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
   var Set_Tags = function(){
-    var TAGS = JSON.parse($scope.lion.tags);
+    var TAGS = [];
+    try{
+      TAGS = JSON.parse($scope.lion.tags);
+    }catch(e){
+      TAGS = $scope.lion.tags.split(",");
+    }
     $scope.lion.eye_damage = labels(eye_damages,_.intersection(TAGS, ['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']));
     $scope.lion.broken_teet = labels(broken_teeths,_.intersection(TAGS, ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT', 'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']));
     $scope.lion.ear_markings = labels(ear_markings,_.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']));

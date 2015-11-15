@@ -2,7 +2,6 @@
 
   {% block css %}
   {% end %}
-
   {% block js %}
   {% end %}
 
@@ -11,6 +10,17 @@
   {% end %}
 
   {% block content %}
+      <script type="text/ng-template" id="Delete.tmpl.html">
+        <div class="modal-header" ng-show="modalTitle">
+          <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
+        </div>
+        <div class="modal-body" ng-bind-html="modalMessage">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" ng-click="ok()">OK</button>
+          <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+        </div>
+      </script>
       <!-- Main hero unit for a primary marketing message or call to action -->
       <nav class="navbar navbar-default navbar-fixed-top" role="navigation" bs-navbar>
         <div class="container-fluid">

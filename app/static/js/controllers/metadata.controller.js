@@ -158,7 +158,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        //$uibModalInstance.close({'data': result.data});
+        $uibModalInstance.close({'data': result.data});
       },
       function(result){
         NotificationFactory.error({
@@ -274,10 +274,10 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   else
   {
     // Result Datas
-    $scope.selected = { name: "", owner_organization_id: "", date_of_birth: new Date(),
-                        updated_at: new Date(), latitude:"", longitude: "",
-                        gender: "", markings: [], broken_teeth: [], eye_damage: [],
-                        nose_color: [], scars: [], notes: "Notes here"
+    $scope.selected = { "name": "", "owner_organization_id": "", "date_of_birth": new Date().toJSON().slice(0,10),
+                        "date_stamp": new Date().toJSON().slice(0,10), "latitude":"", "longitude": "",
+                        "gender": "", "markings": [], "broken_teeth": [], "eye_damage": [],
+                        "nose_color": undefined, "scars": [], "notes": "Notes here"
     };
   }
   // Calc Age Function

@@ -28,7 +28,12 @@ angular.module('lion.guardians.image.set.controllers', [])
     else if($scope.imageset.cvrequest) $scope.imageset["action"] = 'cvpending';
     else $scope.imageset["action"] = 'cvrequest';
 
-    var TAGS = JSON.parse($scope.imageset.tags);
+    var TAGS = [];
+    try{
+      TAGS = JSON.parse($scope.imageset.tags);
+    }catch(e){
+      TAGS = $scope.imageset.tags.split(",");
+    }
     $scope.imageset.eye_damage = labels(eye_damages,_.intersection(TAGS, ['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']));
     $scope.imageset.broken_teet = labels(broken_teeths,_.intersection(TAGS, ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT', 'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']));
     $scope.imageset.ear_markings = labels(ear_markings,_.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']));
