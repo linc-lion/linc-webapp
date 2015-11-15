@@ -4,9 +4,10 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
 
 .controller('ImageGalleryCtrl', ['$scope', '$window', '$uibModalInstance', 'NotificationFactory', 'optionsSet', 'gallery', function($scope, $window, $uibModalInstance, NotificationFactory, optionsSet, gallery) {
 
-  $scope.optionsSet = optionsSet;
+  //$scope.optionsSet = optionsSet;
   $scope.gallery = gallery.images;
-  $scope.optionsSet.isMetadata = false;
+  //$scope.optionsSet.isMetadata = false;
+  $scope.imagesetId = optionsSet.id;
   var titles = {}; titles['lions'] = 'Lions'; titles['imagesets'] = 'Image Sets';
 
   $scope.HasFilter = true;

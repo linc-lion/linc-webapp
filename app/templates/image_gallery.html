@@ -56,7 +56,7 @@
       <p>
         <button ng-disabled="!Selected_Count" class="btn btn-default btn-block">Delete</button>
         <button ng-disabled="!Selected_Count" class="btn btn-default btn-block">Download original</button>
-        <upload-images ng-show="!Selected_Count" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" options-set="optionsSet" type="gallery" save-metadata-action="Save()" close-action="Close()" type="metadata" ></upload-images>
+        <upload-images ng-show="!Selected_Count" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="edit" imageset-id="imagesetId"></upload-images>
       </p>
     </div>
   </div>

@@ -2,25 +2,22 @@
 
 angular.module('lion.guardians.upload.images.controller', ['lion.guardians.upload.images.directive', 'lion.guardians.thumbnail.directive'])
 
-.controller('UploadImagesCtrl', ['$scope', '$window', '$cookies', '$uibModalInstance', 'FileUploader', 'NotificationFactory', 'optionsSet', function ($scope, $window, $cookies, $uibModalInstance, FileUploader, NotificationFactory, optionsSet) {
+.controller('UploadImagesCtrl', ['$scope', '$window', '$cookies', '$uibModalInstance', 'FileUploader', 'NotificationFactory', 'options', function ($scope, $window, $cookies, $uibModalInstance, FileUploader, NotificationFactory, options) {
 
-  $scope.optionsSet = optionsSet;
-  $scope.isFromMetaData = optionsSet.isMetadata;
-
-  $scope.select = {
-    isCover: '',
-    imageset_id: optionsSet.data.id
-  };
+  $scope.imagesetId = options.imagesetId;
+  $scope.isNew = options.isNew;
 
   var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
-  $scope.title = 'Upload Images ' + '(' + titles[$scope.optionsSet.type] + ')';
+  $scope.title = 'Upload Images';
   $scope.content = 'Upload Images<br />Contents!';
 
   $scope.GoBack = function () {
    $uibModalInstance.dismiss('cancel');
   };
+  $scope.Cancel = function () {
+   $uibModalInstance.dismiss('cancel');
+  };
   $scope.Finish = function () {
-    console.log("Option" + JSON.stringify($scope.optionsSet));
    $uibModalInstance.close('finish');
   };
 
@@ -29,8 +26,18 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
                              {"value":"whisker","label":"Whisker"},
                              {"value":"main-id","label":"Main Id"},
                              {"value":"markings","label":"Markings"}],
-                'Properties' : [{"value":true,"label":"Public"},
-                               {"value":false,"label":"Private"}]};
+                'isPublic' : [{"value":true,"label":"Public"},
+                                {"value":false,"label":"Private"}]};
+  $scope.Init_Values = {
+    ImageType: 'cv',
+    isPublic: true,
+    isCover: false
+  }
+
+  $scope.select = {
+    isCover: '',
+    imageset_id: $scope.imagesetId
+  };
 
   var uploader = $scope.uploader = new FileUploader({
     url: '/images/upload'
@@ -60,7 +67,7 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
     console.info('onBeforeUploadItem', item);
 
     var formData = [{'image_type' : item.file.ImageType},
-                    {'is_public': item.file.Properties},
+                    {'is_public': item.file.isPublic},
                     {'image_set_id': $scope.select.imageset_id},
                     {'iscover': ($scope.select.isCover == item.$$hashKey)}];
 

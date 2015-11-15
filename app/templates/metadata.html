@@ -129,6 +129,6 @@
 <div class="modal-footer">
   <button type="button" class="btn btn-default" ng-click="Cancel()">Close</button>
   <button type="button" class="btn btn-primary" ng-click="SaveClose()">Save</button>
-  <upload-images ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" options-set="optionsSet" type="metadata" save-metadata-action="Save()" close-action="Close()" type="metadata" ></upload-images>
+  <upload-images ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new" save-metadata-action="SaveUpload()" close-action="Close()"></upload-images>
   <br>
 </div>
