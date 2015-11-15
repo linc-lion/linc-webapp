@@ -1,5 +1,5 @@
 <div class="modal-header" ng-show="title">
-  <button type="button" class="close" ng-click="cancel()">&times;</button>
+  <button type="button" class="close" ng-click="Close()">&times;</button>
     <h4 class="modal-title" ng-bind-html="title"></h4>
   </div>
 <div class="modal-body" ng-show="content">
@@ -54,9 +54,9 @@
         </div>
       </div>
       <p>
-        <button ng-disabled="!Selected_Count" class="btn btn-default btn-block">Delete</button>
+        <button ng-disabled="!Selected_Count" class="btn btn-default btn-block" ng-click="Delete()">Delete</button>
         <button ng-disabled="!Selected_Count" class="btn btn-default btn-block">Download original</button>
-        <upload-images ng-show="!Selected_Count" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="edit" imageset-id="imagesetId"></upload-images>
+        <upload-images disabled_btn="Selected_Count" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="edit" imageset-id="imagesetId"></upload-images>
       </p>
     </div>
   </div>

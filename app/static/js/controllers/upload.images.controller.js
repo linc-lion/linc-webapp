@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.upload.images.controller', ['lion.guardians.upload.images.directive', 'lion.guardians.thumbnail.directive'])
 
-.controller('UploadImagesCtrl', ['$scope', '$window', '$cookies', '$uibModalInstance', 'FileUploader', 'NotificationFactory', 'options', function ($scope, $window, $cookies, $uibModalInstance, FileUploader, NotificationFactory, options) {
+.controller('UploadImagesCtrl', ['$scope', '$window', '$cookies', '$uibModalInstance', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($scope, $window, $cookies, $uibModalInstance, $bsTooltip, FileUploader, NotificationFactory, options) {
 
   $scope.imagesetId = options.imagesetId;
   $scope.isNew = options.isNew;
@@ -21,23 +21,11 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
    $uibModalInstance.close('finish');
   };
 
-  $scope.Types = {'Images' : [{"value":"cv","label":"CV Image"},
-                             {"value":"full-body","label":"Full Body"},
-                             {"value":"whisker","label":"Whisker"},
-                             {"value":"main-id","label":"Main Id"},
-                             {"value":"markings","label":"Markings"}],
-                'isPublic' : [{"value":true,"label":"Public"},
-                                {"value":false,"label":"Private"}]};
-  $scope.Init_Values = {
-    ImageType: 'cv',
-    isPublic: true,
-    isCover: false
-  }
-
-  $scope.select = {
-    isCover: '',
-    imageset_id: $scope.imagesetId
+  $scope.Types = {'Images':[{"value":"cv","label":"CV Image"},{"value":"full-body","label":"Full Body"},
+                            {"value":"whisker","label":"Whisker"}, {"value":"main-id","label":"Main Id"}, {"value":"markings","label":"Markings"}],
+              'Properties':[{"value":true,"label":"Public"},{"value":false,"label":"Private"}]
   };
+  $scope.Default = {isPublic: true, ImageType: 'cv', isCover: ''};
 
   var uploader = $scope.uploader = new FileUploader({
     url: '/images/upload'
@@ -58,6 +46,18 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
     console.info('onWhenAddingFileFailed', item, filter, options);
   };
   uploader.onAfterAddingFile = function(fileItem) {
+
+    if(fileItem.file.name.length>20){
+      fileItem.nickname = fileItem.file.name.substring(1, 10) + ' ... '  +  fileItem.file.name.substring(fileItem.file.name.length-8, fileItem.file.name.length)
+      fileItem.show_name = false;
+      fileItem.tooltip = {'title': 'filename: ' + fileItem.file.name, 'checked': true};
+    }
+    else{
+      fileItem.nickname = fileItem.file.name;
+      fileItem.show_name = true;
+      fileItem.tooltip = {'title': '', 'checked': true};
+    }
+
     console.info('onAfterAddingFile', fileItem);
   };
   uploader.onAfterAddingAll = function(addedFileItems) {
@@ -67,9 +67,9 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
     console.info('onBeforeUploadItem', item);
 
     var formData = [{'image_type' : item.file.ImageType},
-                    {'is_public': item.file.isPublic},
-                    {'image_set_id': $scope.select.imageset_id},
-                    {'iscover': ($scope.select.isCover == item.$$hashKey)}];
+                    {'is_public': item.file.Properties},
+                    {'image_set_id': $scope.imagesetId},
+                    {'iscover': ($scope.Default.isCover == item.$$hashKey)}];
 
     Array.prototype.push.apply(item.formData, formData);
 

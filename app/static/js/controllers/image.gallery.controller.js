@@ -2,23 +2,14 @@
 
 angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image.gallery.directive'])
 
-.controller('ImageGalleryCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', 'gallery', function($scope, $window, $uibModalInstance, LincServices, NotificationFactory, optionsSet, gallery) {
+.controller('ImageGalleryCtrl', ['$scope', '$window', '$uibModal', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', 'gallery', function($scope, $window, $uibModal, $uibModalInstance, LincServices, NotificationFactory, optionsSet, gallery) {
 
-  //$scope.optionsSet = optionsSet;
   $scope.gallery = gallery.images;
-  //$scope.optionsSet.isMetadata = false;
   $scope.imagesetId = optionsSet.id;
   var titles = {}; titles['lions'] = 'Lions'; titles['imagesets'] = 'Image Sets';
 
   $scope.HasFilter = true;
   $scope.ShowIsCover = true;
-
-
-  /*$scope.optionsSet.data = { id: 4, name: 'leão 1', age: 13,
-                               thumbnail: "/static/images/square-small/lion1.jpg",
-                               gender: 'male', organization: 'Lion Guardians',
-                               hasResults: true, pending: false, primary: true,
-                               verified: true, selected: false};*/
 
   // Title
   $scope.title = 'Image Gallery ' + ' (Imageset - ' + optionsSet.id + ')';
@@ -46,14 +37,98 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   $scope.Save = function(){
     $uibModalInstance.close("salve");
   };
-  $scope.cancel = function () {
+  /*$scope.cancel = function () {
     $uibModalInstance.dismiss('cancel');
-  };
+  };*/
   $scope.Close = function(){
     console.log("Close UploadImages");
     //$scope.metadataId = {id: 5};
     $uibModalInstance.close("close");
   }
+  $scope.Delete = function (){
+
+    $scope.delete_items =  _.map(_.filter($scope.paginated_gallery, { 'select': true}), function(photo){
+      return {'id': photo.id};
+    });
+    if(!$scope.delete_items.length){
+      NotificationFactory.warning({
+        title: "Delete", message: "No images selected to delete",
+        position: "right", // right, left, center
+        duration: 3000     // milisecond
+      });
+    }
+    else {
+      if($scope.delete_items.length==1){
+        $scope.modalTitle = 'Delete Lion';
+        $scope.modalMessage = 'Are you sure you want to delete the image?';
+        $scope.SucessMessage = 'Image was successfully deleted.';
+        $scope.ErrorMessage = 'Unable to delete the image.';
+      }
+      else{
+        $scope.modalTitle = 'Delete Lions';
+        $scope.modalMessage = 'Are you sure you want to delete the images?';
+        $scope.SucessMessage = 'Images were successfully deleted.';
+        $scope.ErrorMessage = 'Unable to delete the images.';
+      }
+      $scope.modalContent = 'Form';
+      $scope.modalInstance = $uibModal.open({
+          templateUrl: 'Delete.tmpl.html',
+          scope:$scope
+      });
+      $scope.modalInstance.result.then(function (result) {
+        //$uibModalInstance.close($scope.imageset_id);
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+      $scope.ok = function (){
+        /*LincServices.DeleteImage($scope.delete_items[0].id, function(result){
+          NotificationFactory.success({
+            title: "Delete", message: $scope.SucessMessage,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        },
+        function(error){
+          NotificationFactory.error({
+            title: "Error", message: $scope.ErrorMessage,
+            position: 'right', // right, left, center
+            duration: 180000   // milisecond
+          });
+        });
+        */
+        LincServices.DeleteImages($scope.delete_items, function(result){
+          NotificationFactory.success({
+            title: "Delete", message: $scope.SucessMessage,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+          Adjust_Gallery($scope.delete_items);
+          LincServices.ClearImageGalleryCache($scope.imagesetId);
+          $scope.modalInstance.close();
+        },
+        function(error){
+          NotificationFactory.error({
+            title: "Error", message: $scope.ErrorMessage,
+            position: 'right', // right, left, center
+            duration: 180000   // milisecond
+          });
+        });
+      }
+      $scope.cancel = function(){
+        $scope.modalInstance.dismiss();
+      }
+    }
+  }
+  var removed = [];
+  var Adjust_Gallery = function (items){
+
+    items.forEach(function(item, i){
+      var remove = _.remove($scope.gallery, function(image) {
+        return image.id == item.id;
+      });
+      removed.push(remove);
+    });
+  };
   // Click in Photo - Show Big Image
   $scope.show_photo = function(url){
     var win = window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=200, left=200, width=600, height=600");

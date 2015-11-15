@@ -13,4 +13,5 @@ angular.module('lion.guardians.home.controller', [])
   $scope.goto_lion = function (Id) {
     $state.go("lion", { id: Id });
   }
+
 }]);
