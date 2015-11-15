@@ -4,7 +4,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
 .controller('MetadataCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', '$timeout', '$q',  'organizations', function ($scope, $window, $uibModalInstance, LincServices, NotificationFactory, optionsSet, $timeout, $q, organizations) {
 
-  $scope.debug = true;
+  $scope.debug = false;
   $scope.optionsSet = optionsSet;
   //$scope.optionsSet.isMetadata = true;
   $scope.organizations = organizations;
@@ -245,14 +245,29 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
   if(optionsSet.edit == 'edit'){
 
-    var TAGS = JSON.parse(optionsSet.data.tags);
+    //var TAGS = JSON.parse(optionsSet.data.tags);
+    var TAGS = [];
+    try{
+      TAGS = JSON.parse(optionsSet.data.tags);
+    }catch(e){
+      TAGS = optionsSet.data.tags.split(",");
+    }
 
     var eyes_dams = _.includes(_.intersection(TAGS,['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']), 'EYE_DAMAGE_BOTH') ?  ['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT'] : _.intersection(TAGS,['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']);
     var ear_marks = _.includes(_.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']),'EAR_MARKING_BOTH') ? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] : _.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']);
 
     //optionsSet.data.date_of_birth = (new Date(Date.parse(optionsSet.data.date_of_birth))).toJSON();
-    optionsSet.data.date_of_birth = new Date(optionsSet.data.date_of_birth).toJSON().slice(0,10);
-    optionsSet.data.date_stamp = new Date(optionsSet.data.date_stamp).toJSON().slice(0,10);
+    try{
+      optionsSet.data.date_of_birth = new Date(optionsSet.data.date_of_birth).toJSON().slice(0,10);
+    }catch(e){
+      optionsSet.data.date_of_birth = "";
+    }
+    try{
+      optionsSet.data.date_stamp = new Date(optionsSet.data.date_stamp).toJSON().slice(0,10);
+    }catch(e){
+      optionsSet.data.date_stamp = "";
+    }
+
     $scope.selected = {
       "name": optionsSet.data.name,
       "date_stamp": optionsSet.data.date_stamp,
