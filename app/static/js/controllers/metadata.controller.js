@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.directive'])
 
-.controller('MetadataCtrl', ['$scope', '$window', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', '$timeout', '$q',  'organizations', function ($scope, $window, $uibModalInstance, LincServices, NotificationFactory, optionsSet, $timeout, $q, organizations) {
+.controller('MetadataCtrl', ['$scope', '$window', '$uibModalInstance', '$bsTooltip', 'LincServices', 'NotificationFactory', 'optionsSet', '$timeout', '$q',  'organizations', function ($scope, $window, $uibModalInstance, $bsTooltip, LincServices, NotificationFactory, optionsSet, $timeout, $q, organizations) {
 
   $scope.debug = false;
   $scope.optionsSet = optionsSet;
@@ -284,7 +284,10 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       "notes": optionsSet.data.notes
     }
     $scope.selected.age = getAge($scope.selected.date_of_birth);
-    //$scope.original = angular.copy($scope.selected);
+
+    $scope.tooltip = {'show_lion_name': (optionsSet.type === 'lion'),
+                      'value': {'title': optionsSet.data.name + "'s Lion Page", 'checked': true}
+                     };
   }
   else
   {
@@ -294,6 +297,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
                         "gender": "", "markings": [], "broken_teeth": [], "eye_damage": [],
                         "nose_color": undefined, "scars": [], "notes": "Notes here"
     };
+    $scope.tooltip = {'show_lion_name': true };
   }
   // Calc Age Function
   function getAge(date) {
