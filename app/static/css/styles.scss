@@ -317,24 +317,21 @@ hr.style-line { margin-bottom: 10px !important; margin-top: 10px !important; mar
 .cg-notify-message{min-width: 300px; right: 25px; top: 121px; opacity: 1; display: block; overflow: visible;text-align: left; padding: 10px;}
 .cg-notify-message-template h4 {margin-top: 0; color: inherit;}
 
-
-/** Decorating elements as valid only if they are modified */
 .control input.ng-valid.ng-modified {
     background-color: #EFE;
     border-color: #6A6;
 }
-
-/** Decorating entire form-group */
 .form-group.valid.modified {
-    border-style: solid;
-    background-color: #EFE;
-    border-color: #6A6;
+  border-style: solid;
+  background-color: #EFE;
+  border-color: #6A6;
 }
-
 .tooltip-inner {
-    max-width: 800px !important;
+  max-width: 800px !important;
 }
-
 a.ng-scope {
   color: #333;
+}
+.meta_text{
+  color: blue !important;
 }
