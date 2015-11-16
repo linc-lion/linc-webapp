@@ -103,7 +103,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
             duration: 2000     // milisecond
           });
           Adjust_Gallery($scope.delete_items);
-          LincServices.ClearImageGalleryCache($scope.imagesetId);
+          LincServices.ClearImageGalleryCache(optionsSet.id);
           $scope.modalInstance.close();
         },
         function(error){
@@ -268,14 +268,21 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
       });
     });
     }
-
-
   /*  console.log("update");
     NotificationFactory.success({
       title: "Success", message:'Images Updated with success',
       position: "right", // right, left, center
       duration: 2000     // milisecond
     });*/
+  };
+
+  $scope.UpdateImages = function () {
+    LincServices.ClearImageGalleryCache($scope.imagesetId);
+    gallery = LincServices.getImageGallery($scope.imagesetId);
+    $scope.gallery = gallery.images;
+    $scope.imagesetId = optionsSet.id;
+
+    console.log('updated: ' + $scope.ImagesChanged);
   };
 }])
 
@@ -313,3 +320,32 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
 })
 
 ;
+
+/*$scope.OpenUpload = function(){
+  var modalInstance;
+  var modalScope = $scope.$new();
+  modalScope.ok = function () {
+    modalInstance.close(modalScope.selected);
+  };
+
+  modalInstance = $uibModal.open({
+    animation: true,
+    backdrop: true,
+    templateUrl: "uploadimages.html",
+    controller:  "UploadImagesCtrl",
+    scope: modalScope,
+    //controllerAs: 'scope',
+    //bindToController: true,
+    size: "lg",
+    resolve: {
+      options: function () {
+        return ({'isnew': false, 'imagesetId': optionsSet.id});
+      }
+    }
+  });
+  modalInstance.result.then(function (result) {
+    console.log(result);
+  }, function (result) {
+    console.log('Modal dismissed at: ' + result);
+  });
+}*/

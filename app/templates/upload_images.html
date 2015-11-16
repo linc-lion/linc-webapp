@@ -58,17 +58,17 @@
           <strong><a href data-animation="am-flip-x" placement="top-left" bs-tooltip="item.tooltip">{{! item.nickname}}</a></strong>
         </td>
         <td class="text-center">
-          <button type="button" class="btn btn-default" ng-model="item.file.ImageType" ng-init="item.file.ImageType = Default.ImageType" data-html="1" bs-options="itype.value as itype.label for itype in Types['Images']" bs-select ng-disabled="item.isSuccess">
+          <button type="button" class="btn btn-default" ng-model="item.ImageType" ng-init="item.ImageType = Default.ImageType" data-html="1" bs-options="itype.value as itype.label for itype in Types['Images']" bs-select ng-disabled="item.isSuccess">
             Action <span class="caret"></span>
           </button>
         </td>
         <td class="text-center">
-          <button type="button" class="btn btn-default" ng-model="item.file.isPublic" ng-init="item.file.isPublic = Default.isPublic" data-html="1" bs-options="property.value as property.label for property in Types['Properties']" bs-select ng-disabled="item.isSuccess">
+          <button type="button" class="btn btn-default" ng-model="item.isPublic" ng-init="item.isPublic = Default.isPublic" data-html="1" bs-options="property.value as property.label for property in Types['Properties']" bs-select ng-disabled="item.isSuccess">
             Action <span class="caret"></span>
           </button>
         </td>
         <td class="text-center">
-          <input type="radio" ng-disabled="item.file.isPublic==false || item.isSuccess"  ng-checked="!(item.file.isPublic==false) && 0" ng-model="Default.isCover" name="radio-cover" ng-value="item.$$hashKey"/>
+          <input type="radio" ng-disabled="item.isPublic==false || item.isSuccess"  ng-checked="!(item.isPublic==false) && 0" ng-model="Default.isCover" name="radio-cover" ng-value="item.$$hashKey"/>
         </td>
 
         <td ng-show="uploader.isHTML5" nowrap>{{! item.file.size/1024/1024|number:2 }} MB</td>
