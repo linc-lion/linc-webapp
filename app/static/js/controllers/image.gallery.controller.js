@@ -115,6 +115,15 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
       removed.push(remove);
     });
     $scope.itemsPerPage = Math.min(9, $scope.gallery.length);
+
+    var results = _.filter($scope.gallery, function(photo){
+      return photo.select == true;
+    });
+    $scope.Selected_Count = results.length;
+    if(!results.length)
+      $scope.HasFilter = true;
+    else
+      $scope.HasFilter = false;
   };
   // Click in Photo - Show Big Image
   $scope.show_photo = function(url){
@@ -206,26 +215,61 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   }
   $scope.check_cover = function(){
     if(!$scope.Selected.isPublic)
-     $scope.Selected.isCover = false;
+      $scope.Selected.isCover = false;
     $scope.Update();
   }
   $scope.Update = function(){
     var updated = [];
+    var update_main_image_id = {};
     $scope.paginated_gallery.forEach(function(photo, index){
       var update = {};
       if(photo.select){
-        if($scope.Selected.Type != photo.type)
-          update.image_type = photo.type;
-        if($scope.Selected.isPublic != photo.is_public)
-          update.is_public = photo.isPublic;
-        if($scope.Selected.isCover != photo.cover)
-          update.cover = photo.isCover;
-        updated.push({'image_id': photo.id, 'data': update});
+        if($scope.Selected.isCover != photo.cover){
+          update_main_image_id = {'index': index,
+            'data': {"main_image_id": $scope.Selected.isCover? photo.id : null}
+          };
+        }
+        else{
+          if($scope.Selected.Type != photo.type)
+            update.image_type = $scope.Selected.Type;
+          if($scope.Selected.isPublic != photo.is_public)
+            update.is_public = $scope.Selected.isPublic;
+          updated.push({'index': index, 'image_id': photo.id, 'data': update});
+        }
       }
     });
+    if(Object.keys(update_main_image_id).length){
+      LincServices.SetMaiImagenId($scope.imagesetId, update_main_image_id.data, function(result){
+        $scope.paginated_gallery.forEach(function(photo, index){
+          if(index == update_main_image_id.index){
+            photo.cover = update_main_image_id.data.main_image_id == null ? false : true;
+          }
+          else{
+            photo.cover = false;
+          }
+        });
+        NotificationFactory.success({
+          title: "Select", message: "Cover Image was Selected",
+          position: "right", // right, left, center
+          duration: 2000     // milisecond
+        });
+      },
+      function(error){
+        NotificationFactory.error({
+          title: "Error", message: "Unable to Select Cover Image",
+          position: 'right', // right, left, center
+          duration: 180000   // milisecond
+        });
+      });
+    }
     if(updated.length==1){
       var update = updated[0];
       LincServices.UpdateImage(update.image_id , update.data, function(result){
+        var data = { "is_public": result.is_public,
+                         "type" : result.image_type
+                    };
+        var index = update.index;
+        _.merge($scope.paginated_gallery[index], $scope.paginated_gallery[index], data);
         NotificationFactory.success({
           title: "Update", message: "Image was updated",
           position: "right", // right, left, center
@@ -239,28 +283,30 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
           duration: 180000   // milisecond
         });
       });
-    }else{
-      LincServices.UpdateImages(updated, function(result){
+    }
+    if(updated.length>1){
+      LincServices.UpdateImages(updated, function(results){
+        _.forEach(results, function(result, idx) {
+          var data = { "is_public": result.is_public,
+                           "type" : result.image_type
+                      };
+          var index = updated[idx].index;
+          _.merge($scope.paginated_gallery[index], $scope.paginated_gallery[index], data);
+        });
         NotificationFactory.success({
           title: "Update", message: "All Images have been updated",
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-    },
-    function(error){
-      NotificationFactory.error({
-        title: "Error", message: "Unable to Update Image data",
-        position: 'right', // right, left, center
-        duration: 180000   // milisecond
+      },
+      function(error){
+        NotificationFactory.error({
+          title: "Error", message: "Unable to Update Image data",
+          position: 'right', // right, left, center
+          duration: 180000   // milisecond
+        });
       });
-    });
     }
-  /*  console.log("update");
-    NotificationFactory.success({
-      title: "Success", message:'Images Updated with success',
-      position: "right", // right, left, center
-      duration: 2000     // milisecond
-    });*/
   };
 
   $scope.UpdateImages = function () {
