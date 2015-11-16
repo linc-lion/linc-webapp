@@ -81,21 +81,6 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
         console.log('Modal dismissed at: ' + new Date());
       });
       $scope.ok = function (){
-        /*LincServices.DeleteImage($scope.delete_items[0].id, function(result){
-          NotificationFactory.success({
-            title: "Delete", message: $scope.SucessMessage,
-            position: "right", // right, left, center
-            duration: 2000     // milisecond
-          });
-        },
-        function(error){
-          NotificationFactory.error({
-            title: "Error", message: $scope.ErrorMessage,
-            position: 'right', // right, left, center
-            duration: 180000   // milisecond
-          });
-        });
-        */
         LincServices.DeleteImages($scope.delete_items, function(result){
           NotificationFactory.success({
             title: "Delete", message: $scope.SucessMessage,
@@ -113,6 +98,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
             duration: 180000   // milisecond
           });
         });
+
       }
       $scope.cancel = function(){
         $scope.modalInstance.dismiss();
@@ -128,6 +114,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
       });
       removed.push(remove);
     });
+    $scope.itemsPerPage = Math.min(9, $scope.gallery.length);
   };
   // Click in Photo - Show Big Image
   $scope.show_photo = function(url){
