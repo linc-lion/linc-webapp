@@ -278,11 +278,13 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
 
   $scope.UpdateImages = function () {
     LincServices.ClearImageGalleryCache($scope.imagesetId);
-    gallery = LincServices.getImageGallery($scope.imagesetId);
-    $scope.gallery = gallery.images;
-    $scope.imagesetId = optionsSet.id;
-
-    console.log('updated: ' + $scope.ImagesChanged);
+    LincServices.getImageGallery($scope.imagesetId).then(function (data) {
+      gallery = data;
+      $scope.gallery = gallery.images;
+      $scope.imagesetId = optionsSet.id;
+      $scope.itemsPerPage = Math.min(9, $scope.gallery.length);
+      console.log('updated: ' + $scope.ImagesChanged);
+    });
   };
 }])
 
