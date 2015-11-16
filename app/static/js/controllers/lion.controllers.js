@@ -44,7 +44,7 @@ angular.module('lion.guardians.lions.controllers', [])
   // Updated in Metadata
   $scope.update_lion = function (data){
     _.merge($scope.lion, $scope.lion, data);
-    $scope.lion.organization = organizations[$scope.lion.owner_organization_id];
+    $scope.lion.organization = organizations[$scope.lion.organization_id];
     Set_Tags();
   }
   // Image Gallery
