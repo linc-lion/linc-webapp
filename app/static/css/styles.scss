@@ -310,6 +310,13 @@ hr.style-line { margin-bottom: 10px !important; margin-top: 10px !important; mar
 .form-group-margin { @extend .form-group; margin-bottom: 5px !important; }
 .form-group-padding { @extend .form-group; padding-right: 20px !important; margin-bottom: 5px !important; }
 .form-group-padding1 { @extend .form-group; padding-right: 20px !important; margin-bottom: 10px !important;}
+.meta_label { padding-right: 10px;}
+.select_btn { min-width: 120px;}
+.meta_input{ text-align: center; width: 120px !important;}
+.group-select { text-align: right; padding-right: 20px;}
+.group-input { text-align: right; padding-right: 20px;}
+.meta_text{ color: blue !important;}
+a.ng-scope { color: #333;}
 
 .notify-icon, .pnotify-icon span { display: block; float: left; margin-right: .2em; }
 .notify-title { display: block; margin-bottom: .4em; margin-top: 0;}
@@ -328,10 +335,4 @@ hr.style-line { margin-bottom: 10px !important; margin-top: 10px !important; mar
 }
 .tooltip-inner {
   max-width: 800px !important;
-}
-a.ng-scope {
-  color: #333;
-}
-.meta_text{
-  color: blue !important;
 }

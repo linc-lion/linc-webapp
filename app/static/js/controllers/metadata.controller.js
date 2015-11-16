@@ -39,7 +39,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     if(optionsSet.type === 'lion'){
       //Selected Dates
       var lion_sel_data = {
-          "owner_organization_id": selected.owner_organization_id,
+          "organization_id": selected.organization_id,
           "name" : selected.name
       }
       var imageset_sel_data = {
@@ -67,7 +67,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           return result;
         }, {});
         if(Object.keys(lion_data).length || Object.keys(imageset_data).length)
-          data = {"lion": lion_data, "imageset": imageset_data};
+          data = {"lion": lion_data, "imageset": imageset_data, 'imagesetId': optionsSet.data.primary_image_set_id};
       }
     }
     else{
@@ -105,7 +105,9 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       if(optionsSet.edit === 'edit'){
         var id = optionsSet.data.id;
         LincServices.SaveLion(id, data, function(){
-          deferred.resolve({type: 'save', 'data': data, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
+          var data0 = _.merge({}, data.imageset, data.lion);
+          delete data0._xsrf;
+          deferred.resolve({type: 'save', 'data': data0, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
         },
         function(error){
           deferred.reject({'message': "Unable to Save Lion's Metadata"});
@@ -235,7 +237,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     {value: 'EYE_DAMAGE_LEFT',  label: 'Left'}, {value: 'EYE_DAMAGE_RIGHT', label: 'Right'}];
   // Nose Color
   $scope.nose_color = [{value: undefined, label: 'None'}, {value: 'NOSE_COLOUR_BLACK', label: 'Black'},
-    {value: 'NOSE_COLOUR_PATCHY',  label: 'Patchy'}, {value: 'NOSE_COLOUR_PINK', label: 'Pynk'},
+    {value: 'NOSE_COLOUR_PATCHY',  label: 'Patchy'}, {value: 'NOSE_COLOUR_PINK', label: 'Pink'},
     {value: 'NOSE_COLOUR_SPOTTED', label: 'Spotted'}];
   // Broken Teeths
   $scope.broken_teeth = [{value: 'TEETH_BROKEN_CANINE_LEFT', label: 'Canine Left'},
@@ -272,6 +274,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       "name": optionsSet.data.name,
       "date_stamp": optionsSet.data.date_stamp,
       "owner_organization_id": optionsSet.data.owner_organization_id,
+      "organization_id": optionsSet.data.organization_id,
       "date_of_birth": optionsSet.data.date_of_birth,
       "latitude": optionsSet.data.latitude,
       "longitude": optionsSet.data.longitude,
