@@ -170,11 +170,11 @@ angular.module('lion.guardians.services', [])
     });
   };
   // Associate  (Update Imageset)
-  var Associate = function (imageset_id, data, success, error){
+  /*var Associate = function (imageset_id, data, success, error){
     var cookies = {'_xsrf': $cookies.get('_xsrf')};
     angular.merge(data, cookies);
     return HTTP('PUT', '/imagesets/' + imageset_id, data, {}, success, error);
-  }
+  }*/
   // Put ImageSet (Update Imageset)
   var PutImageSet = function (imageset_id, data, success, error){
     var cookies = {'_xsrf': $cookies.get('_xsrf')};
@@ -203,7 +203,10 @@ angular.module('lion.guardians.services', [])
   var PutImage = function (image_id, data, success, error){
     var cookies = {'_xsrf': $cookies.get('_xsrf')};
     angular.merge(data, cookies);
-    return HTTP('PUT', '/images/' + image_id, data, {}, success, error);
+    return HTTP('PUT', '/images/' + image_id, data, {},
+    function (result) {
+      success(result.data.data);
+    }, error);
   }
 
   var PutImages = function (items, success, error){
@@ -220,10 +223,9 @@ angular.module('lion.guardians.services', [])
       return $http(req);
     });
     $q.all(promises).then(function (results) {
-      var dados = {};
+      var dados = [];
       results.forEach( function (result, index) {
-        var key = names[index];
-        dados[key] = result.data;
+        dados.push(result.data.data);
       })
       success(dados);
     },
@@ -381,10 +383,10 @@ angular.module('lion.guardians.services', [])
   // CV Request (Post Imageset w/ /request)
   dataFactory.requestCV = RequestCV;
   // Update Imageset
-  dataFactory.Associate = Associate;
+  dataFactory.Associate = PutImageSet;
   dataFactory.SaveImageset = PutImageSet;
   dataFactory.CreateImageset = PostImageset;
-
+  dataFactory.SetMaiImagenId = PutImageSet;
   // Images
   dataFactory.UpdateImages = PutImages;
   dataFactory.UpdateImage = PutImage;
