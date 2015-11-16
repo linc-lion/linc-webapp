@@ -66,8 +66,8 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   uploader.onBeforeUploadItem = function(item) {
     console.info('onBeforeUploadItem', item);
 
-    var formData = [{'image_type' : item.file.ImageType},
-                    {'is_public': item.file.Properties},
+    var formData = [{'image_type' : item.ImageType},
+                    {'is_public': item.isPublic},
                     {'image_set_id': $scope.imagesetId},
                     {'iscover': ($scope.Default.isCover == item.$$hashKey)}];
 
@@ -91,6 +91,7 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   };
   uploader.onCompleteItem = function(fileItem, response, status, headers) {
       console.info('onCompleteItem', fileItem, response, status, headers);
+      $scope.Update();
   };
   uploader.onCompleteAll = function() {
       console.info('onCompleteAll');

@@ -21,7 +21,8 @@ angular.module('lion.guardians.upload.images.directive', [])
       imagesetId: '=',
       saveMetadataAction:'&',
       closeAction:'&',
-      disabledBtn: '='
+      disabledBtn: '=',
+      imageUpdated:'&'
     },
     link: function(scope, element, attrs) {
       scope.showNew = function(){
@@ -50,22 +51,34 @@ angular.module('lion.guardians.upload.images.directive', [])
         });
       },
       scope.ShowOpen = function(){
+        var modalScope = scope.$new();
+        modalScope.imagesChanged = false;
         var modalInstance = $uibModal.open({
           animation: true,
           backdrop: true,
           templateUrl: scope.useTemplateUrl,
           controller:  scope.useCtrl,
+          controllerAs: 'scope',
+          bindToController: true,
           size: scope.formSize,
+          scope: modalScope,
           resolve: {
             options: function () {
               return ({'isnew': attrs.type == 'new', 'imagesetId': scope.imagesetId});
             }
           }
         });
+        modalScope.Update = function () {
+          modalScope.imagesChanged = true;
+        };
         modalInstance.result.then(function (result) {
+          if(modalScope.imagesChanged)
+            scope.imageUpdated();
           console.log(result);
         }, function (result) {
-          console.log('Modal dismissed at: ' + result);
+          if(modalScope.imagesChanged)
+            scope.imageUpdated();
+          console.log('Modal dismissed at:');
         });
       }
     }
