@@ -1,11 +1,10 @@
-<form name="metadataForm"  ng-submit="CreateClose()">
-<div class="modal-header" ng-show="title">
-  <button type="button" class="close" ng-click="Cancel()">&times;</button>
-  <h4 class="modal-title" ng-bind-html="title"></h4>
-</div>
-<div class="modal-body" ng-show="content">
+<form name="metadataForm">
+  <div class="modal-header" ng-show="title">
+    <button type="button" class="close" ng-click="Cancel()">&times;</button>
+    <h4 class="modal-title" ng-bind-html="title"></h4>
+  </div>
+  <div class="modal-body" ng-show="content">
     <div class="row">
-
       <div class="col-sm-4 line-right">
         <div ng-show="optionsSet.type === 'imageset'" class="form-group-margin group-select">
           <label class="meta_label" for="owner_organization_id">Organization: </label>
@@ -17,21 +16,9 @@
 
         <div ng-show="optionsSet.type === 'lion'" class="form-group-margin" style="padding-left: 30px" class="form-group-margin group-select"  ng-class="{'has-error': metadataForm.organization_id.$dirty && metadataForm.organization_id.$error.required }">
           <label class="meta_label" for="organization_id">Organization:</label>
-        <!--  <select class="form-control-inline" id="organization_id" name="organization_id" ng-model="selected.organization_id" ng-required="lion_required" oninvalid="this.setCustomValidity('Please select an Organization in this list')" oninput="setCustomValidity('')">
-            <option value="">Select Organization</option>
-            <option ng-repeat="organization in organizations" value="{{!organization.id}}" title="{{!organization.name}}"
-           >{{!organization.name}}</option>
-         </select>-->
-         <select class="form-control-inline" id="organization_id" name="organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="selected.organization_id" ng-required="lion_required" oninvalid="this.setCustomValidity('Please select an Organization in this list')" oninput="setCustomValidity('')"><option value="">Select Organization</option></select>
+          <select class="form-control-inline custom-select" id="organization_id" name="organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="selected.organization_id" ng-required="lion_required" oninvalid="this.setCustomValidity('Please select an Organization in this list')" oninput="setCustomValidity('')"><option value="">Select Organization</option>
+          </select>
         </div>
-        <!--
-        <div ng-show="optionsSet.type === 'lion'" class="form-group-margin group-select"  ng-class="{'has-error': metadataForm.organization_id.$dirty && metadataForm.organization_id.$error.required }">
-          <label class="meta_label" for="organization_id">Organization: </label>
-          <button name="organization_id" type="button" id="organization_id" placeholder="Select Organization" class="btn btn-default btn-sm select_btn" ng-model="selected.organization_id" data-html="1" bs-options="organization.id as organization.name for organization in organizations" placement="bottom-right" bs-select ng-change="validate()" min-length="1">
-            Action <span class="caret"></span>
-          </button>
-         <p class="help-block" ng-if="metadataForm.organization_id.$error.required">The user's name is required</p>
-       </div>-->
         <pre ng-show="debug">{{!selected.organization_id}}</pre>
 
         <hr class="style-line">
@@ -68,12 +55,12 @@
         <pre ng-show="debug">{{!selected.gender}}</pre>
 
       </div>
-
       <div class="col-sm-4 line-right">
         <div ng-show="showLionName">
           <div ng-show="tooltip.show_lion_name" class="form-inline group-input" ng-class="{'has-error': metadataForm.lion_name.$dirty && metadataForm.lion_name.$error.required }">
             <label class="meta_label" for="lion_name">Lion Name:</label>
-            <input type="text" class="form-control meta_input" id="lion_name" ng-model="selected.name" placeholder="Lion Name" ng-required="lion_required" oninvalid="this.setCustomValidity('please fill out this field with Lion's Name')" oninput="setCustomValidity('')">
+            <input type="text" class="form-control meta_input" id="lion_name" ng-model="selected.name" placeholder="Lion Name" ng-required="lion_required" oninput="setCustomValidity('')"
+            oninvalid="this.setCustomValidity('please fill out this field with Lion\'s Name')">
           </div>
           <div ng-show="!tooltip.show_lion_name" style="padding-left:44px;" class="form-inline text-left">
             <div ng-show="selected.name == '-'">
@@ -84,10 +71,6 @@
               <label class="meta_label" for="lion_name2">Lion Name: </label>
               <a type="text" class="link a_meta" style="margin-left: 5px !important;" ng-click="goto()" id="lion_name2" data-animation="am-flip-x" placement="bottom-right" bs-tooltip="tooltip.value">{{!selected.name}}</a>
             </div>
-      <!--
-            <label for="lion_name1">Lion Name:</label>
-            <input type="text" class="form-control" id="lion_name1" ng-model="selected.name" data-placement="top-right" data-type="info" data-container="body" placeholder="Lion Name" data-trigger="hover focus" bs-tooltip="tooltip.value">
-            <a ui-sref="lion({id: optionsSet.data.id})" data-animation="am-flip-x" placement="top-left" bs-tooltip="tooltip.value"></a>-->
           </div>
           <pre ng-show="debug">{{!selected.name}}</pre>
         </div>
@@ -122,7 +105,6 @@
           </button>
         </div>
         <pre ng-show="debug">{{!selected.broken_teeth}}</pre>
-
       </div>
 
       <div class="col-sm-4">
@@ -159,13 +141,16 @@
       <textarea class="form-control" rows="5" ng-model="selected.notes"></textarea>
     </div>
     <pre ng-show="debug">{{!selected.notes}}</pre>
+  </div>
+  <div class="modal-footer">
+    <!--<button type="button" class="btn btn-default" ng-click="Cancel()">Close</button>-->
 
-</div>
-<div class="modal-footer">
-  <!--<button type="button" class="btn btn-default" ng-click="Cancel()">Close</button>-->
-  <button ng-disabled="!metadataForm.modified" ng-show="!isNew" type="button" class="btn btn-primary" ng-click="SaveMetadata()">Save</button>
-  <button ng-disabled="!metadataForm.modified" ng-show="isNew" type="submit" class="btn btn-primary">Create</button>
-  <upload-images disabled_btn="metadataForm.$invalid" ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new" save-metadata-action="CreateUpload()" close-action="Close()"></upload-images>
-  <br>
-</div>
+    <button ng-disabled="!metadataForm.modified" ng-show="!isNew" type="button" class="btn btn-primary" ng-click="SaveMetadata()">Save</button>
+
+    <button ng-show="isNew" type="submit" class="btn btn-primary" ng-click="metadataForm.$valid && CreateClose()">Create</button>
+
+    <upload-images disabled-btn="!metadataForm.$valid" ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new" save-metadata-action="CreateUpload()" close-action="Close()"></upload-images>
+
+    <br>
+  </div>
 </form>
