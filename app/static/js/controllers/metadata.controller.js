@@ -52,8 +52,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           "date_of_birth": selected.date_of_birth,
           "tags": TAGS,
           "notes": selected.notes,
-          'latitude': selected.latitude,
-          'longitude': selected.longitude,
+          'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
+          'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
           "lion_id": null,
           "main_image_id": null,
           "uploading_user_id": optionsSet.uploading_user_id,
@@ -62,10 +62,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           "is_primary": null,
           "is_verified": false
         }
-        //if(selected.latitude != null)
-        //  imageset_data["latitude"] = selected.latitude;
-        //if(selected.longitude != null)
-        //  imageset_data["longitude"] = selected.latitude;
+
         var lion_data = {
           "name": selected.name,
           "organization_id": selected.organization_id,
@@ -76,8 +73,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       else{
         var imageset_data = {
           "date_stamp": selected.date_stamp,
-          "latitude": selected.latitude,
-          "longitude": selected.longitude,
+          'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
+          'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
           "gender": selected.gender,
           "date_of_birth": selected.date_of_birth,
           "tags": TAGS,
@@ -99,8 +96,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         var lion_sel_data = { "organization_id": selected.organization_id, "name" : selected.name };
         var imageset_sel_data = {
           "date_stamp": selected.date_stamp,
-          "latitude": selected.latitude,
-          "longitude": selected.longitude,
+          'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
+          'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
           "gender": selected.gender,
           "date_of_birth": selected.date_of_birth,
           "tags": TAGS,
@@ -127,8 +124,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         var sel_data = {
           "owner_organization_id": selected.owner_organization_id,
           "date_stamp": selected.date_stamp,
-          "latitude": selected.latitude,
-          "longitude": selected.longitude,
+          'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
+          'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
           "gender": selected.gender,
           "date_of_birth": selected.date_of_birth,
           "tags": TAGS, 'notes': selected.notes
@@ -282,7 +279,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
   $scope.Close = function(){
     if($scope.Id){
-      $uibModalInstance.close($scope.Id);
+      $uibModalInstance.close({'id': $scope.Id});
     }
     else{
       $uibModalInstance.dismiss('cancel');
