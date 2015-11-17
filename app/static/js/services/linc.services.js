@@ -196,34 +196,54 @@ angular.module('lion.guardians.services', [])
     ClearAllCaches();
     var promises = [];
     // Imageset
-    var data_imageset = data.imageset;
-    angular.merge(data_imageset, cookies);
-    var req = { method: 'PUT', url: '/imagesets/' + data.imagesetId, data: data_imageset,
+    if(Object.keys(data.imageset).length){
+      var data_imageset = data.imageset;
+      angular.merge(data_imageset, cookies);
+      var req = { method: 'PUT', url: '/imagesets/' + data.imagesetId, data: data_imageset,
                 headers: { 'Content-Type': 'application/json'}, config: {ignoreLoadingBar: true}};
-    promises.push($http(req));
-
+      promises.push($http(req));
+    }
     // Lion
-    var data_lion = data.lion;
-    angular.merge(data_lion, cookies);
-    req = { method: 'PUT', url: '/lions/' + lion_id, data: data_lion,
-            headers: { 'Content-Type': 'application/json'}, config: {ignoreLoadingBar: true}};
-    promises.push($http(req));
+    if(Object.keys(data.lion).length){
+      var data_lion = data.lion;
+      angular.merge(data_lion, cookies);
+      req = { method: 'PUT', url: '/lions/' + lion_id, data: data_lion,
+              headers: { 'Content-Type': 'application/json'}, config: {ignoreLoadingBar: true}};
+      promises.push($http(req));
+    }
     $q.all(promises).then(function (results) {
       var dados = [];
       results.forEach( function (result, index) {
         dados.push(result.data.data);
       });
-      success(results);
+      success(dados);
     },
     function (reason) {
       error(reason);
     });
   }
   // Post Lion - New Lion
-  var PostLion = function (data, success, error){
+  var PostLionImageset = function (data, success, error){
     var cookies = {'_xsrf': $cookies.get('_xsrf')};
-    angular.merge(data, cookies);
-    return HTTP('POST', '/lion', data, {}, success, error);
+    var result_data;
+    // Imageset
+    var data_imageset = data.imageset;
+    angular.merge(data_imageset, cookies);
+    var req = { method: 'POST', url: '/imagesets/', data: data_imageset,
+                headers: { 'Content-Type': 'application/json'}, config: {ignoreLoadingBar: true}};
+    $http(req).then(function(response) {
+      // Lion
+      var data_lion = data.lion;
+      result_data = response;
+      data_lion.primary_image_set_id = response.data.data.id;
+      angular.merge(data_lion, cookies);
+      req = { method: 'POST', url: '/lions/', data: data_lion,
+              headers: { 'Content-Type': 'application/json'}, config: {ignoreLoadingBar: true}};
+      $http(req).then(function(response) {
+        var results = _.merge({}, result_data, response);
+        success(results);
+      }, error);
+    }, error);
   };
   // Put Lion (Update Lion)
   var PutImage = function (image_id, data, success, error){
@@ -285,6 +305,17 @@ angular.module('lion.guardians.services', [])
     function (reason) {
       error(reason);
     });
+  };
+
+  // Delete ImageSet
+  var DeleteImageSet = function (imageset_id, success, error){
+    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    return HTTP('DELETE', '/imagesets/' + imageset_id, cookies, {}, success, error);
+  };
+  // Delete Lion
+  var DeleteLion = function (lion_id, success, error){
+    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    return HTTP('DELETE', '/lions/' + lion_id, cookies, {}, success, error);
   };
   /*
   var GetLists = function(names, fn){
@@ -416,11 +447,14 @@ angular.module('lion.guardians.services', [])
   // Images
   dataFactory.UpdateImages = PutImages;
   dataFactory.UpdateImage = PutImage;
+
+  dataFactory.DeleteLion = DeleteLion;
+  dataFactory.DeleteImageSet = DeleteImageSet;
   dataFactory.DeleteImage = DeleteImage;
   dataFactory.DeleteImages = DeleteImages;
   // Update Lion
   dataFactory.SaveLion = PutLionImageset;
-  dataFactory.CreateLion = PostLion;
+  dataFactory.CreateLion = PostLionImageset;
 
   // Get List of CV Results
   dataFactory.getCVResults = GetCVResults;

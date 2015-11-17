@@ -13,8 +13,16 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
                             msg: $scope.$storage.logged ? 'Logged in as <b>' +
                             user.email + '</b> of <b>' + user.org + '</b>' : 'Not Logged In'};
 
-    $scope.options = {imageset: { type: 'imagesets', edit: 'new' },
-                         lions: { type: 'lions', edit: 'new'}};
+    $scope.options = {
+      "imageset": {
+          "type": "imageset", "edit": "new", "uploading_user_id": 1,
+          "owner_organization_id": 2, "uploading_organization_id": 2
+      },
+      "lions": {
+          "type": "lion", "edit": "new", "uploading_user_id": 1,
+          "owner_organization_id": 2, "uploading_organization_id": 2
+      }
+    };
 
     $scope.goto_imageset = function (Id) {
       $state.go("imageset", { id: Id });
