@@ -52,6 +52,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           "date_of_birth": selected.date_of_birth,
           "tags": TAGS,
           "notes": selected.notes,
+          'latitude': selected.latitude,
+          'longitude': selected.longitude,
           "lion_id": null,
           "main_image_id": null,
           "uploading_user_id": optionsSet.uploading_user_id,
@@ -60,10 +62,10 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           "is_primary": null,
           "is_verified": false
         }
-        if(selected.latitude != null)
-          imageset_data["latitude"] = selected.latitude;
-        if(selected.longitude != null)
-          imageset_data["longitude"] = selected.latitude;
+        //if(selected.latitude != null)
+        //  imageset_data["latitude"] = selected.latitude;
+        //if(selected.longitude != null)
+        //  imageset_data["longitude"] = selected.latitude;
         var lion_data = {
           "name": selected.name,
           "organization_id": selected.organization_id,
@@ -125,7 +127,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         var sel_data = {
           "owner_organization_id": selected.owner_organization_id,
           "date_stamp": selected.date_stamp,
-          "latitude": selected.latitude, "longitude": selected.longitude,
+          "latitude": selected.latitude,
+          "longitude": selected.longitude,
           "gender": selected.gender,
           "date_of_birth": selected.date_of_birth,
           "tags": TAGS, 'notes': selected.notes
@@ -236,42 +239,34 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   // Save and Upload
   $scope.CreateClose = function(){
     var data = Metadata();
-    if(!Object.keys(data).length){
-      NotificationFactory.warning({
-        title: "Warning", message: "There is no change in the data",
-        position: "right", // right, left, center
-        duration: 2000     // milisecond
-      });
-    }
-    else{
-      Create_Metadata(data).then(function(result) {
-        NotificationFactory.success({
-          title: result.title, message: result.message,
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        $uibModalInstance.close({'id': result.data.id});
-      },
-      function(result){
-        NotificationFactory.error({
-          title: "Error", message: result.message,
-          position: 'right', // right, left, center
-          duration: 180000   // milisecond
-        });
-        //$uibModalInstance.dismiss("error");
-      });
-    }
-  };
-  // Save and Upload
-  $scope.CreateUpload = function(){
-    var deferred = $q.defer();
-    var data = Metadata();
-    Save_Metadata(data).then(function(result) {
+    Create_Metadata(data).then(function(result) {
       NotificationFactory.success({
         title: result.title, message: result.message,
         position: "right", // right, left, center
         duration: 2000     // milisecond
       });
+      $uibModalInstance.close({'id': result.data.id});
+    },
+    function(result){
+        NotificationFactory.error({
+          title: "Error", message: result.message,
+          position: 'right', // right, left, center
+          duration: 180000   // milisecond
+        });
+    });
+  };
+  // Save and Upload
+  $scope.CreateUpload = function(){
+    var deferred = $q.defer();
+    var data = Metadata();
+    Create_Metadata(data).then(function(result) {
+      NotificationFactory.success({
+        title: result.title, message: result.message,
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
+      $scope.Id = result.data.id;
+      $scope.Object_Created({'id': result.data.id});
       deferred.resolve({'data': result.data});
     },
     function(result){
@@ -282,27 +277,16 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       });
       deferred.reject({message: result.message});
     });
-    //deferred.resolve({'imagesetId': 4});
-    //return deferred.promise;
-
-    //timeout(function() {
-    /*   $scope.optionsSet.data = { id: 1, name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
-
-        console.log("Save Imagesets");
-        NotificationFactory.success({
-          title: "Save", message:'Metadata saved with success',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        $scope.metadataId = {id: 2};
-        deferred.resolve($scope.optionsSet);
-    //}, 1000);*/
     return deferred.promise;
-  }
+  };
+
   $scope.Close = function(){
-    console.log("Close UploadImages");
-    $scope.metadataId = {id: 2};
-    $uibModalInstance.close($scope.metadataId);
+    if($scope.Id){
+      $uibModalInstance.close($scope.Id);
+    }
+    else{
+      $uibModalInstance.dismiss('cancel');
+    }
   }
 
   // Gender List
