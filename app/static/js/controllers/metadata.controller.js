@@ -144,7 +144,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     }
     return data;
   };
-
+  // Call LincServices to Save
   var Save_Metadata = function (data){
     var deferred = $q.defer();
     if(optionsSet.type === 'lion'){
@@ -157,7 +157,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         deferred.resolve({type: 'save', 'data': data0, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
       },
       function(error){
-        deferred.reject({'message': "Unable to Save Lion's Metadata"});
+        deferred.reject({'title': 'Error', 'message': "Unable to Save Lion's Metadata"});
       });
     }
     else{
@@ -169,13 +169,38 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         deferred.resolve({type: 'save', 'data': data, 'title': 'Save', 'message': "Image Set's Metadata saved with success"});
       },
       function(error){
-        deferred.reject({'message': "Unable to Save Image Set's Metadata"});
+        deferred.reject({'title': 'Error', 'message': "Unable to Save Image Set's Metadata"});
       });
     }
     return deferred.promise;
   };
-
-
+  // Call LincServices to Create
+  var Create_Metadata = function (data){
+    var deferred = $q.defer();
+    if(optionsSet.type === 'lion'){
+      LincServices.CreateLion(data, function(results){
+        var data0 = results.data.data;
+        if(_.has(data0, 'date_of_birth'))
+          data0.age = getAge(data0['date_of_birth']);
+        deferred.resolve({type: 'create', 'data': data0, 'title': 'Create', 'message': "Lion's Metadata created with success"});
+      },
+      function(error){
+        deferred.reject({'title': 'Error', 'message': "Unable to create new Lion's Metadata"});
+      });
+    }
+    else{
+      LincServices.CreateImageset(data, function(results){
+        var data0 = results.data.data;
+        if(_.has(data0, 'date_of_birth'))
+          data0.age = getAge(data0['date_of_birth']);
+        deferred.resolve({type: 'create', 'data': data0, 'title': 'Create', 'message': "Image Set's Metadata created with success"});
+      },
+      function(error){
+        deferred.reject({'title': 'Error', 'message': "Unable to create new Image Set's Metadata"});
+      });
+    }
+    return deferred.promise;
+  };
   // Save and Close
   $scope.SaveMetadata = function(){
     var data = Metadata();
@@ -197,42 +222,14 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       },
       function(result){
         NotificationFactory.error({
-          title: "Error", message: result.message,
+          title: result.title, message: result.message,
           position: 'right', // right, left, center
-          duration: 180000   // milisecond
+          duration: 5000   // milisecond
         });
         //$uibModalInstance.dismiss("error");
       });
     }
   }
-
-  var Create_Metadata = function (data){
-    var deferred = $q.defer();
-    if(optionsSet.type === 'lion'){
-      LincServices.CreateLion(data, function(results){
-        var data0 = results.data.data;
-        if(_.has(data0, 'date_of_birth'))
-          data0.age = getAge(data0['date_of_birth']);
-        deferred.resolve({type: 'create', 'data': data0, 'title': 'Create', 'message': "Lion's Metadata created with success"});
-      },
-      function(error){
-        deferred.reject({'message': "Unable to create new Lion's Metadata"});
-      });
-    }
-    else{
-      LincServices.CreateImageset(data, function(results){
-        var data0 = results.data.data;
-        if(_.has(data0, 'date_of_birth'))
-          data0.age = getAge(data0['date_of_birth']);
-        deferred.resolve({type: 'create', 'data': data0, 'title': 'Create', 'message': "Image Set's Metadata created with success"});
-      },
-      function(error){
-        deferred.reject({'message': "Unable to create new Image Set's Metadata"});
-      });
-    }
-    return deferred.promise;
-  };
-
   // Save and Upload
   $scope.CreateClose = function(){
     var data = Metadata();
@@ -246,9 +243,9 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     },
     function(result){
         NotificationFactory.error({
-          title: "Error", message: result.message,
+          title: result.title, message: result.message,
           position: 'right', // right, left, center
-          duration: 180000   // milisecond
+          duration: 5000   // milisecond
         });
     });
   };
@@ -268,9 +265,9 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     },
     function(result){
       NotificationFactory.error({
-        title: "Error", message: result.message,
+        title: result.title, message: result.message,
         position: 'right', // right, left, center
-        duration: 180000   // milisecond
+        duration: 5000   // milisecond
       });
       deferred.reject({message: result.message});
     });
