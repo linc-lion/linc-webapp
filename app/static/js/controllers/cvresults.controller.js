@@ -38,7 +38,7 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
       NotificationFactory.error({
         title: "Error", message: 'Unable to Associate the Lion (id: ' + id + ') ',
         position: 'right', // right, left, center
-        duration: 180000   // milisecond
+        duration: 5000   // milisecond
       });
       console.log(error);
     });
@@ -61,7 +61,7 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
       NotificationFactory.error({
         title: "Error", message: 'Unable to Dissociate the Lion (id: ' + id + ')',
         position: 'right', // right, left, center
-        duration: 180000   // milisecond
+        duration: 5000   // milisecond
       });
       console.log(error);
     });

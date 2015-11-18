@@ -378,7 +378,7 @@ angular.module('lion.guardians.services', [])
       NotificationFactory.error({
         title: "Error", message: 'Unable to Post CV Results',
         position: 'right', // right, left, center
-        duration: 180000   // milisecond
+        duration: 5000   // milisecond
       });
       console.log(error);
     });
@@ -393,7 +393,7 @@ angular.module('lion.guardians.services', [])
       NotificationFactory.error({
         title: "Error", message: 'Unable to Post CV Results',
         position: 'right', // right, left, center
-        duration: 180000   // milisecond
+        duration: 5000   // milisecond
       });
       console.log(error);
     });
@@ -408,7 +408,7 @@ angular.module('lion.guardians.services', [])
       NotificationFactory.error({
         title: "Error", message: 'Unable to Delete CV Results/CVRequest',
         position: 'right', // right, left, center
-        duration: 180000   // milisecond
+        duration: 5000   // milisecond
       });
       console.log(error);
     });
