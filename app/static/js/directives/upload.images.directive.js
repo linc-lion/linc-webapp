@@ -9,7 +9,7 @@ angular.module('lion.guardians.upload.images.directive', [])
     template: function(element, attrs) {
       switch (attrs.type) {
         case 'new':
-          return '<a class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showNew()" ng-disabled="disabledBtn"><i class="icon icon-camera"></i> Save & Add Images</a>';
+          return '<button type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="!disabledBtn && showNew()"><i class="icon icon-camera"></i>Create & Add Images</button>';
         default:
           return '<button class="btn btn-primary btn-block" ng-click="ShowOpen()" ng-disabled="disabledBtn">Upload images</button>';
       }
@@ -35,7 +35,7 @@ angular.module('lion.guardians.upload.images.directive', [])
             size: scope.formSize,
             resolve: {
               options: function () {
-                return ({'isNew': attrs.type == 'new', 'imagesetId': result.imagesetId});
+                return ({'isNew': attrs.type == 'new', 'data': result.data,'imagesetId': result.data.id});
               },
               disabledBtn: function (){
                 return scope.disabledBtn;
@@ -46,7 +46,7 @@ angular.module('lion.guardians.upload.images.directive', [])
              scope.closeAction();
             console.log(result);
           }, function (result) {
-            console.log('Modal dismissed at: ' + result);
+            scope.closeAction();
           });
         });
       },

@@ -1,125 +1,134 @@
-<div class="modal-header" ng-show="title">
-  <button type="button" class="close" ng-click="Cancel()">&times;</button>
-  <h4 class="modal-title" ng-bind-html="title"></h4>
-</div>
-<div class="modal-body" ng-show="content">
-  <form name="metadataForm" >
+<form name="metadataForm">
+  <div class="modal-header" ng-show="title">
+    <button type="button" class="close" ng-click="Cancel()">&times;</button>
+    <h4 class="modal-title" ng-bind-html="title"></h4>
+  </div>
+  <div class="modal-body" ng-show="content">
     <div class="row">
       <div class="col-sm-4 line-right">
-        <div class="form-group-margin text-right">
-          <label for="owner_organization_id">Organization: </label>
-          <button type="button" id="owner_organization_id" placeholder="Select Organization" class="btn btn-default btn-sm" ng-model="selected.owner_organization_id" data-html="1" bs-options="organization.id as organization.name for organization in organizations" placement="bottom-right" bs-select>
+        <div ng-show="optionsSet.type === 'imageset'" class="form-group-margin group-select">
+          <label class="meta_label" for="owner_organization_id">Organization: </label>
+          <button type="button" id="owner_organization_id" placeholder="Select Organization" class="btn btn-default btn-sm select_btn" ng-model="selected.owner_organization_id" data-html="1" bs-options="organization.id as organization.name for organization in organizations" placement="bottom-right" bs-select>
             Action <span class="caret"></span>
           </button>
         </div>
         <pre ng-show="debug">{{!selected.owner_organization_id}}</pre>
 
+        <div ng-show="optionsSet.type === 'lion'" class="form-group-margin" style="padding-left: 30px" class="form-group-margin group-select"  ng-class="{'has-error': metadataForm.organization_id.$dirty && metadataForm.organization_id.$error.required }">
+          <label class="meta_label" for="organization_id">Organization:</label>
+          <select class="form-control-inline custom-select" id="organization_id" name="organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="selected.organization_id" ng-required="lion_required" oninvalid="this.setCustomValidity('Please select an Organization in this list')" oninput="setCustomValidity('')"><option value="">Select Organization</option>
+          </select>
+        </div>
+        <pre ng-show="debug">{{!selected.organization_id}}</pre>
+
         <hr class="style-line">
-        <div class="form-inline text-right" ng-class="{'has-error': datepickerForm.date.$invalid}">
-          <label class="control-label"><i class="fa fa-calendar"></i>Date Stamp: </label>
-          <input type="text" class="form-control" ng-model="selected.date_stamp" data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date" bs-datepicker placement="bottom-left">
+        <div class="form-inline group-input" ng-class="{'has-error': datepickerForm.date.$invalid}">
+          <label class="control-label meta_label"><i class="fa fa-calendar"></i>Date Stamp: </label>
+          <input type="text" class="form-control meta_input" ng-model="selected.date_stamp" data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date" bs-datepicker placement="bottom-left">
         </div>
         <pre ng-show="debug">{{!selected.date_stamp}}</pre>
 
         <hr class="style-line">
-        <div class="form-group text-right">
+        <div class="form-group group-input">
           <div class="form-inline">
-            <div class="form-group control">
-              <label for="id_latitude">Latitude: </label>
-              <input type="number" class="form-control" ng-model="selected.latitude" step="0.1" id="id_latitude" >
+            <div class="form-group control" style="margin-bottom:5px">
+              <label class="meta_label" for="id_latitude">Latitude: </label>
+              <input type="number" class="form-control meta_input" ng-model="selected.latitude" step="any" id="id_latitude" min="-90" max="90">
             </div>
           </div>
-          <div class="form-group">
-            <div class="form-inline">
-              <label for="id_longitude">Longitude: </label>
-              <input type="number" class="form-control" ng-model="selected.longitude" step="0.1" id="id_longitude" >
+          <div class="form-inline">
+            <div class="form-group control">
+              <label class="meta_label" for="id_longitude">Longitude: </label>
+              <input type="number" class="form-control meta_input" ng-model="selected.longitude" step="any" id="id_longitude" min="-180" max="180">
             </div>
           </div>
         </div>
         <pre ng-show="debug">{{!selected.latitude}} {{!selected.longitude}}</pre>
 
         <hr class="style-line">
-        <div class="form-group text-right">
-          <label for="id_gender" >Gender</label>
-          <button type="button" id="id_gender" placeholder="Select Gender" class="btn btn-default btn-sm" ng-model="selected.gender" data-html="1" bs-options="gen.value as gen.label for gen in genders" placement="bottom-right" bs-select>
+        <div class="form-group group-select">
+          <label class="meta_label" for="id_gender" >Gender:</label>
+          <button type="button" id="id_gender" placeholder="Select Gender" class="btn btn-default btn-sm select_btn" ng-model="selected.gender" data-html="1" bs-options="gen.value as gen.label for gen in genders" placement="bottom-right" bs-select ng-change="validate()">
             Action <span class="caret"></span>
           </button>
         </div>
         <pre ng-show="debug">{{!selected.gender}}</pre>
 
       </div>
-
-      <div class="col-sm-4">
+      <div class="col-sm-4 line-right">
         <div ng-show="showLionName">
-          <div ng-show="tooltip.show_lion_name" class="form-inline text-right">
-            <label for="lion_name">Lion Name:</label>
-            <input type="text" class="form-control" id="lion_name" ng-model="selected.name" placeholder="Lion Name">
+          <div ng-show="tooltip.show_lion_name" class="form-inline group-input" ng-class="{'has-error': metadataForm.lion_name.$dirty && metadataForm.lion_name.$error.required }">
+            <label class="meta_label" for="lion_name">Lion Name:</label>
+            <input type="text" class="form-control meta_input" id="lion_name" ng-model="selected.name" placeholder="Lion Name" ng-required="lion_required" oninput="setCustomValidity('')"
+            oninvalid="this.setCustomValidity('please fill out this field with Lion\'s Name')">
           </div>
-          <div ng-show="!tooltip.show_lion_name" class="form-inline text-center">
-            <label for="lion_name1">Lion Name:</label>
-            <a type="text" class="link meta_text" ng-click="Cancel()" ui-sref="lion({id: optionsSet.data.lion_id})" id="lion_name1" data-animation="am-flip-x" placement="bottom-right" bs-tooltip="tooltip.value">{{!selected.name}}</a>
-      <!--
-            <label for="lion_name1">Lion Name:</label>
-            <input type="text" class="form-control" id="lion_name1" ng-model="selected.name" data-placement="top-right" data-type="info" data-container="body" placeholder="Lion Name" data-trigger="hover focus" bs-tooltip="tooltip.value">
-            <a ui-sref="lion({id: optionsSet.data.id})" data-animation="am-flip-x" placement="top-left" bs-tooltip="tooltip.value"></a>-->
+          <div ng-show="!tooltip.show_lion_name" style="padding-left:44px;" class="form-inline text-left">
+            <div ng-show="selected.name == '-'">
+              <label class="meta_label" for="lion_name1">Lion Name: </label>
+              <a class="a_meta" style="margin-left: 30px !important;"> {{!selected.name}}</a>
+            </div>
+            <div ng-show="selected.name != '-'">
+              <label class="meta_label" for="lion_name2">Lion Name: </label>
+              <a type="text" class="link a_meta" style="margin-left: 5px !important;" ng-click="goto()" id="lion_name2" data-animation="am-flip-x" placement="bottom-right" bs-tooltip="tooltip.value">{{!selected.name}}</a>
+            </div>
           </div>
           <pre ng-show="debug">{{!selected.name}}</pre>
         </div>
         <hr ng-show="showLionName" class="style-line">
-        <div class="form-inline text-right" ng-class="{'has-error': datepickerForm.date1.$invalid}">
+
+        <div style="margin-bottom:5px" class="form-inline group-input" ng-class="{'has-error': datepickerForm.date1.$invalid}">
           <label class="control-label"><i class="fa fa-calendar"></i>Date of Birth: </label>
-          <input type="text" class="form-control" ng-model="selected.date_of_birth" ng-change='Calc_Age()' data-date-format="yyyy-MM-dd" data-date-type="string" data-max-date="today" data-autoclose="1" name="date1" bs-datepicker placement="bottom-right">
+          <input type="text" class="form-control meta_input" ng-model="selected.date_of_birth" ng-change='Calc_Age()' data-date-format="yyyy-MM-dd" data-date-type="string" data-max-date="today" data-autoclose="1" name="date1" bs-datepicker placement="bottom-right">
         </div>
         <pre ng-show="debug">{{!selected.date_of_birth}}</pre>
 
-        <div class="form-inline text-right">
-          <label for="id_age">Age <small>(years)</small></label>
-          <input type="number" class="form-control" min="0" id="id_age" ng-model="selected.age" placeholder="Age" readonly>
+        <div class="form-inline group-input">
+          <label for="id_age">Age <small>(years): </small></label>
+          <input type="number" class="form-control meta_input" min="0" id="id_age" ng-model="selected.age" placeholder="Age" readonly>
         </div>
         <pre ng-show="debug">{{!selected.age}}</pre>
 
         <hr class="style-line">
-        <div class="form-group text-right">
-          <label for="id_eye_damage">Eye Damage</label>
-          <button type="button" id="id_eye_damage" placeholder="None" class="btn btn-default btn-sm" ng-model="selected.eye_damage" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Eye Damage" bs-options="damage.value as damage.label for damage in eye_damage" placement="bottom-right" bs-select>
+        <div class="form-group group-select">
+          <label for="id_eye_damage">Eye Damage: </label>
+          <button type="button" id="id_eye_damage" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.eye_damage" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Eye Damage" bs-options="damage.value as damage.label for damage in eye_damage" placement="bottom-right" bs-select>
             Action <span class="caret"></span>
           </button>
         </div>
         <pre ng-show="debug">{{!selected.eye_damage}}</pre>
 
         <hr class="style-line">
-        <div class="form-group text-right">
-          <label for="id_broken_teeth">Broken Teeth</label>
-          <button type="button" id="id_broken_teeth" placeholder="None" class="btn btn-default btn-sm" ng-model="selected.broken_teeth" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Broken Teeth" bs-options="teeth.value as teeth.label for teeth in broken_teeth" placement="bottom-right" bs-select>
+        <div class="form-group group-select">
+          <label for="id_broken_teeth">Broken Teeth: </label>
+          <button type="button" id="id_broken_teeth" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.broken_teeth" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Broken Teeth" bs-options="teeth.value as teeth.label for teeth in broken_teeth" placement="bottom-right" bs-select>
             Action <span class="caret"></span>
           </button>
         </div>
         <pre ng-show="debug">{{!selected.broken_teeth}}</pre>
-
       </div>
 
-      <div class="col-sm-4 line-left">
-        <div class="form-group text-right" ng-repeat="marking in markings">
-          <label for="id_{{!marking.value}}" >{{!marking.label}} Markings</label>
-          <button type="button" id="id_{{!marking.value}}" placeholder="None" class="btn btn-default btn-sm" ng-model="selected.markings[marking.value]" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="{{!marking.allText}}" bs-options="mark.value as mark.label for mark in marking.items" placement="bottom-right" bs-select>
+      <div class="col-sm-4">
+        <div class="form-group group-select" ng-repeat="marking in markings">
+          <label for="id_{{!marking.value}}" >{{!marking.label}} Markings: </label>
+          <button type="button" id="id_{{!marking.value}}" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.markings[marking.value]" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="{{!marking.allText}}" bs-options="mark.value as mark.label for mark in marking.items" placement="bottom-right" bs-select>
             Action <span class="caret"></span>
           </button>
           <pre ng-show="debug">{{!selected.markings[marking.value]}}</pre>
         </div>
 
         <hr class="style-line">
-        <div class="form-group text-right">
-          <label for="id_nose_color">Nose Color</label>
-          <button type="button" id="id_nose_color" placeholder="None" class="btn btn-default btn-sm" ng-model="selected.nose_color" data-html="1" bs-options="color.value as color.label for color in nose_color" placement="bottom-right" bs-select>
+        <div class="form-group group-select">
+          <label for="id_nose_color">Nose Color: </label>
+          <button type="button" id="id_nose_color" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.nose_color" data-html="1" bs-options="color.value as color.label for color in nose_color" placement="bottom-right" bs-select>
             Action <span class="caret"></span>
           </button>
         </div>
         <pre ng-show="debug">{{!selected.nose_color}}</pre>
 
         <hr class="style-line">
-        <div class="form-group text-right">
-          <label for="id_scars">Scars</label>
-          <button type="button" id="id_scars" placeholder="None" class="btn btn-default btn-sm" ng-model="selected.scars" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Scars Type" bs-options="scar.value as scar.label for scar in scars" placement="bottom-right" bs-select>
+        <div class="form-group group-select">
+          <label for="id_scars">Scars: </label>
+          <button type="button" id="id_scars" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.scars" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Scars Type" bs-options="scar.value as scar.label for scar in scars" placement="bottom-right" bs-select>
             Action <span class="caret"></span>
           </button>
         </div>
@@ -132,11 +141,16 @@
       <textarea class="form-control" rows="5" ng-model="selected.notes"></textarea>
     </div>
     <pre ng-show="debug">{{!selected.notes}}</pre>
-  </form>
-</div>
-<div class="modal-footer">
-  <!--<button type="button" class="btn btn-default" ng-click="Cancel()">Close</button>-->
-  <button ng-disabled="!metadataForm.modified" type="button" class="btn btn-primary" ng-click="SaveClose()">Save</button>
-  <upload-images disabled_btn="!metadataForm.modified" ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new" save-metadata-action="SaveUpload()" close-action="Close()"></upload-images>
-  <br>
-</div>
+  </div>
+  <div class="modal-footer">
+    <!--<button type="button" class="btn btn-default" ng-click="Cancel()">Close</button>-->
+
+    <button ng-disabled="!metadataForm.modified" ng-show="!isNew" type="button" class="btn btn-primary" ng-click="SaveMetadata()">Save</button>
+
+    <button ng-show="isNew" type="submit" class="btn btn-primary" ng-click="metadataForm.$valid && CreateClose()">Create</button>
+
+    <upload-images disabled-btn="!metadataForm.$valid" ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new" save-metadata-action="CreateUpload()" close-action="Close()"></upload-images>
+
+    <br>
+  </div>
+</form>

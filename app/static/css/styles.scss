@@ -310,28 +310,40 @@ hr.style-line { margin-bottom: 10px !important; margin-top: 10px !important; mar
 .form-group-margin { @extend .form-group; margin-bottom: 5px !important; }
 .form-group-padding { @extend .form-group; padding-right: 20px !important; margin-bottom: 5px !important; }
 .form-group-padding1 { @extend .form-group; padding-right: 20px !important; margin-bottom: 10px !important;}
+.form-control-inline {display: inline;
+    min-width: 120px;
+    height: 33px;
+    text-align: right;
+    //padding-right: 5px;
+    //padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    background-color: #fff;
+    background-image: none;
+    color: #d95210;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: right;
+    font-family: 'Homenaje', sans-serif;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    align: right;
+  }
+
+.meta_label { padding-right: 10px;}
+
+.select_btn { min-width: 120px;}
+.meta_input{ text-align: center; width: 120px !important;}
+.a_meta{text-align: center; width: 120px !important; color:blue !important;}
+.group-select { text-align: right; padding-right: 20px;}
+.group-input { text-align: right; padding-right: 20px;}
+a.ng-scope { color: #333;}
 
 .notify-icon, .pnotify-icon span { display: block; float: left; margin-right: .2em; }
 .notify-title { display: block; margin-bottom: .4em; margin-top: 0;}
 .notify-text { display: block; margin: 10px;}
 .cg-notify-message{min-width: 300px; right: 25px; top: 121px; opacity: 1; display: block; overflow: visible;text-align: left; padding: 10px;}
 .cg-notify-message-template h4 {margin-top: 0; color: inherit;}
-
-.control input.ng-valid.ng-modified {
-    background-color: #EFE;
-    border-color: #6A6;
-}
-.form-group.valid.modified {
-  border-style: solid;
-  background-color: #EFE;
-  border-color: #6A6;
-}
-.tooltip-inner {
-  max-width: 800px !important;
-}
-a.ng-scope {
-  color: #333;
-}
-.meta_text{
-  color: blue !important;
-}

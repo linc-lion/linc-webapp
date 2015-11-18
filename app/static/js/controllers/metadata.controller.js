@@ -2,16 +2,17 @@
 
 angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.directive'])
 
-.controller('MetadataCtrl', ['$scope', '$window', '$uibModalInstance', '$bsTooltip', 'LincServices', 'NotificationFactory', 'optionsSet', '$timeout', '$q',  'organizations', function ($scope, $window, $uibModalInstance, $bsTooltip, LincServices, NotificationFactory, optionsSet, $timeout, $q, organizations) {
+.controller('MetadataCtrl', ['$scope', '$window', '$uibModalInstance', '$bsTooltip', 'LincServices', 'NotificationFactory', 'optionsSet', '$state', '$q',  'organizations', function ($scope, $window, $uibModalInstance, $bsTooltip, LincServices, NotificationFactory, optionsSet, $state, $q, organizations) {
 
   $scope.debug = false;
   $scope.optionsSet = optionsSet;
+
   //$scope.optionsSet.isMetadata = true;
   $scope.organizations = organizations;
   var titles = {}; titles['lion'] = 'Lion Metadata'; titles['imageset'] = 'Image Set Metadata';
   $scope.showLionName = (optionsSet.type === 'lion' || (optionsSet.type === 'imageset' && optionsSet.edit === 'edit'));
   $scope.isNew = (optionsSet.edit === 'new');
-
+  $scope.lion_required = (optionsSet.type === 'lion');
   // Title
   $scope.title = titles[optionsSet.type];
   $scope.content = 'Form';
@@ -19,6 +20,13 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   $scope.Cancel = function () {
    $uibModalInstance.dismiss('cancel');
   };
+
+  $scope.goto = function() {
+    if(optionsSet.data.lion_id){
+      $state.go("lion", { id: optionsSet.data.lion_id });
+      $uibModalInstance.dismiss('cancel');
+    }
+  }
 
   var Metadata = function() {
     var selected = $scope.selected;
@@ -36,23 +44,65 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     var TAGS = JSON.stringify(concat.value());
     if(!concat.value().length) TAGS = "null";
     var data = {};
-    if(optionsSet.type === 'lion'){
-      //Selected Dates
-      var lion_sel_data = {
-          "owner_organization_id": selected.owner_organization_id,
-          "name" : selected.name
+    if(optionsSet.edit === 'new'){
+      if(optionsSet.type === 'lion'){
+        var imageset_data = {
+          "date_stamp": selected.date_stamp,
+          "gender": selected.gender,
+          "date_of_birth": selected.date_of_birth,
+          "tags": TAGS,
+          "notes": selected.notes,
+          'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
+          'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
+          "lion_id": null,
+          "main_image_id": null,
+          "uploading_user_id": optionsSet.uploading_user_id,
+          "owner_organization_id": optionsSet.owner_organization_id,
+          "uploading_organization_id": optionsSet.uploading_organization_id,
+          "is_primary": null,
+          "is_verified": false
+        }
+
+        var lion_data = {
+          "name": selected.name,
+          "organization_id": selected.organization_id,
+          "primary_image_set_id": '' // Fill after save imageset
+        }
+        data = {"lion": lion_data, "imageset": imageset_data};
       }
-      var imageset_sel_data = {
-        "date_stamp": selected.date_stamp,
-        "latitude": selected.latitude,
-        "longitude": selected.longitude,
-        "gender": selected.gender,
-        "date_of_birth": selected.date_of_birth,
-        "tags": TAGS, 'notes': selected.notes
+      else{
+        var imageset_data = {
+          "date_stamp": selected.date_stamp,
+          'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
+          'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
+          "gender": selected.gender,
+          "date_of_birth": selected.date_of_birth,
+          "tags": TAGS,
+          "notes": selected.notes,
+          "lion_id": null,
+          "main_image_id": null,
+          "uploading_user_id": optionsSet.uploading_user_id,
+          "owner_organization_id": optionsSet.owner_organization_id,
+          "uploading_organization_id": optionsSet.uploading_organization_id,
+          "is_primary": null,
+          "is_verified": false
+        }
+        data = imageset_data;
       }
-      if(optionsSet.edit === 'new'){
-          data = {"lion": lion_sel_data, "imageset": imageset_sel_data};
-      }else{
+    }
+    else{
+      if(optionsSet.type === 'lion'){
+        //Selected Dates
+        var lion_sel_data = { "organization_id": selected.organization_id, "name" : selected.name };
+        var imageset_sel_data = {
+          "date_stamp": selected.date_stamp,
+          'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
+          'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
+          "gender": selected.gender,
+          "date_of_birth": selected.date_of_birth,
+          "tags": TAGS,
+          "notes": selected.notes
+        };
         // Check Changed Datas
         var lion_data = _.reduce(lion_sel_data, function(result, n, key) {
           if (lion_sel_data[key] && lion_sel_data[key] != optionsSet.data[key]) {
@@ -67,23 +117,19 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           return result;
         }, {});
         if(Object.keys(lion_data).length || Object.keys(imageset_data).length)
-          data = {"lion": lion_data, "imageset": imageset_data};
+          data = {"lion": lion_data, "imageset": imageset_data, 'imagesetId': optionsSet.data.primary_image_set_id};
       }
-    }
-    else{
-      //Selected Dates
-      var sel_data = {
-        "owner_organization_id": selected.owner_organization_id,
-        "date_stamp": selected.date_stamp,
-        "latitude": selected.latitude, "longitude": selected.longitude,
-        "gender": selected.gender,
-        "date_of_birth": selected.date_of_birth,
-        "tags": TAGS, 'notes': selected.notes
-      }
-      if(optionsSet.edit === 'new'){
-          data = sel_data;
-      }else{
-
+      else{
+        //Selected Dates
+        var sel_data = {
+          "owner_organization_id": selected.owner_organization_id,
+          "date_stamp": selected.date_stamp,
+          'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
+          'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
+          "gender": selected.gender,
+          "date_of_birth": selected.date_of_birth,
+          "tags": TAGS, 'notes': selected.notes
+        };
         if($scope.showLionName){ sel_data.name = selected.name; }
         // Check Changed Datas
         var imageset_data = _.reduce(sel_data, function(result, n, key) {
@@ -97,52 +143,41 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       }
     }
     return data;
-  }
+  };
 
   var Save_Metadata = function (data){
     var deferred = $q.defer();
     if(optionsSet.type === 'lion'){
-      if(optionsSet.edit === 'edit'){
-        var id = optionsSet.data.id;
-        LincServices.SaveLion(id, data, function(){
-          deferred.resolve({type: 'save', 'data': data, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
-        },
-        function(error){
-          deferred.reject({'message': "Unable to Save Lion's Metadata"});
-        });
-      }
-      else{
-        LincServices.CreateLion(data, function(){
-          deferred.resolve({type: 'create', 'data': data, 'title': 'Create', 'message': "Lion's Metadata created with success"});
-        },
-        function(error){
-          deferred.reject({'message': "Unable to create new Lion's Metadata"});
-        });
-      }
+      var id = optionsSet.data.id;
+      LincServices.SaveLion(id, data, function(results){
+        var data0 = _.merge({}, data.imageset, data.lion);
+        delete data0._xsrf;
+        if(_.has(data0, 'date_of_birth'))
+          data0.age = getAge(data0['date_of_birth']);
+        deferred.resolve({type: 'save', 'data': data0, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
+      },
+      function(error){
+        deferred.reject({'message': "Unable to Save Lion's Metadata"});
+      });
     }
     else{
-      if(optionsSet.edit === 'edit'){
-        var id = optionsSet.data.id;
-        LincServices.SaveImageset(id, data, function(){
-          deferred.resolve({type: 'save', 'data': data, 'title': 'Save', 'message': "Image Set's Metadata saved with success"});
-        },
-        function(error){
-          deferred.reject({'message': "Unable to Save Image Set's Metadata"});
-        });
-      }
-      else{
-        LincServices.CreateImageset(data, function(){
-          deferred.resolve({type: 'create', 'data': data, 'title': 'Create', 'message': "Image Set's Metadata created with success"});
-        },
-        function(error){
-          deferred.reject({'message': "Unable to create new Image Set's Metadata"});
-        });
-      }
+      var id = optionsSet.data.id;
+      LincServices.SaveImageset(id, data, function(results){
+        delete data._xsrf;
+        if(_.has(data, 'date_of_birth'))
+          data.age = getAge(data['date_of_birth']);
+        deferred.resolve({type: 'save', 'data': data, 'title': 'Save', 'message': "Image Set's Metadata saved with success"});
+      },
+      function(error){
+        deferred.reject({'message': "Unable to Save Image Set's Metadata"});
+      });
     }
     return deferred.promise;
   };
+
+
   // Save and Close
-  $scope.SaveClose = function(){
+  $scope.SaveMetadata = function(){
     var data = Metadata();
     if(!Object.keys(data).length){
       NotificationFactory.warning({
@@ -170,16 +205,65 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       });
     }
   }
-  // Save and Upload
-  $scope.SaveUpload = function(){
+
+  var Create_Metadata = function (data){
     var deferred = $q.defer();
+    if(optionsSet.type === 'lion'){
+      LincServices.CreateLion(data, function(results){
+        var data0 = results.data.data;
+        if(_.has(data0, 'date_of_birth'))
+          data0.age = getAge(data0['date_of_birth']);
+        deferred.resolve({type: 'create', 'data': data0, 'title': 'Create', 'message': "Lion's Metadata created with success"});
+      },
+      function(error){
+        deferred.reject({'message': "Unable to create new Lion's Metadata"});
+      });
+    }
+    else{
+      LincServices.CreateImageset(data, function(results){
+        var data0 = results.data.data;
+        if(_.has(data0, 'date_of_birth'))
+          data0.age = getAge(data0['date_of_birth']);
+        deferred.resolve({type: 'create', 'data': data0, 'title': 'Create', 'message': "Image Set's Metadata created with success"});
+      },
+      function(error){
+        deferred.reject({'message': "Unable to create new Image Set's Metadata"});
+      });
+    }
+    return deferred.promise;
+  };
+
+  // Save and Upload
+  $scope.CreateClose = function(){
     var data = Metadata();
-    /*Save_Metadata(data).then(function(result) {
+    Create_Metadata(data).then(function(result) {
       NotificationFactory.success({
         title: result.title, message: result.message,
         position: "right", // right, left, center
         duration: 2000     // milisecond
       });
+      $uibModalInstance.close({'id': result.data.id});
+    },
+    function(result){
+        NotificationFactory.error({
+          title: "Error", message: result.message,
+          position: 'right', // right, left, center
+          duration: 180000   // milisecond
+        });
+    });
+  };
+  // Save and Upload
+  $scope.CreateUpload = function(){
+    var deferred = $q.defer();
+    var data = Metadata();
+    Create_Metadata(data).then(function(result) {
+      NotificationFactory.success({
+        title: result.title, message: result.message,
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
+      $scope.Id = result.data.id;
+      $scope.Object_Created({'id': result.data.id});
       deferred.resolve({'data': result.data});
     },
     function(result){
@@ -189,28 +273,17 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         duration: 180000   // milisecond
       });
       deferred.reject({message: result.message});
-    });*/
-    deferred.resolve({'imagesetId': 4});
+    });
     return deferred.promise;
+  };
 
-    //timeout(function() {
-    /*   $scope.optionsSet.data = { id: 1, name: 'leão 1', age: 13, thumbnail: "/static/images/square-small/lion1.jpg", gender: 'male', organization: 'Lion Guardians', hasResults: true, pending: false, primary: true, verified: true, selected: false};
-
-        console.log("Save Imagesets");
-        NotificationFactory.success({
-          title: "Save", message:'Metadata saved with success',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        $scope.metadataId = {id: 2};
-        deferred.resolve($scope.optionsSet);
-    //}, 1000);
-    return deferred.promise;*/
-  }
   $scope.Close = function(){
-    console.log("Close UploadImages");
-    $scope.metadataId = {id: 2};
-    $uibModalInstance.close($scope.metadataId);
+    if($scope.Id){
+      $uibModalInstance.close({'id': $scope.Id});
+    }
+    else{
+      $uibModalInstance.dismiss('cancel');
+    }
   }
 
   // Gender List
@@ -235,7 +308,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     {value: 'EYE_DAMAGE_LEFT',  label: 'Left'}, {value: 'EYE_DAMAGE_RIGHT', label: 'Right'}];
   // Nose Color
   $scope.nose_color = [{value: undefined, label: 'None'}, {value: 'NOSE_COLOUR_BLACK', label: 'Black'},
-    {value: 'NOSE_COLOUR_PATCHY',  label: 'Patchy'}, {value: 'NOSE_COLOUR_PINK', label: 'Pynk'},
+    {value: 'NOSE_COLOUR_PATCHY',  label: 'Patchy'}, {value: 'NOSE_COLOUR_PINK', label: 'Pink'},
     {value: 'NOSE_COLOUR_SPOTTED', label: 'Spotted'}];
   // Broken Teeths
   $scope.broken_teeth = [{value: 'TEETH_BROKEN_CANINE_LEFT', label: 'Canine Left'},
@@ -267,11 +340,12 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     }catch(e){
       optionsSet.data.date_stamp = "";
     }
-
+    //optionsSet.data.name = optionsSet.data.name == '-' ? '': optionsSet.data.name;
     $scope.selected = {
       "name": optionsSet.data.name,
       "date_stamp": optionsSet.data.date_stamp,
       "owner_organization_id": optionsSet.data.owner_organization_id,
+      "organization_id": optionsSet.data.organization_id,
       "date_of_birth": optionsSet.data.date_of_birth,
       "latitude": optionsSet.data.latitude,
       "longitude": optionsSet.data.longitude,
@@ -286,18 +360,20 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     $scope.selected.age = getAge($scope.selected.date_of_birth);
 
     $scope.tooltip = {'show_lion_name': (optionsSet.type === 'lion'),
-                      'value': {'title': optionsSet.data.name + "'s Lion Page", 'checked': true}
-                     };
+                      'value': {'title': optionsSet.data.name + "'s Lion Page", 'checked': true}};
   }
   else
   {
     // Result Datas
-    $scope.selected = { "name": "", "owner_organization_id": "", "date_of_birth": new Date().toJSON().slice(0,10),
-                        "date_stamp": new Date().toJSON().slice(0,10), "latitude":"", "longitude": "",
-                        "gender": "", "markings": [], "broken_teeth": [], "eye_damage": [],
+    $scope.selected = { "name": "", "owner_organization_id": "",
+                        "date_of_birth": new Date().toJSON().slice(0,10),
+                        "date_stamp": new Date().toJSON().slice(0,10),
+                        "latitude":"", "longitude": "", "gender": "",
+                        "markings": {'ear': [],'mount': [],'tail': []},
+                        "broken_teeth": [], "eye_damage": [],
                         "nose_color": undefined, "scars": [], "notes": "Notes here"
     };
-    $scope.tooltip = {'show_lion_name': true };
+    $scope.tooltip = {'show_lion_name': true};
   }
   // Calc Age Function
   function getAge(date) {

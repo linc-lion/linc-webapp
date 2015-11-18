@@ -91,7 +91,8 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   };
   uploader.onCompleteItem = function(fileItem, response, status, headers) {
       console.info('onCompleteItem', fileItem, response, status, headers);
-      $scope.Update();
+      if(!$scope.isNew)
+        $scope.Update();
   };
   uploader.onCompleteAll = function() {
       console.info('onCompleteAll');

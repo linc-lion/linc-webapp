@@ -32,12 +32,16 @@ angular.module('lion.guardians.metadata.directive', [])
     },
     link: function(scope, element, attrs) {
       scope.showNew = function(){
+        var modalScope = scope.$new();
+        modalScope.created = false;
+        modalScope.id = 0;
         var modalInstance = $uibModal.open({
           animation: true,
           backdrop: true,
           templateUrl: scope.useTemplateUrl,
           controller:  scope.useCtrl,
           size: scope.formSize,
+          scope: modalScope,
           resolve: {
             optionsSet: function () {
               return scope.optionsSet;
@@ -47,11 +51,19 @@ angular.module('lion.guardians.metadata.directive', [])
             }
           }
         });
+        modalScope.Object_Created = function (obj) {
+          modalScope.created = true;
+          modalScope.id = obj.id;
+        };
         modalInstance.result.then(function (result) {
           scope.gotoImagesetAction({Id: result.id});
           console.log('Modal ok' + result);
         }, function () {
-          scope.cancelAction();
+          if(modalScope.created)
+            scope.gotoImagesetAction({'Id': modalScope.id});
+          else {
+            scope.cancelAction();
+          }
           console.log('Modal dismissed at: ' + new Date());
         });
       },

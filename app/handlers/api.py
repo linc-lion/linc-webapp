@@ -102,6 +102,16 @@ class LionsHandler(BaseHandler):
         self.set_json_output()
         self.finish(response.body)
     @asynchronous
+    @engine
+    def post(self):
+        resource_url = '/lions'
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to create new lion POST'})
+    @asynchronous
     @coroutine
     def put(self, lions_id=None):
         print(lions_id)
@@ -121,6 +131,17 @@ class LionsHandler(BaseHandler):
         else:
             self.set_status(400)
             self.finish({'status':'error','message':'you need provide an lion id PUT'})
+    @asynchronous
+    @coroutine
+    def delete(self, lions_id=None):
+        resource_url = '/lions/' + lions_id
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"delete lion"}))
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to delete lion DELETE'})
+
 class ImageSetsHandler(BaseHandler):
     @asynchronous
     @engine
@@ -160,6 +181,16 @@ class ImageSetsHandler(BaseHandler):
         else:
             self.set_status(400)
             self.finish({'status':'error','message':'you need provide an imageset id PUT'})
+    @asynchronous
+    @coroutine
+    def delete(self, imageset_id=None):
+        resource_url = '/imagesets/' + imageset_id
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"delete imageset"}))
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to delete imageset DELETE'})
 
 class OrganizationsHandler(BaseHandler):
     @asynchronous
@@ -169,6 +200,36 @@ class OrganizationsHandler(BaseHandler):
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
         self.finish(response.body)
+    @asynchronous
+    @engine
+    def post(self):
+        resource_url = '/organizations'
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to create new organization POST'})
+    @asynchronous
+    @coroutine
+    def put(self, organizations_id=None):
+        print(organizations_id)
+        if organizations_id:
+            resource_url = '/organizations/' + organizations_id
+            print(self.input_data)
+            data = dict(self.input_data)
+            if "_xsrf" in data.keys():
+                del data["_xsrf"]
+            print(data)
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(data))
+            self.set_status(response.code)
+            if response.code == 200:
+                self.finish(response.body)
+            else:
+                self.finish({'status':'error','message':'fail to save organization data'})
+        else:
+            self.set_status(400)
+            self.finish({'status':'error','message':'you need provide an organization id PUT'})
 
 class OrganizationsListHandler(BaseHandler):
     @asynchronous
@@ -224,7 +285,6 @@ class ImagesUploadHandler(BaseHandler):
                 else:
                     self.dropError(500,'fail to upload image')
 
-
 class ImagesHandler(BaseHandler):
     @asynchronous
     @engine
@@ -264,6 +324,7 @@ class ImagesHandler(BaseHandler):
         else:
             self.set_status(400)
             self.finish({'status':'error','message':'you need provide an images id PUT'})
+
 class LoginHandler(BaseHandler):
     @asynchronous
     @engine
