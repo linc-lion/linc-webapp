@@ -1,1 +1,1 @@
-web: newrelic-admin run-python app/linc-webapp.py
+web: newrelic-admin run-program python app/linc-webapp.py
