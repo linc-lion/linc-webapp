@@ -35,7 +35,7 @@ angular.module('lion.guardians.upload.images.directive', [])
             size: scope.formSize,
             resolve: {
               options: function () {
-                return ({'isNew': attrs.type == 'new', 'data': result.data,'imagesetId': result.data.id});
+                return ({'isNew': attrs.type == 'new', 'imagesetId': result.imagesetId});
               },
               disabledBtn: function (){
                 return scope.disabledBtn;
