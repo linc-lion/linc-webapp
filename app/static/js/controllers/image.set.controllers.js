@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.controller('ImageSetCtrl', ['$scope', '$timeout', '$interval', 'NotificationFactory', 'LincServices', 'organizations', 'imageset', function ($scope, $timeout, $interval, NotificationFactory, LincServices, organizations, imageset) {
+.controller('ImageSetCtrl', ['$scope', '$rootScope', '$state', '$timeout', '$uibModal', '$interval', 'NotificationFactory', 'LincServices', 'organizations', 'imageset', function ($scope, $rootScope, $state, $timeout, $uibModal, $interval, NotificationFactory, LincServices, organizations, imageset) {
 
   $scope.imageset = imageset;
 
@@ -61,11 +61,47 @@ angular.module('lion.guardians.image.set.controllers', [])
   };
 
   $scope.location_goto = function (imageset_id){
-    //
+    //$state.go("imageset", {id: imageset_id});
   }
-  $scope.Delete = function (){
 
-  }
+  $scope.Delete = function (){
+    $scope.modalTitle = 'Delete Image Set';
+    $scope.modalMessage = 'Are you sure you want to delete the Image Set?';
+    $scope.SucessMessage = 'Lions was successfully deleted.';
+    $scope.ErrorMessage = 'Unable to delete this Image Set.';
+    $scope.modalContent = 'Form';
+    $scope.modalInstance = $uibModal.open({
+        templateUrl: 'Delete.tmpl.html',
+        scope:$scope
+    });
+    $scope.modalInstance.result.then(function (result) {
+      LincServices.DeleteImageSet($scope.imageset.id, function(results){
+        NotificationFactory.success({
+          title: $scope.modalTitle, message: $scope.SucessMessage,
+          position: "right", // right, left, center
+          duration: 2000     // milisecond
+        });
+        LincServices.ClearAllCaches();
+        $rootScope.remove_history('imageset', $scope.imageset.id);
+        $state.go("searchimageset");
+      },
+      function(error){
+        NotificationFactory.error({
+          title: "Fail: " + $scope.modalTitle, message: $scope.ErrorMessage,
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      });
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
+    $scope.ok = function (){
+      $scope.modalInstance.close();
+    }
+    $scope.cancel = function(){
+      $scope.modalInstance.dismiss();
+    }
+  };
   var requestCVResults = function (ReqObjid){
     NotificationFactory.info({
       title: "Notify", message:'Trying to get CV Results',
@@ -124,7 +160,7 @@ angular.module('lion.guardians.image.set.controllers', [])
   }
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', 'NotificationFactory','LincServices', 'organizations', 'imagesets', function ($scope, $timeout, $interval, NotificationFactory, LincServices, organizations, imagesets) {
+.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$stateParams', 'NotificationFactory','LincServices', 'organizations', 'imagesets', function ($scope, $timeout, $interval, $stateParams, NotificationFactory, LincServices, organizations, imagesets) {
 
   $scope.organizations =  _.map(organizations, function(element) {
     return _.extend({}, element, {checked: true});
@@ -268,4 +304,14 @@ angular.module('lion.guardians.image.set.controllers', [])
     LincServices.ClearAllImagesetsCaches();
     LincServices.ClearImagesetProfileCache(ImagesetId);
   }
+
+  $scope.filters = $stateParams.filter ? $stateParams.filter : {};
+
+  if(Object.keys($scope.filters).length){
+    $scope.name_or_id = $scope.filters.hasOwnProperty('name') ? $scope.filters.name : '';
+    var id_filter = $scope.filters.hasOwnProperty('id') ? $scope.filters.id : '';
+    $scope.name_or_id = $scope.name_or_id + id_filter;
+    $scope.LionAge = $scope.filters.hasOwnProperty('age') ? $scope.filters.age : $scope.LionAge;
+  }
+
 }]);
