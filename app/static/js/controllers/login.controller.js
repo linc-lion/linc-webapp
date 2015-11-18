@@ -62,7 +62,7 @@ angular.module('lion.guardians.login.controller', [])
           NotificationFactory.error({
             title: "Error", message: 'Unable to Login',
             position: 'right', // right, left, center
-            duration: 180000   // milisecond
+            duration: 5000   // milisecond
           });
           console.log(error);
         });

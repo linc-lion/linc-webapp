@@ -29,6 +29,22 @@ app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($roo
       var prevUrl = history.length > 1 ? history.splice(-2)[0] : {'name': 'home', 'param': {}};
       $state.go(prevUrl.name, prevUrl.param);
     };
+    $rootScope.remove_history = function(name, id) {
+      var find = _.findWhere(history, {'name': name, 'param' : {'id': id}});
+      var result = _.without(history,find);
+      if(result[result.length-1].name == ('search' + name))
+       result.pop();
+      history = result;
+    }
+}]);
+
+app.config(['$urlMatcherFactoryProvider', function($urlMatcherFactory) {
+  $urlMatcherFactory.type("ObjParam", {
+    decode: function(val) { return typeof(val) === "string" ? JSON.parse(val) : val; },
+    encode: function(val) { return JSON.stringify(val); },
+    equals: function(a, b) { return this.is(a) && this.is(b)},
+    is: function(val) { return angular.isObject(val) }
+  });
 }]);
 
 app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider,  $urlRouterProvider, $locationProvider) {
@@ -110,7 +126,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         })
         // Search Image Set
         .state("searchimageset", {
-          url: "/searchimageset",
+          url: '/searchimageset?{filter:ObjParam}',
           controller: 'SearchImageSetCtrl',
           templateUrl: 'searchimageset.html',
           data: {

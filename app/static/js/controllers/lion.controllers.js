@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.lions.controllers', [])
 
-.controller('LionCtrl', ['$scope', '$state', 'organizations', 'lion', function ($scope, $state, organizations, lion) {
+.controller('LionCtrl', ['$scope', '$rootScope', '$state', '$uibModal', 'NotificationFactory', 'LincServices', 'organizations', 'lion', function ($scope, $rootScope, $state, $uibModal, NotificationFactory, LincServices, organizations, lion) {
 
   $scope.lion = lion;
 
@@ -55,6 +55,48 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.location_goto = function (imageset_id){
     $state.go("imageset", {id: imageset_id});
   }
+  $scope.goto_search_imageset = function (){
+    $state.go("searchimageset", {filter: {name: $scope.lion.name}});
+  }
+
+  $scope.Delete = function (){
+    $scope.modalTitle = 'Delete Lion';
+    $scope.modalMessage = 'Are you sure you want to delete the lion?';
+    $scope.SucessMessage = 'Lions was successfully deleted.';
+    $scope.ErrorMessage = 'Unable to delete this Lion.';
+    $scope.modalContent = 'Form';
+    $scope.modalInstance = $uibModal.open({
+        templateUrl: 'Delete.tmpl.html',
+        scope:$scope
+    });
+    $scope.modalInstance.result.then(function (result) {
+      LincServices.DeleteLion($scope.lion.id, function(results){
+        NotificationFactory.success({
+          title: $scope.modalTitle, message: $scope.SucessMessage,
+          position: "right", // right, left, center
+          duration: 2000     // milisecond
+        });
+        LincServices.ClearAllCaches();
+        $rootScope.remove_history('lion', $scope.lion.id);
+        $state.go("searchlion");
+      },
+      function(error){
+        NotificationFactory.error({
+          title: "Fail: "+$scope.modalTitle, message: $scope.ErrorMessage,
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      });
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
+    $scope.ok = function (){
+      $scope.modalInstance.close();
+    }
+    $scope.cancel = function(){
+      $scope.modalInstance.dismiss();
+    }
+  };
 }])
 
 .controller('SearchLionCtrl', ['$scope', 'lions', 'organizations', function ($scope, lions, organizations) {

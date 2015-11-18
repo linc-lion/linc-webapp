@@ -49,7 +49,8 @@
       <br>
       <metadata ng-show="lion" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options" update-action="update_lion(data)"></metadata>
       <br>
-      <p ng-show="lion"><a ui-sref="searchimageset" class="btn btn-lg btn-default btn-block"><i class="icon icon-images"></i> SEARCH IMAGE SETS</a></p>
-      <p ng-show="lion"><a ng-click="go_back()" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE LION</a></p>
+      <!--<p ui-sref="searchimageset({filter: {status: 'ok', id: lion.id}})"><a class="btn btn-lg btn-default btn-block"><i class="icon icon-images"></i> SEARCH IMAGE SETS</a></p>-->
+      <p ng-click="goto_search_imageset()"><a class="btn btn-lg btn-default btn-block"><i class="icon icon-images"></i> SEARCH IMAGE SETS</a></p>
+      <p ng-show="lion"><a ng-click="Delete()" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE LION</a></p>
     </div>
   </div>

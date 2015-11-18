@@ -59,13 +59,13 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     }
     else {
       if($scope.delete_items.length==1){
-        $scope.modalTitle = 'Delete Lion';
+        $scope.modalTitle = 'Delete Lion Image';
         $scope.modalMessage = 'Are you sure you want to delete the image?';
         $scope.SucessMessage = 'Image was successfully deleted.';
         $scope.ErrorMessage = 'Unable to delete the image.';
       }
       else{
-        $scope.modalTitle = 'Delete Lions';
+        $scope.modalTitle = 'Delete Lions Images';
         $scope.modalMessage = 'Are you sure you want to delete the images?';
         $scope.SucessMessage = 'Images were successfully deleted.';
         $scope.ErrorMessage = 'Unable to delete the images.';
@@ -76,11 +76,6 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
           scope:$scope
       });
       $scope.modalInstance.result.then(function (result) {
-        //$uibModalInstance.close($scope.imageset_id);
-      }, function () {
-        console.log('Modal dismissed at: ' + new Date());
-      });
-      $scope.ok = function (){
         LincServices.DeleteImages($scope.delete_items, function(result){
           NotificationFactory.success({
             title: "Delete", message: $scope.SucessMessage,
@@ -89,16 +84,20 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
           });
           Adjust_Gallery($scope.delete_items);
           LincServices.ClearImageGalleryCache(optionsSet.id);
-          $scope.modalInstance.close();
         },
         function(error){
           NotificationFactory.error({
             title: "Error", message: $scope.ErrorMessage,
             position: 'right', // right, left, center
-            duration: 180000   // milisecond
+            duration: 5000   // milisecond
           });
         });
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
 
+      $scope.ok = function (){
+        $scope.modalInstance.close();
       }
       $scope.cancel = function(){
         $scope.modalInstance.dismiss();
@@ -258,7 +257,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
         NotificationFactory.error({
           title: "Error", message: "Unable to Select Cover Image",
           position: 'right', // right, left, center
-          duration: 180000   // milisecond
+          duration: 5000   // milisecond
         });
       });
     }
@@ -280,7 +279,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
         NotificationFactory.error({
           title: "Error", message: "Unable to Update Image data",
           position: 'right', // right, left, center
-          duration: 180000   // milisecond
+          duration: 5000   // milisecond
         });
       });
     }
@@ -303,7 +302,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
         NotificationFactory.error({
           title: "Error", message: "Unable to Update Image data",
           position: 'right', // right, left, center
-          duration: 180000   // milisecond
+          duration: 5000   // milisecond
         });
       });
     }
