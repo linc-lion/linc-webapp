@@ -201,7 +201,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     }
     return deferred.promise;
   };
-  // Save and Close
+  // Save Metadata
   $scope.SaveMetadata = function(){
     var data = Metadata();
     if(!Object.keys(data).length){
@@ -230,7 +230,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       });
     }
   }
-  // Save and Upload
+  // Create New and Clsoe
   $scope.CreateClose = function(){
     var data = Metadata();
     Create_Metadata(data).then(function(result) {
@@ -249,7 +249,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         });
     });
   };
-  // Save and Upload
+  // Create New and Upload
   $scope.CreateUpload = function(){
     var deferred = $q.defer();
     var data = Metadata();
@@ -261,7 +261,12 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       });
       $scope.Id = result.data.id;
       $scope.Object_Created({'id': result.data.id});
-      deferred.resolve({'data': result.data});
+      if(optionsSet.type === 'lion'){
+        deferred.resolve({'imagesetId': result.data.primary_image_set_id});
+      }
+      else {
+        deferred.resolve({'imagesetId': result.data.id});
+      }
     },
     function(result){
       NotificationFactory.error({
