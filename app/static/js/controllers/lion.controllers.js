@@ -133,11 +133,13 @@ angular.module('lion.guardians.lions.controllers', [])
   });
 
   $scope.organizations = lion_filters.organizations;
+  $scope.genders = lion_filters.genders;
   //$scope.isCollapsed = true;
   $scope.isAgeCollapsed = lion_filters.isAgeCollapsed;
   $scope.isOrgCollapsed = lion_filters.isOrgCollapsed;
   $scope.isNameIdCollapsed = lion_filters.isNameIdCollapsed;
   $scope.isFeaturesCollapsed = lion_filters.isFeaturesCollapsed;
+  $scope.isGenderCollapsed = lion_filters.isGenderCollapsed;
   // Filters  scopes
   //$scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
   $scope.LionAge = lion_filters.LionAge;
@@ -205,6 +207,9 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.change_features = function(){
     $scope.setPage(0);
   }
+  $scope.change_gender = function(){
+    $scope.setPage(0);
+  }
   $scope.change_age_colapsed = function(){
     $scope.isAgeCollapsed = !$scope.isAgeCollapsed
     lion_filters.isAgeCollapsed = $scope.isAgeCollapsed;
@@ -221,7 +226,10 @@ angular.module('lion.guardians.lions.controllers', [])
     $scope.isFeaturesCollapsed = !$scope.isFeaturesCollapsed
     lion_filters.isFeaturesCollapsed = $scope.isFeaturesCollapsed;
   }
-
+  $scope.change_gender_colapsed = function(){
+    $scope.isGenderCollapsed = !$scope.isGenderCollapsed
+    lion_filters.isGenderCollapsed = $scope.isGenderCollapsed;
+  }
   $scope.setPage = function(n) {
     $scope.currentPage = n;
     lion_filters.currentPage = $scope.currentPage;
