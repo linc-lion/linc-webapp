@@ -49,12 +49,48 @@ angular.module('lion.guardians.controllers', ['lion.guardians.home.controller',
 // Name or Id Filter
 .filter('nameid_filter', function(){
   return function(input, name_str, id_str) {
+    if(!name_str.length)
+      return input;
+
     var name = name_str.toLowerCase();
+    var name_pieces = name.match(/\S+/g);
     var id = parseInt(id_str);
+
     var filtered = _.filter(input, function(value){
-        if(!name.length)
-          return true;
-        return ((value.name.toLowerCase().indexOf(name) !== -1) || (value.id === id));
+      var val = value.name.toLowerCase();
+      var contain = true;
+      name_pieces.forEach(function (piece, i){
+        if(val.indexOf(piece) == -1){
+          contain = false;
+          return;
+        }
+      });
+      return (contain || (value.id === id));
+    });
+    return filtered;
+  };
+})
+
+// All Markings
+.filter('features_filter', function(){
+  return function(input, features_str) {
+    if(!features_str.length)
+      return input;
+
+    var features = features_str.toLowerCase();
+    var pieces = features.match(/\S+/g);
+
+    var filtered = _.filter(input, function(value){
+      var val = value.features.toLowerCase();
+      // For each piece test contained in input
+      var contain = true;
+      pieces.forEach(function (piece, i){
+        if(val.indexOf(piece) == -1){
+          contain = false;
+          return;
+        }
+      });
+      return contain;
     });
     return filtered;
   };

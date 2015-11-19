@@ -160,26 +160,55 @@ angular.module('lion.guardians.image.set.controllers', [])
   }
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$stateParams', 'NotificationFactory','LincServices', 'imagesets_filters', 'imagesets', function ($scope, $timeout, $interval, $stateParams, NotificationFactory, LincServices, imagesets_filters, imagesets) {
+.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$stateParams', '$bsTooltip', 'NotificationFactory','LincServices', 'imagesets_filters', 'imagesets', function ($scope, $timeout, $interval, $stateParams, $bsTooltip, NotificationFactory, LincServices, imagesets_filters, imagesets) {
+
+  var tag_labels    = {'EYE_DAMAGE_BOTH': 'Eye Damage Both', 'EYE_DAMAGE_LEFT': 'Eye Damage Left', 'EYE_DAMAGE_RIGHT': 'Eye Damage Right', 'TEETH_BROKEN_CANINE_LEFT': 'Broken Teeth Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Broken Teeth Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Broken Teeth Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Broken Teeth Incisor Right',
+  'EAR_MARKING_BOTH': 'Ear Marking Both', 'EAR_MARKING_LEFT': 'Ear Marking Left', 'EAR_MARKING_RIGHT': 'Ear Marking Right',
+  'MOUTH_MARKING_BACK': 'Mounth Marking Back', 'MOUTH_MARKING_FRONT': 'Mounth Marking Front', 'MOUTH_MARKING_LEFT': 'Mounth Marking Left', 'MOUTH_MARKING_RIGHT': 'Mounth Marking Right', 'TAIL_MARKING_MISSING_TUFT': 'Tail Marking Missing Tuft', 'NOSE_COLOUR_BLACK': 'Nose Color Black', 'NOSE_COLOUR_PATCHY': 'Nose Color Patchy', 'NOSE_COLOUR_PINK': 'Nose Color Pink',
+  'NOSE_COLOUR_SPOTTED': 'Nose Color Spotted', 'SCARS_BODY_LEFT': 'Scars Body Left', 'SCARS_BODY_RIGHT': 'Scars Body Right', 'SCARS_FACE': 'Scars Face', 'SCARS_TAIL': 'Scars Tail'};
+
+  var tool_title =  "Eye Damage: Left, Right or Both; Broken Teeth: Canine Left/Right and Incisor Left/Right; \n"; +
+    "Ear Marking: Left, Right, or Both; Mounth Marking: Back, Front, Left and Right; \n" +
+    "Tail Marking: Missing Tuft; Nose Color: Black, Patchy, Pink, or Spotted; Scars: Body Left/Right, Face and Tail";
+
+  $scope.title_tooltip = {'title': 'tips: ' + tool_title, 'checked': true};
+
+  var get_features = function (tag_labels, TAGS){
+    var label = "";
+    TAGS.forEach(function (elem, i){
+      label += tag_labels[elem];
+      if(i<TAGS.length-1) label += ', ';
+    });
+    return label;
+  }
 
   $scope.imagesets = _.map(imagesets, function(element, index) {
     var elem = {};
     if(element.cvresults) elem["action"] = 'cvresults';
     else if(element.cvrequest) elem["action"] = 'cvpending';
     else  elem["action"] = 'cvrequest';
+
+    var TAGS = [];
+    try{ TAGS = JSON.parse(element['tags']);
+    }catch(e){ TAGS = element['tags'].split(","); }
+    if(TAGS==null) TAGS = [];
+    elem['features'] = get_features(tag_labels, TAGS);
     return _.extend({}, element, elem);
   });
-  $scope.organizations = imagesets_filters.organizations;
 
+  $scope.organizations = imagesets_filters.organizations;
   //$scope.isCollapsed = true;
   $scope.isAgeCollapsed = imagesets_filters.isAgeCollapsed;
   $scope.isOrgCollapsed = imagesets_filters.isOrgCollapsed;
   $scope.isNameIdCollapsed = imagesets_filters.isNameIdCollapsed;
+  $scope.isFeaturesCollapsed = imagesets_filters.isFeaturesCollapsed;
   // Filters  scopes
   //$scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
   $scope.LionAge = imagesets_filters.LionAge;
   //$scope.name_or_id ='';
   $scope.name_or_id = imagesets_filters.name_or_id;
+  // tags
+  $scope.tag_features = imagesets_filters.features;
   // Order by
   //$scope.reverse = false;
   $scope.reverse = imagesets_filters.reverse;
@@ -235,6 +264,9 @@ angular.module('lion.guardians.image.set.controllers', [])
   $scope.change_organizations = function(){
     $scope.setPage(0);
   }
+  $scope.change_features = function(){
+    $scope.setPage(0);
+  }
   $scope.change_age_colapsed = function(){
     $scope.isAgeCollapsed = !$scope.isAgeCollapsed
     imagesets_filters.isAgeCollapsed = $scope.isAgeCollapsed;
@@ -247,6 +279,11 @@ angular.module('lion.guardians.image.set.controllers', [])
     $scope.isNameIdCollapsed = !$scope.isNameIdCollapsed
     imagesets_filters.isNameIdCollapsed = $scope.isNameIdCollapsed;
   }
+  $scope.change_features_is_collapsed = function(){
+    $scope.isFeaturesCollapsed = !$scope.isFeaturesCollapsed
+    imagesets_filters.isFeaturesCollapsed = $scope.isFeaturesCollapsed;
+  }
+
   $scope.setPage = function(n) {
     $scope.currentPage = n;
     imagesets_filters.currentPage = $scope.currentPage;
@@ -291,7 +328,7 @@ angular.module('lion.guardians.image.set.controllers', [])
   };
   $scope.viewer_label = function(){
     var label = "0 image sets found";
-    if($scope.filtered_image_sets){
+    if($scope.filtered_image_sets != undefined && $scope.filtered_image_sets.length){
       label = ($scope.filtered_image_sets.length).toString() + " image sets found - " +
               ($scope.currentPage*$scope.itemsPerPage+1).toString() + " to " +
               (Math.min((($scope.currentPage+1)*$scope.itemsPerPage),$scope.filtered_image_sets.length)).toString();
