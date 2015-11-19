@@ -1,3 +1,2 @@
 pycurl==7.19.5.1
 tornado==4.2
-newrelic==2.58.1.44
