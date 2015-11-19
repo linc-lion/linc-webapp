@@ -150,7 +150,29 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     return results.length;
   }
   // Click on the images check mark
-  $scope.Image_Check = function (select, photo){
+  $scope.lastSelIndex = -1;
+  $scope.shiftKey = false;
+  $scope.shift_selected = false;
+  document.addEventListener('keydown', function (e) {
+    if(e.shiftKey){
+      $scope.shiftKey = true;
+      angular.element(document).one("keyup", function (e) {
+        $scope.shiftKey = false;
+      });
+    }
+  });
+  $scope.Image_Check = function (select, photo, index){
+    if($scope.shiftKey && $scope.lastSelIndex>=0){
+      for(var i = $scope.lastSelIndex; i < index; i++){
+        $scope.paginated_gallery[i].select = select;
+        $scope.shift_selected = true;
+      }
+      //$scope.lastSelIndex = -1;
+    }
+    else{
+      $scope.lastSelIndex = index;
+    }
+
     if(!calc_selected_count()){
       $scope.HasFilter = true;
     }
@@ -318,6 +340,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
       console.log('updated: ' + $scope.ImagesChanged);
     });
   };
+
 }])
 
 // FILTERS
