@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.side.menu.directive', [])
 
-.directive('sidemenu', function($aside) {
+.directive('sidemenu', ['$aside', function($aside) {
     return {
         transclude: true,
         restrict: 'EA',
@@ -22,4 +22,4 @@ angular.module('lion.guardians.side.menu.directive', [])
             };
         }
     };
-});
+}]);

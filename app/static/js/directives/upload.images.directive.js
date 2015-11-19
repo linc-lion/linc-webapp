@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.upload.images.directive', [])
 
-.directive('uploadImages', function($uibModal) {
+.directive('uploadImages', ['$uibModal', function($uibModal) {
   return {
     transclude: true,
     restrict: 'EA',
@@ -83,4 +83,4 @@ angular.module('lion.guardians.upload.images.directive', [])
       }
     }
   };
-});
+}]);

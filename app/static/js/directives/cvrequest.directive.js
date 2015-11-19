@@ -47,4 +47,4 @@ angular.module('lion.guardians.cvrequest.directive', [])
       };
     }
   };
-}])
+}]);

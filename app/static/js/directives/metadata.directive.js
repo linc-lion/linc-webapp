@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.metadata.directive', [])
 
-.directive('metadata', function($uibModal) {
+.directive('metadata', ['$uibModal', function($uibModal) {
   return {
     transclude: true,
     restrict: 'EA',
@@ -93,4 +93,4 @@ angular.module('lion.guardians.metadata.directive', [])
       }
     }
   };
-});
+}]);
