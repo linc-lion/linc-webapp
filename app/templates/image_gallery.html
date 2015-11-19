@@ -5,8 +5,8 @@
 <div class="modal-body" ng-show="content">
   <div class="row">
     <div class="col-sm-9">
-      <a class="thumbnail" ng-repeat="photo in paginated_gallery = (filtered_gallery = (gallery | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" ng-class="{active:photo.select}" ng-click="show_photo(photo.medium)" target="_blank">
-        <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select;Image_Check(photo.select, photo); $event.stopPropagation();"></i>
+      <a class="thumbnail" ng-repeat="(index, photo) in paginated_gallery = (filtered_gallery = (gallery | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" ng-class="{active:photo.select}" ng-click="show_photo(photo.medium)" target="_blank">
+        <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select;Image_Check(photo.select, photo, index); $event.stopPropagation();"></i>
         <img ng-src="{{!photo.thumbnail}}" width="150" height="150">
         <div class="caption"><i class="icon icon-globe pull-right" ng-if="photo.is_public"></i><i class="icon icon-star" ng-if="photo.cover"></i>{{!Type_Labels[photo.type]}}</div>
       </a>
