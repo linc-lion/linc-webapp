@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.image.gallery.directive', [])
 
-.directive('imageGallery', function($uibModal) {
+.directive('imageGallery', ['$uibModal', function($uibModal) {
   return {
     transclude: true,
     restrict: 'EA',
@@ -38,4 +38,4 @@ angular.module('lion.guardians.image.gallery.directive', [])
       }
     }
   };
-});
+}]);

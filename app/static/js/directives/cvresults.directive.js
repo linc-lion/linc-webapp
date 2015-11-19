@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.cvresults.directive', [])
 
-.directive('cvresults', function($uibModal) {
+.directive('cvresults', ['$uibModal', function($uibModal) {
   return {
     transclude: true,
     restrict: 'EA',
@@ -52,4 +52,4 @@ angular.module('lion.guardians.cvresults.directive', [])
       };
     }
   };
-})
+}]);

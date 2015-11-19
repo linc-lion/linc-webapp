@@ -99,6 +99,12 @@ angular.module('lion.guardians.lions.controllers', [])
   };
 }])
 
+.controller('OptionsController', ['$scope', function ($scope) {
+  $scope.ports = [{name: 'http', isinuse: 'g'},
+                  {name: 'test', isinuse: 'online'}];
+    $scope.selectedport = 'test';
+}])
+
 .controller('SearchLionCtrl', ['$scope', 'lions', 'lion_filters', function ($scope, lions, lion_filters) {
 
   $scope.lions = lions;
@@ -125,7 +131,15 @@ angular.module('lion.guardians.lions.controllers', [])
     lion_filters.predicate = $scope.predicate;
     lion_filters.reverse = $scope.reverse;
   };
-  $scope.PerPages = [{'index': 0, 'label' : '10 Lions'}, {'index': 1, 'label' : '20 Lions'}, {'index': 2, 'label' : '30 Lions'}, {'index': 4, 'label' : 'All Lions'}];
+
+  $scope.PerPages = [
+      {'index': 0, 'label' : '10 Lions', 'value': 10, 'disabled': false},
+      {'index': 1, 'label' : '20 Lions', 'value': 20, 'disabled': lions.length < 10 ?  true : false},
+      {'index': 2, 'label' : '30 Lions', 'value': 30, 'disabled': lions.length < 20 ?  true : false},
+      {'index': 3, 'label' : '60 Lions', 'value': 60, 'disabled': lions.length < 30 ?  true : false},
+      {'index': 4, 'label' : '100 Lions', 'value' : 100, 'disabled': lions.length < 60 ?  true : false}
+    ];
+
 
   $scope.PerPage = lion_filters.PerPage;
   $scope.changeItensPerPage = function(){
@@ -136,16 +150,20 @@ angular.module('lion.guardians.lions.controllers', [])
         lion_filters.PerPage = $scope.PerPages[0].index;
       break;
       case 1:
-        $scope.itemsPerPage = Math.min(20, min_val);;
+        $scope.itemsPerPage = Math.min(20, min_val);
         lion_filters.PerPage = $scope.PerPages[1].index;
       break;
       case 2:
-        $scope.itemsPerPage = Math.min(30, min_val);;
+        $scope.itemsPerPage = Math.min(30, min_val);
+        lion_filters.PerPage = $scope.PerPages[2].index;
+      break;
+      case 3:
+        $scope.itemsPerPage = Math.min(60, min_val);
         lion_filters.PerPage = $scope.PerPages[2].index;
       break;
       default:
-        $scope.itemsPerPage = $scope.lions.length;
-        lion_filters.PerPage = $scope.PerPages[3].index;;
+        $scope.itemsPerPage = Math.min(100, min_val);
+        lion_filters.PerPage = $scope.PerPages[3].index;
     }
   }
   $scope.changeItensPerPage();

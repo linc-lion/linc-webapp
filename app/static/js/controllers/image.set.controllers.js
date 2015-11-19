@@ -191,7 +191,13 @@ angular.module('lion.guardians.image.set.controllers', [])
     imagesets_filters.predicate = $scope.predicate;
     imagesets_filters.reverse = $scope.reverse;
   };
-  $scope.PerPages = [{'index': 0, 'label' : '10 Image Sets'}, {'index': 1, 'label' : '20 Image Sets'}, {'index': 2, 'label' : '30 Image Sets'}, {'index': 4, 'label' : 'All Image Sets'}];
+  $scope.PerPages = [
+      {'index': 0, 'label' : '10 Image Sets', 'value': 10, 'disabled': false},
+      {'index': 1, 'label' : '20 Image Sets', 'value': 20, 'disabled': imagesets.length < 10 ?  true : false},
+      {'index': 2, 'label' : '30 Image Sets', 'value': 30, 'disabled': imagesets.length < 20 ?  true : false},
+      {'index': 3, 'label' : '60 Image Sets', 'value': 60, 'disabled': imagesets.length < 30 ?  true : false},
+      {'index': 4, 'label' : '100 Image Sets', 'value' : 100, 'disabled': imagesets.length < 60 ?  true : false}
+    ];
 
   $scope.PerPage = imagesets_filters.PerPage;
   $scope.changeItensPerPage = function(){
@@ -209,8 +215,12 @@ angular.module('lion.guardians.image.set.controllers', [])
         $scope.itemsPerPage = Math.min(30, min_val);;
         imagesets_filters.PerPage = $scope.PerPages[2].index;
       break;
+      case 3:
+        $scope.itemsPerPage = Math.min(60, min_val);;
+        imagesets_filters.PerPage = $scope.PerPages[2].index;
+      break;
       default:
-        $scope.itemsPerPage = $scope.lions.length;
+        $scope.itemsPerPage = Math.min(100, min_val);;
         imagesets_filters.PerPage = $scope.PerPages[3].index;;
     }
   }

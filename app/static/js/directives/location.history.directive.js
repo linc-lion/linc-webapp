@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.location.history.directive', [])
 
-.directive('locationHistory', function($uibModal) {
+.directive('locationHistory', ['$uibModal', function($uibModal) {
     return {
         transclude: true,
         restrict: 'EA',
@@ -72,4 +72,4 @@ angular.module('lion.guardians.location.history.directive', [])
           };
         }
     };
-});
+}]);
