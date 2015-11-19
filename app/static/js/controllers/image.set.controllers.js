@@ -160,11 +160,8 @@ angular.module('lion.guardians.image.set.controllers', [])
   }
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$stateParams', 'NotificationFactory','LincServices', 'organizations', 'imagesets', function ($scope, $timeout, $interval, $stateParams, NotificationFactory, LincServices, organizations, imagesets) {
+.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$stateParams', 'NotificationFactory','LincServices', 'imagesets_filters', 'imagesets', function ($scope, $timeout, $interval, $stateParams, NotificationFactory, LincServices, imagesets_filters, imagesets) {
 
-  $scope.organizations =  _.map(organizations, function(element) {
-    return _.extend({}, element, {checked: true});
-  });
   $scope.imagesets = _.map(imagesets, function(element, index) {
     var elem = {};
     if(element.cvresults) elem["action"] = 'cvresults';
@@ -172,39 +169,92 @@ angular.module('lion.guardians.image.set.controllers', [])
     else  elem["action"] = 'cvrequest';
     return _.extend({}, element, elem);
   });
+  $scope.organizations = imagesets_filters.organizations;
 
-
-  // Hide Filters
-  $scope.isCollapsed = true;
+  //$scope.isCollapsed = true;
+  $scope.isAgeCollapsed = imagesets_filters.isAgeCollapsed;
+  $scope.isOrgCollapsed = imagesets_filters.isOrgCollapsed;
+  $scope.isNameIdCollapsed = imagesets_filters.isNameIdCollapsed;
   // Filters  scopes
-  $scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
-  $scope.name_or_id ='';
+  //$scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
+  $scope.LionAge = imagesets_filters.LionAge;
+  //$scope.name_or_id ='';
+  $scope.name_or_id = imagesets_filters.name_or_id;
   // Order by
-  $scope.reverse = false;
-  $scope.predicate = 'id';
+  //$scope.reverse = false;
+  $scope.reverse = imagesets_filters.reverse;
+  //$scope.predicate = 'id';
+  $scope.predicate = imagesets_filters.predicate;
   $scope.order = function(predicate) {
     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
     $scope.predicate = predicate;
+    imagesets_filters.predicate = $scope.predicate;
+    imagesets_filters.reverse = $scope.reverse;
   };
+  $scope.PerPages = [{'index': 0, 'label' : '10 Image Sets'}, {'index': 1, 'label' : '20 Image Sets'}, {'index': 2, 'label' : '30 Image Sets'}, {'index': 4, 'label' : 'All Image Sets'}];
+
+  $scope.PerPage = imagesets_filters.PerPage;
+  $scope.changeItensPerPage = function(){
+    var min_val = ($scope.filtered_image_sets==undefined) ? $scope.imagesets.length : $scope.filtered_image_sets.length;
+    switch ($scope.PerPage){
+      case 0:
+        $scope.itemsPerPage = Math.min(10, min_val);
+        imagesets_filters.PerPage = $scope.PerPages[0].index;
+      break;
+      case 1:
+        $scope.itemsPerPage = Math.min(20, min_val);;
+        imagesets_filters.PerPage = $scope.PerPages[1].index;
+      break;
+      case 2:
+        $scope.itemsPerPage = Math.min(30, min_val);;
+        imagesets_filters.PerPage = $scope.PerPages[2].index;
+      break;
+      default:
+        $scope.itemsPerPage = $scope.lions.length;
+        imagesets_filters.PerPage = $scope.PerPages[3].index;;
+    }
+  }
+  $scope.changeItensPerPage();
   // Pagination scopes
-  $scope.itemsPerPage = 10; $scope.currentPage = 0;
+  $scope.currentPage = imagesets_filters.currentPage;
+  // Change Name_or_Id input
+  $scope.change_name_or_id = function(){
+    imagesets_filters.name_or_id = $scope.name_or_id;
+    $scope.setPage(0);
+  }
+  $scope.change_organizations = function(){
+    $scope.setPage(0);
+  }
+  $scope.change_age_colapsed = function(){
+    $scope.isAgeCollapsed = !$scope.isAgeCollapsed
+    imagesets_filters.isAgeCollapsed = $scope.isAgeCollapsed;
+  }
+  $scope.change_org_colapsed = function(){
+    $scope.isOrgCollapsed = !$scope.isOrgCollapsed
+    imagesets_filters.isOrgCollapsed = $scope.isOrgCollapsed;
+  }
+  $scope.change_name_id_colapsed = function(){
+    $scope.isNameIdCollapsed = !$scope.isNameIdCollapsed
+    imagesets_filters.isNameIdCollapsed = $scope.isNameIdCollapsed;
+  }
   $scope.setPage = function(n) {
     $scope.currentPage = n;
+    imagesets_filters.currentPage = $scope.currentPage;
   };
   $scope.prevPage = function() {
     if ($scope.currentPage > 0)
-      $scope.currentPage--;
+      $scope.setPage($scope.currentPage - 1);
   };
   $scope.nextPage = function() {
     if ($scope.currentPage < $scope.pageCount()-1)
-      $scope.currentPage++;
+      $scope.setPage($scope.currentPage + 1);
   };
   $scope.firstPage = function() {
-    $scope.currentPage = 0;
+    $scope.setPage(0)
   };
   $scope.lastPage = function() {
     if ($scope.currentPage < $scope.pageCount()-1)
-      $scope.currentPage = $scope.pageCount()-1;
+      $scope.setPage($scope.pageCount()-1);
   };
   $scope.prevPageDisabled = function() {
     return $scope.currentPage === 0 ? "disabled" : "";
