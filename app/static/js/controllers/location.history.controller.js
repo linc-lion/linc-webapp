@@ -82,6 +82,7 @@ angular.module('lion.guardians.location.history.controller', ['lion.guardians.lo
     var promises = [];
     $scope.locations.forEach(function(location){
       var promise = add_lion(location, i);
+      location.selected = true;
       promises.push(promise);
       i++;
     });
@@ -158,14 +159,21 @@ angular.module('lion.guardians.location.history.controller', ['lion.guardians.lo
     });
   }
   // Animate marker when I click label
-  $scope.animate = function(id){
+  $scope.animate = function(location){
     if(typeof($scope.anime) != 'undefined'){
       clearTimeout($scope.anime);
       $scope.animated_marker.setAnimation(null);
     }
+    var id = location.id;
     $scope.animated_marker =  _.result(_.find($scope.markers, {id: id}), 'marker');
-    $scope.animated_marker.setAnimation(google.maps.Animation.BOUNCE);
-    $scope.anime = setTimeout(function() {$scope.animated_marker.setAnimation(null);}, 3000);
+    if(location.selected){
+      $scope.animated_marker.setMap($scope.map);
+      $scope.animated_marker.setAnimation(google.maps.Animation.BOUNCE);
+      $scope.anime = setTimeout(function() {$scope.animated_marker.setAnimation(null);}, 1000);
+    }
+    else{
+      $scope.animated_marker.setMap(null);
+    }
   }
   // Modal Functions
   $scope.close=function(){
