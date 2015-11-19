@@ -4,17 +4,17 @@ angular.module('lion.guardians.linc.data.factory', [])
   var initialized = false;
   var lions_filters = {
       'LionAge': { 'min': 0, 'max': 30, 'ceil': 30, 'floor': 0 },
-      'name_or_id': '', 'reverse': false, 'predicate': 'id',
+      'name_or_id': '', 'features': '', 'reverse': false, 'predicate': 'id',
       'PerPage': 0, 'currentPage': 0, 'isAgeCollapsed': true,
       'isOrgCollapsed': true, 'isNameIdCollapsed': false,
-      'organization': []
+      'isFeaturesCollapsed' : true, 'organization': []
   };
   var imagesets_filters = {
       'LionAge': { 'min': 0, 'max': 30, 'ceil': 30, 'floor': 0 },
-      'name_or_id': '', 'reverse': false, 'predicate': 'id',
+      'name_or_id': '', 'features': '', 'reverse': false, 'predicate': 'id',
       'PerPage': 0, 'currentPage': 0, 'isAgeCollapsed': true,
       'isOrgCollapsed': true, 'isNameIdCollapsed': false,
-      'organization': []
+      'isFeaturesCollapsed' : true, 'organization': []
   };
   if(!initialized){
     LincServices.Organizations().then(function (organizations){
