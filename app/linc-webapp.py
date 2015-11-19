@@ -30,6 +30,12 @@ class Application(tornado.web.Application):
 
 # Run server
 def main():
+    # Start newrelic monitor arguments
+    NR = os.environ.get('NEW_RELIC_CONFIG_FILE','no-config')
+    if NR != 'no-config':
+        import newrelic.agent
+        newrelic.agent.initialize(NR, 'staging')
+
     app = Application()
     print('Web App Handlers:')
     for h in url_patterns:
