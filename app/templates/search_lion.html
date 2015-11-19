@@ -1,41 +1,40 @@
   <button type="button" class="btn-help pull-right btn btn-icon" data-placement="left" title="" data-content="Search lions to view summaries of name, age, sex, and organization. Select a search result row to view a lion's primary image set, metadata, and click through to more lion information." data-trigger="focus" bs-popover><i class="icon icon-help-with-circle"></i></button>
 
   <h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a> Search Lion</h1>
-
   <div class="row">
     <div class="col-sm-3 line-right">
       <h3 class="text-muted">Refine by</h3>
       <div class="tablist" data-allow-multiple="true" role="tablist" aria-multiselectable="true" bs-collapse>
         <div role="tab">
           <h4>
-            <a bs-collapse-toggle><i class="pull-right icon icon-select-arrows"></i> Name or ID</a>
+            <a bs-collapse-toggle ng-click="change_name_id_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Name or ID</a>
           </h4>
         </div>
-        <div class="panel-collapse" role="tabpanel" bs-collapse-target>
+        <!--<div class="panel-collapse" role="tabpanel" bs-collapse-target>-->
+        <div uib-collapse="isNameIdCollapsed">
           <div class="panel-body">
-            <input ng-change="setPage(0)" type="text" class="form-control" ng-model="name_or_id">
+            <input ng-change="change_name_or_id()" type="text" class="form-control" ng-model="name_or_id">
           </div>
         </div>
-
         <div role="tab">
           <h4 >
-            <a bs-collapse-toggle><i class="pull-right icon icon-select-arrows"></i> Organization</a>
+            <a bs-collapse-toggle ng-click="change_org_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Organization</a>
           </h4>
         </div>
-        <div class="panel-collapse" role="tabpanel" bs-collapse-target>
+        <!--<div class="panel-collapse" role="tabpanel" bs-collapse-target>-->
+        <div uib-collapse="isOrgCollapsed">
           <div class="panel-body">
             <label ng-repeat="organization in organizations">
-              <input ng-click="setPage(0)" type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">{{! organization.name}}
+              <input ng-click="change_organizations()" type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">{{! organization.name}}
             </label>
           </div>
         </div>
-
         <div role="tab">
           <h4 >
-            <a bs-collapse-toggle ng-click="isCollapsed = !isCollapsed"><i class="pull-right icon icon-select-arrows"></i> Age</a>
-            </h4>
+            <a bs-collapse-toggle ng-click="change_age_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Age</a>
+          </h4>
         </div>
-        <div uib-collapse="isCollapsed">
+        <div uib-collapse="isAgeCollapsed">
           <div class="panel-body">
             <rzslider
               rz-slider-floor="LionAge.floor"
@@ -48,25 +47,19 @@
             </rzslider>
           </div>
         </div>
-
       </div>
     </div>
-
     <div class="col-sm-9">
-      <!--<div class="pull-right sort form-inline">
-        <label for="sorting" class="text-muted">Sort by </label>
-        <select class="form-control" id="sorting" ng-model="sorting">
-          <option value="name" selected="selected">Name</option>
-          <option value="age">Age</option>
-          <option value="organization">Organization</option>
-          <option value="gender">Gender</option>
-          <option value="is_verified">Verified</option>
-          <option value="is_primary">Primary</option>
-          <option value="actions">Actions</option>
-        </select>
-      </div>-->
-      <h3>{{! viewer_label()}}</h3>
-
+      <div class="row">
+        <div class="col-sm-6">
+          <h3>{{! viewer_label()}}</h3>
+        </div>
+        <div class="col-sm-6 text-right form-group">
+          <label for="items_page">Lions per page:</label>
+          <select class="form-control-inline" id="items_page" name="items_page" ng-options="itemspage.index as itemspage.label for itemspage in PerPages" ng-model="PerPage" ng-change="changeItensPerPage()" >
+          </select>
+        </div>
+      </div>
       <table class="table table-hover">
         <thead>
           <tr>

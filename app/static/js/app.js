@@ -82,12 +82,12 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             bodyClasses: 'lion'
           },
           resolve: {
-            organizations: function(LincServices) {
+            organizations: ['LincServices', function(LincServices) {
               return LincServices.Organizations();
-            },
-            lion: function($stateParams, LincServices) {
+            }],
+            lion: ['$stateParams', 'LincServices', function($stateParams, LincServices) {
               return LincServices.Lion($stateParams.id);
-            }
+            }]
           }
         })
         // New Image Set
@@ -99,12 +99,12 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             bodyClasses: 'imageset'
           },
           resolve: {
-            organizations: function(LincServices) {
+            organizations: ['LincServices', function(LincServices) {
               return LincServices.Organizations();
-            },
-            imageset: function($stateParams, LincServices) {
+            }],
+            imageset: ['$stateParams', 'LincServices', function($stateParams, LincServices) {
               return LincServices.ImageSet($stateParams.id);
-            }
+            }]
           }
         })
         // Search Lion
@@ -116,12 +116,12 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             bodyClasses: 'searchlion'
           },
           resolve: {
-            organizations: function(LincServices) {
-              return LincServices.Organizations();
-            },
-            lions: function(LincServices) {
+            lions: ['LincServices', function(LincServices) {
               return LincServices.Lions();
-            }
+            }],
+            lion_filters: ['LincDataFactory', function(LincDataFactory) {
+              return LincDataFactory.get_lions_filters();
+            }]
           }
         })
         // Search Image Set
@@ -133,12 +133,12 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             bodyClasses: 'searchimageset'
           },
           resolve: {
-            organizations: function(LincServices) {
-              return LincServices.Organizations();
-            },
-            imagesets: function(LincServices) {
+            imagesets: ['LincServices', function(LincServices) {
               return LincServices.ImageSets();
-            }
+            }],
+            imagesets_filters: ['LincDataFactory', function(LincDataFactory) {
+              return LincDataFactory.get_imagesets_filters();
+            }]
           }
         })
         // Conservationists
