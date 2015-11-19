@@ -193,15 +193,18 @@ angular.module('lion.guardians.image.set.controllers', [])
     }catch(e){ TAGS = element['tags'].split(","); }
     if(TAGS==null) TAGS = [];
     elem['features'] = get_features(tag_labels, TAGS);
+    
     return _.extend({}, element, elem);
   });
 
   $scope.organizations = imagesets_filters.organizations;
+  $scope.genders = imagesets_filters.genders;
   //$scope.isCollapsed = true;
   $scope.isAgeCollapsed = imagesets_filters.isAgeCollapsed;
   $scope.isOrgCollapsed = imagesets_filters.isOrgCollapsed;
   $scope.isNameIdCollapsed = imagesets_filters.isNameIdCollapsed;
   $scope.isFeaturesCollapsed = imagesets_filters.isFeaturesCollapsed;
+  $scope.isGenderCollapsed = imagesets_filters.isGenderCollapsed;
   // Filters  scopes
   //$scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
   $scope.LionAge = imagesets_filters.LionAge;
@@ -267,6 +270,9 @@ angular.module('lion.guardians.image.set.controllers', [])
   $scope.change_features = function(){
     $scope.setPage(0);
   }
+  $scope.change_gender = function(){
+    $scope.setPage(0);
+  }
   $scope.change_age_colapsed = function(){
     $scope.isAgeCollapsed = !$scope.isAgeCollapsed
     imagesets_filters.isAgeCollapsed = $scope.isAgeCollapsed;
@@ -283,7 +289,10 @@ angular.module('lion.guardians.image.set.controllers', [])
     $scope.isFeaturesCollapsed = !$scope.isFeaturesCollapsed
     imagesets_filters.isFeaturesCollapsed = $scope.isFeaturesCollapsed;
   }
-
+  $scope.change_gender_colapsed = function(){
+    $scope.isGenderCollapsed = !$scope.isGenderCollapsed
+    imagesets_filters.isGenderCollapsed = $scope.isGenderCollapsed;
+  }
   $scope.setPage = function(n) {
     $scope.currentPage = n;
     imagesets_filters.currentPage = $scope.currentPage;

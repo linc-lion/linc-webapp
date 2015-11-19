@@ -41,6 +41,7 @@ angular.module('lion.guardians.controllers', ['lion.guardians.home.controller',
 .filter('age_filter', function(){
   return function(input, age) {
     var filtered = _.filter(input, function(value){
+        if(isNaN(value.age)) return true;
         return value.age >= age.min && value.age <= age.max;
     });
     return filtered;
@@ -101,6 +102,18 @@ angular.module('lion.guardians.controllers', ['lion.guardians.home.controller',
   return function(input, organizations) {
     var filtered = _.filter(input, function(value){
         return (_.result(_.find(organizations, {'name': value.organization}), 'checked'));
+    });
+    return filtered;
+  };
+})
+
+// Filter by Organization
+.filter('gender_filter', function(){
+  return function(input, genders) {
+    var filtered = _.filter(input, function(value){
+        if(!value.gender)
+          return value;
+        return (_.result(_.find(genders, {'name': value.gender}), 'checked'));
     });
     return filtered;
   };
