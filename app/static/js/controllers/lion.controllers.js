@@ -99,46 +99,97 @@ angular.module('lion.guardians.lions.controllers', [])
   };
 }])
 
-.controller('SearchLionCtrl', ['$scope', 'lions', 'organizations', function ($scope, lions, organizations) {
-
-  $scope.organizations =  _.map(organizations, function(element) {
-    return _.extend({}, element, {checked: true});
-  });
+.controller('SearchLionCtrl', ['$scope', 'lions', 'lion_filters', function ($scope, lions, lion_filters) {
 
   $scope.lions = lions;
 
-  // Hide Filters
-  $scope.isCollapsed = true;
+  $scope.organizations = lion_filters.organizations;
+  //$scope.isCollapsed = true;
+  $scope.isAgeCollapsed = lion_filters.isAgeCollapsed;
+  $scope.isOrgCollapsed = lion_filters.isOrgCollapsed;
+  $scope.isNameIdCollapsed = lion_filters.isNameIdCollapsed;
   // Filters  scopes
-  $scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
-  $scope.name_or_id ='';
+  //$scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
+  $scope.LionAge = lion_filters.LionAge;
+  //$scope.name_or_id ='';
+  $scope.name_or_id = lion_filters.name_or_id;
   // Order by
-  $scope.reverse = false;
-  $scope.predicate = 'id';
+  //$scope.reverse = false;
+  $scope.reverse = lion_filters.reverse;
+  //$scope.predicate = 'id';
+  $scope.predicate = lion_filters.predicate;
+
   $scope.order = function(predicate) {
     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
     $scope.predicate = predicate;
+    lion_filters.predicate = $scope.predicate;
+    lion_filters.reverse = $scope.reverse;
   };
-  // Pagination scopes
-  $scope.itemsPerPage = 10;
-  $scope.currentPage = 0;
+  $scope.PerPages = [{'index': 0, 'label' : '10 Lions'}, {'index': 1, 'label' : '20 Lions'}, {'index': 2, 'label' : '30 Lions'}, {'index': 4, 'label' : 'All Lions'}];
+
+  $scope.PerPage = lion_filters.PerPage;
+  $scope.changeItensPerPage = function(){
+    var min_val = ($scope.filtered_lions==undefined) ? $scope.lions.length : $scope.filtered_lions.length;
+    switch ($scope.PerPage){
+      case 0:
+        $scope.itemsPerPage = Math.min(10, min_val);
+        lion_filters.PerPage = $scope.PerPages[0].index;
+      break;
+      case 1:
+        $scope.itemsPerPage = Math.min(20, min_val);;
+        lion_filters.PerPage = $scope.PerPages[1].index;
+      break;
+      case 2:
+        $scope.itemsPerPage = Math.min(30, min_val);;
+        lion_filters.PerPage = $scope.PerPages[2].index;
+      break;
+      default:
+        $scope.itemsPerPage = $scope.lions.length;
+        lion_filters.PerPage = $scope.PerPages[3].index;;
+    }
+  }
+  $scope.changeItensPerPage();
+  //$scope.currentPage = 0;
+  $scope.currentPage = lion_filters.currentPage;
+  // Change Name_or_Id input
+  $scope.change_name_or_id = function(){
+    lion_filters.name_or_id = $scope.name_or_id;
+    $scope.setPage(0);
+  }
+  $scope.change_organizations = function(){
+    $scope.setPage(0);
+  }
+  $scope.change_age_colapsed = function(){
+    $scope.isAgeCollapsed = !$scope.isAgeCollapsed
+    lion_filters.isAgeCollapsed = $scope.isAgeCollapsed;
+  }
+  $scope.change_org_colapsed = function(){
+    $scope.isOrgCollapsed = !$scope.isOrgCollapsed
+    lion_filters.isOrgCollapsed = $scope.isOrgCollapsed;
+  }
+  $scope.change_name_id_colapsed = function(){
+    $scope.isNameIdCollapsed = !$scope.isNameIdCollapsed
+    lion_filters.isNameIdCollapsed = $scope.isNameIdCollapsed;
+  }
+
   $scope.setPage = function(n) {
     $scope.currentPage = n;
+    lion_filters.currentPage = $scope.currentPage;
   };
   $scope.prevPage = function() {
     if ($scope.currentPage > 0)
-      $scope.currentPage--;
+      $scope.setPage($scope.currentPage - 1);
   };
   $scope.nextPage = function() {
     if ($scope.currentPage < $scope.pageCount()-1)
-      $scope.currentPage++;
+      $scope.setPage($scope.currentPage + 1);
   };
   $scope.firstPage = function() {
-    $scope.currentPage = 0;
+    $scope.setPage(0)
   };
   $scope.lastPage = function() {
     if ($scope.currentPage < $scope.pageCount()-1)
-      $scope.currentPage = $scope.pageCount()-1;
+      $scope.setPage($scope.pageCount()-1);
   };
   $scope.prevPageDisabled = function() {
     return $scope.currentPage === 0 ? "disabled" : "";
