@@ -29,6 +29,7 @@ angular.module('lion.guardians.cvrequest.directive', [])
           templateUrl: scope.useTemplateUrl,
           controller:  scope.useCtrl,
           size: scope.formSize,
+          windowClass: 'large-Modal',
           resolve: {
             imagesetId: function () {
               return scope.imagesetId;
