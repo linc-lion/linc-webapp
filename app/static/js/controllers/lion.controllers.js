@@ -170,6 +170,7 @@ angular.module('lion.guardians.lions.controllers', [])
 
   $scope.PerPage = lion_filters.PerPage;
   $scope.changeItensPerPage = function(){
+    $scope.setPage(0);
     var min_val = ($scope.filtered_lions==undefined) ? $scope.lions.length : $scope.filtered_lions.length;
     switch ($scope.PerPage){
       case 0:
@@ -193,9 +194,6 @@ angular.module('lion.guardians.lions.controllers', [])
         lion_filters.PerPage = $scope.PerPages[3].index;
     }
   }
-  $scope.changeItensPerPage();
-  //$scope.currentPage = 0;
-  $scope.currentPage = lion_filters.currentPage;
   // Change Name_or_Id input
   $scope.change_name_or_id = function(){
     lion_filters.name_or_id = $scope.name_or_id;
@@ -281,5 +279,7 @@ angular.module('lion.guardians.lions.controllers', [])
     }
     return label;
   }
-
+  $scope.changeItensPerPage();
+  //$scope.currentPage = 0;
+  $scope.currentPage = lion_filters.currentPage;
 }]);

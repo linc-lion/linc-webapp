@@ -193,7 +193,7 @@ angular.module('lion.guardians.image.set.controllers', [])
     }catch(e){ TAGS = element['tags'].split(","); }
     if(TAGS==null) TAGS = [];
     elem['features'] = get_features(tag_labels, TAGS);
-    
+
     return _.extend({}, element, elem);
   });
 
@@ -233,6 +233,7 @@ angular.module('lion.guardians.image.set.controllers', [])
 
   $scope.PerPage = imagesets_filters.PerPage;
   $scope.changeItensPerPage = function(){
+    $scope.setPage(0);
     var min_val = ($scope.filtered_image_sets==undefined) ? $scope.imagesets.length : $scope.filtered_image_sets.length;
     switch ($scope.PerPage){
       case 0:
@@ -256,9 +257,7 @@ angular.module('lion.guardians.image.set.controllers', [])
         imagesets_filters.PerPage = $scope.PerPages[3].index;;
     }
   }
-  $scope.changeItensPerPage();
-  // Pagination scopes
-  $scope.currentPage = imagesets_filters.currentPage;
+
   // Change Name_or_Id input
   $scope.change_name_or_id = function(){
     imagesets_filters.name_or_id = $scope.name_or_id;
@@ -344,7 +343,10 @@ angular.module('lion.guardians.image.set.controllers', [])
     }
     return label;
   }
-
+  $scope.changeItensPerPage();
+  // Pagination scopes
+  $scope.currentPage = imagesets_filters.currentPage;
+  
   var cancel_intervals = function (){
     if($scope.requesCVpromise != null){
       $interval.cancel($scope.requesCVpromise);
