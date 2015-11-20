@@ -206,8 +206,13 @@ angular.module('lion.guardians.image.set.controllers', [])
   $scope.isFeaturesCollapsed = imagesets_filters.isFeaturesCollapsed;
   $scope.isGenderCollapsed = imagesets_filters.isGenderCollapsed;
   // Filters  scopes
-  //$scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
   $scope.LionAge = imagesets_filters.LionAge;
+  $scope.refreshSlider = function () {
+    $timeout(function () {
+        $scope.$broadcast('rzSliderForceRender');
+    });
+  };
+  $scope.refreshSlider();
   //$scope.name_or_id ='';
   $scope.name_or_id = imagesets_filters.name_or_id;
   // tags
@@ -270,6 +275,9 @@ angular.module('lion.guardians.image.set.controllers', [])
     $scope.setPage(0);
   }
   $scope.change_gender = function(){
+    $scope.setPage(0);
+  }
+  $scope.change_age = function(){
     $scope.setPage(0);
   }
   $scope.change_age_colapsed = function(){
@@ -346,7 +354,7 @@ angular.module('lion.guardians.image.set.controllers', [])
   $scope.changeItensPerPage();
   // Pagination scopes
   $scope.currentPage = imagesets_filters.currentPage;
-  
+
   var cancel_intervals = function (){
     if($scope.requesCVpromise != null){
       $interval.cancel($scope.requesCVpromise);

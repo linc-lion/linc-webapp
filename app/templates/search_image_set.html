@@ -10,7 +10,6 @@
             <a bs-collapse-toggle ng-click="change_name_id_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Name or ID</a>
           </h4>
         </div>
-        <!--<div class="panel-collapse" role="tabpanel" bs-collapse-target>-->
         <div uib-collapse="isNameIdCollapsed">
           <div class="panel-body">
             <input ng-change="change_name_or_id()" type="text" class="form-control" ng-model="name_or_id">
@@ -21,7 +20,6 @@
             <a bs-collapse-toggle ng-click="change_org_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Organization</a>
           </h4>
         </div>
-        <!--<div class="panel-collapse" role="tabpanel" bs-collapse-target>-->
         <div uib-collapse="isOrgCollapsed">
           <div class="panel-body">
             <label ng-repeat="organization in organizations">
@@ -31,18 +29,17 @@
         </div>
         <div role="tab">
           <h4 >
-            <a bs-collapse-toggle ng-click="change_age_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Age</a>
+            <a bs-collapse-toggle ng-click="refreshSlider();change_age_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Age</a>
           </h4>
         </div>
         <div uib-collapse="isAgeCollapsed">
           <div class="panel-body">
             <rzslider
-              rz-slider-floor="LionAge.floor"
-              rz-slider-ceil="LionAge.ceil"
               rz-slider-model="LionAge.min"
               rz-slider-high="LionAge.max"
+              rz-slider-options="LionAge.options"
               rz-slider-step="1"
-              rz-slider-on-change="setPage(0)"
+              rz-slider-on-change="change_age()"
               rz-slider-tpl-url="rzSliderTpl.html">
             </rzslider>
           </div>
@@ -52,7 +49,6 @@
             <a bs-collapse-toggle ng-click="change_gender_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Gender</a>
           </h4>
         </div>
-        <!--<div class="panel-collapse" role="tabpanel" bs-collapse-target>-->
         <div uib-collapse="isGenderCollapsed">
           <div class="panel-body">
             <label ng-repeat="gender in genders">

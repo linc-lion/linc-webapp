@@ -347,3 +347,12 @@ a.ng-scope { color: #333;}
 .notify-text { display: block; margin: 10px;}
 .cg-notify-message{min-width: 300px; right: 25px; top: 121px; opacity: 1; display: block; overflow: visible;text-align: left; padding: 10px;}
 .cg-notify-message-template h4 {margin-top: 0; color: inherit;}
+
+// CV Search Modal
+.Container-Panel-1 { display: flex; overflow: hidden; height: 100vh; position: relative; width: 100%; backface-visibility: hidden; will-change: overflow; }
+.Left-Panel { overflow: auto; width: 20%; height: auto; padding: .5rem; -webkit-overflow-scrolling: touch; -ms-overflow-style: none; }
+.Right-Panel { overflow: auto; width: 80%; height: auto; padding: .5rem;  -webkit-overflow-scrolling: touch; -ms-overflow-style: none; }
+.Container-Panel-2 { display: flex; overflow: hidden; height: 100vh; position: relative; width: 100%; backface-visibility: hidden; will-change: overflow; }
+.Right-Top-Panel { display: flex; justify-content: left;  position: fixed; width: 70%; z-index: 10; height: auto;}
+.Scroll-Panel { overflow: auto; height: auto; padding: .1rem; margin-top:4rem; margin-left:1rem; -webkit-overflow-scrolling: touch; -ms-overflow-style: none; }
+.Left-Panel::-webkit-scrollbar, .Right-Panel::-webkit-scrollbar, .Scroll-Panel::-webkit-scrollbar { display: none; }

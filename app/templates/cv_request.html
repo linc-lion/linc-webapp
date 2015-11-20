@@ -1,68 +1,152 @@
 <div class="modal-header" ng-show="title">
   <button type="button" class="close" ng-click="Close()">&times;</button>
-  <h4 class="modal-title" ng-bind-html="title"></h4>
+  <h3 class="modal-title" ng-bind-html="title"></h3>
 </div>
 <div class="modal-body" ng-show="content">
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th class="text-center"><a ng-click="order('id')" ng-class="{'order_class': predicate === 'id'}">Id</a>
-          <span class="sortorder" ng-show="predicate === 'id'" ng-class="{reverse:reverse}"></span>
-        </th>
-        <th class="text-center">Photo</th>
-        <th class="text-center">
-          <a href="" ng-click="order('name')" ng-class="{'order_class': predicate === 'name'}">Name</a>
-          <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span>
-        </th>
-        <th class="text-center">
-          <a href="" ng-click="order('age')" ng-class="{'order_class': predicate === 'age'}">Age</a>
-          <span class="sortorder" ng-show="predicate === 'age'" ng-class="{reverse:reverse}"></span>
-        </th>
-        <th class="text-center">
-          <a href="" ng-click="order('organization')" ng-class="{'order_class': predicate === 'organization'}">Organization</a>
-          <span class="sortorder" ng-show="predicate === 'organization'" ng-class="{reverse:reverse}"></span>
-        </th>
-        <th class="text-center">
-          <a href="" ng-click="order('gender')" ng-class="{'order_class': predicate === 'gender'}">Gender</a>
-          <span class="sortorder" ng-show="predicate === 'gender'" ng-class="{reverse:reverse}"></span>
-        </th>
-        <th class="text-center">
-          <a href="" ng-click="order('is_verified')" ng-class="{'order_class': predicate === 'is_verified'}">Verified</a>
-          <span class="sortorder" ng-show="predicate === 'is_verified'" ng-class="{reverse:reverse}"></span>
-        </th>
-        <th>
-          <a href="" ng-click="order('action')" ng-class="{'order_class': predicate === 'action'}">Actions</a>
-          <span class="sortorder" ng-show="predicate === 'action'" ng-class="{reverse:reverse}"></span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <!--<tr class="link" ng-repeat="lion in lions | filter: {hasResults: true, pending: true, verified: true}" ng-class="{active:lion.selected}">-->
-      <tr class="link" ng-repeat="lion in lions | orderBy:predicate:reverse" ng-class="{active:lion.selected}">
-        <td class="text-center">{{!lion.id}}</td>
-        <td class="text-center">
-          <img ng-src="{{!lion.thumbnail}}" width="40" height="40">
-        </td>
-        <td class="text-center">{{!lion.name}}</td>
-        <td class="text-center">{{!lion.age}} years old</td>
-        <td class="text-center">{{!lion.organization}}</td>
-        <td class="text-center">{{!lion.gender}}</td>
-        <td class="text-center">
-          <i ng-if="lion.is_verified" class="icon icon-check"></i>
-          <i ng-if="!lion.is_verified" class="icon icon-cross"></i>
-        </td>
-        <td class="text-center">
-          <label ng-class="{'btn btn-default': !lion.selected, 'btn btn-warning': lion.selected}" ><input type="checkbox" ng-model="lion.selected" ng-click="count(lion.selected)"> Select</label>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <p class="clearfix">
-    <a href="#" class="btn btn-link" ng-click="checkAll(true)">Select All</a>
-    <a href="#" class="btn btn-link" ng-click="checkAll(false)">Select None</a>
-  </p>
+  <div class="Container-Panel-1">
+    <div class="line-right Left-Panel">
+      <h3 class="text-muted">Refine by</h3>
+      <div class="tablist" data-allow-multiple="true" role="tablist" aria-multiselectable="true" bs-collapse>
+        <div role="tab">
+          <h4>
+            <a bs-collapse-toggle ng-click="change_name_id_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Name or ID</a>
+          </h4>
+        </div>
+        <div uib-collapse="isNameIdCollapsed">
+          <div class="panel-body">
+            <input ng-change="change_name_or_id()" type="text" class="form-control" ng-model="name_or_id">
+          </div>
+        </div>
+        <div role="tab">
+          <h4 >
+            <a bs-collapse-toggle ng-click="change_org_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Organization</a>
+          </h4>
+        </div>
+        <div uib-collapse="isOrgCollapsed">
+          <div class="panel-body">
+            <label ng-repeat="organization in organizations">
+              <input ng-click="change_organizations()" type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">{{! organization.name}}
+            </label>
+          </div>
+        </div>
+        <div role="tab">
+          <h4 >
+            <a bs-collapse-toggle ng-click="refreshSlider();change_age_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Age</a>
+          </h4>
+        </div>
+        <div uib-collapse="isAgeCollapsed">
+          <div class="panel-body">
+            <rzslider
+              rz-slider-model="LionAge.min"
+              rz-slider-high="LionAge.max"
+              rz-slider-options="LionAge.options"
+              rz-slider-step="1"
+              rz-slider-tpl-url="rzSliderTpl.html">
+            </rzslider>
+          </div>
+        </div>
+        <div role="tab">
+          <h4 >
+            <a bs-collapse-toggle ng-click="change_gender_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Gender</a>
+          </h4>
+        </div>
+        <div uib-collapse="isGenderCollapsed">
+          <div class="panel-body">
+            <label ng-repeat="gender in genders">
+              <input ng-click="change_gender()" type="checkbox"  ng-model="gender.checked" ng-checked="gender.checked">{{! gender.label}}
+            </label>
+          </div>
+        </div>
+        <div role="tab">
+          <h4>
+            <a bs-collapse-toggle ng-click="change_features_is_collapsed()"><i class="pull-right icon icon-select-arrows"></i>Features</a>
+          </h4>
+        </div>
+        <div uib-collapse="isFeaturesCollapsed">
+          <div class="panel-body">
+            <input ng-change="change_features()" type="text" class="form-control" ng-model="tag_features">
+          </div>
+        </div>
+      </div>
+      <div class="form-group" style="padding-left:15px;padding-top:20px;">
+        <button type="button" class="btn btn-primary" ng-click="requestCV()"><i class="icon icon-flash"></i>Request CV</button>
+      </div>
+    </div>
+    <div class="Right-Panel">
+      <div class="Container-Panel-2">
+        <div class="Right-Top-Panel">
+          <div class="col-sm-6">
+            <h3>{{! viewer_label()}}</h3>
+          </div>
+        </div>
+        <div class="Scroll-Panel">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th class="text-center"><a ng-click="order('id')" ng-class="{'order_class': predicate === 'id'}">Id</a>
+                  <span class="sortorder" ng-show="predicate === 'id'" ng-class="{reverse:reverse}"></span>
+                </th>
+                <th class="text-center">Photo</th>
+                <th class="text-center">
+                  <a href="" ng-click="order('name')" ng-class="{'order_class': predicate === 'name'}">Name</a>
+                  <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span>
+                </th>
+                <th class="text-center">
+                  <a href="" ng-click="order('age')" ng-class="{'order_class': predicate === 'age'}">Age</a>
+                  <span class="sortorder" ng-show="predicate === 'age'" ng-class="{reverse:reverse}"></span>
+                </th>
+                <th class="text-center">
+                  <a href="" ng-click="order('organization')" ng-class="{'order_class': predicate === 'organization'}">Organization</a>
+                  <span class="sortorder" ng-show="predicate === 'organization'" ng-class="{reverse:reverse}"></span>
+                </th>
+                <th class="text-center">
+                  <a href="" ng-click="order('gender')" ng-class="{'order_class': predicate === 'gender'}">Gender</a>
+                  <span class="sortorder" ng-show="predicate === 'gender'" ng-class="{reverse:reverse}"></span>
+                </th>
+                <th class="text-center">
+                  <a href="" ng-click="order('tag_features')" ng-class="{'order_class': predicate === 'tag_features'}">Features</a>
+                  <span class="sortorder" ng-show="predicate === 'tag_features'" ng-class="{reverse:reverse}"></span>
+                </th>
+                <th class="text-center">
+                  <a href="" ng-click="order('is_verified')" ng-class="{'order_class': predicate === 'is_verified'}">Verified</a>
+                  <span class="sortorder" ng-show="predicate === 'is_verified'" ng-class="{reverse:reverse}"></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="link" ng-repeat="lion in filtered_lions = (lions | orderBy:predicate:reverse | nameid_filter:name_or_id:name_or_id | age_filter:LionAge | organization_filter:organizations | features_filter:tag_features | gender_filter:genders )">
+                <td class="text-center">{{!lion.id}}</td>
+                <td class="text-center"><img ng-src="{{!lion.thumbnail}}" width="40" height="40"></td>
+                <td class="text-center">{{!lion.name}}</td>
+                <td class="text-center">{{!lion.age}} y/o</td>
+                <td class="text-center">{{!lion.organization}}</td>
+                <td class="text-center">{{!lion.gender}}</td>
+                <td class="text-center">{{!lion.features}}</td>
+                <td class="text-center">
+                  <i ng-if="lion.is_verified" class="icon icon-check"></i>
+                  <i ng-if="!lion.is_verified" class="icon icon-cross"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </did>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="modal-footer">
-  <!--<button type="button" class="btn btn-default" ng-click="Close()">Close</button>-->
-  <button type="button" ng-disabled="!checked_count" class="btn btn-primary" ng-click="requestCV()"><i class="icon icon-flash"></i>Request CV</button>
+
 </div>
+
+
+<!--
+
+  <div class="col-sm-10 Right-Panel">
+    <div class="row">
+      <div class="col-sm-6">
+        <h3>{{! viewer_label()}}</h3>
+      </div>
+      <div class="col-sm-6 text-right form-group">
+        <button type="button" class="btn btn-primary" ng-click="requestCV()"><i class="icon icon-flash"></i>Request CV</button>
+      </div>
+    </div>-->

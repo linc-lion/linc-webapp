@@ -35,6 +35,9 @@ angular.module('lion.guardians.cvrequest.directive', [])
             },
             lions: function(LincServices) {
               return LincServices.Lions();
+            },
+            lion_filters: function(LincDataFactory) {
+              return LincDataFactory.get_lions_cvreq_filters();
             }
           }
         });
