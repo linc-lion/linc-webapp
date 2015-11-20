@@ -99,7 +99,7 @@ angular.module('lion.guardians.lions.controllers', [])
   };
 }])
 
-.controller('SearchLionCtrl', ['$scope', '$bsTooltip', 'lions', 'lion_filters', function ($scope, $bsTooltip, lions, lion_filters) {
+.controller('SearchLionCtrl', ['$scope', '$timeout', '$bsTooltip', 'lions', 'lion_filters', function ($scope, $timeout, $bsTooltip, lions, lion_filters) {
 
   var tag_labels    = {'EYE_DAMAGE_BOTH': 'Eye Damage Both', 'EYE_DAMAGE_LEFT': 'Eye Damage Left', 'EYE_DAMAGE_RIGHT': 'Eye Damage Right', 'TEETH_BROKEN_CANINE_LEFT': 'Broken Teeth Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Broken Teeth Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Broken Teeth Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Broken Teeth Incisor Right',
   'EAR_MARKING_BOTH': 'Ear Marking Both', 'EAR_MARKING_LEFT': 'Ear Marking Left', 'EAR_MARKING_RIGHT': 'Ear Marking Right',
@@ -141,8 +141,13 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.isFeaturesCollapsed = lion_filters.isFeaturesCollapsed;
   $scope.isGenderCollapsed = lion_filters.isGenderCollapsed;
   // Filters  scopes
-  //$scope.LionAge = { min: 0, max: 30, ceil: 30, floor: 0 };
   $scope.LionAge = lion_filters.LionAge;
+  $scope.refreshSlider = function () {
+    $timeout(function () {
+        $scope.$broadcast('rzSliderForceRender');
+    });
+  };
+  $scope.refreshSlider();
   //$scope.name_or_id ='';
   $scope.name_or_id = lion_filters.name_or_id;
   // tags
@@ -206,6 +211,9 @@ angular.module('lion.guardians.lions.controllers', [])
     $scope.setPage(0);
   }
   $scope.change_gender = function(){
+    $scope.setPage(0);
+  }
+  $scope.change_age = function(){
     $scope.setPage(0);
   }
   $scope.change_age_colapsed = function(){
