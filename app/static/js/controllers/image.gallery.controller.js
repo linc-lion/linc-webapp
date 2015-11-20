@@ -163,7 +163,10 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   });
   $scope.Image_Check = function (select, photo, index){
     if($scope.shiftKey && $scope.lastSelIndex>=0){
-      for(var i = $scope.lastSelIndex; i < index; i++){
+      var first = Math.min($scope.lastSelIndex, index);
+      var second = Math.max($scope.lastSelIndex, index);
+      //for(var i = $scope.lastSelIndex; i < index; i++){
+      for(var i = first; i < second; i++){
         $scope.paginated_gallery[i].select = select;
         $scope.shift_selected = true;
       }

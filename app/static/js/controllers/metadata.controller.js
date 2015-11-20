@@ -9,7 +9,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
   //$scope.optionsSet.isMetadata = true;
   $scope.organizations = organizations;
-  var titles = {}; titles['lion'] = 'Lion Metadata'; titles['imageset'] = 'Image Set Metadata';
+  var titles = {}; titles['lion'] = 'Metadata'; titles['imageset'] = 'Metadata';
   $scope.showLionName = (optionsSet.type === 'lion' || (optionsSet.type === 'imageset' && optionsSet.edit === 'edit'));
   $scope.isNew = (optionsSet.edit === 'new');
   $scope.lion_required = (optionsSet.type === 'lion');
