@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image.gallery.directive'])
 
-.controller('ImageGalleryCtrl', ['$scope', '$window', '$uibModal', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', 'gallery', function($scope, $window, $uibModal, $uibModalInstance, LincServices, NotificationFactory, optionsSet, gallery) {
+.controller('ImageGalleryCtrl', ['$scope', '$sce', '$window', '$uibModal', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', 'gallery', function($scope, $sce, $window, $uibModal, $uibModalInstance, LincServices, NotificationFactory, optionsSet, gallery) {
 
   $scope.gallery = gallery.images;
   $scope.imagesetId = optionsSet.id;
@@ -12,7 +12,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   $scope.ShowIsCover = true;
 
   // Title
-  $scope.title = 'Image Gallery ' + ' (Imageset - ' + optionsSet.id + ')';
+  $scope.title = 'Image Gallery ' + ' <h4 style="display:inline;">(Imageset - ' + optionsSet.id + ')</h4>';
   $scope.content = 'Image Gallery<br />Contents!';
 
   // Photo Caption
@@ -345,6 +345,10 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   };
 
 }])
+
+.filter('unsafe', function($sce) {
+  return $sce.trustAsHtml;
+})
 
 // FILTERS
 
