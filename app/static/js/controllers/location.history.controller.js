@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.location.history.controller', ['lion.guardians.location.history.directive'])
 
-.controller('LocationHistoryCtrl', ['$scope', '$uibModal', '$q', '$timeout', '$uibModalInstance', 'LincServices', 'options', 'history', function ($scope, $uibModal, $q, $timeout, $uibModalInstance, LincServices, options, history) {
+.controller('LocationHistoryCtrl', ['$scope', '$state', '$timeout', '$uibModal', '$q', '$uibModalInstance', 'LincServices', 'options', 'history', function ($scope, $state, $timeout, $uibModal, $q, $uibModalInstance, LincServices, options, history) {
   $scope.title = 'Location History';
   $scope.content = 'Map';
 
@@ -158,23 +158,39 @@ angular.module('lion.guardians.location.history.controller', ['lion.guardians.lo
       $uibModalInstance.close($scope.imageset_id);
     });
   }
+  var promise = null;
   // Animate marker when I click label
   $scope.animate = function(location){
-    if(typeof($scope.anime) != 'undefined'){
-      clearTimeout($scope.anime);
-      $scope.animated_marker.setAnimation(null);
-    }
-    var id = location.id;
-    $scope.animated_marker =  _.result(_.find($scope.markers, {id: id}), 'marker');
-    if(location.selected){
-      $scope.animated_marker.setMap($scope.map);
-      $scope.animated_marker.setAnimation(google.maps.Animation.BOUNCE);
-      $scope.anime = setTimeout(function() {$scope.animated_marker.setAnimation(null);}, 1000);
-    }
-    else{
-      $scope.animated_marker.setMap(null);
-    }
+
+    if(promise) return;
+    promise = $timeout(function() {
+      $timeout.cancel(promise);
+      promise = null;
+      location.selected = !location.selected;
+      if(typeof($scope.anime) != 'undefined'){
+       clearTimeout($scope.anime);
+       $scope.animated_marker.setAnimation(null);
+      }
+      var id = location.id;
+      $scope.animated_marker =  _.result(_.find($scope.markers, {id: id}), 'marker');
+      if(location.selected){
+       $scope.animated_marker.setMap($scope.map);
+       $scope.animated_marker.setAnimation(google.maps.Animation.BOUNCE);
+       $scope.anime = setTimeout(function() {$scope.animated_marker.setAnimation(null);}, 1000);
+      }
+      else{
+       $scope.animated_marker.setMap(null);
+      }
+    }, 250);
   }
+  $scope.open_imageset = function (id){
+    $timeout.cancel(promise);
+    promise = null;
+    var url = $state.href("imageset", { 'id': id },  {absolute: true});
+    window.open(url,'_blank');
+  }
+
+
   // Modal Functions
   $scope.close=function(){
     $scope.modalInstance.dismiss();

@@ -24,8 +24,10 @@
   <div class="row">
     <div ng-show="isLion" class="col-sm-3">
       <div class="list-group">
-      <!--  <button type="button" ng-click="animate(location.id)" ng-dblclick="click(location.id)" class="list-group-item" ng-class="{active:location==1}" ng-repeat="location in locations"><span class="badge">{{!location.updated_at}}</span>{{!location.label}}</button>-->
-          <label ng-repeat="location in locations" ng-class="{'btn btn-sm btn-default': !location.selected, 'btn btn-sm btn-warning': location.selected}" > {{!location.label}} - <span class="badge">{{!location.updated_at}}</span> - <input type="checkbox" ng-model="location.selected" ng-click="animate(location)"> </label>
+        <div class="form-group" ng-repeat="location in locations" >
+          <button ng-class="{'btn btn-default': !location.selected, 'btn btn-warning': location.selected}" ng-model="location.selected" ng-click="animate(location)" ng-dblclick="open_imageset(location.id)">{{!location.label}} - <span class="badge">{{!location.updated_at}}</span>
+          </button>
+        </div>
       </div>
     </div>
     <div class="map-container" ng-class="{'col-sm-9 ': isLion, 'col-sm-12': !isLion}">
