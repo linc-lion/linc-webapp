@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults.directive'])
 
-.controller('CVResultsCtrl', ['$scope', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'imagesetId', 'cvrequestId', 'cvresults', function ($scope, $uibModalInstance, LincServices, NotificationFactory, imagesetId, cvrequestId, cvresults) {
+.controller('CVResultsCtrl', ['$scope', '$state', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'imagesetId', 'cvrequestId', 'cvresults', function ($scope, $state, $uibModalInstance, LincServices, NotificationFactory, imagesetId, cvrequestId, cvresults) {
 
   $scope.title = 'CV Results';
   $scope.content = 'Form';
@@ -12,6 +12,10 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
   $scope.Close = function () {
     $uibModalInstance.dismiss("close");
   };
+  $scope.open_new_lion = function(id){
+    var url = $state.href("lion", { 'id': id },  {absolute: true});
+    window.open(url,'_blank');
+  }
   $scope.ClearResults= function () {
     LincServices.deleteCVRequest(cvrequestId, function(){
       console.log("Results cleared");
