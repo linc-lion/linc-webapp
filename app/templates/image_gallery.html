@@ -1,6 +1,6 @@
 <div class="modal-header" ng-show="title">
   <button type="button" class="close" ng-click="Close()">&times;</button>
-    <h4 class="modal-title" ng-bind-html="title"></h4>
+    <h3 class="modal-title" ng-bind-html="title | unsafe"></h3>
   </div>
 <div class="modal-body" ng-show="content">
   <div class="row">
@@ -26,6 +26,7 @@
 
     <div class="col-sm-3 line-left">
       <div ng-show="HasFilter">
+        <h3><u>Filter Mode</u></h3>
         <h4>Image type</h4>
         <div class="radio" ng-init="FilterSel.Type='all'" ng-repeat="item in Filters">
           <label><input type="radio" ng-model="FilterSel.Type" ng-value="item.type" ng-click="calc_itemspage();">{{!item.label}}</label>
@@ -41,6 +42,7 @@
       </div>
 
       <div ng-show="!HasFilter">
+        <h3><u>Edit Mode</u></h3>
         <h4>Image type</h4>
         <div class="radio" ng-init="Selected.Type='all'" ng-repeat="item in Selects">
           <label><input type="radio" ng-model="Selected.Type" ng-value="item.type" ng-click="Update()">{{!item.label}}</label>
