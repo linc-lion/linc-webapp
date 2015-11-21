@@ -356,7 +356,7 @@ a.ng-scope { color: #333;}
 .Right-Top-Panel { display: flex; justify-content: left;  position: fixed; width: 70%; z-index: 10; height: auto;}
 .Scroll-Panel { overflow: auto; height: auto; padding: .1rem; margin-top:4rem; margin-left:1rem; -webkit-overflow-scrolling: touch; -ms-overflow-style: none; }
 .Left-Panel::-webkit-scrollbar, .Right-Panel::-webkit-scrollbar, .Scroll-Panel::-webkit-scrollbar { display: none; }
+.large-Modal .modal-dialog .modal-content{ max-height: 700px !important; }
 
-.large-Modal .modal-dialog .modal-content{
-  max-height: 700px !important;
-}
+h4.h4inline {display:inline};
+h4.h4data {display:inline; color: #333; padding-left: 5px;}

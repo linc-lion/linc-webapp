@@ -1,47 +1,59 @@
-  <h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a>{{!lion.name}}</h1>
+  <h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a>Lion Info</h1>
   <div class="row">
     <div class="col-sm-3 line-right">
       <p><img src="{{!lion.image}}" class="img-responsive"></p>
-      <h4>Lion ID</h4>
-      <p>{{!lion.id}}</p>
-      <h4>Organization</h4>
-      <p>{{!lion.organization}}</p>
-      <h4>Age</h4>
-      <p>{{!lion.age}}</p>
-      <h4>Gender</h4>
-      <p>{{!lion.gender}}</p>
-      <div ng-show="lion.eye_damage">
-        <h4>Eye Damage</h4>
-        <p>{{!lion.eye_damage}}</p>
+      <div>
+        <h4 class="h4inline">Lion Name:</h4>
+        <h4 class="h4data">{{!lion.name}}</h4>
       </div>
-      <div ng-show="lion.broken_teet">
-        <h4>Broken Teeth</h4>
-        <p>{{!lion.broken_teet}}</p>
+      <div>
+        <h4 class="h4inline">Lion ID:</h4>
+        <h4 class="h4data">{{!lion.id}}</h4>
+      </div>
+      <div>
+        <h4 class="h4inline">Organization:</h4>
+        <h4 class="h4data">{{!lion.organization}}</h4>
+      </div>
+      <div>
+        <h4 class="h4inline">Age:</h4>
+        <h4 class="h4data">{{!lion.age}}</h4>
+      </div>
+      <div>
+        <h4 class="h4inline">Gender:</h4>
+        <h4 class="h4data">{{!lion.gender}}</h4>
       </div>
       <div ng-show="lion.ear_markings">
-        <h4>Ear Markings</h4>
-        <p>{{!lion.ear_markings}}</p>
+        <h4 class="h4inline">Ear Markings:</h4>
+        <h4 class="h4data">{{!lion.ear_markings}}</h4>
       </div>
       <div ng-show="lion.mount_markings">
-        <h4>Mouth Markings</h4>
-        <p>{{!lion.mount_markings}}</p>
+        <h4 class="h4inline">Mouth Markings:</h4>
+        <h4 class="h4data">{{!lion.mount_markings}}</h4>
       </div>
       <div ng-show="lion.tail_markings">
-        <h4>Tail Markings</h4>
-        <p>{{!lion.tail_markings}}</p>
+        <h4 class="h4inline">Tail Markings:</h4>
+        <h4 class="h4data">{{!lion.tail_markings}}</h4>
       </div>
       <div ng-show="lion.nose_color">
-        <h4>Nose Color</h4>
-        <p>{{!lion.nose_color}}</p>
+        <h4 class="h4inline">Nose Color:</h4>
+        <h4 class="h4data">{{!lion.nose_color}}</h4>
       </div>
       <div ng-show="lion.scars">
-        <h4>Scars</h4>
-        <p>{{!lion.scars}}</p>
+        <h4 class="h4inline">Scars:</h4>
+        <h4 class="h4data">{{!lion.scars}}</h4>
+      </div>
+      <div ng-show="lion.eye_damage">
+        <h4 class="h4inline">Eye Damage:</h4>
+        <h4 class="h4data" >{{!lion.eye_damage}}</h4>
+      </div>
+      <div ng-show="lion.broken_teet">
+        <h4 class="h4inline">Broken Teeth:</h4>
+        <h4 class="h4data">{{!lion.broken_teet}}</h4>
       </div>
     </div>
     <div class="col-sm-5">
-      <h4>Notes</h4>
-      <p>{{!lion.notes}}</p>
+      <h4 class="h4inline">Notes:</h4>
+      <h4 class="h4data">{{!lion.notes}}</h4>
     </div>
     <div class="col-sm-3 line-left" >
       <image-gallery ng-show="lion" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="gallery_options"></image-gallery>

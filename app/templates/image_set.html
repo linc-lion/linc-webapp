@@ -1,49 +1,59 @@
-  <h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a> Image set</h1>
+  <h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a> Image Set Info</h1>
   <div class="row">
     <div class="col-sm-3 line-right">
       <p><img src="{{!imageset.image}}" class="img-responsive"></p>
-      <h4>Image Set ID</h4>
-      <p>{{!imageset.id}}</p>
-      <h4>Lion Name</h4>
-      <p>{{!imageset.name}}</p>
-      <h4>Organization</h4>
-      <p>{{!imageset.organization}}</p>
-      <h4>Age</h4>
-      <p>{{!imageset.age}}</p>
-      <h4>Gender</h4>
-      <p>{{!imageset.gender}}</p>
-      <div ng-show="imageset.eye_damage">
-        <h4>Eye Damage</h4>
-        <p>{{!imageset.eye_damage}}</p>
+      <div>
+        <h4 class="h4inline">Image Set ID:</h4>
+        <h4 class="h4data">{{!imageset.id}}</h4>
       </div>
-      <div ng-show="imageset.broken_teet">
-        <h4>Broken Teeth</h4>
-        <p>{{!imageset.broken_teet}}</p>
+      <div>
+        <h4 class="h4inline">Lion Name:</h4>
+        <h4 class="h4data">{{!imageset.name}}</h4>
+      </div>
+      <div>
+        <h4 class="h4inline">Organization:</h4>
+        <h4 class="h4data">{{!imageset.organization}}</h4>
+      </div>
+      <div>
+        <h4 class="h4inline">Age:</h4>
+        <h4 class="h4data">{{!imageset.age}}</h4>
+      </div>
+      <div>
+        <h4 class="h4inline">Gender:</h4>
+        <h4 class="h4data">{{!imageset.gender}}</h4>
       </div>
       <div ng-show="imageset.ear_markings">
-        <h4>Ear Markings</h4>
-        <p>{{!imageset.ear_markings}}</p>
+        <h4 class="h4inline">Ear Markings:</h4>
+        <h4 class="h4data">{{!imageset.ear_markings}}</h4>
       </div>
       <div ng-show="imageset.mount_markings">
-        <h4>Mouth Markings</h4>
-        <p>{{!imageset.mount_markings}}</p>
+        <h4 class="h4inline">Mouth Markings:</h4>
+        <h4 class="h4data">{{!imageset.mount_markings}}</h4>
       </div>
       <div ng-show="imageset.tail_markings">
-        <h4>Tail Markings</h4>
-        <p>{{!imageset.tail_markings}}</p>
+        <h4 class="h4inline">Tail Markings:</h4>
+        <h4 class="h4data">{{!imageset.tail_markings}}</h4>
       </div>
       <div ng-show="imageset.nose_color">
-        <h4>Nose Color</h4>
-        <p>{{!imageset.nose_color}}</p>
+        <h4 class="h4inline">Nose Color:</h4>
+        <h4 class="h4data">{{!imageset.nose_color}}</h4>
       </div>
       <div ng-show="imageset.scars">
-        <h4>Scars</h4>
-        <p>{{!imageset.scars}}</p>
+        <h4 class="h4inline">Scars:</h4>
+        <h4 class="h4data">{{!imageset.scars}}</h4>
+      </div>
+      <div ng-show="imageset.eye_damage">
+        <h4 class="h4inline">Eye Damage:</h4>
+        <h4 class="h4data" >{{!imageset.eye_damage}}</h4>
+      </div>
+      <div ng-show="imageset.broken_teet">
+        <h4 class="h4inline">Broken Teeth:</h4>
+        <h4 class="h4data">{{!imageset.broken_teet}}</h4>
       </div>
     </div>
     <div class="col-sm-5">
-      <h4>Notes</h4>
-      <p>{{!imageset.notes}}</p>
+      <h4 class="h4inline">Notes:</h4>
+      <h4 class="h4data">{{!imageset.notes}}</h4>
     </div>
     <div class="col-sm-3 line-left">
       <image-gallery ng-show="imageset" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="gallery_options"></image-gallery>
