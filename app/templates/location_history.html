@@ -22,7 +22,7 @@
 </div>
 <div class="modal-body" ng-show="content">
   <div class="row">
-    <div ng-show="isLion" class="col-sm-3">
+    <div ng-show="isLion" class="col-sm-3 text-center">
       <div class="list-group">
         <div class="form-group" ng-repeat="location in locations" >
           <button ng-class="{'btn btn-default': !location.selected, 'btn btn-warning': location.selected}" ng-model="location.selected" ng-click="animate(location)" ng-dblclick="open_imageset(location.id)">{{!location.label}} - <span class="badge">{{!location.updated_at}}</span>
