@@ -145,6 +145,61 @@ angular.module('lion.guardians.services', [])
     return deferred.promise;
   };
 
+  var GetDownload = function (data) {
+    var deferred = $q.defer();
+    /*var req = { method: 'GET', url: databases['images'].url + data,
+               headers: { 'Content-Type': 'application/json'},
+                config: {ignoreLoadingBar: true, responseType: 'arraybuffer'} };
+    $http(req)
+    .success(function (data, status, headers, response, statusText) {
+      deferred.resolve(data);
+    })
+    .error(function (error) {
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to Download Images',
+        position: 'right', // right, left, center
+        duration: 5000   // milisecond
+      });
+      deferred.reject(error);
+    });*/
+    //Define custom action on resource
+             //Inspired by http://notjoshmiller.com/server-side-pdf-generation-and-angular-resource/
+    var getFileNameFromHeader = function(header) {
+      if (!header) return null;
+      var result = header.split(";")[1].trim().split("=")[1];
+      return result.replace(/"/g, '');
+    };
+    var req = {
+      method: 'GET',
+      url: databases['images'].url + data,
+      headers: { accept: 'application/zip' },
+      responseType: 'arraybuffer',
+      cache: false,
+      transformResponse: function(data, headers) {
+        var zip = null;
+        if (data) {
+           zip = new Blob([data], { type: 'application/zip' });
+        }
+        var fileName = getFileNameFromHeader(headers('Content-Disposition'));
+        var result = { blob: zip, fileName: fileName };
+        return result;
+      }
+    };
+    $http(req)
+    .success(function (data, status, headers, response, statusText) {
+      deferred.resolve(data);
+    })
+    .error(function (error) {
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to Download Images',
+        position: 'right', // right, left, center
+        duration: 5000   // milisecond
+      });
+      deferred.reject(error);
+    });
+    //deferred.resolve({'filename': 'http://www.colorado.edu/conflict/peace/download/peace_essay.ZIP'});
+    return deferred.promise;
+  };
   // Clean Caches
   var ClearAllCaches = function (fn) { $httpcache.removeAll(); };
   var ClearAllImagesetsCaches = function () { $httpcache.remove('/imagesets/list'); };
@@ -469,6 +524,7 @@ angular.module('lion.guardians.services', [])
 
   dataFactory.getImageGallery = GetImageGallery;
 
+  dataFactory.Download = GetDownload;
   dataFactory.Login = Login;
   return dataFactory;
 }])

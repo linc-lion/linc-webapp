@@ -37,9 +37,48 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   $scope.Save = function(){
     $uibModalInstance.close("salve");
   };
-  /*$scope.cancel = function () {
-    $uibModalInstance.dismiss('cancel');
-  };*/
+
+  $scope.Download = function () {
+    var data = '?download=' + _.pluck(_.map(_.filter($scope.paginated_gallery, { 'select': true}), function (photo){
+      return {'id': photo.id};
+    }), 'id');
+
+    LincServices.Download(data).then(function(res_data){
+      var blob = res_data.blob;
+      var fileName = res_data.fileName.substring(res_data.fileName.lastIndexOf('/')+1) || 'images.zip';
+      saveAs(blob, fileName);
+      /*var filename = result.filename;
+      var filename = 'http://www.colorado.edu/conflict/peace/download/peace_essay.ZIP';
+      var name = filename.substring(filename.lastIndexOf('/')+1);
+
+      var file = new Blob([ filename ], {
+        type : 'application/zip'
+      });
+      //trick to download store a file having its URL
+      var fileURL = URL.createObjectURL(file);
+      var a         = document.createElement('a');
+      a.href        = fileURL;
+      a.target      = '_blank';
+      a.download    = 'yourfilename.zip';
+      document.body.appendChild(a);
+      a.click();*/
+
+
+    //  var pom = document.createElement('a');
+    //  pom.setAttribute('href', 'data:attachment/zip,' + encodeURI(filename));
+    //  pom.setAttribute('target', '_blank');
+    //  pom.setAttribute('download', name);
+
+    /*  if (document.createEvent) {
+          var event = document.createEvent('MouseEvents');
+          event.initEvent('click', true, true);
+          pom.dispatchEvent(event);
+      }
+      else {
+          pom.click();
+      }*/
+    });
+  };
   $scope.Close = function(){
     console.log("Close UploadImages");
     //$scope.metadataId = {id: 5};
