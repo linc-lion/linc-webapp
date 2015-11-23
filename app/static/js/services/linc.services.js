@@ -76,6 +76,7 @@ angular.module('lion.guardians.services', [])
     });
     return deferred.promise;
   };
+
   // Get Imageset by Id
   var GetImageSet= function (id) {
     var deferred = $q.defer();
@@ -147,23 +148,6 @@ angular.module('lion.guardians.services', [])
 
   var GetDownload = function (data) {
     var deferred = $q.defer();
-    /*var req = { method: 'GET', url: databases['images'].url + data,
-               headers: { 'Content-Type': 'application/json'},
-                config: {ignoreLoadingBar: true, responseType: 'arraybuffer'} };
-    $http(req)
-    .success(function (data, status, headers, response, statusText) {
-      deferred.resolve(data);
-    })
-    .error(function (error) {
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to Download Images',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
-      deferred.reject(error);
-    });*/
-    //Define custom action on resource
-             //Inspired by http://notjoshmiller.com/server-side-pdf-generation-and-angular-resource/
     var getFileNameFromHeader = function(header) {
       if (!header) return null;
       var result = header.split(";")[1].trim().split("=")[1];
@@ -308,6 +292,7 @@ angular.module('lion.guardians.services', [])
     angular.merge(data, cookies);
     return HTTP('PUT', '/images/' + image_id, data, {},
     function (result) {
+      ClearAllCaches();
       success(result.data.data);
     }, error);
   }
@@ -330,6 +315,7 @@ angular.module('lion.guardians.services', [])
       results.forEach( function (result, index) {
         dados.push(result.data.data);
       })
+      ClearAllCaches();
       success(dados);
     },
     function (reason) {
@@ -476,6 +462,23 @@ angular.module('lion.guardians.services', [])
     //var data = {"input_data": input_data};
     angular.merge(data, cookies);
     return HTTP('POST', '/login', data, {}, success, error);
+  };
+
+
+  // Administration
+  var Get_Users = function () {
+    var deferred = $q.defer();
+    var url = '/users';
+    var promise = $http.get(url, {ignoreLoadingBar: true}).then(function(response){
+      return response.data;
+    }, function(error){
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to Get Users data',
+        position: 'right', // right, left, center
+        duration: 5000   // milisecond
+      });
+      console.log(error);
+    });
   };
 
   var dataFactory = {};

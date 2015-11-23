@@ -45,14 +45,14 @@
         <h3><u>Edit Mode</u></h3>
         <h4>Image type</h4>
         <div class="radio" ng-init="Selected.Type='all'" ng-repeat="item in Selects">
-          <label><input type="radio" ng-model="Selected.Type" ng-value="item.type" ng-click="Update()">{{!item.label}}</label>
+          <label><input type="radio" ng-model="Selected.Type" ng-value="item.type" ng-click="Change_Type()">{{!item.label}}</label>
         </div>
         <h4>Properties</h4>
         <div class="checkbox">
-          <label><input type="checkbox" checked ng-model="Selected.isPublic" ng-click="check_cover();">Public</label>
+          <label><input ng-click="Change_isPublic();" type="checkbox" checked ng-model="Selected.isPublic" >Public</label>
         </div>
         <div class="checkbox">
-          <label><input ng-click="Update()" ng-disabled="!Selected.isPublic || Selected_Count>1" type="checkbox" ng-model="Selected.isCover"> Cover image</label>
+          <label><input ng-click="Change_Cover()" ng-disabled="!Selected.isPublic || Selected_Count>1" type="checkbox" ng-model="Selected.isCover">Cover image</label>
         </div>
       </div>
       <p>
