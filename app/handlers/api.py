@@ -288,12 +288,22 @@ class ImagesUploadHandler(BaseHandler):
 class ImagesHandler(BaseHandler):
     @asynchronous
     @engine
-    def get(self, images_id=None, locations=None):
-        resource_url = '/images/' + images_id
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
-        self.set_status(response.code)
-        self.set_json_output()
-        self.finish(response.body)
+    def get(self, images_id=None):
+        download = self.get_argument('download')
+        print (download)
+        if download:
+            resource_url = '/images?download=' + download
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+            self.set_header('Content-Disposition', response.headers.get("Content-Disposition"))
+            self.set_header('Content-Type', response.headers.get("Content-Disposition"))
+            self.set_status(response.code)
+            self.finish(response.body)
+        else:
+            resource_url = '/images/' + images_id
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+            self.set_status(response.code)
+            self.set_json_output()
+            self.finish(response.body)
     @asynchronous
     @coroutine
     def delete(self, images_id=None):
