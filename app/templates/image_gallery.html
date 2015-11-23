@@ -57,7 +57,7 @@
       </div>
       <p>
         <button ng-disabled="!Selected_Count" class="btn btn-default btn-block" ng-click="Delete()">Delete</button>
-        <button ng-disabled="!Selected_Count" class="btn btn-default btn-block">Download original</button>
+        <button ng-disabled="!Selected_Count" class="btn btn-default btn-block" ng-click="Download()">Download original</button>
         <!--<button ng-disabled="Selected_Count" class="btn btn-primary btn-block" ng-click="OpenUpload()">Upload images</button>-->
 
         <upload-images disabled-btn="Selected_Count" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="edit" imageset-id="imagesetId" image-updated="UpdateImages()"></upload-images>
