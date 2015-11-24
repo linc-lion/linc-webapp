@@ -62,3 +62,7 @@ class CVRequestMainHandler(BaseHandler):
 class UploadImagesHandler(BaseHandler):
     def get(self):
         self.render('upload_images.html')
+
+class PageAdminHandler(BaseHandler):
+    def get(self):
+        self.render('admin.html')

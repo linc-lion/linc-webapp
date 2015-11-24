@@ -19,6 +19,7 @@ class ImageSetsListHandler(BaseHandler):
         url = self.settings['API_URL']+resource_url
         response = yield Task(self.api,url=url,method='GET')
         self.set_status(response.code)
+        self.set_json_output()
         self.finish(response.body)
     @asynchronous
     @engine
@@ -81,6 +82,7 @@ class ImagesListHandler(BaseHandler):
         resource_url = '/images/list'
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
+        self.set_json_output()
         self.finish(response.body)
 
 class LionsListHandler(BaseHandler):
@@ -90,6 +92,7 @@ class LionsListHandler(BaseHandler):
         resource_url = '/lions/list'
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
+        self.set_json_output()
         self.finish(response.body)
 
 class LionsHandler(BaseHandler):
@@ -199,6 +202,7 @@ class OrganizationsHandler(BaseHandler):
         resource_url = '/organizations/' + organizations_id
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
+        self.set_json_output()
         self.finish(response.body)
     @asynchronous
     @engine
@@ -238,6 +242,7 @@ class OrganizationsListHandler(BaseHandler):
         resource_url = '/organizations/list'
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
+        self.set_json_output()
         self.finish(response.body)
 
 class ImagesUploadHandler(BaseHandler):
@@ -351,3 +356,56 @@ class LoginHandler(BaseHandler):
                 self.finish("There isn't an account for this email")
             else:
                 self.finish('Invalid password')
+
+
+
+
+class UsersHandler(BaseHandler):
+    @asynchronous
+    @engine
+    def get(self):
+        resource_url = '/users'
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        self.set_status(response.code)
+        self.set_json_output()
+        self.finish(response.body)
+    # @asynchronous
+    # @engine
+    # def post(self):
+    #     resource_url = '/lions'
+    #     response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
+    #     self.set_status(response.code)
+    #     if response.code == 200:
+    #         self.finish(response.body)
+    #     else:
+    #         self.finish({'status':'error','message':'fail to create new lion POST'})
+    # @asynchronous
+    # @coroutine
+    # def put(self, lions_id=None):
+    #     print(lions_id)
+    #     if lions_id:
+    #         resource_url = '/lions/' + lions_id
+    #         print(self.input_data)
+    #         data = dict(self.input_data)
+    #         if "_xsrf" in data.keys():
+    #             del data["_xsrf"]
+    #         print(data)
+    #         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(data))
+    #         self.set_status(response.code)
+    #         if response.code == 200:
+    #             self.finish(response.body)
+    #         else:
+    #             self.finish({'status':'error','message':'fail to save lion data'})
+    #     else:
+    #         self.set_status(400)
+    #         self.finish({'status':'error','message':'you need provide an lion id PUT'})
+    # @asynchronous
+    # @coroutine
+    # def delete(self, lions_id=None):
+    #     resource_url = '/lions/' + lions_id
+    #     response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"delete lion"}))
+    #     self.set_status(response.code)
+    #     if response.code == 200:
+    #         self.finish(response.body)
+    #     else:
+    #         self.finish({'status':'error','message':'fail to delete lion DELETE'})
