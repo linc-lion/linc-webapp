@@ -6,10 +6,15 @@ from tornado.gen import engine,coroutine,Task
 from handlers.base import BaseHandler
 import hmac, hashlib
 from os.path import realpath,dirname
-from os import remove
+from os import remove,mkdir,chdir,curdir
 from base64 import b64encode as convertImage
 from json import loads
 import logging
+from uuid import uuid4 as uid
+import urllib
+from zipfile import ZipFile
+from shutil import rmtree
+from datetime import datetime,timedelta
 
 class ImageSetsListHandler(BaseHandler):
     @asynchronous
@@ -293,25 +298,58 @@ class ImagesUploadHandler(BaseHandler):
                 else:
                     self.dropError(500,'fail to upload image')
 
+def remove_file(sched,fn,jid):
+    remove(fn)
+
 class ImagesHandler(BaseHandler):
     @asynchronous
     @engine
     def get(self, images_id=None):
         download = self.get_argument('download')
-        print (download)
         if download:
             resource_url = '/images?download=' + download
             response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
-            self.set_header('Content-Disposition', response.headers.get("Content-Disposition"))
-            self.set_header('Content-Type', response.headers.get("Content-Disposition"))
-            self.set_status(response.code)
-            self.finish(response.body)
+            if response and response.code == 200:
+                respdata = loads(response.body)
+                links = respdata['data']
+                folder = self.settings['static_path']+'/'+str(uid())
+                mkdir(folder)
+                for link in links:
+                    print('Downloading: '+link)
+                    urllib.urlretrieve(link,folder+'/'+link.split('/')[-1])
+                curpath = dirname(realpath(curdir))
+                chdir(folder)
+                print('Creating zip file: '+folder+'.zip')
+                with ZipFile(folder+'.zip', 'w') as myzip:
+                    for link in links:
+                        myzip.write(link.split('/')[-1])
+                chdir(curpath)
+                rmtree(folder)
+                dtexec = datetime.now() + timedelta(hours=1)
+                jobid = str(uid())
+                self.settings['scheduler'].add_job(remove_file,trigger='date',name='Remove file '+folder+'.zip at '+str(dtexec),run_date=dtexec,args=[self.settings['scheduler'],folder+'.zip',jobid],coalesce=True,id=jobid)
+
+                self.set_header('Content-Type', 'application/octet-stream')
+                self.set_header('Content-Disposition', 'attachment; filename=' + folder.split('/')[-1]+'.zip')
+                with open(folder+'.zip', 'r') as f:
+                    self.write(f.read())
+                self.finish()
+
+                #self.set_header('Content-Disposition', response.headers.get("Content-Disposition"))
+                #self.set_header('Content-Type', response.headers.get("Content-Disposition"))
+
+                #self.set_status(response.code)
+                #self.finish(response.body)
+            else:
+                self.dropError(500,'fail to get urls to download the images')
+                return
         else:
             resource_url = '/images/' + images_id
             response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
             self.set_status(response.code)
             self.set_json_output()
             self.finish(response.body)
+
     @asynchronous
     @coroutine
     def delete(self, images_id=None):
