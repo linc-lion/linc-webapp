@@ -98,8 +98,11 @@ class LionsListHandler(BaseHandler):
 class LionsHandler(BaseHandler):
     @asynchronous
     @engine
-    def get(self, lions_id=None, locations=None):
+    def get(self, lions_id='', locations=None):
         resource_url = '/lions/' + lions_id
+        api=self.get_argument('api', '')
+        if(api):
+            resource_url = '/lions?api=true'
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
         self.set_json_output()
