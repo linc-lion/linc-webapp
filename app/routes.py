@@ -7,16 +7,18 @@ from handlers.auth import AuthHandler
 from handlers.main import MainHandler,LoginMainHandler,HomeHandler,SideMenuHandler,\
     LionMainHandler,SearchLionHandler,ImageSetMainHandler,SearchImageSetHandler,\
     ConservationistsHandler,ImageGalleryHandler,LocationHistoryHandler,\
-    EditMetadataHandler,CVResultsMainHandler,CVRequestMainHandler,UploadImagesHandler
+    EditMetadataHandler,CVResultsMainHandler,CVRequestMainHandler,UploadImagesHandler,\
+    PageAdminHandler
 from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler,\
     ImagesUploadHandler, ImagesHandler, LionsHandler, ImageSetsHandler, OrganizationsHandler, CVResultsHandler, CVRequestHandler,\
-    LoginHandler
+    LoginHandler, UsersHandler
 
 # Defining routes
 url_patterns = [
     # Handlers for the website
     (r"/", MainHandler),
     (r"/version", VersionHandler),
+    (r"/admin.html",PageAdminHandler),
     (r"/login.html", LoginMainHandler),
     (r"/home.html", HomeHandler),
     (r"/sidemenu.html", SideMenuHandler),
@@ -58,5 +60,7 @@ url_patterns = [
 
     (r"/cvrequest/?$", CVRequestHandler),
     (r"/cvrequest/(\w+$)", CVRequestHandler),
-    (r"/login", LoginHandler)
+    (r"/login", LoginHandler),
+
+    (r"/users", UsersHandler)
 ]
