@@ -10,6 +10,7 @@ import socket
 from sys import executable as pythonbin
 from tornado.options import define, options
 from handlers.error import ErrorHandler
+from apscheduler.schedulers.tornado import TornadoScheduler
 
 # make filepaths relative to settings.
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -87,6 +88,9 @@ config['static_path'] = os.path.join(appdir, "static")
 config['template_path'] = os.path.join(appdir, "templates")
 config['autoescape'] = None
 
+config['scheduler'] = TornadoScheduler()
+config['scheduler'].start()
+
 # # Setting URL
 # ENV = os.environ.get("ENVIRONMENT","local")
 # if ENV == 'heroku':
@@ -99,6 +103,6 @@ appurl = "https://linc-website.herokuapp.com/"
 config['url'] = appurl
 
 # Settings for access to linc-api
-config['API_URL'] = 'https://linc-api.herokuapp.com'
-#config['API_URL'] = 'http://192.168.100.10:5000'
+#config['API_URL'] = 'https://linc-api.herokuapp.com'
+config['API_URL'] = 'http://192.168.100.10:5000'
 #Deploy test url 'https://linc-api.herokuapp.com'
