@@ -39,7 +39,10 @@ label{font-weight: normal; cursor:pointer}
   box-shadow:0 2px 18px rgba(0,0,0,.1);
   .navbar-brand{
     height: auto;
-    padding: 10px 20px;
+    padding: 8px 20px;
+    img{
+      height: 39px;
+    }
   }
   .icon{
     font-size:30px;
@@ -268,7 +271,7 @@ rzslider{
 sidemenu>li>a {
     position: relative;
     display: block;
-    padding: 10px 15px;
+    padding: 12px 15px 9px;
 }
 .nav>li>metadata>a {
     position: relative;
@@ -358,5 +361,8 @@ a.ng-scope { color: #333;}
 .Left-Panel::-webkit-scrollbar, .Right-Panel::-webkit-scrollbar, .Scroll-Panel::-webkit-scrollbar { display: none; }
 .large-Modal .modal-dialog .modal-content{ max-height: 700px !important; }
 
+.meta-info{
+  margin-bottom: 10px
+}
 h4.h4inline {display:inline};
 h4.h4data {display:inline; color: #333; padding-left: 5px;}
