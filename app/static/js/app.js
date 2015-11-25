@@ -168,7 +168,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
 }]);
 
 app.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
-    cfpLoadingBarProvider.includeSpinner = true;
+    cfpLoadingBarProvider.includeSpinner = false;
     cfpLoadingBarProvider.includeBar = true;
     cfpLoadingBarProvider.latencyThreshold = 500;
 }]);
