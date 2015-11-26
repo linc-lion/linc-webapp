@@ -1,4 +1,4 @@
-angular.module('lion.guardians.services', [])
+angular.module('lion.guardians.services', ['lion.guardians.api.services'])
 
 .factory('LincServices', ['$http', '$cacheFactory', '$q', '$cookies', 'NotificationFactory', function($http, $cacheFactory, $q, $cookies, NotificationFactory) {
   // cache
@@ -446,7 +446,7 @@ angular.module('lion.guardians.services', [])
     var data = {'_xsrf': $cookies.get('_xsrf')};
     //var data = {"cvrequest_id":cvrequest_id};
     //angular.merge(data, cookies);
-    return HTTP('DELETE', '/cvrequest/' + cvrequest_id, data, {}, success,
+    return HTTP('DELETE', '/cvrequests/' + cvrequest_id, data, {}, success,
     function(error){
       NotificationFactory.error({
         title: "Error", message: 'Unable to Delete CV Results/CVRequest',
@@ -464,22 +464,6 @@ angular.module('lion.guardians.services', [])
                 headers: { 'Content-Type': 'application/json', 'X-XSRFToken' : data['_xsrf']},
                 config: {}};
     $http(req).then(success, error);
-  };
-
-  // Administration
-  var Get_Users = function () {
-    var deferred = $q.defer();
-    var url = '/users';
-    var promise = $http.get(url, {ignoreLoadingBar: true}).then(function(response){
-      return response.data;
-    }, function(error){
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to Get Users data',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
-      console.log(error);
-    });
   };
 
   var dataFactory = {};
@@ -527,6 +511,8 @@ angular.module('lion.guardians.services', [])
   dataFactory.deleteCVRequest = DeleteCVRequest;
 
   dataFactory.getImageGallery = GetImageGallery;
+
+
 
   dataFactory.Download = GetDownload;
   dataFactory.Login = Login;

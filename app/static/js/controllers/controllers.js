@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('lion.guardians.controllers', ['lion.guardians.home.controller',
+angular.module('lion.guardians.controllers', ['lion.guardians.admin.controller',
+                                              'lion.guardians.home.controller',
                                               'lion.guardians.login.controller',
                                               'lion.guardians.side.menu.controller',
                                               'lion.guardians.lions.controllers',
@@ -13,7 +14,6 @@ angular.module('lion.guardians.controllers', ['lion.guardians.home.controller',
                                               'lion.guardians.cvrequest.controller',
                                               'lion.guardians.upload.images.controller',
                                               'lion.guardians.notification.factory',
-                                              'lion.guardians.services',
                                               'lion.guardians.linc.data.factory' ])
 
 .controller('BodyCtrl', ['$scope', '$state', '$localStorage', function ($scope, $state, $localStorage){
