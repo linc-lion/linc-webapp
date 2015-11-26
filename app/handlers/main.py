@@ -2,6 +2,7 @@
 # coding: utf-8
 
 from handlers.base import BaseHandler
+from tornado.web import authenticated
 
 class MainHandler(BaseHandler):
     def get(self):
@@ -9,15 +10,18 @@ class MainHandler(BaseHandler):
 
 class LoginMainHandler(BaseHandler):
     def get(self):
-        self.render('login.html')
+        self.render('login.html',xsrf=self.xsrf_token)
 
 class HomeHandler(BaseHandler):
+    @authenticated
     def get(self):
         self.render('home.html')
 
 class SideMenuHandler(BaseHandler):
+    @authenticated
     def get(self):
-        self.render('side_menu.html')
+        self.render('side_menu.html',username=self.current_user['username'],\
+                orgname=self.current_user['orgname'],admin=self.current_user['admin'])
 
 class LionMainHandler(BaseHandler):
     def get(self):

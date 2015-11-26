@@ -192,9 +192,9 @@ angular.module('lion.guardians.services', [])
   var ClearLionProfileCache = function (id) { $httpcache.remove('/lions/' + id + 'profile'); };
 
   // Http without cache
-  var HTTP = function (metod, url, data, config, success, error) {
-    if(metod == 'GET'){ $http.get(url, config).then(success, error); }
-    else{ var req = { method: metod, url: url, data: data, headers: { 'Content-Type': 'application/json'}, config: config}; $http(req).then(success, error); }
+  var HTTP = function (method, url, data, config, success, error) {
+    if(method == 'GET'){ $http.get(url, config).then(success, error); }
+    else{ var req = { method: method, url: url, data: data, headers: { 'Content-Type': 'application/json'}, config: config}; $http(req).then(success, error); }
   }
   // Post Imageset (CV Request)
   var RequestCV = function (imageset_id, data, success) {
@@ -458,12 +458,13 @@ angular.module('lion.guardians.services', [])
   };
 
   var Login = function (data, success, error){
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
-    //var data = {"input_data": input_data};
-    angular.merge(data, cookies);
-    return HTTP('POST', '/login', data, {}, success, error);
+    var req = { method: 'POST',
+                url: '/login',
+                data: data,
+                headers: { 'Content-Type': 'application/json', 'X-XSRFToken' : data['_xsrf']},
+                config: {}};
+    $http(req).then(success, error);
   };
-
 
   // Administration
   var Get_Users = function () {

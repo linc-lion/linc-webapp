@@ -1,4 +1,5 @@
 <form name="form" class="form-signin" ng-submit="login()">
+  <input type="hidden" name="_xsrf" ng-init="loginData._xsrf='{{xsrf}}'" ng-model="loginData._xsrf">
   <h2 class="form-signin-heading">Please sign in</h2>
 
   <div class="form-group" ng-class="{'has-error': form.username.$dirty && form.username.$error.required }">

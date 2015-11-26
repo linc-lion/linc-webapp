@@ -11,6 +11,8 @@ from sys import executable as pythonbin
 from tornado.options import define, options
 from handlers.error import ErrorHandler
 from apscheduler.schedulers.tornado import TornadoScheduler
+from hashlib import sha256
+from uuid import uuid1 as uid
 
 # make filepaths relative to settings.
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -69,24 +71,20 @@ def getHostIp():
 
 appdir = os.path.dirname(os.path.realpath(__file__))
 
-# Keys can be generated with hashlib and must be changed before deploy
-# Example:
-#
-# import hashlib
-# hashlib.sha256('sample').hexdigest()
-
 # config settings
 config = {}
 config['debug'] = options.debug
-config['cookie_secret'] = '303e16bb8f9eb223d989fce3970052e63fdf30777e4fd53a014cbd1d581228f2'
-config['xsrf_cookies'] = False
+config['cookie_secret'] = '0edc26b95b225fa8416c32cd1bebf785b38ab6e242649794aac1aabf44716232'
+#sha256(str(uid)).hexdigest()
+config['xsrf_cookies'] = True
 config['app_path'] = appdir
 config['default_handler_class'] = ErrorHandler
 config['default_handler_args'] = dict(status_code=404)
-config['version'] = 'webapp version 0.1'
+config['version'] = 'LINC webapp version 0.1'
 config['static_path'] = os.path.join(appdir, "static")
 config['template_path'] = os.path.join(appdir, "templates")
 config['autoescape'] = None
+config['login_url'] = '/#/login'
 
 config['scheduler'] = TornadoScheduler()
 config['scheduler'].start()

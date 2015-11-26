@@ -12,8 +12,15 @@ class BaseHandler(RequestHandler):
     """A class to collect common handler methods - all other handlers should
     inherit this one.
     """
+    def get_current_user(self):
+        print('Checking user info')
+        cookieinfo = self.get_secure_cookie("userlogin")
+        if cookieinfo:
+            cookieinfo = loads(cookieinfo)
+        print('User info ='+str(cookieinfo))
+        return cookieinfo
+
     def prepare(self):
-        #self.auth_check()
         self.input_data = dict()
         if self.request.method in ['POST','PUT'] and \
            self.request.headers["Content-Type"].startswith("application/json"):
@@ -46,38 +53,6 @@ class BaseHandler(RequestHandler):
             response = e
         callback(response)
 
-    def sanitizestr(self,strs):
-        txt = "%s%s" % (string.ascii_letters, string.digits)
-        return ''.join(c for c in strs if c in txt)
-
-    def json_encode(self,value):
-        return dumps(value,default=str).replace("</", "<\\/")
-
-    def set_default_headers(self):
-        self.set_header('Content-Type','text/html; charset=UTF-8')
-        #self.set_header('Content-Type', 'application/json; charset=UTF-8')
-
-    def set_json_output(self):
-        #self.set_header('Content-Type','text/html; charset=UTF-8')
-        self.set_header('Content-Type', 'application/json; charset=UTF-8')
-
-    def write_error(self, status_code, **kwargs):
-        self.write({'status':'error','message':'fail to execute request','code':str(status_code)})
-        self.finish()
-
-    def auth_check(self):
-        # This method depends of the authentication method defined for the project
-        pass
-        #key = self.get_argument('auth_key',None)
-        #if key != self.settings['auth_key']:
-        #    self.authfail()
-
-    # http status code returned will be rechecked soon
-    def authfail(self):
-        self.set_status(401)
-        self.write({'status':'fail','message':'authentication failed'})
-        self.finish()
-
     def setSuccess(self,code=200,message="",data=None):
         output_response = {'status':'success','message':message}
         if data:
@@ -89,31 +64,18 @@ class BaseHandler(RequestHandler):
         self.set_status(code)
         self.finish({'status':'error', 'message':message})
 
-    def success(self,message="",data=None,create=False):
-        if create:
-            self.set_status(201)
-        else:
-            self.set_status(200)
-        output_response = {'status':'success','message':message}
-        if data:
-            output_response['data'] = data
-        self.write(output_response)
-        self.finish()
+    def sanitizestr(self,strs):
+        txt = "%s%s" % (string.ascii_letters, string.digits)
+        return ''.join(c for c in strs if c in txt)
 
-    def data_exists(self,message=""):
-        self.set_status(409)
-        self.write({"status":"fail", "message":message})
-        self.finish()
+    def json_encode(self,value):
+        return dumps(value,default=str).replace("</", "<\\/")
 
-    def drop_error(self,message=""):
-        self.set_status(500)
-        self.write({'status':'error', 'message':message})
-        self.finish()
+    def set_default_headers(self):
+        self.set_header('Content-Type','text/html; charset=UTF-8')
 
-    def not_found(self,message=""):
-         self.set_status(404)
-         self.write({'status':'fail','message':message})
-         self.finish()
+    def set_json_output(self):
+        self.set_header('Content-Type', 'application/json; charset=UTF-8')
 
 class VersionHandler(BaseHandler):
     def get(self):
