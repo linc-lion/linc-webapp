@@ -11,7 +11,7 @@ from handlers.main import MainHandler,LoginMainHandler,HomeHandler,SideMenuHandl
     PageAdminHandler
 from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler,\
     ImagesUploadHandler, ImagesHandler, LionsHandler, ImageSetsHandler, OrganizationsHandler, CVResultsHandler, CVRequestHandler,\
-    LoginHandler, UsersHandler
+    LoginHandler, UsersHandler, LogoutHandler
 
 # Defining routes
 url_patterns = [
@@ -61,6 +61,7 @@ url_patterns = [
     (r"/cvrequest/?$", CVRequestHandler),
     (r"/cvrequest/(\w+$)", CVRequestHandler),
     (r"/login", LoginHandler),
+    (r"/logout", LogoutHandler),
 
     (r"/users", UsersHandler)
 ]

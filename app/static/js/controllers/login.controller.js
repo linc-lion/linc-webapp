@@ -4,7 +4,7 @@ angular.module('lion.guardians.login.controller', [])
 // Login
 .controller('LoginCtrl', ['$scope', '$state', '$timeout', '$localStorage', 'LincServices', 'NotificationFactory', function ($scope, $state, $timeout, $localStorage, LincServices, NotificationFactory) {
 
-  $scope.loginData = { username : '' , password : ''};
+  $scope.loginData = { username : '' , password : '', _xsrf: '', token : '' , admin : false};
   $scope.dataLoading = false;
   $scope.remember = true;
 
@@ -32,15 +32,12 @@ angular.module('lion.guardians.login.controller', [])
         $scope.dataLoading = true;
         // Authentication Service
         LincServices.Login($scope.loginData, function(result){
-        //$scope.loginData.username; $scope.loginData.password
-        //var shaObj = new jsSHA($scope.loginData.username + $scope.loginData.password + $rootScope.secret, "TEXT");
-        //var encrypted_pass = shaObj.getHash("SHA-512", "HEX");
-        //$localStorage.logged = (result.data.data[0].password == encrypted_pass)
-
-          //var encrypted_pass = $scope.loginData.password;
-          //$scope.$storage.logged = ("123123" == "123123");
-          $scope.$storage.logged = true;//($scope.$storage.password == encrypted_pass)
-          $scope.$storage.username = $scope.$storage.username;
+          $scope.$storage.logged = true;
+          var data = result.data.data;
+          $scope.$storage.username = data['username'];
+          $scope.$storage.orgname = data['orgname']
+          $scope.$storage.admin = data['admin'];
+          $scope.$storage.token = data['token'];
           $scope.dataLoading = false;
           if (!$scope.$storage.logged){
             NotificationFactory.error({
@@ -50,17 +47,19 @@ angular.module('lion.guardians.login.controller', [])
             });
           }
           else{
+            /*
             NotificationFactory.success({
               title: "Login", message:'Successfully connected.',
               position: "right", // right, left, center
               duration: 3000     // milisecond
             });
+            */
             $state.go("home");
           }
         }, function (error){
           $scope.dataLoading = false;
           NotificationFactory.error({
-            title: "Error", message: 'Unable to Login',
+            title: "Error", message: 'Login failed',
             position: 'right', // right, left, center
             duration: 5000   // milisecond
           });

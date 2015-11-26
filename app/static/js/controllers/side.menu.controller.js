@@ -2,16 +2,14 @@
 
 angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu.directive'])
 
-.controller('SideMenuCtrl', ['$scope', '$state', '$window', '$localStorage', 'NotificationFactory', function ($scope, $state, $window, $localStorage, NotificationFactory) {
+.controller('SideMenuCtrl', ['$scope', '$state', '$window', '$localStorage', '$http', '$cookies', 'NotificationFactory', function ($scope, $state, $window, $localStorage, $http, $cookies, NotificationFactory) {
     $scope.title = 'Menu';
     $scope.content = 'Menu';
 
     $scope.$storage = $localStorage;
 
-    var user = { email: 'justin@lg.org', org: 'Lion Guardians' }
-    $scope.login = { logged: $scope.$storage.logged,
-                            msg: $scope.$storage.logged ? 'Logged in as <b>' +
-                            user.email + '</b> of <b>' + user.org + '</b>' : 'Not Logged In'};
+    $scope.login = { logged: $scope.$storage.logged };
+
 
     $scope.options = {
       "imageset": {
@@ -33,13 +31,30 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
 
     $scope.logout = function($hide){
         $hide();
-        $scope.$storage.logged = false;
+        // Clear storage info
+        var xsrfcookie = $cookies.get('_xsrf');
+        var req = { method: 'POST',
+                    url: '/logout',
+                    data: {},
+                    headers: { 'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie},
+                    config: {}};
+        $http(req).then(function(){
+          // Cleanning storage
+          $scope.$storage.$reset();
 
-        NotificationFactory.success({
-          title: "Logout", message:'Good bye.',
-          position: "right", // right, left, center
-          duration: 300000     // milisecond
+          NotificationFactory.success({
+            title: "Logout", message:'Good bye.',
+            position: "right", // right, left, center
+            duration: 3000     // milisecond
+          });
+          $state.go("login");
+        }, function(){
+          NotificationFactory.error({
+            title: "Logout", message:'Logout failed.',
+            position: "right", // right, left, center
+            duration: 5000     // milisecond
+          });
         });
-        $state.go("login");
+
     }
 }]);
