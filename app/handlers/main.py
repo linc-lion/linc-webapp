@@ -70,3 +70,31 @@ class UploadImagesHandler(BaseHandler):
 class PageAdminHandler(BaseHandler):
     def get(self):
         self.render('admin.html')
+
+class PageAdminUsersHandler(BaseHandler):
+    def get(self):
+        self.render('admin.users.tpl.html')
+
+class PageAdminOrganizationsHandler(BaseHandler):
+    def get(self):
+        self.render('admin.organizations.tpl.html')
+
+class PageAdminLionsHandler(BaseHandler):
+    def get(self):
+        self.render('admin.lions.tpl.html')
+
+class PageAdminImageSetsHandler(BaseHandler):
+    def get(self):
+        self.render('admin.imagesets.tpl.html')
+
+class PageAdminImagesHandler(BaseHandler):
+    def get(self):
+        self.render('admin.images.tpl.html')
+
+class PageAdminCVRequestsHandler(BaseHandler):
+    def get(self):
+        self.render('admin.cvrequests.tpl.html')
+
+class PageAdminCVResultsHandler(BaseHandler):
+    def get(self):
+        self.render('admin.cvresults.tpl.html')

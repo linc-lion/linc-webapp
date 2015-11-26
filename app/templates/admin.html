@@ -1,0 +1,46 @@
+<script type="text/ng-template" id="Password.tmpl.html">
+  <form name="form" ng-submit="submit_password(form.$valid)">
+    <div class="modal-header" ng-show="modalTitle">
+      <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="meta_label" for="lion_name">Name:</label>
+        <input class="form-control text-center" readonly type="text" name="email" ng-model="sel_user.email">
+      </div>
+      <div class="form-group">
+        <label class="meta_label" for="lion_name">Password:</label>
+        <input class="form-control text-center" type="password" name="password" ng-model="sel_user.password" placeholder="New Password" required oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('please fill out this field with Password')">
+      </div>
+      <div class="form-group">
+        <label class="meta_label" for="lion_name">Password:</label>
+        <input class="form-control text-center" type="password" name="verify" ng-model="sel_user.confirmPassword" placeholder="Confirm Password" required oninput="setCustomValidity('')" nx-equal-ex="sel_user.password"
+              oninvalid="this.setCustomValidity('please repeat the Password in this field')">
+              <div class="text-center"><span align="center" style="color: #d95210;" ng-show="showValidationMessages && form.verify.$error.nxEqualEx" class="help-inline">Passwords must match!</span></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" ng-click="cancel_password()" data-dismiss="modal">Cancel</button>
+      <button type="submit" class="btn btn-primary">Change</button>
+    </div>
+  </form>
+</script>
+
+<h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a> Administration</h1>
+<div>
+
+  <uib-tabset justified="true">
+    <uib-tab ng-repeat="tab in tabs" heading="{{!tab.title}}" active="tab.active" disable="tab.disabled">
+      <div ng-include="tab.template"></div>
+    </uib-tab>
+  </uib-tabset>
+
+<!--
+  <uib-tabset justified="true">
+    <tab heading="Users" ui-sref=".users" active="$state.includes('admin.users')"></tab>
+    <tab heading="Organizations" ui-sref=".organizations" active="$state.includes('admin.organizations')"></tab>
+  </uib-tabset>
+  <div ui-view="admin.users" ng-show="$state.includes('admin.users')"></div>
+  <div ui-view="admin.organizations" ng-show="$state.includes('admin.organizations')"></div>
+ </div>
+ -->

@@ -42,10 +42,14 @@ class ImageSetsListHandler(BaseHandler):
 class CVResultsHandler(BaseHandler):
     @asynchronous
     @engine
-    def get(self, res_id=None, xlist=None):
-        resource_url = '/cvresults/'+ res_id + '/list'
+    def get(self, res_id='', xlist=None):
+        if(res_id):
+            resource_url = '/cvresults/'+ res_id + '/list'
+        else:
+            resource_url = '/cvresults/'
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
+        self.set_json_output()
         self.finish(response.body)
     @asynchronous
     @engine
@@ -69,6 +73,14 @@ class CVResultsHandler(BaseHandler):
             self.finish({'status':'error','message':'fail to access the cvresults PUT'})
 
 class CVRequestHandler(BaseHandler):
+    @asynchronous
+    @engine
+    def get(self, req_id=''):
+        resource_url = '/cvrequests/' + req_id
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        self.set_status(response.code)
+        self.set_json_output()
+        self.finish(response.body)
     @asynchronous
     @coroutine
     def delete(self, req_id=None):
@@ -156,7 +168,7 @@ class LionsHandler(BaseHandler):
 class ImageSetsHandler(BaseHandler):
     @asynchronous
     @engine
-    def get(self, imagesets_id=None, param=None):
+    def get(self, imagesets_id='', param=None):
         print(param)
         resource_url = '/imagesets/' + imagesets_id
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
@@ -206,7 +218,7 @@ class ImageSetsHandler(BaseHandler):
 class OrganizationsHandler(BaseHandler):
     @asynchronous
     @engine
-    def get(self, organizations_id=None):
+    def get(self, organizations_id=''):
         resource_url = '/organizations/' + organizations_id
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
@@ -304,8 +316,8 @@ def remove_file(sched,fn,jid):
 class ImagesHandler(BaseHandler):
     @asynchronous
     @engine
-    def get(self, images_id=None):
-        download = self.get_argument('download')
+    def get(self, images_id=''):
+        download = self.get_argument('download','')
         if download:
             resource_url = '/images?download=' + download
             response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
@@ -403,49 +415,50 @@ class LogoutHandler(BaseHandler):
 class UsersHandler(BaseHandler):
     @asynchronous
     @engine
-    def get(self):
-        resource_url = '/users'
+    def get(self, user_id=''):
+        resource_url = '/users/' + user_id
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
         self.set_status(response.code)
         self.set_json_output()
         self.finish(response.body)
-    # @asynchronous
-    # @engine
-    # def post(self):
-    #     resource_url = '/lions'
-    #     response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
-    #     self.set_status(response.code)
-    #     if response.code == 200:
-    #         self.finish(response.body)
-    #     else:
-    #         self.finish({'status':'error','message':'fail to create new lion POST'})
-    # @asynchronous
-    # @coroutine
-    # def put(self, lions_id=None):
-    #     print(lions_id)
-    #     if lions_id:
-    #         resource_url = '/lions/' + lions_id
-    #         print(self.input_data)
-    #         data = dict(self.input_data)
-    #         if "_xsrf" in data.keys():
-    #             del data["_xsrf"]
-    #         print(data)
-    #         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(data))
-    #         self.set_status(response.code)
-    #         if response.code == 200:
-    #             self.finish(response.body)
-    #         else:
-    #             self.finish({'status':'error','message':'fail to save lion data'})
-    #     else:
-    #         self.set_status(400)
-    #         self.finish({'status':'error','message':'you need provide an lion id PUT'})
-    # @asynchronous
-    # @coroutine
-    # def delete(self, lions_id=None):
-    #     resource_url = '/lions/' + lions_id
-    #     response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"delete lion"}))
-    #     self.set_status(response.code)
-    #     if response.code == 200:
-    #         self.finish(response.body)
-    #     else:
-    #         self.finish({'status':'error','message':'fail to delete lion DELETE'})
+    @asynchronous
+    @engine
+    def post(self):
+        resource_url = '/users'
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to create new user POST'})
+    @asynchronous
+    @coroutine
+    def put(self, user_id=None):
+        if user_id:
+            resource_url = '/users/' + user_id
+            data = dict(self.input_data)
+            if "_xsrf" in data.keys():
+                del data["_xsrf"]
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(data))
+            self.set_status(response.code)
+            self.set_json_output()
+            if response.code == 200:
+                self.finish(response.body)
+            else:
+                self.finish({'status':'error','message':'fail to save user data'})
+        else:
+            self.set_json_output()
+            self.set_status(400)
+            self.finish({'status':'error','message':'you need provide an user id PUT'})
+    @asynchronous
+    @coroutine
+    def delete(self, user_id=None):
+        print("AQUI")
+        resource_url = '/users/' + user_id
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"delete user"}))
+        self.set_status(response.code)
+        self.set_json_output()
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to delete user DELETE'})
