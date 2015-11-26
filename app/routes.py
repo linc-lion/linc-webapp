@@ -8,7 +8,8 @@ from handlers.main import MainHandler,LoginMainHandler,HomeHandler,SideMenuHandl
     LionMainHandler,SearchLionHandler,ImageSetMainHandler,SearchImageSetHandler,\
     ConservationistsHandler,ImageGalleryHandler,LocationHistoryHandler,\
     EditMetadataHandler,CVResultsMainHandler,CVRequestMainHandler,UploadImagesHandler,\
-    PageAdminHandler
+    PageAdminHandler, PageAdminUsersHandler, PageAdminOrganizationsHandler, PageAdminLionsHandler,\
+    PageAdminImageSetsHandler, PageAdminImagesHandler, PageAdminCVRequestsHandler, PageAdminCVResultsHandler
 from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler,\
     ImagesUploadHandler, ImagesHandler, LionsHandler, ImageSetsHandler, OrganizationsHandler, CVResultsHandler, CVRequestHandler,\
     LoginHandler, UsersHandler
@@ -19,6 +20,13 @@ url_patterns = [
     (r"/", MainHandler),
     (r"/version", VersionHandler),
     (r"/admin.html",PageAdminHandler),
+    (r"/admin.users.tpl.html",PageAdminUsersHandler),
+    (r"/admin.organizations.tpl.html",PageAdminOrganizationsHandler),
+    (r"/admin.lions.tpl.html",PageAdminLionsHandler),
+    (r"/admin.imagesets.tpl.html",PageAdminImageSetsHandler),
+    (r"/admin.images.tpl.html",PageAdminImagesHandler),
+    (r"/admin.cvrequests.tpl.html",PageAdminCVRequestsHandler),
+    (r"/admin.cvresults.tpl.html",PageAdminCVResultsHandler),
     (r"/login.html", LoginMainHandler),
     (r"/home.html", HomeHandler),
     (r"/sidemenu.html", SideMenuHandler),
@@ -58,9 +66,10 @@ url_patterns = [
     (r"/cvresults/(\w+$)", CVResultsHandler),
     (r"/cvresults/(\w+)/(list)$", CVResultsHandler),
 
-    (r"/cvrequest/?$", CVRequestHandler),
-    (r"/cvrequest/(\w+$)", CVRequestHandler),
+    (r"/cvrequests/?$", CVRequestHandler),
+    (r"/cvrequests/(\w+$)", CVRequestHandler),
     (r"/login", LoginHandler),
 
-    (r"/users", UsersHandler)
+    (r"/users/?$", UsersHandler),
+    (r"/users/(.*)$", UsersHandler)
 ]

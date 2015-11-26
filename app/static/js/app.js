@@ -68,6 +68,38 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           controllerAs: 'vm',
           templateUrl: 'login.html'
         })
+        // Search Lion
+        .state("admin", {
+          url: "/admin",
+          controller: 'AdminCtrl',
+          templateUrl: 'admin.html',
+          data: {
+            bodyClasses: 'admin'
+          },
+          resolve: {
+            organizations: ['LincApiServices', function(LincApiServices) {
+              return LincApiServices.Organizations({'method': 'get'});
+            }],
+            users: ['LincApiServices', 'organizations', function(LincApiServices, organizations) {
+              return LincApiServices.Users({'method': 'get', 'organizations': organizations});
+            }],
+            lions: ['LincApiServices', 'organizations', function(LincApiServices, organizations) {
+              return LincApiServices.Lions({'method': 'get', 'organizations': organizations});
+            }]/*,
+            images: ['LincApiServices', function(LincApiServices) {
+              return LincApiServices.Images({'method': 'get'});
+            }],
+            imagesets: ['LincApiServices', 'organizations', 'users', 'lions', 'images', function(LincApiServices, organizations, users, lions, images) {
+              return LincApiServices.ImageSets({'method': 'get', 'organizations': organizations, 'users': users, 'lions': lions, 'images': images});
+            }]*//*,
+            cvrequests: ['LincApiServices', function(LincApiServices) {
+              return LincApiServices.CVRequests({'method': 'get'});
+            }],
+            cvresults: ['LincApiServices', function(LincApiServices) {
+              return LincApiServices.CVResults({'method': 'get'});
+            }]*/
+          }
+        })
         // Home Menu
         .state("home", {
           url: "/home",
