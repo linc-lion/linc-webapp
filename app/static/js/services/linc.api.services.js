@@ -4,7 +4,11 @@ angular.module('lion.guardians.api.services', [])
 
   var HTTP = function (metod, url, data, config, success, error) {
     if(metod == 'GET'){ $http.get(url, config).then(success, error); }
-    else{ var req = { method: metod, url: url, data: data, headers: { 'Content-Type': 'application/json'}, config: config}; $http(req).then(success, error); }
+    else{
+      var xsrfcookie = $cookies.get('_xsrf');
+      var req = { method: metod, url: url, data: data,
+        headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: config};
+      $http(req).then(success, error); }
   }
 
   var Organizations = function (data_in) {
@@ -31,12 +35,12 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='delete'){
       var organizations_id = data_in.organizations_id;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
+      var xsrfcookie = $cookies.get('_xsrf');
       var promises = organizations_id.map(function(id) {
         var req = { method: 'DELETE',
                     url: '/organizations/' + id,
-                    data: cookies,
-                    headers: { 'Content-Type': 'application/json'},
+                    data: {'_xsrf': xsrfcookie},
+                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
                     config: {ignoreLoadingBar: true}};
         return $http(req);
       });
@@ -131,12 +135,12 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='delete'){
       var users_id = data_in.users_id;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
+      var xsrfcookie = $cookies.get('_xsrf');
       var promises = users_id.map(function(id) {
         var req = { method: 'DELETE',
                     url: '/users/' + id,
-                    data: cookies,
-                    headers: { 'Content-Type': 'application/json'},
+                    data: {'_xsrf':xsrfcookie},
+                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
                     config: {ignoreLoadingBar: true}};
         return $http(req);
       });

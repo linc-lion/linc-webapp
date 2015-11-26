@@ -30,8 +30,8 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   var uploader = $scope.uploader = new FileUploader({
     url: '/images/upload'
   });
-
-  $scope.headers = { 'Content-Type': 'application/json' };
+  var xsrfcookie = $cookies.get('_xsrf');
+  $scope.headers = { 'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie};
   // FILTERS
   uploader.filters.push({
     name: 'imageFilter',

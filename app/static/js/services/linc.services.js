@@ -194,7 +194,12 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   // Http without cache
   var HTTP = function (method, url, data, config, success, error) {
     if(method == 'GET'){ $http.get(url, config).then(success, error); }
-    else{ var req = { method: method, url: url, data: data, headers: { 'Content-Type': 'application/json'}, config: config}; $http(req).then(success, error); }
+    else{
+        var xsrfcookie = $cookies.get('_xsrf');
+        var req = { method: method, url: url, data: data,
+              headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
+              config: config};
+          $http(req).then(success, error); }
   }
   // Post Imageset (CV Request)
   var RequestCV = function (imageset_id, data, success) {
@@ -232,23 +237,23 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   };
   // Put Lion (Update Lion)
   var PutLionImageset = function (lion_id, data, success, error){
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    var xsrfcookie = $cookies.get('_xsrf');
     ClearAllCaches();
     var promises = [];
     // Imageset
     if(Object.keys(data.imageset).length){
       var data_imageset = data.imageset;
-      angular.merge(data_imageset, cookies);
+      //angular.merge(data_imageset, cookies);
       var req = { method: 'PUT', url: '/imagesets/' + data.imagesetId, data: data_imageset,
-                headers: { 'Content-Type': 'application/json'}, config: {ignoreLoadingBar: true}};
+                headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: {ignoreLoadingBar: true}};
       promises.push($http(req));
     }
     // Lion
     if(Object.keys(data.lion).length){
       var data_lion = data.lion;
-      angular.merge(data_lion, cookies);
+      //angular.merge(data_lion, cookies);
       req = { method: 'PUT', url: '/lions/' + lion_id, data: data_lion,
-              headers: { 'Content-Type': 'application/json'}, config: {ignoreLoadingBar: true}};
+              headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: {ignoreLoadingBar: true}};
       promises.push($http(req));
     }
     $q.all(promises).then(function (results) {
@@ -265,21 +270,21 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   // Post Lion - New Lion
   var PostLionImageset = function (data, success, error){
     ClearAllCaches
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    var xsrfcookie = $cookies.get('_xsrf');
     var result_data;
     // Imageset
     var data_imageset = data.imageset;
-    angular.merge(data_imageset, cookies);
+    //angular.merge(data_imageset, cookies);
     var req = { method: 'POST', url: '/imagesets/', data: data_imageset,
-                headers: { 'Content-Type': 'application/json'}, config: {ignoreLoadingBar: true}};
+                headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: {ignoreLoadingBar: true}};
     $http(req).then(function(response) {
       // Lion
       var data_lion = data.lion;
       result_data = response;
       data_lion.primary_image_set_id = response.data.data.id;
-      angular.merge(data_lion, cookies);
+      //angular.merge(data_lion, cookies);
       req = { method: 'POST', url: '/lions/', data: data_lion,
-              headers: { 'Content-Type': 'application/json'}, config: {ignoreLoadingBar: true}};
+              headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: {ignoreLoadingBar: true}};
       $http(req).then(function(response) {
         var results = _.merge({}, result_data, response);
         success(results);
@@ -298,7 +303,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   }
 
   var PutImages = function (items, success, error){
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    var xsrfcookie = $cookies.get('_xsrf');
     var promises = items.map(function(item) {
       //var deferred = $q.defer();
       //var data = item.data;
@@ -306,7 +311,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
       var req = { method: 'PUT',
                   url: '/images/' + item.image_id,
                   data: item.data,
-                  headers: { 'Content-Type': 'application/json'},
+                  headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
                   config: {ignoreLoadingBar: true}};
       return $http(req);
     });
@@ -329,15 +334,15 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   };
 
   var DeleteImages = function (items, success, error){
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
+    var xsrfcookie = $cookies.get('_xsrf');
     var promises = items.map(function(item) {
       //var deferred = $q.defer();
       //var data = item.data;
       //angular.merge(data, cookies);
       var req = { method: 'DELETE',
                   url: '/images/' + item.id,
-                  data: cookies,
-                  headers: { 'Content-Type': 'application/json'},
+                  data: {'_xsrf':xsrfcookie},
+                  headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
                   config: {ignoreLoadingBar: true}};
       return $http(req);
     });
