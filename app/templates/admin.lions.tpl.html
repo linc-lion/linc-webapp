@@ -37,7 +37,7 @@
       <tbody>
         <tr class="link" ng-repeat="lion in lions" ng-class="{active:lion.selected}" ng-click="Select_Lion1(lion);$event.stopPropagation();">
           <ng-form name="lionFieldForm">
-            <td class="text-center"><input type="checkbox" ng-disabled="Lion_Change.mode != ''" ng-model="lion.selected" ng-click="Select_Lion(lion)"></td>
+            <td class="text-center"><input type="checkbox" ng-disabled="Lion_Change.mode != ''" ng-model="lion.selected" ng-click="Select_Lion(lion);$event.stopPropagation();"></td>
             <td class="text-center">{{!lion.id}}</td>
 
             <td ng-show="lion.change_mode" class="text-center">
