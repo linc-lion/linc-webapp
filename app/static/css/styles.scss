@@ -388,3 +388,9 @@ a.ng-scope { color: #333;}
 }
 h4.h4inline {display:inline};
 h4.h4data {display:inline; color: #333; padding-left: 5px;}
+.btn-toolbar{
+  position: fixed;
+  top:10px;
+  left:230px;
+  z-index: 1040
+}

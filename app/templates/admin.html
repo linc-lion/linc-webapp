@@ -26,8 +26,7 @@
   </form>
 </script>
 
-<h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a> Administration</h1>
-<div class="container">
+<div>
   <!--<tabset>
     <tab ui-sref="admin.users">
       <tab-heading>Users</tab-heading>
@@ -51,14 +50,16 @@
       <tab-heading>CV Results</tab-heading>
     </tab>
   </tabset>-->
-  <ul class="nav nav-tabs">
+<nav class="navbar navbar-default">
+  <p class="navbar-text"><strong>Administration:</strong></p>
+  <ul class="nav navbar-nav">
     <li ui-sref="admin.users" ui-sref-active="active"><a>Users</a></li>
     <li ng-repeat="tab in tabs"
         ui-sref="{{!tab.sref}}"
         ui-sref-active="active"><a>{{!tab.title}}</a></li>
   </ul>
+</nav>
   <div ui-view></div>
-
 
   <!--<uib-tabset justified="true">
     <uib-tab ng-repeat="tab in tabs" heading="{{!tab.title}}" active="tab.active" disable="tab.disabled">
