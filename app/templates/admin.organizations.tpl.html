@@ -32,9 +32,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="link" ng-repeat="org in organizations" ng-disabled="Org_Change.mode != ''" ng-class="{active:org.selected}" ng-click="Select_Org(org)">
+        <tr class="link" ng-repeat="org in organizations" ng-class="{active:org.selected}" ng-click="Select_Org1(org);$event.stopPropagation();">
           <ng-form name="orgFieldForm">
-            <td class="text-center"><input type="checkbox" ng-disabled="Org_Change.mode != ''" ng-model="org.selected" ng-click="Select_Org(org)"></td>
+            <td class="text-center"><input type="checkbox" ng-disabled="Org_Change.mode != ''" ng-model="org.selected" ng-click="Select_Org(org);$event.stopPropagation();"></td>
             <td class="text-center">{{!org.id}}</td>
 
             <td ng-show="org.change_mode" class="text-center">

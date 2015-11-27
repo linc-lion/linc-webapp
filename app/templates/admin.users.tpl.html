@@ -51,9 +51,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="link" ng-repeat="user in users" ng-disabled="User_Change.mode != ''"  ng-class="{active:user.selected}" ng-click="Select_User(user)">
+        <tr class="link" ng-repeat="user in users" ng-class="{active:user.selected}" ng-click="Select_User1(user);$event.stopPropagation();">
           <ng-form name="userFieldForm">
-            <td class="text-center"><input type="checkbox" ng-disabled="User_Change.mode != ''" ng-model="user.selected" ng-click="Select_User(user)"></td>
+            <td class="text-center"><input type="checkbox" ng-disabled="User_Change.mode != ''" ng-model="user.selected" ng-click="Select_User(user);$event.stopPropagation();"></td>
             <td class="text-center">{{!user.id}}</td>
 
             <td ng-show="user.change_mode" class="text-center">
