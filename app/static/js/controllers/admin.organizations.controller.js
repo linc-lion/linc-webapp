@@ -23,7 +23,6 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
       }
     });
   }
-
   $scope.Select_Org1 = function (organization){
     if(mode!='') return;
     organization.selected = !organization.selected;
