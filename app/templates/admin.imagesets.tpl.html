@@ -1,3 +1,158 @@
+<script type="text/ng-template" id="Edit_ImageSet.tmpl.html">
+  <form name="form" ng-submit="submit_modal(form.$valid)">
+    <div class="modal-header" ng-show="modalTitle">
+      <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-sm-4">
+
+      <div class="form-group-margin">
+        <label for="lion_name">Id:</label>
+        <input style="text-align: left;" readonly type="text" class="form-control-1" id="imageset_id" ng-model="imageset.id">
+      </div>
+
+      <div class="form-group-margin">
+        <label for="lion_id">Lion:</label>
+        <select class="form-control-1 custom-select" id="lion_id" name="lion_id" ng-options="lion.id as lion.id + '- ' + lion.name for lion in lions" ng-model="imageset.lion_id"><option></option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="main_image_id" style="display:block;">Main Image:</label>
+        <div class="form-group" style="display:inline;">
+          <img ng-src="{{!imageset.image_url}}" width="80" height="80">
+        </div>
+        <div class="form-group" style="display:inline;">
+          <select class="form-control-1 custom-select" id="main_image_id" name="main_image_id" ng-options="image.id as image.id for image in images" ng-change="change_url()" ng-model="imageset.main_image_id">
+            <option></option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group-margin">
+        <label for="gender_id">Gender: </label>
+        <select class="form-control-1 custom-select" id="gender_id" name="gender_id" ng-options="gender.type as gender.name for gender in genders" ng-model="imageset.gender" required><option></option>
+        </select>
+      </div>
+
+      <div class="form-group-margin">
+        <textarea class="form-control" rows="5" ng-model="imageset.notes"></textarea>
+      </div>
+
+    </div>
+    <div class="col-sm-4">
+
+      <div class="form-group-margin">
+        <label for="owner_organization_id">Owner Organization:</label>
+        <select class="form-control-1 custom-select" id="owner_organization_id" name="owner_organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="imageset.owner_organization_id" required><option></option>
+        </select>
+      </div>
+
+      <div class="form-group-margin">
+        <label for="owner_organization_id">Uploading Organization:</label>
+        <select class="form-control-1 custom-select" id="uploading_organization_id" name="uploading_organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="imageset.uploading_organization_id" required><option></option>
+        </select>
+      </div>
+
+      <div class="form-group-margin">
+        <label for="owner_organization_id">Uploading User:</label>
+        <select class="form-control-1 custom-select" id="uploading_user_id" name="uploading_user_id" ng-options="user.id as user.email for user in users" ng-model="imageset.uploading_user_id" required><option></option>
+        </select>
+      </div>
+
+      <div class="form-group-margin">
+        <label for="id_latitude">Latitude: </label>
+        <input style="text-align: left;" type="number" class="form-control-1" ng-model="imageset.latitude" step="any" id="id_latitude" min="-90" max="90">
+      </div>
+
+      <div class="form-group-margin">
+        <label for="id_longitude">Longitude: </label>
+        <input style="text-align: left;" type="number" class="form-control-1" ng-model="imageset.longitude" step="any" id="id_longitude" min="-180" max="180">
+      </div>
+
+      <div class="form-group-margin" ng-class="{'has-error': datepickerForm.date.$invalid}">
+        <label class="control-label"><i class="fa fa-calendar"></i>Date Stamp: </label>
+        <input type="text" class="form-control-1" style="text-align: left;" ng-model="imageset.date_stamp" data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date" bs-datepicker placement="top-right">
+      </div>
+
+      <div class="form-group-margin" ng-class="{'has-error': datepickerForm.date1.$invalid}">
+        <label class="control-label"><i class="fa fa-calendar"></i>Date of Birth: </label>
+        <input type="text" class="form-control-1" style="text-align: left;" ng-model="imageset.date_of_birth"  data-date-format="yyyy-MM-dd" data-date-type="string" data-max-date="today" data-autoclose="1" name="date1" bs-datepicker placement="top-right">
+      </div>
+
+    </div>
+    <div class="col-sm-4">
+
+      <div class="form-group-margin">
+        <label for="id_ear_markings"  style="display:block">Ear Markings: </label>
+        <button type="button" id="id_ear_markings" placeholder="None" class="btn btn-default btn-sm" ng-model="imageset.ear_markings" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Ear Markings" max-length="2" bs-options="tag.value as tag.label for tag in tags.ear_markings" placement="bottom-right" bs-select>
+          Action <span class="caret"></span>
+        </button>
+      </div>
+
+      <div class="form-group-margin">
+        <label for="id_mount_markings"  style="display:block">Mount Markings: </label>
+        <button type="button" id="id_mount_markings" placeholder="None" class="btn btn-default btn-sm" ng-model="imageset.mount_markings" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Mount Markings" max-length="2" bs-options="tag.value as tag.label for tag in tags.mount_markings" placement="bottom-right" bs-select>
+          Action <span class="caret"></span>
+        </button>
+      </div>
+
+      <div class="form-group-margin">
+        <label for="id_tail_markings"  style="display:block">Tail Markings: </label>
+        <button type="button" id="id_tail_markings" placeholder="None" class="btn btn-default btn-sm" ng-model="imageset.tail_markings" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Tail Markings" max-length="2" bs-options="tag.value as tag.label for tag in tags.tail_markings" placement="bottom-right" bs-select>
+          Action <span class="caret"></span>
+        </button>
+      </div>
+
+      <div class="form-group-margin">
+        <label for="id_nose_color"  style="display:block">Nose Colors: </label>
+        <button type="button" id="id_nose_color" placeholder="None" class="btn btn-default btn-sm" ng-model="imageset.nose_color" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Nose Colors" max-length="2" bs-options="tag.value as tag.label for tag in tags.nose_color" placement="bottom-right" bs-select>
+          Action <span class="caret"></span>
+        </button>
+      </div>
+
+      <div class="form-group-margin">
+        <label for="id_scars"  style="display:block">Scars: </label>
+        <button type="button" id="id_scars" placeholder="None" class="btn btn-default btn-sm" ng-model="imageset.scars" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Scars" max-length="2" bs-options="tag.value as tag.label for tag in tags.scars" placement="bottom-right" bs-select>
+          Action <span class="caret"></span>
+        </button>
+      </div>
+
+      <div class="form-group-margin">
+        <label for="id_eye_damage"  style="display:block">Eye Damages: </label>
+        <button type="button" id="id_eye_damage" placeholder="None" class="btn btn-default btn-sm" ng-model="imageset.eye_damages" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Eye Damages" max-length="2" bs-options="tag.value as tag.label for tag in tags.eye_damages" placement="bottom-right" bs-select>
+          Action <span class="caret"></span>
+        </button>
+      </div>
+
+      <div class="form-group-margin">
+        <label for="id_broken_teeth"  style="display:block">Broken Teeth: </label>
+        <button type="button" id="id_broken_teeth" placeholder="None" class="btn btn-default btn-sm" ng-model="imageset.broken_teeth" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Broken Teeth" max-length="2" bs-options="tag.value as tag.label for tag in tags.broken_teeth" placement="bottom-right" bs-select>
+          Action <span class="caret"></span>
+        </button>
+      </div>
+
+      <div class="form-group-margin">
+        <label for="is_verified">Is Verified: </label>
+        <input style="margin-left: 5px;" type="checkbox"  ng-model="imageset.is_verified" ng-checked="imageset.is_verified">
+      </div>
+      
+      <div class="form-group-margin">
+        <label for="trashed">Trashed: </label>
+        <input style="margin-left: 15px;"  type="checkbox"  ng-model="imageset.trashed" ng-checked="imageset.trashed">
+      </div>
+
+    </div>
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" ng-click="cancel_modal()" data-dismiss="modal">Cancel</button>
+      <button type="submit" class="btn btn-primary">{{!btn_submit}}</button>
+    </div>
+  </form>
+</script>
+
+
 <div class="form-group" ng-controller="AdminImageSetsCtrl">
   <div class="btn-toolbar" role="toolbar" aria-label="toolbar_btns" style="padding-top:10px;padding-bottom:10px;">
     <div class="btn-group" style="margin-left:10%">
@@ -9,153 +164,74 @@
     <div class="btn-group">
       <button ng-disabled="!(Selecteds.length>0)" type = "button" class = "btn btn btn-warning" ng-click="Delete_ImageSet()">Delete</button>
     </div>
-
+<!--
     <div ng-hide="ImageSet_Change.mode == ''" class="btn-group" style="margin-left:10%">
         <button type="button" class="btn btn-default" ng-click="Cancel_Edit_ImageSet()">Cancel</button>
     </div>
     <div ng-hide="ImageSet_Change.mode == ''" class="btn-group">
       <button type="submit" class="btn btn-warning">{{!btn_submit}}</button>
     </div>
-
+-->
   </div>
-  <form name="imagesetForm" ng-submit="Submit_Imageset()">
+  <!--<form name="imagesetForm" ng-submit="Submit_Imageset()">-->
     <table class="table table-hover">
       <thead>
         <tr>
-          <th class="text-center"><input type="checkbox" ng-disabled="ImageSet_Change.mode != ''" ng-model="select_all" ng-click="check_all(select_all)"></th>
+          <th class="text-center"><input type="checkbox" ng-model="select_all"></th>
           <th class="text-center">id</th>
-          <!--<th class="text-center">Lion Id</th>-->
           <th class="text-center">Lion</th>
-          <th class="text-center">Main Image Id</th>
-          <!--<th colspan="1" class="text-left">Main Image</th>-->
-          <!--<th class="text-center">Owner Organization Id</th>-->
-          <th colspan="1" class="text-left">Owner Organization</th>
-          <!--<th class="text-center">Uploading Organization Id</th>-->
-          <th colspan="1" class="text-left">Uploading Organization</th>
-          <!--<th class="text-center">Uploading User Id</th>-->
-          <th colspan="1" class="text-left">Uploading User</th>
-
+          <th class="text-center">Main<br>Image Id</th>
+          <th class="text-center">Owner<br>Organization</th>
+          <th class="text-center">Uploading<br>Organization</th>
+          <th class="text-center">Uploading<br>User</th>
           <th class="text-center">Latitude</th>
           <th class="text-center">Longitude</th>
-          <th class="text-center">Date Stamp</th>
-          <th class="text-center">Date of Birth</th>
+          <th class="text-center">Date<br>Stamp</th>
+          <th class="text-center">Date of<br>Birth</th>
           <th class="text-center">Gender</th>
-
           <th class="text-center">Notes</th>
           <th class="text-center">Tags</th>
-
-          <!--<th class="text-center">Primary</th>-->
           <th class="text-center">Verified</th>
           <th class="text-center">Trashed</th>
           <th class="text-center">Created At</th>
           <th class="text-center">Updated At</th>
-        <!--  <th ng-show="ImageSet_Change.mode" class="text-center">Cancel</th>
-          <th ng-show="ImageSet_Change.mode" class="text-center">{{!ImageSet_Change.label}}</th>-->
       </thead>
       <tbody>
-        <tr class="link" ng-repeat="imageset in imagesets" ng-disabled="ImageSet_Change.mode != ''" ng-class="{active:imageset.selected}" ng-click="Select_Imageset(imageset)">
-          <ng-form name="imagesetFieldForm">
-            <td class="text-center"><input type="checkbox" ng-disabled="ImageSet_Change.mode != ''" ng-model="imageset.selected" ng-click="Select_Imageset(imageset)"></td>
+        <tr class="link" ng-repeat="imageset in imagesets" ng-class="{active:imageset.selected}" ng-click="Select_Imageset1(imageset);$event.stopPropagation();">
+          <!--<ng-form name="imagesetFieldForm">-->
+            <td class="text-center"><input type="checkbox" ng-disabled="ImageSet_Change.mode != ''" ng-model="imageset.selected" ng-click="Select_Imageset(imageset);$event.stopPropagation();"></td>
             <td class="text-center">{{!imageset.id}}</td>
-            <!--<td class="text-center">{{!imageset.lion_id}}</td>-->
-            <td ng-show="imageset.change_mode" class="text-center">
-              <select class="form-control-inline custom-select" id="lion_id" name="lion_id" ng-options="lion.id as lion.id + '- ' + lion.name for lion in lions" ng-model="imageset.lion_id" required><option></option>
-              </select>
+            <td class="text-center">{{!imageset.lion_id}}- {{!imageset.lion_name}}</td>
+            <td class="text-center">{{!imageset.main_image_id}}</td>
+            <td class="text-center">{{!imageset.owner_organization}}</td>
+            <td class="text-center">{{!imageset.uploading_organization}}</td>
+            <td class="text-center">{{!imageset.uploading_user}}</td>
+            <td class="text-center">{{!imageset.latitude}}</td>
+            <td class="text-center">{{!imageset.longitude}}</td>
+            <td class="text-center">{{!imageset.date_stamp}}</td>
+            <td class="text-center">{{!imageset.date_of_birth}}</td>
+            <td class="text-center">{{!imageset.gender}}</td>
+            <td class="text-center">
+              <div style="width: 200px" >
+                <textarea disabled class="form-control" rows="3" ng-model="imageset.notes"></textarea>
+              </div>
             </td>
-            <td ng-show="!imageset.change_mode" class="text-center">{{!imageset.lion_id}}- {{!imageset.lion_name}}</td>
-
-            <!--<td class="text-right">{{!imageset.main_image_id}}</td>-->
-            <!--<td ng-show="imageset.change_mode" class="text-center">
-              <select class="form-control-inline custom-select" id="main_image_id" name="main_image_id" ng-model="imageset.main_image_id">
-                <options ng-repeat="image in images value=""{{!images.id}}">
-                  {{!images.id}}- <img ng-src="{{!images.thumbnail}}" width="40" height="40"></td>
-                </option>
-              </select>
-            </td>-->
-            <td ng-show="imageset.change_mode" class="text-center">
-              <select class="form-control-inline custom-select" id="main_image_id" name="main_image_id" ng-options="image.id as image.id for image in images | orderBy:'id'" ng-model="imageset.main_image_id" required><option></option>
-              </select>
-            </td>
-            <td ng-show="!imageset.change_mode" class="text-center">{{!imageset.main_image_id}}</td>
-
-            <!--<td class="text-right">{{!imageset.owner_organization_id}}</td>-->
-            <td ng-show="imageset.change_mode" class="text-center">
-              <select class="form-control-inline custom-select" id="owner_organization_id" name="owner_organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="imageset.owner_organization_id" required><option></option>
-              </select>
-            </td>
-            <td ng-show="!imageset.change_mode" class="text-center">{{!imageset.owner_organization}}</td>
-
-            <!--<td class="text-right">{{!imageset.uploading_organization_id}}</td>-->
-            <td ng-show="imageset.change_mode" class="text-center">
-              <select class="form-control-inline custom-select" id="uploading_organization_id" name="uploading_organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="imageset.uploading_organization_id" required><option></option>
-              </select>
-            </td>
-            <td ng-show="!imageset.change_mode" class="text-center">{{!imageset.uploading_organization}}</td>
-
-            <!--<td class="text-right">{{!imageset.uploading_user_id}}</td>-->
-            <td ng-show="imageset.change_mode" class="text-center">
-              <select class="form-control-inline custom-select" id="uploading_user_id" name="uploading_user_id" ng-options="user.id as user.email for user in users" ng-model="imageset.uploading_user_id" required><option></option>
-              </select>
-            </td>
-            <td ng-show="!imageset.change_mode" class="text-center">{{!imageset.uploading_user}}</td>
-
-            <td ng-show="imageset.change_mode" class="text-center">
-              <input type="number" class="form-control text-center" name="primary_id" ng-model="imageset.latitude" required>
-            </td>
-            <td ng-show="!imageset.change_mode" class="text-center">{{!imageset.latitude}}</td>
-
-            <td ng-show="imageset.change_mode" class="text-center">
-              <input type="number" class="form-control text-center" name="primary_id" ng-model="imageset.longitude" required>
-            </td>
-            <td ng-show="!imageset.change_mode"  class="text-center">{{!imageset.longitude}}</td>
-
-            <td ng-show="imageset.change_mode" class="text-center">
-              <input type="text" class="form-control meta_input" ng-model="imageset.date_stamp" data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date" bs-datepicker placement="bottom-left">
-            </td>
-            <td ng-show="!imageset.change_mode" class="text-center">{{!imageset.date_stamp}}</td>
-
-            <td ng-show="imageset.change_mode" class="text-center">
-              <input type="text" class="form-control meta_input" ng-model="imageset.date_of_birth" data-date-format="yyyy-MM-dd" data-date-type="string" data-max-date="today" data-autoclose="1" name="date1" bs-datepicker placement="bottom-right">
-            </div>
-            <td ng-show="!imageset.change_mode" class="text-center">{{!imageset.date_of_birth}}</td>
-
-            <td ng-show="imageset.change_mode" class="text-center">
-              <select class="form-control-inline custom-select" id="gender_id" name="gender_id" ng-options="gender.type as gender.name for gender in genders" ng-model="imageset.gender" required><option></option>
-              </select>
-            </td>
-            <td ng-show="!imageset.change_mode" class="text-center">{{!imageset.gender}}</td>
-
-            <td ng-show="imageset.change_mode" class="text-center">
+            <td ng-show="!imageset.change_mode" class="text-center">
               <div style="width: 250px" >
-                <textarea class="form-control" rows="2" ng-model="imageset.notes"></textarea>
+                <textarea disabled class="form-control" rows="3" ng-model="imageset.tags"></textarea>
               </div>
             </td>
-            <td ng-show="!imageset.change_mode" class="text-center">{{!imageset.notes}}</td>
-
-            <td ng-show="imageset.change_mode" class="text-center">
-              <div class="form-group group-select">
-                <button type="button" id="id_broken_teeth" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="imageset.tags" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Tags" bs-options="tag.value as tag.label for tag in tags" placement="bottom-right" bs-select>
-                  Action <span class="caret"></span>
-                </button>
-              </div>
-            </td>
-            <td ng-show="!imageset.change_mode" class="text-center">{{!imageset.tags}}</td>
-            <!--<td class="text-center">{{!imageset.is_primary}}</td>-->
             <td ng-show="!imageset.change_mode" class="text-center">{{!imageset.is_verified}}</td>
             <td ng-show="!imageset.change_mode" class="text-center">{{!imageset.trashed}}</td>
 
             <td class="text-center">{{!imageset.created_at}}</td>
             <td class="text-center">{{!imageset.updated_at}}</td>
-            <!--<td ng-show="imageset.change_mode" class="text-center">
-              <button type="button" class="btn btn-default" ng-click="Cancel_Edit_ImageSet()">Cancel</button>
+
             </td>
-            <td ng-show="imageset.change_mode" class="text-center">
-              <button type="submit" class="btn btn-default">{{!btn_submit}}</button>-->
-            </td>
-          </ng-form>
+          <!--</ng-form>-->
         </tr>
       </body>
     </table>
-  </form>
+  <!--</form>-->
 
 </div>
