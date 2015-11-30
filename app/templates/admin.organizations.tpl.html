@@ -6,15 +6,15 @@
     <div class="modal-body">
       <div ng-hide="Org_Mode=='add'" class="form-group-margin">
         <label for="org_id">Id:</label>
-        <input name="org_id" style="text-align: left;" readonly type="text" class="form-control-1" ng-model="organization.id">
+        <input name="org_id" readonly type="text" class="form-control" ng-model="organization.id">
       </div>
       <div class="form-group-margin">
         <label for="org_name">Name:</label>
-        <input style="text-align: left;" type="text" required class="form-control-1" name="org_name" ng-model="organization.name">
+        <input style="text-align: left;" type="text" required class="form-control" name="org_name" ng-model="organization.name">
       </div>
       <div class="form-group-margin">
         <label for="org_trashed">Trashed: </label>
-        <input name="org_trashed" style="margin-left: 15px;"  type="checkbox"  ng-model="organization.trashed" ng-checked="organization.trashed">
+        <input name="org_trashed" type="checkbox"  ng-model="organization.trashed" ng-checked="organization.trashed">
       </div>
     </div>
     <div class="modal-footer">

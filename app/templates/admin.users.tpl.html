@@ -6,15 +6,15 @@
     <div class="modal-body">
       <div ng-hide="User_Mode=='add'" class="form-group-margin">
         <label for="user_id">Id:</label>
-        <input name="user_id" style="text-align: left;" readonly type="text" class="form-control-1" ng-model="user.id">
+        <input name="user_id" style="text-align: left;" readonly type="text" class="form-control form-control-1" ng-model="user.id">
       </div>
       <div class="form-group-margin">
         <label for="user_email">Email:</label>
-        <input style="text-align: left;" type="email" required class="form-control-1" name="user_email" ng-model="user.email">
+        <input style="text-align: left;" type="email" required class="form-control form-control-1" name="user_email" ng-model="user.email">
       </div>
       <div class="form-group-margin">
         <label for="organization_id">Organization:</label>
-        <select class="form-control-1 custom-select" name="organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="user.organization_id" required><option></option>
+        <select class="form-control form-control-1 custom-select" name="organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="user.organization_id" required><option></option>
         </select>
       </div>
       <div ng-hide="User_Mode=='edit'" class="form-group">
@@ -27,13 +27,15 @@
               oninvalid="this.setCustomValidity('please repeat the Password in this field')">
               <div class="text-center"><span align="center" style="color: #d95210;" ng-show="showValidationMessages && form.verify.$error.nxEqualEx" class="help-inline">Passwords must match!</span></div>
       </div>
-      <div class="form-group-margin">
-        <label for="user_admin">Administrator: </label>
-        <input name="user_admin" style="margin-left: 15px;"  type="checkbox"  ng-model="user.admin" ng-checked="user.admin">
+      <div class="checkboxn">
+        <label for="user_admin">
+        <input name="user_admin" id="user_admin" type="checkbox"  ng-model="user.admin" ng-checked="user.admin">
+        Administrator</label>
       </div>
-      <div class="form-group-margin">
-        <label for="user_trashed">Trashed: </label>
-        <input name="user_trashed" style="margin-left: 15px;"  type="checkbox"  ng-model="user.trashed" ng-checked="user.trashed">
+      <div class="checkbox">
+        <label for="user_trashed">
+        <input name="user_trashed" id="user_trashed" type="checkbox"  ng-model="user.trashed" ng-checked="user.trashed">
+        Trashed</label>
       </div>
     </div>
     <div class="modal-footer">
