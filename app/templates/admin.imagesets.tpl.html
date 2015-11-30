@@ -148,7 +148,7 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th class="text-center"><input type="checkbox" ng-disabled="ImageSet_Mode != ''"  ng-model="select_all"></th>
+        <th class="text-center"><input type="checkbox" ng-disabled="ImageSet_Mode != ''" ng-model="select_all" ng-click="check_all(select_all)"></th>
         <th class="text-center"><a ng-click="order('id')" ng-class="{'order_class': predicate === 'id'}">Id</a>
           <span class="sortorder" ng-show="predicate === 'id'" ng-class="{reverse:reverse}"></span>
         </th>
