@@ -3,12 +3,14 @@
 
 angular.module('lion.guardians.admin.cvrequests.controller', [])
 
-.controller('AdminCVRequestsCtrl', ['$scope', function ($scope) {
-  var mode = '';
-  $scope.btn_submit = '';
-  $scope.Selecteds = [];
-  $scope.select_all = false;
-  $scope.CVRequest_Change = {'mode': '', 'label': 'Submit'};
+.controller('AdminCVRequestsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+
+  $scope.CVReq_Status = [{'type': 'submitted', 'label': 'Submitted'},
+                         {'type': 'created', 'label': 'Created'}];
+
+  $scope.Selecteds = $scope.CleanBracket.cvrequests;
+  $scope.select_all = $scope.ItemsSelecteds.cvrequests;
+  $scope.CVRequest_Mode = $scope.EmptyString.cvrequests;
 
   $scope.check_all = function (val){
     _.forEach($scope.cvrequests, function(cvrequest) {
@@ -23,12 +25,11 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
     });
   }
   $scope.Select_CVRequest1 = function (cvrequest){
-    if(mode!='') return;
+    if($scope.CVRequest_Mode != '') return;
     cvrequest.selected = !cvrequest.selected;
     $scope.Select_CVRequest(cvrequest);
   }
   $scope.Select_CVRequest = function (cvrequest){
-    //cvrequest.selected = !cvrequest.selected;
     if(cvrequest.selected){
       if(!_.some($scope.Selecteds, cvrequest))
         $scope.Selecteds.push(cvrequest);
@@ -41,38 +42,63 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
     else
       $scope.select_all = true;
   }
+
+  var modal = null;
   $scope.Add_CVRequest = function () {
-    mode = 'add';
+    $scope.modalTitle = 'Add CV Request';
+    $scope.showValidationMessages = false;
+    $scope.cvrequest = {
+      'requesting_organization_id': -1, 'image_set_id': -1, 'status': '', 'request_body': '',
+      'trashed': false, 'selected': true
+    }
+    modal = $uibModal.open({
+        templateUrl: 'Edit_CVRequest.tmpl.html',
+        scope:$scope
+    });
+    modal.result.then(function (result) {
+      console.log("Add");
+    }, function (){
+      $scope.CVRequest_Mode = '';
+      console.log("add dismiss");
+    });
+
     $scope.check_all(false);
-    $scope.cvrequests.unshift({ 'id': '', 'image_set_id': '', 'requesting_organization_id': -1,
-    'status': '', 'request_body': '', 'trashed': false, 'selected': true, 'change_mode': true });
-    $scope.btn_submit = 'Add New';
-    $scope.CVRequest_Change = {'mode': mode, 'label': 'Submit'};
+    $scope.CVRequest_Mode = 'add';
   };
 
   $scope.Edit_CVRequest = function() {
+    $scope.modalTitle = 'Edit CV Request';
+    $scope.showValidationMessages = false;
+
     if($scope.Selecteds.length == 1){
-      $scope.Selecteds[0].change_mode = true;
-      $scope.btn_submit = 'Update';
-      mode = 'edit';
-      $scope.CVRequest_Change = {'mode': mode, 'label': 'Submit'};
+      $scope.CVRequest_Mode = 'edit';
+      $scope.cvrequest = angular.copy($scope.Selecteds[0]);
+      modal = $uibModal.open({
+          templateUrl: 'Edit_CVRequest.tmpl.html',
+          scope:$scope
+      });
+      modal.result.then(function (result) {
+        console.log("Edited");
+      }, function (){
+        $scope.CVRequest_Mode = '';
+        console.log("edit dismiss");
+      });
     }
   }
   $scope.Cancel_Edit_CVRequest = function(){
-    if(mode == 'add'){
-      _.remove($scope.cvrequests, function(cvrequest) {
-        return cvrequest == $scope.cvrequests[0];
-      });
+    modal.dismiss();
+    $scope.CVRequest_Mode = '';
+  }
+
+  $scope.Submit = function (valid){
+    if(valid){
+      modal.close();
+      Submit_CVRequest();
     }
-    if(mode == 'edit'){
-      $scope.Selecteds[0].change_mode = false;
-    }
-    mode = '';
-    $scope.CVRequest_Change.mode = '';
+    else {$scope.showValidationMessages = true;}
   }
 
   $scope.Delete_CVRequest = function() {
-
     $scope.Delete('CV Request')
     .then(function (result) {
       var data = _.pluck(_.map($scope.Selecteds, function (cvrequest){
@@ -97,19 +123,24 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
     });
   }
 
-  $scope.Submit_CVRequest = function(){
-    if(mode == 'edit'){
-      var cvrequest = $scope.Selecteds[0];
-      var data = {'image_set_id': cvrequest.image_set_id, 'requesting_organization_id': cvrequest.requesting_organization_id, 'status': cvrequest.status, 'request_body': cvrequest.request_body};
-
-      $scope.LincApiServices.CVRequests({'method': 'put', 'cvrequest_id' : cvrequest.id, 'data': data}).then(function(response){
+  var Submit_CVRequest = function(){
+    if($scope.CVRequest_Mode == 'edit'){
+      var data = {
+          'requesting_organization_id': $scope.cvrequest.requesting_organization_id,
+          'image_set_id': $scope.cvrequest.image_set_id, 'status': $scope.cvrequest.status,
+          'request_body': $scope.cvrequest.request_body, 'trashed': $scope.cvrequest.trashed
+      };
+      $scope.LincApiServices.CVRequests({'method': 'put', 'cvrequest_id' : $scope.cvrequest.id, 'data': data}).then(function(response){
         $scope.Notification.success({
           title: 'CV Request Info', message: 'CV Request data successfully updated',
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        _.merge(cvresult, cvresult, response.data);
-        cvresult.change_mode = false;
+
+        var cvrequest = $scope.Selecteds[0];
+        _.merge(cvrequest, cvrequest, response.data);
+        cvrequest.created_at = (cvrequest.created_at || "").substring(0,19);
+        cvrequest.updated_at = (cvrequest.updated_at || "").substring(0,19);
       },
       function(error){
         $scope.Notification.error({
@@ -119,19 +150,24 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
         });
       });
     }
-    if(mode == 'add'){
-      var cvrequest = $scope.Selecteds[0];
-      var data = { 'image_set_id': cvrequest.image_set_id, 'requesting_organization_id': cvrequest.requesting_organization_id, 'status': cvrequest.status, 'request_body': cvrequest.request_body};
-
+    if($scope.CVRequest_Mode == 'add'){
+      var data = {
+          'requesting_organization_id': $scope.cvrequest.requesting_organization_id,
+          'image_set_id': $scope.cvrequest.image_set_id, 'status': $scope.cvrequest.status,
+          'request_body': $scope.cvrequest.request_body, 'trashed': $scope.cvrequest.trashed
+      };
       $scope.LincApiServices.CVRequests({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({
           title: 'CV Request Info', message: 'New CV Request successfully created',
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        _.merge(cvrequest, cvrequest, response.data);
-        cvrequest.change_mode = false;
-        cvrequest.selected = false;
+        var cvrequest = response.data;
+        cvrequest.created_at = (cvrequest.created_at || "").substring(0,19);
+        cvrequest.updated_at = (cvrequest.updated_at || "").substring(0,19);
+        cvrequest.selected = true;
+        $scope.cvrequests.push(cvrequest);
+        $scope.Selecteds.push(cvrequest);
       },
       function(error){
         $scope.Notification.error({
@@ -142,6 +178,14 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
       });
     }
   }
+
+  // Order by
+  $scope.reverse = false;
+  $scope.predicate = 'id';
+  $scope.order = function(predicate) {
+    $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+    $scope.predicate = predicate;
+  };
 }])
 
 ;

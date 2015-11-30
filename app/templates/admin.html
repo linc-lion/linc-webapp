@@ -27,29 +27,7 @@
 </script>
 
 <div>
-  <!--<tabset>
-    <tab ui-sref="admin.users">
-      <tab-heading>Users</tab-heading>
-    </tab>
-    <tab ui-sref="admin.organizations">
-      <tab-heading>Organizations</tab-heading>
-    </tab>
-    <tab ui-sref="admin.lions">
-      <tab-heading>Lions</tab-heading>
-    </tab>
-    <tab ui-sref="admin.imagesets">
-      <tab-heading>Image Sets</tab-heading>
-    </tab>
-    <tab ui-sref="admin.images">
-      <tab-heading>Images</tab-heading>
-    </tab>
-    <tab ui-sref="admin.cvrequests">
-      <tab-heading>CV Requests</tab-heading>
-    </tab>
-    <tab ui-sref="admin.cvresults">
-      <tab-heading>CV Results</tab-heading>
-    </tab>
-  </tabset>-->
+
 <nav class="navbar navbar-default">
   <p class="navbar-text"><strong>Administration:</strong></p>
   <ul class="nav navbar-nav">
@@ -60,33 +38,3 @@
   </ul>
 </nav>
   <div ui-view></div>
-
-  <!--<uib-tabset justified="true">
-    <uib-tab ng-repeat="tab in tabs" heading="{{!tab.title}}" active="tab.active" disable="tab.disabled">
-      <div ng-include="tab.template"></div>
-    </uib-tab>
-  </uib-tabset>-->
-<!--
-  <ul class="nav nav-tabs">
-        <li ng-class="{active:$state.current.name == 'properties.edit.basic'}"><a ui-sref="properties.edit.basic">Basic</a></li>
-        <li ng-class="{active:$state.current.name == 'properties.edit.marketing'}"><a ui-sref="properties.edit.marketing">Marketing</a></li>
-        <li ng-class="{active:$state.current.name == 'properties.edit.rooms'}"><a ui-sref="properties.edit.rooms">Rooms</a></li>
-        <li ng-class="{active:$state.current.name == 'properties.edit.images'}"><a ui-sref="properties.edit.images">Images</a></li>
-        <li ng-class="{active:$state.current.name == 'properties.edit.rates'}"><a ui-sref="properties.edit.rates">Rates</a></li>
-        <li ng-class="{active:$state.current.name == 'properties.edit.availability'}"><a ui-sref="properties.edit.availability">Availability</a></li>
-    </ul>
-    <ui-view></ui-view>-->
-
-
-
-
-
-<!--
-  <uib-tabset justified="true">
-    <tab heading="Users" ui-sref=".users" active="$state.includes('admin.users')"></tab>
-    <tab heading="Organizations" ui-sref=".organizations" active="$state.includes('admin.organizations')"></tab>
-  </uib-tabset>
-  <div ui-view="admin.users" ng-show="$state.includes('admin.users')"></div>
-  <div ui-view="admin.organizations" ng-show="$state.includes('admin.organizations')"></div>
- </div>
- -->
