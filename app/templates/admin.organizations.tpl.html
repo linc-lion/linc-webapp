@@ -12,9 +12,11 @@
         <label for="org_name">Name:</label>
         <input style="text-align: left;" type="text" required class="form-control" name="org_name" ng-model="organization.name">
       </div>
-      <div class="form-group-margin">
-        <label for="org_trashed">Trashed: </label>
-        <input name="org_trashed" type="checkbox"  ng-model="organization.trashed" ng-checked="organization.trashed">
+      <div class="checkbox">
+        <label for="org_trashed">
+        <input name="org_trashed" id="org_trashed" type="checkbox"  ng-model="organization.trashed" ng-checked="organization.trashed">
+          Trashed
+        </label>
       </div>
     </div>
     <div class="modal-footer">

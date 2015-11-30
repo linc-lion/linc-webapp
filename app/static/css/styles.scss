@@ -88,6 +88,26 @@ label{font-weight: normal; cursor:pointer}
     color:$orange;
     font-size:22px;
   }
+  &.btn-select{
+    font-family: inherit;
+    display: block;
+    color:inherit;
+    width:100%;
+    text-align: left;
+    &:focus, &:active{
+      border-color:inherit !important;
+    }
+    .caret{
+      float: right;
+      margin-top:7px;
+    }
+    .select-dropdown-menu{
+      width:100%;
+      .btn{
+        font-family: inherit;
+      }
+    }
+  }
 }
 
 .btn-help{
