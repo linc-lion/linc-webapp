@@ -3,12 +3,11 @@
 
 angular.module('lion.guardians.admin.lions.controller', [])
 
-.controller('AdminLionsCtrl', ['$scope', function ($scope) {
-  var mode = '';
-  $scope.btn_submit = '';
-  $scope.Selecteds = [];
-  $scope.select_all = false;
-  $scope.Lion_Change = {'mode': '', 'label': 'Submit'};
+.controller('AdminLionsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+
+  $scope.Selecteds = $scope.CleanBracket.lions;
+  $scope.select_all = $scope.ItemsSelecteds.lions;
+  $scope.Lion_Mode  =  $scope.EmptyString.lions;
 
   $scope.check_all = function (val){
     _.forEach($scope.lions, function(lion) {
@@ -23,7 +22,7 @@ angular.module('lion.guardians.admin.lions.controller', [])
     });
   }
   $scope.Select_Lion1 = function (lion){
-    if(mode!='') return;
+    if($scope.Lion_Mode != '') return;
     lion.selected = !lion.selected;
     $scope.Select_Lion(lion);
   }
@@ -40,33 +39,61 @@ angular.module('lion.guardians.admin.lions.controller', [])
     else
       $scope.select_all = true;
   }
+
+  var modal = null;
   $scope.Add_Lion = function () {
-    mode = 'add';
-    $scope.check_all(false);
-    $scope.lions.unshift({ 'id': '', 'name': '', 'organization_id': -1, 'primary_image_set_id': '',
-                      'trashed': false, 'selected': true, 'change_mode': true });
-    $scope.btn_submit = 'Add New';
-    $scope.Lion_Change = {'mode': mode, label: 'Submit'};
-  };
-  $scope.Edit_Lion = function() {
-    if($scope.Selecteds.length == 1){
-      $scope.Selecteds[0].change_mode = true;
-      $scope.btn_submit = 'Update';
-      mode = 'edit';
-      $scope.Lion_Change = {'mode': mode, 'label': 'Submit'};
+    $scope.modalTitle = 'Add Lion';
+    $scope.showValidationMessages = false;
+    $scope.lion = {
+      'name': '', 'organization_id': -1, 'primary_image_set_id': '',
+      'trashed': false, 'selected': true
     }
-  }
-  $scope.Cancel_Edit_Lion = function(){
-    if(mode == 'add'){
-      _.remove($scope.lions, function(lion) {
-        return lion == $scope.lions[0];
+    modal = $uibModal.open({
+        templateUrl: 'Edit_Lion.tmpl.html',
+        scope:$scope
+    });
+    modal.result.then(function (result) {
+      console.log("Add");
+    }, function (){
+      $scope.Lion_Mode = '';
+      console.log("add dismiss");
+    });
+
+    $scope.check_all(false);
+    $scope.Lion_Mode = 'add';
+  };
+
+  $scope.Edit_Lion = function() {
+    $scope.modalTitle = 'Edit Lion';
+    $scope.showValidationMessages = false;
+
+    if($scope.Selecteds.length == 1){
+      $scope.Lion_Mode = 'edit';
+      $scope.lion = angular.copy($scope.Selecteds[0]);
+      modal = $uibModal.open({
+          templateUrl: 'Edit_Lion.tmpl.html',
+          scope:$scope
+      });
+      modal.result.then(function (result) {
+        console.log("Edited");
+      }, function (){
+        $scope.Lion_Mode = '';
+        console.log("edit dismiss");
       });
     }
-    if(mode == 'edit'){
-      $scope.Selecteds[0].change_mode = false;
+  }
+
+  $scope.Cancel_Edit_Lion = function(){
+    modal.dismiss();
+    $scope.Lion_Mode = '';
+  }
+
+  $scope.Submit = function (valid){
+    if(valid){
+      modal.close();
+      Submit_Lion();
     }
-    mode = '';
-    $scope.Lion_Change.mode = '';
+    else {$scope.showValidationMessages = true;}
   }
 
   $scope.Delete_Lion = function() {
@@ -94,23 +121,25 @@ angular.module('lion.guardians.admin.lions.controller', [])
     });
   }
 
-  $scope.Submit_Lion = function(){
-    if(mode == 'edit'){
-      var lion = $scope.Selecteds[0];
-      var data = {'name': lion.name,
-       'organization_id': lion.organization_id,
-  'primary_image_set_id': lion.primary_image_set_id,
-                'trashed': lion.trashed };
-      $scope.LincApiServices.Lions({'method': 'put', 'lion_id' : lion.id, 'data': data}).then(function(response){
+  var Submit_Lion = function(){
+    if($scope.Lion_Mode == 'edit'){
+      var data = {'name': $scope.lion.name,
+       'organization_id': $scope.lion.organization_id,
+  'primary_image_set_id': $scope.lion.primary_image_set_id,
+                'trashed': $scope.lion.trashed
+      };
+      $scope.LincApiServices.Lions({'method': 'put', 'lion_id' : $scope.lion.id, 'data': data}).then(function(response){
         $scope.Notification.success({
           title: 'Lion Info', message: 'Lion data successfully updated',
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
+
+        var lion = $scope.Selecteds[0];
         _.merge(lion, lion, response.data);
+        lion.created_at = (lion.created_at || "").substring(0,19);
+        lion.updated_at = (lion.updated_at || "").substring(0,19);
         lion.organization = _.find($scope.organizations, {id: lion.organization_id}).name;
-        lion.change_mode = false;
-        lion.selected = false;
       },
       function(error){
         $scope.Notification.error({
@@ -120,20 +149,25 @@ angular.module('lion.guardians.admin.lions.controller', [])
         });
       });
     }
-    if(mode == 'add'){
-      var lion = $scope.Selecteds[0];
-      var data = {'name': lion.name,
-       'organization_id': lion.organization_id,
-  'primary_image_set_id': lion.primary_image_set_id,
-                'trashed': lion.trashed };
+    if($scope.Lion_Mode  == 'add'){
+      var data = {'name': $scope.lion.name,
+       'organization_id': $scope.lion.organization_id,
+  'primary_image_set_id': $scope.lion.primary_image_set_id,
+                'trashed': $scope.lion.trashed
+      };
       $scope.LincApiServices.Lions({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({
           title: 'Lion Info', message: 'New Lion successfully created',
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        _.merge(lion, lion, response.data);
-        lion.change_mode = false;
+        var lion = response.data;
+        lion.created_at = (lion.created_at || "").substring(0,19);
+        lion.updated_at = (lion.updated_at || "").substring(0,19);
+        lion.organization = _.find($scope.organizations, {'id': lion.organization_id}).name;
+        lion.selected = true;
+        $scope.lions.push(lion);
+        $scope.Selecteds.push(lion);
       },
       function(error){
         $scope.Notification.error({
@@ -145,5 +179,13 @@ angular.module('lion.guardians.admin.lions.controller', [])
     }
   }
 
+  // Order by
+  $scope.reverse = false;
+  $scope.predicate = 'id';
+  $scope.order = function(predicate) {
+    $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+    $scope.predicate = predicate;
+  };
+  
 }])
 ;

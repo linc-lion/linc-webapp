@@ -5,12 +5,9 @@ angular.module('lion.guardians.admin.users.controller', [])
 
 .controller('AdminUsersCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
-  var mode = '';
-  $scope.btn_submit = '';
-  $scope.Selecteds = [];
-  $scope.select_all = false;
-  $scope.User_Change = {'mode': '', 'label': 'Submit'};
-  $scope.isCollapsed = true;
+  $scope.Selecteds = $scope.CleanBracket.users;
+  $scope.select_all = $scope.ItemsSelecteds.users;
+  $scope.User_Mode  =  $scope.EmptyString.users;
 
   $scope.check_all = function (val){
     _.forEach($scope.users, function(user) {
@@ -24,11 +21,13 @@ angular.module('lion.guardians.admin.users.controller', [])
       }
     });
   }
+
   $scope.Select_User1 = function (user){
-    if(mode!='') return;
+    if($scope.User_Mode != '') return;
     user.selected = !user.selected;
     $scope.Select_User(user);
   }
+
   $scope.Select_User = function (user){
     if(user.selected){
       if(!_.some($scope.Selecteds, user))
@@ -43,39 +42,63 @@ angular.module('lion.guardians.admin.users.controller', [])
       $scope.select_all = true;
   }
 
+  var modal = null;
   $scope.Add_User = function () {
-    mode = 'add';
+    $scope.password_required = true;
+    $scope.modalTitle = 'Add User';
+    $scope.showValidationMessages = false;
+    $scope.user = {
+      'email': '', 'organization_id': -1, 'password': '', 'confirmPassword': '', 'admin': false, 'trashed': false, 'selected': true
+    }
+    modal = $uibModal.open({
+        templateUrl: 'Edit_User.tmpl.html',
+        scope:$scope
+    });
+    modal.result.then(function (result) {
+      console.log("Add");
+    }, function (){
+      $scope.User_Mode = '';
+      console.log("add dismiss");
+    });
     $scope.check_all(false);
-    $scope.users.unshift({ 'id': '', 'email': '', 'organization_id': -1, 'admin': false,
-                      'trashed': false, 'selected': true, 'change_mode': true });
-    $scope.btn_submit = 'Add New';
-    $scope.User_Change = {'mode': mode, 'label': 'Submit'};
+    $scope.User_Mode = 'add';
   };
 
   $scope.Edit_User = function() {
+    $scope.password_required = false;
+    $scope.modalTitle = 'Edit User';
+    $scope.showValidationMessages = false;
+
     if($scope.Selecteds.length == 1){
-      $scope.Selecteds[0].change_mode = true;
-      $scope.btn_submit = 'Update';
-      mode = 'edit';
-      $scope.User_Change = {'mode': mode, 'label': 'Submit'};
+      $scope.User_Mode = 'edit';
+      $scope.user = angular.copy($scope.Selecteds[0]);
+      modal = $uibModal.open({
+          templateUrl: 'Edit_User.tmpl.html',
+          scope:$scope
+      });
+      modal.result.then(function (result) {
+        console.log("Edited");
+      }, function (){
+        $scope.User_Mode = '';
+        console.log("edit dismiss");
+      });
     }
   }
 
   $scope.Cancel_Edit_User = function(){
-    if(mode == 'add'){
-      _.remove($scope.users, function(user) {
-        return user == $scope.users[0];
-      });
+    modal.dismiss();
+    $scope.User_Mode = '';
+  }
+
+  $scope.Submit = function (valid){
+    if(valid){
+      modal.close();
+      Submit_User();
     }
-    if(mode == 'edit'){
-      $scope.Selecteds[0].change_mode = false;
-    }
-    mode = '';
-    $scope.User_Change.mode = '';
+    else {$scope.showValidationMessages = true;}
   }
 
   $scope.Delete_User = function() {
-
     $scope.Delete('Users')
     .then(function (result) {
       var data = _.pluck(_.map($scope.Selecteds, function (user){
@@ -100,22 +123,25 @@ angular.module('lion.guardians.admin.users.controller', [])
     });
   }
 
-  $scope.Submit_User = function(){
-    if(mode == 'edit'){
-      var user = $scope.Selecteds[0];
-      var data = {'email': user.email,
-        'organization_id': user.organization_id,
-                  'admin': user.admin,
-                'trashed': user.trashed };
-      $scope.LincApiServices.Users({'method': 'put', 'user_id' : user.id, 'data': data}).then(function(response){
+  var Submit_User = function(){
+    if($scope.User_Mode == 'edit'){
+      var data = {'email': $scope.user.email,
+          'organization_id': $scope.user.organization_id,
+                    'admin': $scope.user.admin,
+                  'trashed': $scope.user.trashed
+      };
+      $scope.LincApiServices.Users({'method': 'put', 'user_id' : $scope.user.id, 'data': data}).then(function(response){
         $scope.Notification.success({
           title: 'User Info', message: 'User data successfully updated',
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
+
+        var user = $scope.Selecteds[0];
         _.merge(user, user, response.data);
+        user.created_at = (user.created_at || "").substring(0,19);
+        user.updated_at = (user.updated_at || "").substring(0,19);
         user.organization = _.find($scope.organizations, {'id': user.organization_id}).name;
-        user.change_mode = false;
       },
       function(error){
         $scope.Notification.error({
@@ -125,22 +151,26 @@ angular.module('lion.guardians.admin.users.controller', [])
         });
       });
     }
-    if(mode == 'add'){
-      var user = $scope.Selecteds[0];
-      var data = {'email': user.email,
-          'organization_id': user.organization_id,
-                    'admin': user.admin,
-                  'trashed': user.trashed };
+    if($scope.User_Mode == 'add'){
+      var data = {'email': $scope.user.email,
+          'organization_id': $scope.user.organization_id,
+          'password': $scope.user.password,
+                    'admin': $scope.user.admin,
+                  'trashed': $scope.user.trashed
+      };
       $scope.LincApiServices.Users({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({
           title: 'User Info', message: 'New User successfully created',
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        _.merge(user, user, response.data);
+        var user = response.data;
+        user.created_at = (user.created_at || "").substring(0,19);
+        user.updated_at = (user.updated_at || "").substring(0,19);
         user.organization = _.find($scope.organizations, {'id': user.organization_id}).name;
-        user.change_mode = false;
-        user.selected = false;
+        user.selected = true;
+        $scope.users.push(user);
+        $scope.Selecteds.push(user);
       },
       function(error){
         $scope.Notification.error({
@@ -150,6 +180,7 @@ angular.module('lion.guardians.admin.users.controller', [])
         });
       });
     }
+    $scope.User_Mode = '';
   }
 
   $scope.ChangePassword = function(){
@@ -176,5 +207,13 @@ angular.module('lion.guardians.admin.users.controller', [])
       }
     };
   }
+
+  // Order by
+  $scope.reverse = false;
+  $scope.predicate = 'id';
+  $scope.order = function(predicate) {
+    $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+    $scope.predicate = predicate;
+  };
 }])
 ;

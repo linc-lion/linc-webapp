@@ -20,17 +20,11 @@ angular.module('lion.guardians.admin.controller', [ 'lion.guardians.admin.users.
   $scope.cvrequests = cvrequests;
   $scope.cvresults = cvresults;
 
-  /*$scope.tabIndex = {'users': 0, 'organizations': 1, 'lions': 2, 'imagesets': 3,
-                     'images': 4, 'cvrequests': 5, 'cvresults': 6  }
-  $scope.tabs = [
-    { index: 'users', title:'Users', disabled: false, template: 'admin.users.tpl.html'},
-    { index: 'organizations', title:'Organizations', disabled: false, template: 'admin.organizations.tpl.html'},
-    { index: 'lions', title:'Lions', disabled: false, template: 'admin.lions.tpl.html'},
-    { index: 'imagesets', title:'Imagesets', disabled: false, template: 'admin.imagesets.tpl.html'},
-    { index: 'images', title:'Images', disabled: false, template: 'admin.images.tpl.html'},
-    { index: 'cvrequests', title:'CV Requests', disabled: false, template: 'admin.cvrequests.tpl.html'},
-    { index: 'cvresults', title:'CV Results', disabled: false, template: 'admin.cvresults.tpl.html'}
-  ];*/
+  $scope.EmptyString = {'users': '', 'organizations': '', 'lions': '', 'imagesets': '', 'images': '', 'cvrequests': '', 'cvresults': ''}
+  $scope.CleanBracket = {'users': [], 'organizations': [], 'lions': [], 'imagesets': [], 'images': [], 'cvrequests': [], 'cvresults': []};
+  $scope.ItemsSelecteds = {'users': false, 'organizations': false, 'lions': false, 'imagesets': false, 'images': false, 'cvrequests': false, 'cvresults': false};
+
+
   $scope.tabs = [
     { title:'Organizations', disabled: false, sref: 'admin.organizations'},
     { title:'Lions', disabled: false, sref: 'admin.lions'},

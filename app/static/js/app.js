@@ -92,8 +92,8 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             imagesets: ['LincApiServices', 'organizations', 'users', 'lions', 'images', function(LincApiServices, organizations, users, lions, images) {
               return LincApiServices.ImageSets({'method': 'get', 'organizations': organizations, 'users': users, 'lions': lions, 'images': images});
             }],
-            cvrequests: ['LincApiServices', function(LincApiServices) {
-              return LincApiServices.CVRequests({'method': 'get'});
+            cvrequests: ['LincApiServices', 'organizations', function(LincApiServices, organizations) {
+              return LincApiServices.CVRequests({'method': 'get', 'organizations': organizations});
             }],
             cvresults: ['LincApiServices', function(LincApiServices) {
               return LincApiServices.CVResults({'method': 'get'});

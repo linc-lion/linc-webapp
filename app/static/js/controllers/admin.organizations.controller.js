@@ -3,13 +3,11 @@
 
 angular.module('lion.guardians.admin.organiaztions.controller', [])
 
-.controller('AdminOrganizationsCtrl', ['$scope', function ($scope) {
+.controller('AdminOrganizationsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
-  var mode = '';
-  $scope.btn_submit = '';
-  $scope.Selecteds = [];
-  $scope.select_all = false;
-  $scope.Org_Change = {'mode': '', 'label': 'Submit'};
+  $scope.Selecteds = $scope.CleanBracket.organizations;
+  $scope.select_all = $scope.ItemsSelecteds.organizations;
+  $scope.Org_Mode  =  $scope.EmptyString.organizations;
 
   $scope.check_all = function (val){
     _.forEach($scope.organizations, function(organization) {
@@ -23,11 +21,13 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
       }
     });
   }
+
   $scope.Select_Org1 = function (organization){
-    if(mode!='') return;
+    if($scope.Org_Mode !='') return;
     organization.selected = !organization.selected;
     $scope.Select_Org(organization);
   }
+
   $scope.Select_Org = function (organization){
     if(organization.selected){
       if(!_.some($scope.Selecteds, organization))
@@ -42,34 +42,56 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
       $scope.select_all = true;
   }
 
+  var modal = null;
   $scope.Add_Organization = function () {
-    mode = 'add';
+    $scope.modalTitle = 'Add Organization';
+    $scope.showValidationMessages = false;
+    $scope.organization = { 'name' : '', 'trashed': false, 'selected': true};
+    modal = $uibModal.open({
+        templateUrl: 'Edit_Organization.tmpl.html',
+        scope:$scope
+    });
+    modal.result.then(function (result) {
+      console.log("Add");
+    }, function (){
+      $scope.Org_Mode = '';
+      console.log("add dismiss");
+    });
+    $scope.Org_Mode = 'add';
     $scope.check_all(false);
-    $scope.organizations.unshift({ 'id': '', 'trashed': false, 'selected': true, 'change_mode': true });
-    $scope.btn_submit = 'Add New';
-    $scope.Org_Change = {'mode': mode, 'label': 'Submit'};
   };
 
   $scope.Edit_Organization = function() {
+    $scope.modalTitle = 'Edit Organization';
+    $scope.showValidationMessages = false;
+
     if($scope.Selecteds.length == 1){
-      $scope.Selecteds[0].change_mode = true;
-      $scope.btn_submit = 'Update';
-      mode = 'edit';
-      $scope.Org_Change = {'mode': mode, 'label': 'Submit'};
+      $scope.Org_Mode = 'edit';
+      $scope.organization = angular.copy($scope.Selecteds[0]);
+      modal = $uibModal.open({
+          templateUrl: 'Edit_Organization.tmpl.html',
+          scope:$scope
+      });
+      modal.result.then(function (result) {
+        console.log("Edited");
+      }, function (){
+        $scope.Org_Mode = '';
+        console.log("edit dismiss");
+      });
     }
   }
 
   $scope.Cancel_Edit_Org = function(){
-    if(mode == 'add'){
-      _.remove($scope.organizations, function(organization) {
-        return organization == $scope.organizations[0];
-      });
+    modal.dismiss();
+    $scope.Org_Mode = '';
+  }
+
+  $scope.Submit = function (valid){
+    if(valid){
+      modal.close();
+      Submit_Organization();
     }
-    if(mode == 'edit'){
-      $scope.Selecteds[0].change_mode = false;
-    }
-    mode = '';
-    $scope.Org_Change.mode = '';
+    else {$scope.showValidationMessages = true;}
   }
 
   $scope.Delete_Organization = function() {
@@ -97,19 +119,21 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
     });
   }
 
-  $scope.Submit_Organization = function(){
-    if(mode == 'edit'){
-      var organization = $scope.Selecteds[0];
-      var data = {'name': organization.name,
-                'trashed': organization.trashed };
-      $scope.LincApiServices.Organizations({'method': 'put', 'organization_id' : organization.id, 'data': data}).then(function(response){
+  var Submit_Organization = function(){
+    if($scope.Org_Mode == 'edit'){
+      var data = {'name': $scope.organization.name,
+                'trashed': $scope.organization.trashed
+      };
+      $scope.LincApiServices.Organizations({'method': 'put', 'organization_id' : $scope.organization.id, 'data': data}).then(function(response){
         $scope.Notification.success({
           title: 'Organization Info', message: 'Organization data successfully updated',
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
+        var organization = $scope.Selecteds[0];
         _.merge(organization, organization, response.data);
-        organization.change_mode = false;
+        organization.created_at = (organization.created_at || "").substring(0,19);
+        organization.updated_at = (organization.updated_at || "").substring(0,19);
       },
       function(error){
         $scope.Notification.error({
@@ -119,19 +143,22 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
         });
       });
     }
-    if(mode == 'add'){
-      var organization = $scope.Selecteds[0];
-      var data = {'name': organization.name,
-                'trashed': organization.trashed };
+    if($scope.Org_Mode == 'add'){
+      var data = {'name': $scope.organization.name,
+                'trashed': $scope.organization.trashed
+      };
       $scope.LincApiServices.Organizations({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({
           title: 'Organization Info', message: 'New Organization successfully created',
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        _.merge(organization, organization, response.data);
-        organization.change_mode = false;
-        organization.selected = false;
+        var organization = response.data;
+        organization.created_at = (organization.created_at || "").substring(0,19);
+        organization.updated_at = (organization.updated_at || "").substring(0,19);
+        organization.selected = true;
+        $scope.organizations.push(organization);
+        $scope.Selecteds.push(organization);
       },
       function(error){
         $scope.Notification.error({
@@ -141,7 +168,15 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
         });
       });
     }
+    $scope.Org_Mode = '';
   }
 
+  // Order by
+  $scope.reverse = false;
+  $scope.predicate = 'id';
+  $scope.order = function(predicate) {
+    $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+    $scope.predicate = predicate;
+  };
 }])
 ;

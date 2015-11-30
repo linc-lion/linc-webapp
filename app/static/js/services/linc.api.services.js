@@ -19,9 +19,9 @@ angular.module('lion.guardians.api.services', [])
       function (results){
         var data = results.data.data;
         var organizations = _.map(data, function(org) {
-          org.created_at = org.created_at.substring(0,19);
-          org.updated_at = org.updated_at.substring(0,19);
-          return _.extend({}, org, {'selected': false, 'change_mode': false});
+          org.created_at = (org.created_at || "").substring(0,19);
+          org.updated_at = (org.updated_at || "").substring(0,19);
+          return _.extend({}, org, {'selected': false});
         });
         deferred.resolve(organizations);
       }, function(error){
@@ -100,11 +100,11 @@ angular.module('lion.guardians.api.services', [])
         var organizations = data_in.organizations;
         var users =  _.map(data, function(user) {
 
-          user.created_at = user.created_at.substring(0,19);
-          user.updated_at = user.updated_at.substring(0,19);
+          user.created_at = (user.created_at || "").substring(0,19);
+          user.updated_at = (user.updated_at || "").substring(0,19);
 
-          user.current_sign_in_at = user.current_sign_in_at.substring(0,19);
-          user.last_sign_in_at = user.last_sign_in_at.substring(0,19);
+          user.current_sign_in_at = (user.current_sign_in_at || "").substring(0,19);
+          user.last_sign_in_at = (user.last_sign_in_at || "").substring(0,19);
 
           var text =
           'Current Sign In At: ' + user.current_sign_in_at + ';<br>' +
@@ -117,10 +117,10 @@ angular.module('lion.guardians.api.services', [])
           var id = user.organization_id;
           var organization = _.find(organizations, {'id': id});
           if(organization != undefined){
-            return _.extend({}, user, {'organization': organization['name'], 'tooltip': tooltip, 'selected': false, 'change_mode': false});
+            return _.extend({}, user, {'organization': organization['name'], 'tooltip': tooltip, 'selected': false});
           }
           else {
-            return _.extend({}, user, {'organization': '-', 'selected': false, 'change_mode': false});
+            return _.extend({}, user, {'organization': '-', 'selected': false});
           }
         });
         deferred.resolve(users);
@@ -199,15 +199,15 @@ angular.module('lion.guardians.api.services', [])
         var data = results.data.data;
         var organizations = data_in.organizations;
         var lions = _.map(data, function(lion) {
-          lion.created_at = lion.created_at.substring(0,19);
-          lion.updated_at = lion.updated_at.substring(0,19);
+          lion.created_at = (lion.created_at || "").substring(0,19);
+          lion.updated_at = (lion.updated_at || "").substring(0,19);
           var id = lion.organization_id;
           var organization = _.find(organizations, {'id': id});
           if(organization != undefined){
-            return _.extend({}, lion, {'organization': organization['name'], 'selected': false, 'change_mode': false});
+            return _.extend({}, lion, {'organization': organization['name'], 'selected': false});
           }
           else{
-            return _.extend({}, lion, {'organization': '-', 'selected': false, 'change_mode': false});
+            return _.extend({}, lion, {'organization': '-', 'selected': false});
           }
         });
         deferred.resolve(lions);
@@ -289,10 +289,10 @@ angular.module('lion.guardians.api.services', [])
         var users = data_in.users;
         var images = data_in.images;
         var imagesets = _.map(data, function(imageset) {
-          imageset.created_at = imageset.created_at.substring(0,19);
-          imageset.updated_at = imageset.updated_at.substring(0,19);
+          imageset.created_at = (imageset.created_at || "").substring(0,19);
+          imageset.updated_at = (imageset.updated_at || "").substring(0,19);
           if(imageset.date_of_birth)
-            imageset.date_of_birth = imageset.date_of_birth.substring(0,10);
+            imageset.date_of_birth = (imageset.date_of_birth || "").substring(0,10);
           var id = imageset.lion_id;
           var lion = _.find(lions, {'id': id});
           if(lion == undefined) lion = {'name': '-'};
@@ -306,10 +306,10 @@ angular.module('lion.guardians.api.services', [])
           var uploading_user = _.find(users, {'id': id});
           if(uploading_user == undefined) uploading_user = {'email': '-'};
           id = imageset.main_image_id;
-          //var main_image = _.find(images, {'id': id});
-          //if(main_image == undefined) main_image = {'url': ''};
+          var main_image = _.find(images, {'id': id});
+          if(main_image == undefined) main_image = {'url': ''};
 
-          return _.extend({}, imageset, {'lion_name': lion['name'], 'owner_organization': owner_organization['name'], 'uploading_organization': uploading_organization['name'], 'uploading_user': uploading_user['email'], /*'main_image': main_image['url'],*/ 'selected': false, 'change_mode': false});
+          return _.extend({}, imageset, {'lion_name': lion['name'], 'owner_organization': owner_organization['name'], 'uploading_organization': uploading_organization['name'], 'uploading_user': uploading_user['email'], 'main_image': main_image['url'], 'selected': false});
         });
         deferred.resolve(imagesets);
       }, function(error){
@@ -386,9 +386,9 @@ angular.module('lion.guardians.api.services', [])
       function (results){
         var data = results.data.data;
         var images = _.map(data, function(image) {
-          image.created_at = image.created_at.substring(0,19);
-          image.updated_at = image.updated_at.substring(0,19);
-          return _.extend({}, image, {'selected': false, 'change_mode': false});
+          image.created_at = (image.created_at || "").substring(0,19);
+          image.updated_at = (image.updated_at || "").substring(0,19);
+          return _.extend({}, image, {'selected': false});
         });
         deferred.resolve(images);
       }, function(error){
@@ -464,10 +464,13 @@ angular.module('lion.guardians.api.services', [])
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
+        var organizations = data_in.organizations;
         var cvrequests = _.map(data, function(cvrequest) {
-          cvrequest.created_at = cvrequest.created_at.substring(0,19);
-          cvrequest.updated_at = cvrequest.updated_at.substring(0,19);
-          return _.extend({}, cvrequest, {'selected': false, 'change_mode': false});
+          cvrequest.created_at = (cvrequest.created_at || "").substring(0,19);
+          cvrequest.updated_at = (cvrequest.updated_at || "").substring(0,19);
+          var id = cvrequest.requesting_organization_id;
+          var organization = _.find(organizations, {'id': id});
+          return _.extend({}, cvrequest, {'requesting_organization': organization['name'], 'selected': false});
         });
         deferred.resolve(cvrequests);
       }, function(error){
@@ -544,9 +547,9 @@ angular.module('lion.guardians.api.services', [])
       function (results){
         var data = results.data.data;
         var cvresults = _.map(data, function(cvresult) {
-          cvresult.created_at = cvresult.created_at.substring(0,19);
-          cvresult.updated_at = cvresult.updated_at.substring(0,19);
-          return _.extend({}, cvresult, {'selected': false, 'change_mode': false});
+          cvresult.created_at = (cvresult.created_at || "").substring(0,19);
+          cvresult.updated_at = (cvresult.updated_at || "").substring(0,19);
+          return _.extend({}, cvresult, {'selected': false});
         });
         deferred.resolve(cvresults);
       }, function(error){

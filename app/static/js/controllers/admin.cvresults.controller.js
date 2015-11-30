@@ -3,12 +3,11 @@
 
 angular.module('lion.guardians.admin.cvresults.controller', [])
 
-.controller('AdminCVResultsCtrl', ['$scope', function ($scope) {
-  var mode = '';
-  $scope.btn_submit = '';
-  $scope.Selecteds = [];
-  $scope.select_all = false;
-  $scope.CVResult_Change = {'mode': '', 'label': 'Submit'};
+.controller('AdminCVResultsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+
+  $scope.Selecteds = $scope.CleanBracket.cvresults;
+  $scope.select_all = $scope.ItemsSelecteds.cvresults;
+  $scope.CVResult_Mode = $scope.EmptyString.cvresults;
 
   $scope.check_all = function (val){
     _.forEach($scope.cvresults, function(cvresult) {
@@ -23,12 +22,11 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
     });
   }
   $scope.Select_CVresult1 = function (cvresult){
-    if(mode!='') return;
+    if($scope.CVResult_Mode != '') return;
     cvresult.selected = !cvresult.selected;
     $scope.Select_CVresult(cvresult);
   }
   $scope.Select_CVresult = function (cvresult){
-    //cvresult.selected = !cvresult.selected;
     if(cvresult.selected){
       if(!_.some($scope.Selecteds, cvresult))
         $scope.Selecteds.push(cvresult);
@@ -41,39 +39,64 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
     else
       $scope.select_all = true;
   }
-  $scope.Add_CVResult = function () {
-    mode = 'add';
-    $scope.check_all(false);
-    $scope.cvresults.unshift({ 'id': '', 'match_probability': '', 'cvrequest_iid': -1,
-                      'trashed': false, 'selected': true, 'change_mode': true });
 
-    $scope.btn_submit = 'Add New';
-    $scope.CVResult_Change = {'mode': mode, 'label': 'Submit'};
+  var modal = null;
+  $scope.Add_CVResult = function () {
+    $scope.modalTitle = 'Add CV Result';
+    $scope.showValidationMessages = false;
+    $scope.cvresult = {
+      'cvrequest_id': -1, 'match_probability': '',
+      'trashed': false, 'selected': true
+    }
+    modal = $uibModal.open({
+        templateUrl: 'Edit_CVResult.tmpl.html',
+        scope:$scope
+    });
+    modal.result.then(function (result) {
+      console.log("Add");
+    }, function (){
+      $scope.CVResult_Mode = '';
+      console.log("add dismiss");
+    });
+
+    $scope.check_all(false);
+    $scope.CVResult_Mode = 'add';
   };
 
   $scope.Edit_CVResult = function() {
+    $scope.modalTitle = 'Edit CV Result';
+    $scope.showValidationMessages = false;
+
     if($scope.Selecteds.length == 1){
-      $scope.Selecteds[0].change_mode = true;
-      $scope.btn_submit = 'Update';
-      mode = 'edit';
-      $scope.CVResult_Change = {'mode': mode, 'label': 'Submit'};
-    }
-  }
-  $scope.Cancel_Edit_CVResult = function(){
-    if(mode == 'add'){
-      _.remove($scope.cvresults, function(cvresult) {
-        return cvresult == $scope.cvresults[0];
+      $scope.CVResult_Mode = 'edit';
+      $scope.cvresult = angular.copy($scope.Selecteds[0]);
+      modal = $uibModal.open({
+          templateUrl: 'Edit_CVResult.tmpl.html',
+          scope:$scope
+      });
+      modal.result.then(function (result) {
+        console.log("Edited");
+      }, function (){
+        $scope.CVResult_Mode = '';
+        console.log("edit dismiss");
       });
     }
-    if(mode == 'edit'){
-      $scope.Selecteds[0].change_mode = false;
+  }
+
+  $scope.Cancel_Edit_CVResult = function(){
+    modal.dismiss();
+    $scope.CVResult_Mode = '';
+  }
+
+  $scope.Submit = function (valid){
+    if(valid){
+      modal.close();
+      Submit_CVresult();
     }
-    mode = '';
-    $scope.CVResult_Change.mode = '';
+    else {$scope.showValidationMessages = true;}
   }
 
   $scope.Delete_CVResult = function() {
-
     $scope.Delete('CV Results')
     .then(function (result) {
       var data = _.pluck(_.map($scope.Selecteds, function (cvresult){
@@ -98,20 +121,22 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
     });
   }
 
-  $scope.Submit_CVresult = function(){
-    if(mode == 'edit'){
-      var cvresult = $scope.Selecteds[0];
-      var data = {'match_probability': cvresult.match_probability,
-        'cvrequest_iid': cvresult.cvrequest_iid };
-
-      $scope.LincApiServices.CVResults({'method': 'put', 'cvresult_id' : cvresult.id, 'data': data}).then(function(response){
+  var Submit_CVresult = function(){
+    if($scope.CVResult_Mode == 'edit'){
+      var data = {
+        'cvrequest_id': $scope.cvresult.cvrequest_id, 'match_probability': $scope.cvresult.match_probability,
+        'trashed': $scope.cvresult.trashed
+      };
+      $scope.LincApiServices.CVResults({'method': 'put', 'cvresult_id' : $scope.cvresult.id, 'data': data}).then(function(response){
         $scope.Notification.success({
           title: 'CV Result Info', message: 'CV Result data successfully updated',
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
+        var cvresult = $scope.Selecteds[0];
         _.merge(cvresult, cvresult, response.data);
-        cvresult.change_mode = false;
+        cvresult.created_at = (cvrequest.created_at || "").substring(0,19);
+        cvresult.updated_at = (cvrequest.updated_at || "").substring(0,19);
       },
       function(error){
         $scope.Notification.error({
@@ -121,20 +146,23 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
         });
       });
     }
-    if(mode == 'add'){
-      var cvresult = $scope.Selecteds[0];
-      var data = {'match_probability': cvresult.match_probability,
-        'cvrequest_iid': cvresult.cvrequest_iid };
-
+    if($scope.CVResult_Mode == 'add'){
+      var data = {
+        'cvrequest_id': $scope.cvresult.cvrequest_id, 'match_probability': $scope.cvresult.match_probability,
+        'trashed': $scope.cvresult.trashed
+      };
       $scope.LincApiServices.CVResults({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({
           title: 'CV Result Info', message: 'New CV Result successfully created',
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        _.merge(cvresult, cvresult, response.data);
-        cvresult.change_mode = false;
-        cvresult.selected = false;
+        var cvresult = response.data;
+        cvresult.created_at = (cvrequest.created_at || "").substring(0,19);
+        cvresult.updated_at = (cvrequest.updated_at || "").substring(0,19);
+        cvresult.selected = true;
+        $scope.cvresults.push(cvresult);
+        $scope.Selecteds.push(cvresult);
       },
       function(error){
         $scope.Notification.error({
@@ -146,6 +174,13 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
     }
   }
 
+  // Order by
+  $scope.reverse = false;
+  $scope.predicate = 'id';
+  $scope.order = function(predicate) {
+    $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+    $scope.predicate = predicate;
+  };
 }])
 
 ;
