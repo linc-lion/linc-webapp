@@ -4,30 +4,30 @@
       <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
     </div>
     <div class="modal-body">
-      <div ng-hide="User_Mode=='add'" class="form-group-margin">
+      <div ng-hide="User_Mode=='add'" class="form-group">
         <label for="user_id">Id:</label>
-        <input name="user_id" style="text-align: left;" readonly type="text" class="form-control form-control-1" ng-model="user.id">
+        <input name="user_id" readonly type="text" class="form-control" ng-model="user.id">
       </div>
-      <div class="form-group-margin">
+      <div class="form-group">
         <label for="user_email">Email:</label>
-        <input style="text-align: left;" type="email" required class="form-control form-control-1" name="user_email" ng-model="user.email">
+        <input type="email" required class="form-control" name="user_email" ng-model="user.email">
       </div>
-      <div class="form-group-margin">
+      <div class="form-group">
         <label for="organization_id">Organization:</label>
-        <select class="form-control form-control-1 custom-select" name="organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="user.organization_id" required><option></option>
+        <select class="form-control custom-select" name="organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="user.organization_id" required><option></option>
         </select>
       </div>
       <div ng-hide="User_Mode=='edit'" class="form-group">
-        <label class="meta_label" for="lion_name">Password:</label>
-        <input class="form-control text-center" type="password" name="password" ng-model="user.password" placeholder="New Password" ng-required="password_required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('please fill out this field with Password')">
+        <label for="lion_name">Password:</label>
+        <input class="form-control" type="password" name="password" ng-model="user.password" placeholder="New Password" ng-required="password_required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('please fill out this field with Password')">
       </div>
       <div ng-hide="User_Mode=='edit'" class="form-group">
-        <label class="meta_label" for="lion_name">Password:</label>
-        <input class="form-control text-center" type="password" name="verify" ng-model="user.confirmPassword" placeholder="Confirm Password" ng-required="password_required" oninput="setCustomValidity('')" nx-equal-ex="user.password"
+        <label for="lion_name">Password:</label>
+        <input class="form-control" type="password" name="verify" ng-model="user.confirmPassword" placeholder="Confirm Password" ng-required="password_required" oninput="setCustomValidity('')" nx-equal-ex="user.password"
               oninvalid="this.setCustomValidity('please repeat the Password in this field')">
-              <div class="text-center"><span align="center" style="color: #d95210;" ng-show="showValidationMessages && form.verify.$error.nxEqualEx" class="help-inline">Passwords must match!</span></div>
+              <div ><span ng-show="showValidationMessages && form.verify.$error.nxEqualEx" class="help-inline">Passwords must match!</span></div>
       </div>
-      <div class="checkboxn">
+      <div class="checkbox">
         <label for="user_admin">
         <input name="user_admin" id="user_admin" type="checkbox"  ng-model="user.admin" ng-checked="user.admin">
         Administrator</label>
@@ -64,14 +64,14 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th class="text-center"><input type="checkbox" ng-disabled="User_Mode != ''" ng-model="select_all" ng-click="check_all(select_all)"></th>
-        <th class="text-center"><a ng-click="order('id')" ng-class="{'order_class': predicate === 'id'}">Id</a>
+        <th ><input type="checkbox" ng-disabled="User_Mode != ''" ng-model="select_all" ng-click="check_all(select_all)"></th>
+        <th ><a ng-click="order('id')" ng-class="{'order_class': predicate === 'id'}">Id</a>
           <span class="sortorder" ng-show="predicate === 'id'" ng-class="{reverse:reverse}"></span>
         </th>
-        <th class="text-center"><a ng-click="order('email')" ng-class="{'order_class': predicate === 'email'}">Email</a>
+        <th ><a ng-click="order('email')" ng-class="{'order_class': predicate === 'email'}">Email</a>
           <span class="sortorder" ng-show="predicate === 'email'" ng-class="{reverse:reverse}"></span>
         </th>
-        <th class="text-center"><a ng-click="order('organization')" ng-class="{'order_class': predicate === 'organization'}">Organization</a>
+        <th ><a ng-click="order('organization')" ng-class="{'order_class': predicate === 'organization'}">Organization</a>
           <span class="sortorder" ng-show="predicate === 'organization'" ng-class="{reverse:reverse}"></span>
         </th>
         <th class="text-center"><a ng-click="order('admin')" ng-class="{'order_class': predicate === 'admin'}">Administrator</a>
@@ -80,21 +80,21 @@
         <th class="text-center"><a ng-click="order('trashed')" ng-class="{'order_class': predicate === 'trashed'}">Trashed</a>
           <span class="sortorder" ng-show="predicate === 'trashed'" ng-class="{reverse:reverse}"></span>
         </th>
-        <th class="text-center"><a ng-click="order('created_at')" ng-class="{'order_class': predicate === 'created_at'}">Created At</a>
+        <th ><a ng-click="order('created_at')" ng-class="{'order_class': predicate === 'created_at'}">Created At</a>
           <span class="sortorder" ng-show="predicate === 'created_at'" ng-class="{reverse:reverse}"></span>
         </th>
-        <th class="text-center"><a ng-click="order('updated_at')" ng-class="{'order_class': predicate === 'updated_at'}">Updated At</a>
+        <th ><a ng-click="order('updated_at')" ng-class="{'order_class': predicate === 'updated_at'}">Updated At</a>
           <span class="sortorder" ng-show="predicate === 'updated_at'" ng-class="{reverse:reverse}"></span>
         </th>
-        <th class="text-center">Info</th>
+        <th >Info</th>
       </tr>
     </thead>
     <tbody>
       <tr class="link" ng-repeat="user in users | orderBy:predicate:reverse"  ng-class="{active:user.selected}" ng-click="Select_User1(user);$event.stopPropagation();">
-        <td class="text-center"><input type="checkbox" ng-disabled="User_Mode != ''" ng-model="user.selected" ng-click="Select_User(user);$event.stopPropagation();"></td>
-        <td class="text-center">{{!user.id}}</td>
-        <td class="text-center">{{!user.email}}</td>
-        <td class="text-center">{{!user.organization}}</td>
+        <td ><input type="checkbox" ng-disabled="User_Mode != ''" ng-model="user.selected" ng-click="Select_User(user);$event.stopPropagation();"></td>
+        <td >{{!user.id}}</td>
+        <td >{{!user.email}}</td>
+        <td >{{!user.organization}}</td>
         <td class="text-center">
           <i ng-if="user.admin" class="icon icon-check"></i>
           <i ng-if="!user.admin" class="icon icon-cross"></i>
@@ -103,8 +103,8 @@
           <i ng-if="user.trashed" class="icon icon-check"></i>
           <i ng-if="!user.trashed" class="icon icon-cross"></i>
         </td>
-        <td class="text-center">{{!user.created_at}}</td>
-        <td class="text-center">{{!user.updated_at}}</td>
+        <td >{{!user.created_at}}</td>
+        <td >{{!user.updated_at}}</td>
         <td>
           <a href data-animation="am-flip-x" data-html="true" placement="auto" bs-tooltip="user.tooltip">Info</a>
         </td>

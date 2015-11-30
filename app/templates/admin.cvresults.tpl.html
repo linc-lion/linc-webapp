@@ -4,17 +4,17 @@
       <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
     </div>
     <div class="modal-body">
-      <div ng-hide="CVResult_Mode=='add'" class="form-group-margin">
+      <div ng-hide="CVResult_Mode=='add'" class="form-group">
         <label for="cvresult_id">Id:</label>
-        <input name="cvresult_id" style="text-align: left;" readonly type="text" class="form-control-1" ng-model="cvresult.id">
+        <input name="cvresult_id" readonly type="text" class="form-control" ng-model="cvresult.id">
       </div>
-      <div class="form-group-margin">
+      <div class="form-group">
         <label for="cvrequest_id">CV Request Id:</label>
-        <select class="form-control-1 custom-select" name="cvrequest_id" ng-options="cvrequest.id as cvrequest.id for cvrequest in cvrequests" ng-model="cvresult.cvrequest_id" required><option></option>
+        <select class="form-control custom-select" name="cvrequest_id" ng-options="cvrequest.id as cvrequest.id for cvrequest in cvrequests" ng-model="cvresult.cvrequest_id" required><option></option>
         </select>
       </div>
 
-      <div class="form-group-margin">
+      <div class="form-group">
         <label for="match_probability">Id:</label>
         <textarea class="form-control" rows="4" ng-model="cvresult.match_probability"></textarea>
       </div>
