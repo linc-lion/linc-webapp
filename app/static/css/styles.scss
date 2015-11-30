@@ -89,10 +89,13 @@ label{font-weight: normal; cursor:pointer}
     font-size:22px;
   }
   &.btn-select{
-    font-family: inherit;
     display: block;
-    color:inherit;
     width:100%;
+  }
+  &.btn-select, &.select_btn{
+     min-width: 120px;
+    font-family: inherit;
+    color:inherit;
     text-align: left;
     &:focus, &:active{
       border-color:inherit !important;
@@ -372,15 +375,16 @@ hr.style-line { margin-bottom: 10px !important; margin-top: 10px !important; mar
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     align: right;
   }
+.form-group.control{margin-bottom: 10px;}
 .form-control-inline1 {@extend .form-control-inline; width: 50%;     margin-left: 20px;}
 
 .meta_label { padding-right: 10px;}
 
-.select_btn { min-width: 120px;}
+
 .meta_input{ text-align: center; width: 120px !important;}
 .a_meta{text-align: center; width: 120px !important; color:blue !important;}
-.group-select { text-align: right; padding-right: 20px;}
-.group-input { text-align: right; padding-right: 20px;}
+.group-select { text-align: right; }
+.group-input { text-align: right; margin-bottom:10px;}
 a.ng-scope { color: #333;}
 
 .notify-icon, .pnotify-icon span { display: block; float: left; margin-right: .2em; }
