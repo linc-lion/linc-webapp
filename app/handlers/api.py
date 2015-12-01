@@ -15,24 +15,30 @@ import urllib
 from zipfile import ZipFile
 from shutil import rmtree
 from datetime import datetime,timedelta
+from utils.rolecheck import allowedRole
 
 class ImageSetsListHandler(BaseHandler):
     @asynchronous
     @engine
+    @authenticated
     def get(self):
         resource_url = '/imagesets/list'
         url = self.settings['API_URL']+resource_url
-        response = yield Task(self.api,url=url,method='GET')
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=url,method='GET',headers=headers)
         self.set_status(response.code)
         self.set_json_output()
         self.finish(response.body)
+
     @asynchronous
     @engine
+    @authenticated
     def post(self, imgset_id=None, cvrequest=None):
         resource_url = '/imagesets/' + imgset_id + '/cvrequest'
         body = self.json_encode(self.input_data)
         url = self.settings['API_URL']+resource_url
-        response = yield Task(self.api,url=url,method='POST',body=body)
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=url,method='POST',body=body,headers=headers)
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
@@ -42,30 +48,40 @@ class ImageSetsListHandler(BaseHandler):
 class CVResultsHandler(BaseHandler):
     @asynchronous
     @engine
+    @authenticated
     def get(self, res_id='', xlist=None):
         if(res_id):
             resource_url = '/cvresults/'+ res_id + '/list'
         else:
             resource_url = '/cvresults/'
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_status(response.code)
         self.set_json_output()
         self.finish(response.body)
+
     @asynchronous
     @engine
+    @authenticated
     def post(self):
         resource_url = '/cvresults'
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                   method='POST',body=self.json_encode(self.input_data),headers=headers)
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
         else:
             self.finish({'status':'error','message':'fail to access the cvresults POST'})
+
     @asynchronous
     @coroutine
+    @authenticated
     def put(self, res_id=None):
         resource_url = '/cvresults/' + res_id
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode({"message":"updating resources"}))
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+        method='PUT',body=self.json_encode({"message":"updating resources"}),headers=headers)
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
@@ -75,14 +91,18 @@ class CVResultsHandler(BaseHandler):
 class CVRequestHandler(BaseHandler):
     @asynchronous
     @engine
+    @authenticated
     def get(self, req_id=''):
         resource_url = '/cvrequests/' + req_id
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_status(response.code)
         self.set_json_output()
         self.finish(response.body)
+
     @asynchronous
     @coroutine
+    @authenticated
     def delete(self, req_id=None):
         resource_url = '/cvrequests/' + req_id
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"updating resources"}))
@@ -95,9 +115,11 @@ class CVRequestHandler(BaseHandler):
 class ImagesListHandler(BaseHandler):
     @asynchronous
     @engine
+    @authenticated
     def get(self):
         resource_url = '/images/list'
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_status(response.code)
         self.set_json_output()
         self.finish(response.body)
@@ -105,9 +127,11 @@ class ImagesListHandler(BaseHandler):
 class LionsListHandler(BaseHandler):
     @asynchronous
     @engine
+    @authenticated
     def get(self):
         resource_url = '/lions/list'
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_status(response.code)
         self.set_json_output()
         self.finish(response.body)
@@ -115,27 +139,34 @@ class LionsListHandler(BaseHandler):
 class LionsHandler(BaseHandler):
     @asynchronous
     @engine
+    @authenticated
     def get(self, lions_id='', locations=None):
         resource_url = '/lions/' + lions_id
         api=self.get_argument('api', '')
         if(api):
             resource_url = '/lions?api=true'
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_status(response.code)
         self.set_json_output()
         self.finish(response.body)
+
     @asynchronous
     @engine
+    @authenticated
     def post(self):
         resource_url = '/lions'
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                   method='POST',body=self.json_encode(self.input_data),headers=headers)
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
         else:
             self.finish({'status':'error','message':'fail to create new lion POST'})
+
     @asynchronous
     @coroutine
+    @authenticated
     def put(self, lions_id=None):
         print(lions_id)
         if lions_id:
@@ -145,7 +176,9 @@ class LionsHandler(BaseHandler):
             if "_xsrf" in data.keys():
                 del data["_xsrf"]
             print(data)
-            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(data))
+            headers = {'Linc-Api-AuthToken':self.current_user['token']}
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                       method='PUT',body=self.json_encode(data),headers=headers)
             self.set_status(response.code)
             if response.code == 200:
                 self.finish(response.body)
@@ -154,11 +187,15 @@ class LionsHandler(BaseHandler):
         else:
             self.set_status(400)
             self.finish({'status':'error','message':'you need provide an lion id PUT'})
+
     @asynchronous
     @coroutine
+    @authenticated
     def delete(self, lions_id=None):
         resource_url = '/lions/' + lions_id
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"delete lion"}))
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                    method='DELETE',body=self.json_encode({"message":"delete lion"}),headers=headers)
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
@@ -168,25 +205,33 @@ class LionsHandler(BaseHandler):
 class ImageSetsHandler(BaseHandler):
     @asynchronous
     @engine
+    @authenticated
     def get(self, imagesets_id='', param=None):
         print(param)
         resource_url = '/imagesets/' + imagesets_id
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_status(response.code)
         self.set_json_output()
         self.finish(response.body)
+
     @asynchronous
     @engine
+    @authenticated
     def post(self):
         resource_url = '/imagesets'
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                   method='POST',body=self.json_encode(self.input_data),headers=headers)
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
         else:
             self.finish({'status':'error','message':'fail to create new imageset POST'})
+
     @asynchronous
     @coroutine
+    @authenticated
     def put(self, imageset_id=None):
         if imageset_id:
             resource_url = '/imagesets/' + imageset_id
@@ -195,7 +240,9 @@ class ImageSetsHandler(BaseHandler):
             if "_xsrf" in data.keys():
                 del data["_xsrf"]
             print(data)
-            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(data))
+            headers = {'Linc-Api-AuthToken':self.current_user['token']}
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                       method='PUT',body=self.json_encode(data),headers=headers)
             self.set_status(response.code)
             if response.code == 200:
                 self.finish(response.body)
@@ -204,11 +251,14 @@ class ImageSetsHandler(BaseHandler):
         else:
             self.set_status(400)
             self.finish({'status':'error','message':'you need provide an imageset id PUT'})
+
     @asynchronous
     @coroutine
+    @authenticated
     def delete(self, imageset_id=None):
         resource_url = '/imagesets/' + imageset_id
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"delete imageset"}))
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                   method='DELETE',body=self.json_encode({"message":"delete imageset"}),headers=headers)
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
@@ -218,24 +268,33 @@ class ImageSetsHandler(BaseHandler):
 class OrganizationsHandler(BaseHandler):
     @asynchronous
     @engine
+    @authenticated
     def get(self, organizations_id=''):
         resource_url = '/organizations/' + organizations_id
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_status(response.code)
         self.set_json_output()
         self.finish(response.body)
+
     @asynchronous
     @engine
+    @authenticated
+    @allowedRole('admin')
     def post(self):
         resource_url = '/organizations'
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                   method='POST',body=self.json_encode(self.input_data),headers=headers)
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
         else:
             self.finish({'status':'error','message':'fail to create new organization POST'})
+
     @asynchronous
     @coroutine
+    @authenticated
+    @allowedRole('admin')
     def put(self, organizations_id=None):
         print(organizations_id)
         if organizations_id:
@@ -245,7 +304,9 @@ class OrganizationsHandler(BaseHandler):
             if "_xsrf" in data.keys():
                 del data["_xsrf"]
             print(data)
-            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(data))
+            headers = {'Linc-Api-AuthToken':self.current_user['token']}
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                        method='PUT',body=self.json_encode(data),headers=headers)
             self.set_status(response.code)
             if response.code == 200:
                 self.finish(response.body)
@@ -258,9 +319,11 @@ class OrganizationsHandler(BaseHandler):
 class OrganizationsListHandler(BaseHandler):
     @asynchronous
     @engine
+    @authenticated
     def get(self):
         resource_url = '/organizations/list'
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_status(response.code)
         self.set_json_output()
         self.finish(response.body)
@@ -268,6 +331,7 @@ class OrganizationsListHandler(BaseHandler):
 class ImagesUploadHandler(BaseHandler):
     @asynchronous
     @engine
+    @authenticated
     def post(self):
         if self.request.files:
             fileinfo = self.request.files['file'][0]
@@ -293,7 +357,9 @@ class ImagesUploadHandler(BaseHandler):
                 logging.info(body)
                 body["image"] = fileencoded
                 resource_url = '/images/upload'
-                response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(body))
+                headers = {'Linc-Api-AuthToken':self.current_user['token']}
+                response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                              method='POST',body=self.json_encode(body),headers=headers)
                 if response.code == 200:
                     msg = 'new image uploaded with success.'
                     if iscover:
@@ -316,11 +382,13 @@ def remove_file(sched,fn,jid):
 class ImagesHandler(BaseHandler):
     @asynchronous
     @engine
+    @authenticated
     def get(self, images_id=''):
         download = self.get_argument('download','')
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
         if download:
             resource_url = '/images?download=' + download
-            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
             if response and response.code == 200:
                 respdata = loads(response.body)
                 links = respdata['data']
@@ -350,23 +418,28 @@ class ImagesHandler(BaseHandler):
                 return
         else:
             resource_url = '/images/' + images_id
-            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
             self.set_status(response.code)
             self.set_json_output()
             self.finish(response.body)
 
     @asynchronous
     @coroutine
+    @authenticated
     def delete(self, images_id=None):
         resource_url = '/images/' + images_id
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"delete image"}))
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                    method='DELETE',body=self.json_encode({"message":"delete image"}),headers=headers)
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
         else:
             self.finish({'status':'error','message':'fail to delete image DELETE'})
+
     @asynchronous
     @coroutine
+    @authenticated
     def put(self, images_id=None):
         print(images_id)
         if images_id:
@@ -376,7 +449,9 @@ class ImagesHandler(BaseHandler):
             if "_xsrf" in data.keys():
                 del data["_xsrf"]
             print(data)
-            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(data))
+            headers = {'Linc-Api-AuthToken':self.current_user['token']}
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                           method='PUT',body=self.json_encode(data),headers=headers)
             self.set_status(response.code)
             if response.code == 200:
                 self.finish(response.body)
@@ -386,60 +461,46 @@ class ImagesHandler(BaseHandler):
             self.set_status(400)
             self.finish({'status':'error','message':'you need provide an images id PUT'})
 
-class LoginHandler(BaseHandler):
-    @authenticated
-    def get(self):
-        self.redirect('/#/home',permanent=True)
-
-    @asynchronous
-    @engine
-    def post(self):
-        if self.input_data['username'] and self.input_data['password']:
-            obj = {'username':self.input_data['username'],'orgname':'Org Test','admin':False,'token':''}
-            self.set_secure_cookie("userlogin",dumps(obj))
-            # this will be acquired with the api
-            self.setSuccess(200,'You are now logged in the website.',obj)
-        else:
-            self.dropError(401,'Invalid request, you must provide username and password to login.')
-
-class LogoutHandler(BaseHandler):
-    @authenticated
-    def post(self):
-        self.clear_cookie("userlogin")
-        self.setSuccess(200,'logout ok')
-
-    @authenticated
-    def get(self):
-        pass
-
 class UsersHandler(BaseHandler):
     @asynchronous
     @engine
+    @authenticated
     def get(self, user_id=''):
         resource_url = '/users/' + user_id
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_status(response.code)
         self.set_json_output()
         self.finish(response.body)
+
     @asynchronous
     @engine
+    @authenticated
+    @allowedRole('admin')
     def post(self):
         resource_url = '/users'
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='POST',body=self.json_encode(self.input_data))
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                   method='POST',body=self.json_encode(self.input_data),headers=headers)
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
         else:
             self.finish({'status':'error','message':'fail to create new user POST'})
+
     @asynchronous
     @coroutine
+    @authenticated
+    @allowedRole('admin')
     def put(self, user_id=None):
         if user_id:
             resource_url = '/users/' + user_id
             data = dict(self.input_data)
             if "_xsrf" in data.keys():
                 del data["_xsrf"]
-            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='PUT',body=self.json_encode(data))
+            headers = {'Linc-Api-AuthToken':self.current_user['token']}
+            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                        method='PUT',body=self.json_encode(data),headers=headers)
             self.set_status(response.code)
             self.set_json_output()
             if response.code == 200:
@@ -450,12 +511,17 @@ class UsersHandler(BaseHandler):
             self.set_json_output()
             self.set_status(400)
             self.finish({'status':'error','message':'you need provide an user id PUT'})
+
     @asynchronous
     @coroutine
+    @authenticated
+    @allowedRole('admin')
     def delete(self, user_id=None):
         print("AQUI")
         resource_url = '/users/' + user_id
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"delete user"}))
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
+                    method='DELETE',body=self.json_encode({"message":"delete user"}),headers=headers)
         self.set_status(response.code)
         self.set_json_output()
         if response.code == 200:

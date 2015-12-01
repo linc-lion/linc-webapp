@@ -3,7 +3,7 @@
 
 from handlers.base import VersionHandler
 from handlers.error import ErrorHandler
-from handlers.auth import AuthHandler
+from handlers.auth import LogoutHandler,LoginHandler
 from handlers.main import MainHandler,LoginMainHandler,HomeHandler,SideMenuHandler,\
     LionMainHandler,SearchLionHandler,ImageSetMainHandler,SearchImageSetHandler,\
     ConservationistsHandler,ImageGalleryHandler,LocationHistoryHandler,\
@@ -12,7 +12,7 @@ from handlers.main import MainHandler,LoginMainHandler,HomeHandler,SideMenuHandl
     PageAdminImageSetsHandler, PageAdminImagesHandler, PageAdminCVRequestsHandler, PageAdminCVResultsHandler
 from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler,\
     ImagesUploadHandler, ImagesHandler, LionsHandler, ImageSetsHandler, OrganizationsHandler, CVResultsHandler, CVRequestHandler,\
-    LoginHandler, UsersHandler, LogoutHandler
+    UsersHandler
 
 # Defining routes
 url_patterns = [
