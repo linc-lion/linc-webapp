@@ -1,56 +1,118 @@
+<script type="text/ng-template" id="Edit_Image.tmpl.html">
+  <form name="form" ng-submit="Submit(form.$valid)">
+    <div class="modal-header" ng-show="modalTitle">
+      <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
+    </div>
+    <div class="modal-body">
+      <div ng-hide="Image_Mode=='add'" class="form-group">
+        <label for="image_id">Id:</label>
+        <input name="image_id"  readonly type="text" class="form-control" ng-model="image.id">
+      </div>
+      <div class="form-group">
+        <label for="photo" >Photo:</label>
+        <img ng-src="{{!image.url}}" width="80" height="80">
+      </div>
+      <div class="form-group">
+        <label for="image_url">Url:</label>
+        <input type="url" required class="form-control" name="image_url" ng-model="image.url">
+      </div>
+      <div class="form-group">
+        <label for="image_type">Image Type:</label>
+        <select class="form-control custom-select" name="image_type" ng-options="item.type as item.label for item in TypesLabel" ng-model="image.image_type" required><option></option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="image_set_id">Image Set:</label>
+        <select class="form-control custom-select" name="image_set_id" ng-options="imageset.id as imageset.id for imageset in imagesets" ng-model="image.image_set_id" required><option></option>
+        </select>
+      </div>
+      <div class="checkbox">
+        <label for="is_public">
+        <input name="is_public" id="is_public"  type="checkbox"  ng-model="image.is_public" ng-checked="image.is_public">
+          Is Public </label>
+      </div>
+      <div class="checkbox">
+        <label for="img_trashed">
+        <input name="img_trashed" id="img_trashed"  type="checkbox"  ng-model="image.trashed" ng-checked="image.trashed">
+          Trashed </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" ng-click="Cancel_Edit_Image()" data-dismiss="modal">Cancel</button>
+      <button ng-show="Image_Mode=='add'" type="submit" class="btn btn-primary">Add New</button>
+      <button ng-show="Image_Mode=='edit'" type="submit" class="btn btn-primary">Update</button>
+    </div>
+  </form>
+</script>
+
 <div class="form-group" ng-controller="AdminImagesCtrl">
-  <div class="btn-toolbar" role="toolbar" aria-label="toolbar_btns" style="padding-top:10px;padding-bottom:10px;">
-    <div class="btn-group" style="margin-left:30%">
-      <button type = "button" class = "btn btn btn-warning" ng-click="Add_Image()">Add</button>
+  <div class="row" >
+    <div class="col-sm-6">
+      <div class="btn-toolbar" role="toolbar" aria-label="toolbar_btns" >
+        <div class="btn-group" >
+          <button type = "button" class = "btn btn btn-warning" ng-click="Add_Image()">Add</button>
+        </div>
+        <div class="btn-group">
+          <button ng-disabled="!(Selecteds.length==1)" type = "button" class = "btn btn btn-warning" ng-click="Edit_Image()">Edit</button>
+        </div>
+        <div class="btn-group">
+          <button ng-disabled="!(Selecteds.length>0)" type = "button" class = "btn btn btn-warning" ng-click="Delete_Image()">Delete</button>
+        </div>
+      </div>
     </div>
-    <div class="btn-group" style="margin-left:10%">
-      <button ng-disabled="!(Selecteds.length==1)" type = "button" class = "btn btn btn-warning" ng-click="Edit_Image()">Edit</button>
-    </div>
-    <div class="btn-group" style="margin-left:10%">
-      <button ng-disabled="!(Selecteds.length>0)" type = "button" class = "btn btn btn-warning" ng-click="Delete_Image()">Delete</button>
+    <div class="col-sm-6">
+      <div class="btn-toolbar-right" role="toolbar" aria-label="toolbar_btns" >
+        <ul class="pagination pagination-1">
+          <li ng-class="prevPageDisabled()"><a href ng-click="firstPage()">««</a></li>
+          <li ng-class="prevPageDisabled()"><a href ng-click="prevPage()">«</a></li>
+          <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)"><a href="#">{{! n+1}}</a></li>
+          <li ng-class="nextPageDisabled()"><a href ng-click="nextPage()">»</a></li>
+          <li ng-class="nextPageDisabled()"><a href ng-click="lastPage()">»»</a></li>
+        </ul>
+      </div>
     </div>
   </div>
-  <form name="imageForm" ng-submit="Submit_Image()">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th class="text-center"><input type="checkbox" ng-model="select_all" ng-click="check_all(select_all)"></th>
-          <th class="text-center">id</th>
-          <th class="text-center">Photo</th>
-          <th class="text-center">Created At</th>
-          <th class="text-center">Updated At</th>
-          <th class="text-center">Image Type</th>
-          <th class="text-center">Image Set Id</th>
-          <th class="text-center">Public</th>
-          <th class="text-center">Trashed</th>
-          <th ng-show="Image_Change.mode" class="text-center">Cancel</th>
-          <th ng-show="Image_Change.mode" class="text-center">{{!Image_Change.label}}</th>
-      </thead>
-      <tbody>
-        <!--<tr class="link" ng-repeat="image in images" ng-class="{active:image.selected}" ng-click="Select_Image(image)" repeat-done="layoutDone()" ng-cloak>
-          <ng-form name="imageFieldForm">
-            <td class="text-center"><input type="checkbox" ng-model="image.selected" ng-click="Select_Image(image)"></td>
-            <td class="text-center">{{!image.id}}</td>
-            <td class="text-center" ng-click="show_photo(image.url)">{{!image.url}}</td>
-  -->
-            <!--<td class="text-center" ng-click="show_photo(image.url)"><img ng-src="{{!image.url}}" width="40" height="40"></td>-->
-  <!--
-            <td class="text-center">{{!image.created_at}}</td>
-            <td class="text-center">{{!image.updated_at}}</td>
-            <td class="text-center">{{!image.image_type}}</td>
-            <td class="text-center">{{!image.image_set_id}}</td>
-            <td class="text-center">{{!image.is_public}}</td>
-            <td class="text-center">{{!image.trashed}}</td>
-            <td ng-show="image.change_mode" class="text-center">
-              <button type="button" class="btn btn-default" ng-click="Cancel_Edit_Image()">Cancel</button>
-            </td>
-            <td ng-show="image.change_mode" class="text-center">
-              <button type="submit" class="btn btn-default">{{!btn_submit}}</button>
-            </td>
-          </ng-form>
-  -->
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th class="text-center"><input type="checkbox" ng-disabled="Image_Mode != ''" ng-model="select_all" ng-click="check_all(select_all)"></th>
+        <th class="text-center"><a ng-click="order('id')" ng-class="{'order_class': predicate === 'id'}">Id</a>
+          <span class="sortorder" ng-show="predicate === 'id'" ng-class="{reverse:reverse}"></span>
+        </th>
+        <th class="text-center">Photo</th>
+        <th class="text-center"><a ng-click="order('image_type')" ng-class="{'order_class': predicate === 'image_type'}">Image Type</a>
+          <span class="sortorder" ng-show="predicate === 'image_type'" ng-class="{reverse:reverse}"></span>
+        </th>
+        <th class="text-center"><a ng-click="order('image_set_id')" ng-class="{'order_class': predicate === 'image_set_id'}">Image Set Id</a>
+          <span class="sortorder" ng-show="predicate === 'iimage_set_id'" ng-class="{reverse:reverse}"></span>
+        </th>
+        <th class="text-center"><a ng-click="order('is_public')" ng-class="{'order_class': predicate === 'is_public'}">Public</a>
+          <span class="sortorder" ng-show="predicate === 'is_public'" ng-class="{reverse:reverse}"></span>
+        </th>
+        <th class="text-center"><a ng-click="order('trashed')" ng-class="{'order_class': predicate === 'trashed'}">Trashed</a>
+          <span class="sortorder" ng-show="predicate === 'trashed'" ng-class="{reverse:reverse}"></span>
+        </th>
+        <th class="text-center"><a ng-click="order('created_at')" ng-class="{'order_class': predicate === 'created_at'}">Created At</a>
+          <span class="sortorder" ng-show="predicate === 'created_at'" ng-class="{reverse:reverse}"></span>
+        </th>
+        <th class="text-center"><a ng-click="order('updated_at')" ng-class="{'order_class': predicate === 'updated_at'}">Updated At</a>
+          <span class="sortorder" ng-show="predicate === 'updated_at'" ng-class="{reverse:reverse}"></span>
+        </th>
+      <tr>
+    </thead>
+    <tbody>
+      <tr class="link" ng-repeat="image in paginated_images = (filtered_images = (images | orderBy:predicate:reverse) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)"  ng-class="{active:image.selected}" ng-click="Select_Image1(image);$event.stopPropagation();">
+
+        <td class="text-center"><input type="checkbox" ng-disabled="Image_Mode != ''" ng-model="image.selected" ng-click="Select_Image(image);$event.stopPropagation();"></td>
+        <td class="text-center">{{!image.id}}</td>
+        <td class="text-center" ng-click="show_photo(image.url)"><img ng-src="{{!image.url}}" width="40" height="40"></td>
+        <td class="text-center">{{!image.image_type}}</td>
+        <td class="text-center">{{!image.image_set_id}}</td>
+        <td class="text-center">{{!image.is_public}}</td>
+        <td class="text-center">{{!image.trashed}}</td>
+        <td class="text-center">{{!image.created_at}}</td>
+        <td class="text-center">{{!image.updated_at}}</td>
       </tr>
-      </body>
-    </table>
-  </form>
+    </body>
+  </table>
 </div>

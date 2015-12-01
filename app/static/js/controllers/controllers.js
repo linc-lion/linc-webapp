@@ -55,7 +55,7 @@ angular.module('lion.guardians.controllers', ['lion.guardians.admin.controller',
 
     var name = name_str.toLowerCase();
     var name_pieces = name.match(/\S+/g);
-    var id = parseInt(id_str);
+    var id = parseInt(id_str,10);
 
     var filtered = _.filter(input, function(value){
       var val = value.name.toLowerCase();

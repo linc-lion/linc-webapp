@@ -85,21 +85,50 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             }],
             lions: ['LincApiServices', 'organizations', function(LincApiServices, organizations) {
               return LincApiServices.Lions({'method': 'get', 'organizations': organizations});
-            }]/*,
+            }],
             images: ['LincApiServices', function(LincApiServices) {
               return LincApiServices.Images({'method': 'get'});
             }],
             imagesets: ['LincApiServices', 'organizations', 'users', 'lions', 'images', function(LincApiServices, organizations, users, lions, images) {
               return LincApiServices.ImageSets({'method': 'get', 'organizations': organizations, 'users': users, 'lions': lions, 'images': images});
-            }]*//*,
-            cvrequests: ['LincApiServices', function(LincApiServices) {
-              return LincApiServices.CVRequests({'method': 'get'});
+            }],
+            cvrequests: ['LincApiServices', 'organizations', function(LincApiServices, organizations) {
+              return LincApiServices.CVRequests({'method': 'get', 'organizations': organizations});
             }],
             cvresults: ['LincApiServices', function(LincApiServices) {
               return LincApiServices.CVResults({'method': 'get'});
-            }]*/
+            }]
           }
         })
+        .state('admin.users', {
+          url: '/users',
+          templateUrl: 'admin.users.tpl.html'
+        })
+        .state('admin.organizations', {
+          url: '/organizations',
+          templateUrl: 'admin.organizations.tpl.html'
+        })
+        .state('admin.lions', {
+          url: '/lions',
+          templateUrl: 'admin.lions.tpl.html'
+        })
+        .state('admin.imagesets', {
+          url: '/imagesets',
+          templateUrl: 'admin.imagesets.tpl.html'
+        })
+        .state('admin.images', {
+          url: '/images',
+          templateUrl: 'admin.images.tpl.html'
+        })
+        .state('admin.cvrequests', {
+          url: '/cvrequests',
+          templateUrl: 'admin.cvrequests.tpl.html'
+        })
+        .state('admin.cvresults', {
+          url: '/cvresults',
+          templateUrl: 'admin.cvresults.tpl.html'
+        })
+
         // Home Menu
         .state("home", {
           url: "/home",

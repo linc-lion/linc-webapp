@@ -48,7 +48,7 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   uploader.onAfterAddingFile = function(fileItem) {
 
     if(fileItem.file.name.length>20){
-      fileItem.nickname = fileItem.file.name.substring(1, 10) + ' ... '  +  fileItem.file.name.substring(fileItem.file.name.length-8, fileItem.file.name.length)
+      fileItem.nickname = (fileItem.file.name || "").substring(1, 10) + ' ... '  +  (fileItem.file.name || "").substring(fileItem.file.name.length-8, fileItem.file.name.length)
       fileItem.show_name = false;
       fileItem.tooltip = {'title': 'filename: ' + fileItem.file.name, 'checked': true};
     }

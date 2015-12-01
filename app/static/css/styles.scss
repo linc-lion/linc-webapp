@@ -88,6 +88,29 @@ label{font-weight: normal; cursor:pointer}
     color:$orange;
     font-size:22px;
   }
+  &.btn-select{
+    display: block;
+    width:100%;
+  }
+  &.btn-select, &.select_btn{
+     min-width: 120px;
+    font-family: inherit;
+    color:inherit;
+    text-align: left;
+    &:focus, &:active{
+      border-color:inherit !important;
+    }
+    .caret{
+      float: right;
+      margin-top:7px;
+    }
+    .select-dropdown-menu{
+      width:100%;
+      .btn{
+        font-family: inherit;
+      }
+    }
+  }
 }
 
 .btn-help{
@@ -159,6 +182,23 @@ label{font-weight: normal; cursor:pointer}
   }
 }
 .clearfix{clear:both}
+.image-view{
+    background: rgba(0,0,0,.8);
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    text-align: center;
+    z-index: 3;
+    overflow: hidden;
+    .close{
+      color: #fff;
+      opacity:.8;
+      padding: 5px 10px;
+    }
+}
+
 /// PAGES
 .home{
   padding: 18%;
@@ -193,7 +233,7 @@ label{font-weight: normal; cursor:pointer}
 .table{
   thead th{color:#666; white-space: nowrap;}
   thead th a{color:#666;
-             &:hover{color: $orange; text-decoration: underline;font-size:110%;};
+             &:hover{color: $orange; };
            }
   tbody tr td{
     vertical-align: middle;
@@ -335,20 +375,22 @@ hr.style-line { margin-bottom: 10px !important; margin-top: 10px !important; mar
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     align: right;
   }
+.form-group.control{margin-bottom: 10px;}
+.form-control-inline1 {@extend .form-control-inline; width: 50%;     margin-left: 20px;}
 
 .meta_label { padding-right: 10px;}
 
-.select_btn { min-width: 120px;}
+
 .meta_input{ text-align: center; width: 120px !important;}
 .a_meta{text-align: center; width: 120px !important; color:blue !important;}
-.group-select { text-align: right; padding-right: 20px;}
-.group-input { text-align: right; padding-right: 20px;}
+.group-select { text-align: right; }
+.group-input { text-align: right; margin-bottom:10px;}
 a.ng-scope { color: #333;}
 
 .notify-icon, .pnotify-icon span { display: block; float: left; margin-right: .2em; }
 .notify-title { display: block; margin-bottom: .4em; margin-top: 0;}
 .notify-text { display: block; margin: 10px;}
-.cg-notify-message{min-width: 300px; right: 25px; top: 121px; opacity: 1; display: block; overflow: visible;text-align: left; padding: 10px;}
+.cg-notify-message{min-width: 300px; right: 25px; top: 121px; opacity: 1; display: block; overflow: visible;text-align: left; padding: 10px; margin-top: -40px !important;}
 .cg-notify-message-template h4 {margin-top: 0; color: inherit;}
 
 // CV Search Modal
@@ -366,3 +408,51 @@ a.ng-scope { color: #333;}
 }
 h4.h4inline {display:inline};
 h4.h4data {display:inline; color: #333; padding-left: 5px;}
+.btn-toolbar{
+  position: fixed;
+  top:10px;
+  left:230px;
+  z-index: 1040
+}
+.btn-toolbar-right{
+  position: fixed;
+  top:10px;
+  right:100px;
+  z-index: 1040
+}
+
+.div-witdh-limited{
+  max-width: 400px !important;
+}
+.tabs-sm{
+  li{
+  a{
+  padding: 10px;
+  }
+  &.tabs-primary a{
+    background: $orange;
+    color: #fff;
+  }
+  }
+}
+.pagination-1{@extend .pagination; margin: 0px; padding: 5px;
+  li{
+    a,span{
+      padding: 4px 12px !important;
+      border-radius: 5px !important;
+      width: 36px;
+      height: 30px;
+      margin: 0px 2px;
+    }
+  }
+}
+
+.admin{
+  .table{
+    td>div{
+      max-height: 7em;
+      max-width: 400px;
+      overflow: auto;
+    }
+  }
+}
