@@ -13,11 +13,9 @@ class BaseHandler(RequestHandler):
     inherit this one.
     """
     def get_current_user(self):
-        print('Checking user info')
         cookieinfo = self.get_secure_cookie("userlogin")
         if cookieinfo:
             cookieinfo = loads(cookieinfo)
-        print('User info ='+str(cookieinfo))
         return cookieinfo
 
     def prepare(self):
@@ -35,10 +33,14 @@ class BaseHandler(RequestHandler):
 
     @asynchronous
     @engine
-    def api(self,url,method,body=None,callback=None):
+    def api(self,url,method,body=None,headers=None,callback=None):
         AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
         http_client = AsyncHTTPClient()
-        h = HTTPHeaders({"content-type": "application/json"})
+        dictheaders = {"content-type": "application/json"}
+        if headers:
+            for k,v in headers.iteritems():
+                dictheaders[k] = v
+        h = HTTPHeaders(dictheaders)
         params={
             'headers' : h,
             'url' : url,
