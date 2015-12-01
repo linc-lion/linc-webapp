@@ -45,11 +45,11 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
 
     LincServices.Download(data).then(function(res_data){
       var blob = res_data.blob;
-      var fileName = res_data.fileName.substring(res_data.fileName.lastIndexOf('/')+1) || 'images.zip';
+      var fileName = (res_data.fileName || "").substring(res_data.fileName.lastIndexOf('/')+1) || 'images.zip';
       saveAs(blob, fileName);
       /*var filename = result.filename;
       var filename = 'http://www.colorado.edu/conflict/peace/download/peace_essay.ZIP';
-      var name = filename.substring(filename.lastIndexOf('/')+1);
+      var name = (filename || "").substring(filename.lastIndexOf('/')+1);
 
       var file = new Blob([ filename ], {
         type : 'application/zip'
@@ -189,30 +189,19 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     return results.length;
   }
   // Click on the images check mark
-  $scope.lastSelIndex = -1;
-  $scope.shiftKey = false;
-  $scope.shift_selected = false;
-  document.addEventListener('keydown', function (e) {
-    if(e.shiftKey){
-      $scope.shiftKey = true;
-      angular.element(document).one("keyup", function (e) {
-        $scope.shiftKey = false;
-      });
-    }
-  });
+  var lastSelIndex = -1;
   $scope.Image_Check = function (select, photo, index){
-    if($scope.shiftKey && $scope.lastSelIndex>=0){
-      var first = Math.min($scope.lastSelIndex, index);
-      var second = Math.max($scope.lastSelIndex, index);
-      //for(var i = $scope.lastSelIndex; i < index; i++){
+    var shiftKey = $window.event.shiftKey;
+
+    if(shiftKey && lastSelIndex>=0){
+      var first = Math.min(lastSelIndex, index);
+      var second = Math.max(lastSelIndex, index);
       for(var i = first; i < second; i++){
         $scope.paginated_gallery[i].select = select;
-        $scope.shift_selected = true;
       }
-      //$scope.lastSelIndex = -1;
     }
     else{
-      $scope.lastSelIndex = index;
+      lastSelIndex = index;
     }
 
     if(!calc_selected_count()){

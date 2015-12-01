@@ -1,3 +1,7 @@
+<div class="image-view"><button type="button" class="close" ng-click="">&times;</button>
+  <img src="http://linc-test.s3.amazonaws.com/linc-api-lions/imageset_5_5633a5570640fd58c1e66681/2015-11-16_image_2174_56496bd11fb4f8000337a124_medium.jpg" class="img-responsive center-block">
+</div>
+
 <div class="modal-header" ng-show="title">
   <button type="button" class="close" ng-click="Close()">&times;</button>
     <h3 class="modal-title" ng-bind-html="title | unsafe"></h3>
@@ -24,9 +28,14 @@
       </p>
     </div>
 
+
     <div class="col-sm-3 line-left">
+    <ul class="nav nav-tabs tabs-sm">
+      <li role="presentation" ng-class="{active:HasFilter}"><a href="#" ng-click="HasFilter=true">Filter Mode</a></li>
+      <li role="presentation" class="tabs-primary" ng-class="{active:!HasFilter}"><a href="#" ng-click="HasFilter=false">Edit Mode</a></li>
+    </ul>
       <div ng-show="HasFilter">
-        <h3><u>Filter Mode</u></h3>
+        <!--<h3><u>Filter Mode</u></h3>-->
         <h4>Image type</h4>
         <div class="radio" ng-init="FilterSel.Type='all'" ng-repeat="item in Filters">
           <label><input type="radio" ng-model="FilterSel.Type" ng-value="item.type" ng-click="calc_itemspage();">{{!item.label}}</label>
@@ -42,7 +51,7 @@
       </div>
 
       <div ng-show="!HasFilter">
-        <h3><u>Edit Mode</u></h3>
+      <!--  <h3><u>Edit Mode</u></h3>-->
         <h4>Image type</h4>
         <div class="radio" ng-init="Selected.Type='all'" ng-repeat="item in Selects">
           <label><input type="radio" ng-model="Selected.Type" ng-value="item.type" ng-click="Change_Type()">{{!item.label}}</label>
@@ -59,7 +68,7 @@
         <button ng-disabled="!Selected_Count" class="btn btn-default btn-block" ng-click="Delete()">Delete</button>
         <button ng-disabled="!Selected_Count" class="btn btn-default btn-block" ng-click="Download()">Download original</button>
         <!--<button ng-disabled="Selected_Count" class="btn btn-primary btn-block" ng-click="OpenUpload()">Upload images</button>-->
-
+        <br>
         <upload-images disabled-btn="Selected_Count" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="edit" imageset-id="imagesetId" image-updated="UpdateImages()"></upload-images>
       </p>
     </div>

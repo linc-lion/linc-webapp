@@ -1,6 +1,54 @@
+<script type="text/ng-template" id="Edit_User.tmpl.html">
+  <form name="form" ng-submit="Submit(form.$valid)">
+    <div class="modal-header" ng-show="modalTitle">
+      <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
+    </div>
+    <div class="modal-body">
+      <div ng-hide="User_Mode=='add'" class="form-group">
+        <label for="user_id">Id:</label>
+        <input name="user_id" readonly type="text" class="form-control" ng-model="user.id">
+      </div>
+      <div class="form-group">
+        <label for="user_email">Email:</label>
+        <input type="email" required class="form-control" name="user_email" ng-model="user.email">
+      </div>
+      <div class="form-group">
+        <label for="organization_id">Organization:</label>
+        <select class="form-control custom-select" name="organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="user.organization_id" required><option></option>
+        </select>
+      </div>
+      <div ng-hide="User_Mode=='edit'" class="form-group">
+        <label for="lion_name">Password:</label>
+        <input class="form-control" type="password" name="password" ng-model="user.password" placeholder="New Password" ng-required="password_required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('please fill out this field with Password')">
+      </div>
+      <div ng-hide="User_Mode=='edit'" class="form-group">
+        <label for="lion_name">Password:</label>
+        <input class="form-control" type="password" name="verify" ng-model="user.confirmPassword" placeholder="Confirm Password" ng-required="password_required" oninput="setCustomValidity('')" nx-equal-ex="user.password"
+              oninvalid="this.setCustomValidity('please repeat the Password in this field')">
+              <div ><span ng-show="showValidationMessages && form.verify.$error.nxEqualEx" class="help-inline">Passwords must match!</span></div>
+      </div>
+      <div class="checkbox">
+        <label for="user_admin">
+        <input name="user_admin" id="user_admin" type="checkbox"  ng-model="user.admin" ng-checked="user.admin">
+        Administrator</label>
+      </div>
+      <div class="checkbox">
+        <label for="user_trashed">
+        <input name="user_trashed" id="user_trashed" type="checkbox"  ng-model="user.trashed" ng-checked="user.trashed">
+        Trashed</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" ng-click="Cancel_Edit_User()" data-dismiss="modal">Cancel</button>
+      <button ng-show="User_Mode=='add'" type="submit" class="btn btn-primary">Add New</button>
+      <button ng-show="User_Mode=='edit'" type="submit" class="btn btn-primary">Update</button>
+    </div>
+  </form>
+</script>
+
 <div class="form-group" ng-controller="AdminUsersCtrl">
-  <div class="btn-toolbar" role="toolbar" aria-label="toolbar_btns" style="padding-top:10px;padding-bottom:10px;">
-    <div class="btn-group" style="margin-left:10%">
+  <div class="btn-toolbar" role="toolbar" aria-label="toolbar_btns">
+    <div class="btn-group">
       <button type="button" class = "btn btn btn-warning" ng-click="Add_User()">Add</button>
     </div>
     <div class="btn-group">
@@ -12,114 +60,55 @@
     <div class="btn-group">
       <button ng-disabled="!(Selecteds.length==1)" type="button" class = "btn btn btn-warning" ng-click="ChangePassword()">Change Password</button>
     </div>
-
-    <div ng-hide="User_Change.mode == ''" class="btn-group" style="margin-left:10%">
-        <button type="button" class="btn btn-default" ng-click="Cancel_Edit_User()">Cancel</button>
-    </div>
-    <div ng-hide="User_Change.mode == ''" class="btn-group">
-      <button type="submit" class="btn btn-warning">{{!btn_submit}}</button>
-    </div>
-
   </div>
-  <form name="userForm" ng-submit="Submit_User()">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th class="text-center"><input type="checkbox" ng-disabled="User_Change.mode != ''" ng-model="select_all" ng-click="check_all(select_all)"></th>
-          <th class="text-center">Id</th>
-          <th class="text-center">email</th>
-          <th class="text-center">Organization</th>
-          <th class="text-center">Administrator</th>
-          <th class="text-center">Trashed</th>
-
-          <th class="text-center">Created At</th>
-          <th class="text-center">Updated At</th>
-
-          <th class="text-center">Info</th>
-        <!--  <th class="text-center">Created At</th>
-          <th class="text-center">Updated At</th>
-          <th class="text-center">Current Sign In At</th>
-          <th class="text-center">Current Sign In Ip</th>
-          <th class="text-center">Last Sign in At</th>
-          <th class="text-center">Last Sign In Ip</th>
-          <th class="text-center">Sign In Count</th>-->
-
-  <!--
-          <th ng-show="User_Change.mode" class="text-center">Cancel</th>
-          <th ng-show="User_Change.mode" class="text-center">{{!User_Change.label}}</th>
--->
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="link" ng-repeat="user in users" ng-disabled="User_Change.mode != ''"  ng-class="{active:user.selected}" ng-click="Select_User(user)">
-          <ng-form name="userFieldForm">
-            <td class="text-center"><input type="checkbox" ng-disabled="User_Change.mode != ''" ng-model="user.selected" ng-click="Select_User(user)"></td>
-            <td class="text-center">{{!user.id}}</td>
-
-            <td ng-show="user.change_mode" class="text-center">
-              <input type="email" class="form-control text-center" name="email" ng-model="user.email" required>
-            </td>
-            <td ng-show="!user.change_mode" class="text-center">{{!user.email}}</td>
-
-            <td ng-show="user.change_mode" class="text-center">
-              <select class="form-control-inline custom-select" id="organization_id" name="organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="user.organization_id" required><option></option>
-              </select>
-            </td>
-            <td ng-show="!user.change_mode" class="text-center">{{!user.organization}}</td>
-
-            <td ng-show="user.change_mode" class="text-center">
-              <input type="checkbox"  ng-model="user.admin" ng-checked="user.admin">
-            </td>
-            <td ng-show="!user.change_mode" class="text-center">
-              <i ng-if="user.admin" class="icon icon-check"></i>
-              <i ng-if="!user.admin" class="icon icon-cross"></i>
-            </td>
-            <td ng-show="user.change_mode" class="text-center">
-              <input type="checkbox"  ng-model="user.trashed" ng-checked="user.trashed">
-            </td>
-            <td ng-show="!user.change_mode" class="text-center">
-              <i ng-if="user.trashed" class="icon icon-check"></i>
-              <i ng-if="!user.trashed" class="icon icon-cross"></i>
-            </td>
-            <td class="text-center">{{!user.created_at}}</td>
-            <td class="text-center">{{!user.updated_at}}</td>
-
-            <td>
-              <a href data-animation="am-flip-x" data-html="true" placement="auto" bs-tooltip="user.tooltip">Info</a>
-              <!--<div uib-collapse="isCollapsed">
-                <div class="panel-body">
-                  <ul>
-                    <li>Created At: {{!user.created_at}}</li>
-                    <li>Updated At: {{!user.updated_at}}</li>
-                    <li>Current Sign In At: {{!user.current_sign_in_at}}</li>
-                    <li>Current Sign In Ip: {{!user.current_sign_in_ip}}</li>
-                    <li>Last Sign In At: {{!user.last_sign_in_at}}</li>
-                    <li>Last Sign In Ip: {{!user.last_sign_in_ip}}</li>
-                    <li>Sign In Count: {{!user.sign_in_count}}</li>
-                  </ul>
-                </div>
-              </div>-->
-            </td>
-
-            <!--<td class="text-center">{{!user.created_at}}</td>
-            <td class="text-center">{{!user.updated_at}}</td>
-            <td class="text-center">{{!user.current_sign_in_at}}</td>
-            <td class="text-center">{{!user.current_sign_in_ip}}</td>
-            <td class="text-center">{{!user.last_sign_in_at}}</td>
-            <td class="text-center">{{!user.last_sign_in_ip}}</td>
-            <td class="text-center">{{!user.sign_in_count}}</td>-->
-
-<!--
-            <td ng-show="user.change_mode" class="text-center">
-              <button type="button" class="btn btn-default" ng-click="Cancel_Edit_User()">Cancel</button>
-            </td>
-            <td ng-show="user.change_mode" class="text-center">
-              <button type="submit" class="btn btn-default">{{!btn_submit}}</button>
-            </td>
--->
-          </ng-form>
-        </tr>
-      </body>
-    </table>
-  </form>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th ><input type="checkbox" ng-disabled="User_Mode != ''" ng-model="select_all" ng-click="check_all(select_all)"></th>
+        <th ><a ng-click="order('id')" ng-class="{'order_class': predicate === 'id'}">Id</a>
+          <span class="sortorder" ng-show="predicate === 'id'" ng-class="{reverse:reverse}"></span>
+        </th>
+        <th ><a ng-click="order('email')" ng-class="{'order_class': predicate === 'email'}">Email</a>
+          <span class="sortorder" ng-show="predicate === 'email'" ng-class="{reverse:reverse}"></span>
+        </th>
+        <th ><a ng-click="order('organization')" ng-class="{'order_class': predicate === 'organization'}">Organization</a>
+          <span class="sortorder" ng-show="predicate === 'organization'" ng-class="{reverse:reverse}"></span>
+        </th>
+        <th class="text-center"><a ng-click="order('admin')" ng-class="{'order_class': predicate === 'admin'}">Administrator</a>
+          <span class="sortorder" ng-show="predicate === 'admin'" ng-class="{reverse:reverse}"></span>
+        </th>
+        <th class="text-center"><a ng-click="order('trashed')" ng-class="{'order_class': predicate === 'trashed'}">Trashed</a>
+          <span class="sortorder" ng-show="predicate === 'trashed'" ng-class="{reverse:reverse}"></span>
+        </th>
+        <th ><a ng-click="order('created_at')" ng-class="{'order_class': predicate === 'created_at'}">Created At</a>
+          <span class="sortorder" ng-show="predicate === 'created_at'" ng-class="{reverse:reverse}"></span>
+        </th>
+        <th ><a ng-click="order('updated_at')" ng-class="{'order_class': predicate === 'updated_at'}">Updated At</a>
+          <span class="sortorder" ng-show="predicate === 'updated_at'" ng-class="{reverse:reverse}"></span>
+        </th>
+        <th >Info</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="link" ng-repeat="user in users | orderBy:predicate:reverse"  ng-class="{active:user.selected}" ng-click="Select_User1(user);$event.stopPropagation();">
+        <td ><input type="checkbox" ng-disabled="User_Mode != ''" ng-model="user.selected" ng-click="Select_User(user);$event.stopPropagation();"></td>
+        <td >{{!user.id}}</td>
+        <td >{{!user.email}}</td>
+        <td >{{!user.organization}}</td>
+        <td class="text-center">
+          <i ng-if="user.admin" class="icon icon-check"></i>
+          <i ng-if="!user.admin" class="icon icon-cross"></i>
+        </td>
+        <td class="text-center">
+          <i ng-if="user.trashed" class="icon icon-check"></i>
+          <i ng-if="!user.trashed" class="icon icon-cross"></i>
+        </td>
+        <td >{{!user.created_at}}</td>
+        <td >{{!user.updated_at}}</td>
+        <td>
+          <a href data-animation="am-flip-x" data-html="true" placement="auto" bs-tooltip="user.tooltip">Info</a>
+        </td>
+      </tr>
+    </body>
+  </table>
 </div>
