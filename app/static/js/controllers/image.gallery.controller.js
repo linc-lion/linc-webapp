@@ -2,14 +2,21 @@
 
 angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image.gallery.directive'])
 
-.controller('ImageGalleryCtrl', ['$scope', '$sce', '$window', '$uibModal', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', 'gallery', function($scope, $sce, $window, $uibModal, $uibModalInstance, LincServices, NotificationFactory, optionsSet, gallery) {
+.controller('ImageGalleryCtrl', ['$scope', '$timeout', '$sce', '$window', '$uibModal', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', 'gallery', function($scope, $timeout, $sce, $window, $uibModal, $uibModalInstance, LincServices, NotificationFactory, optionsSet, gallery) {
 
-  $scope.gallery = gallery.images;
+  $scope.gallery = _.map(gallery.images, function(element, index) {
+    return _.extend({}, element, {'select': false});
+  });
+
   $scope.imagesetId = optionsSet.id;
+
   var titles = {}; titles['lions'] = 'Lions'; titles['imagesets'] = 'Image Sets';
 
-  $scope.HasFilter = true;
+  $scope.image_view_url = "";
+  $scope.image_view = false;
+  $scope.isViewFilter = true;
   $scope.ShowIsCover = true;
+  $scope.Selecteds = [];
 
   // Title
   $scope.title = 'Image Gallery ' + ' <h4 style="display:inline;">(Imageset - ' + optionsSet.id + ')</h4>';
@@ -26,12 +33,49 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
                     {type:'whisker', label:'Whisker'}, {type:'main-id',label:'Main Id'},
                     {type:'markings',label:'Markings'}];
   // Label properties
-  $scope.Properties = [{'name': 'Public', 'checked': true},
-                       {'name': 'Private', 'checked': true}];
+  $scope.Properties = [{'name': 'Public', 'checked': true, 'value' : true},
+                       {'name': 'Private', 'checked': true, 'value' : false}];
 
   // Selects
-  $scope.FilterSel = {Type: 'cv', isPublic: true, isPrivate: true, isCover: false};
+  $scope.FilterSel = {Type: 'all', isPublic: true, isPrivate: true, isCover: false};
   $scope.Selected = {Type: 'cv', isPublic: true, isCover: false};
+
+  var Reset_Filters = function (){
+    _.map($scope.Selecteds, function (photo){
+      photo.select = false;
+    });
+    $scope.itemsPerPage = Math.max(9, $scope.itemsPerPage);
+    $scope.FilterSel.Type = 'all';
+    $scope.FilterSel.isCover = false;
+    $scope.Properties[0].checked = true;
+    $scope.Properties[0].checked = true;
+    $scope.isViewFilter = true;
+  }
+
+  var check_selecteds = function(type){
+    var contem = 0;
+    if(type=="type"){
+      var selecteds = _.pluck(_.map($scope.Selecteds, function (photo){
+        return {'type': photo.type};
+      }), 'type');
+      _.forEach($scope.Selects, function(select) {
+        if(_.includes(selecteds, select.type))
+          contem++;
+      });
+      if(contem>1) return true;
+      else return false;
+    }
+    if(type="properties"){
+      var selecteds = _.pluck(_.map($scope.Selecteds, function (photo){
+        return {'is_public': photo.is_public};
+      }), 'is_public');
+
+      if(_.includes(selecteds, true) && _.includes(selecteds, false))
+        return true;
+      else
+        return false;
+    }
+  }
 
   // Button Save
   $scope.Save = function(){
@@ -39,7 +83,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   };
 
   $scope.Download = function () {
-    var data = '?download=' + _.pluck(_.map(_.filter($scope.paginated_gallery, { 'select': true}), function (photo){
+    var data = '?download=' +  _.pluck(_.map($scope.Selecteds, function (photo){
       return {'id': photo.id};
     }), 'id');
 
@@ -47,46 +91,14 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
       var blob = res_data.blob;
       var fileName = (res_data.fileName || "").substring(res_data.fileName.lastIndexOf('/')+1) || 'images.zip';
       saveAs(blob, fileName);
-      /*var filename = result.filename;
-      var filename = 'http://www.colorado.edu/conflict/peace/download/peace_essay.ZIP';
-      var name = (filename || "").substring(filename.lastIndexOf('/')+1);
-
-      var file = new Blob([ filename ], {
-        type : 'application/zip'
-      });
-      //trick to download store a file having its URL
-      var fileURL = URL.createObjectURL(file);
-      var a         = document.createElement('a');
-      a.href        = fileURL;
-      a.target      = '_blank';
-      a.download    = 'yourfilename.zip';
-      document.body.appendChild(a);
-      a.click();*/
-
-
-    //  var pom = document.createElement('a');
-    //  pom.setAttribute('href', 'data:attachment/zip,' + encodeURI(filename));
-    //  pom.setAttribute('target', '_blank');
-    //  pom.setAttribute('download', name);
-
-    /*  if (document.createEvent) {
-          var event = document.createEvent('MouseEvents');
-          event.initEvent('click', true, true);
-          pom.dispatchEvent(event);
-      }
-      else {
-          pom.click();
-      }*/
     });
   };
   $scope.Close = function(){
     console.log("Close UploadImages");
-    //$scope.metadataId = {id: 5};
     $uibModalInstance.close("close");
   }
   $scope.Delete = function (){
-
-    $scope.delete_items =  _.map(_.filter($scope.paginated_gallery, { 'select': true}), function(photo){
+    $scope.delete_items =  _.map($scope.Selecteds, function(photo){
       return {'id': photo.id};
     });
     if(!$scope.delete_items.length){
@@ -144,29 +156,43 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     }
   }
   var removed = [];
+  // Adjust after delete images
   var Adjust_Gallery = function (items){
-
-    items.forEach(function(item, i){
+    _.forEach(items, function(item, i) {
       var remove = _.remove($scope.gallery, function(image) {
         return image.id == item.id;
       });
       removed.push(remove);
     });
     $scope.itemsPerPage = Math.min(9, $scope.gallery.length);
-
-    var results = _.filter($scope.gallery, function(photo){
-      return photo.select == true;
-    });
-    $scope.Selected_Count = results.length;
-    if(!results.length)
-      $scope.HasFilter = true;
-    else
-      $scope.HasFilter = false;
+    Reset_Filters();
   };
   // Click in Photo - Show Big Image
   $scope.show_photo = function(url){
     var win = window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=200, left=200, width=600, height=600");
     win.focus();
+  }
+
+  //var carousel_idx = 0;
+  $scope.show_image_view = function(photo, index){
+    photo.active = true;
+    $scope.image_view = true;
+  }
+  $scope.hide_image_view = function(){
+    $scope.image_view = false;
+  }
+
+  $scope.carousel_interval = 500000;
+  $scope.noWrapSlides = false;
+
+  // Change tab
+  $scope.Change_Tab = function(tab){
+    if(tab=='filter'){
+      $scope.isViewFilter=true;
+    }
+    else{
+      $scope.isViewFilter=false;
+    }
   }
   // Pagination
   // Calc initial Itens per Page
@@ -180,117 +206,109 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     var diff = $scope.filtered_gallery.length - $scope.itemsPerPage;
     $scope.itemsPerPage += Math.min(9, diff);
   }
-  // Calc Count of Selected Images
-  var calc_selected_count = function (){
-    var results = _.filter($scope.filtered_gallery, function(photo){
-      return photo.select == true;
-    });
-    $scope.Selected_Count = results.length;
-    return results.length;
-  }
   // Click on the images check mark
   var lastSelIndex = -1;
-  $scope.Image_Check = function (select, photo, index){
+  $scope.Select_Image = function (photo, index){
     var shiftKey = $window.event.shiftKey;
-
     if(shiftKey && lastSelIndex>=0){
       var first = Math.min(lastSelIndex, index);
       var second = Math.max(lastSelIndex, index);
       for(var i = first; i < second; i++){
-        $scope.paginated_gallery[i].select = select;
+        var image = $scope.paginated_gallery[i];
+        image.select = photo.select;
+        if(photo.select){
+          if(!_.some($scope.Selecteds, image))
+            $scope.Selecteds.push(image);
+        }
+        else {
+          $scope.Selecteds = _.without($scope.Selecteds, image);
+        }
       }
     }
     else{
       lastSelIndex = index;
+      if(photo.select){
+        if(!_.some($scope.Selecteds, photo))
+          $scope.Selecteds.push(photo);
+      }
+      else {
+        $scope.Selecteds = _.without($scope.Selecteds, photo);
+      }
     }
 
-    if(!calc_selected_count()){
-      $scope.HasFilter = true;
-    }
-    else {
-      if($scope.Selected_Count == 1){
-        if(select){
-          $scope.Selected.isPublic = photo.is_public;
-          $scope.Selected.Type = photo.type;
-          $scope.Selected.isCover = photo.cover;
-        }
-        else{
-          var photo1 = _.filter($scope.gallery, function(photo){
-            return photo.select == true;
-          });
-          $scope.Selected.Type = photo1[0].type;
-          $scope.Selected.isPublic = photo1[0].is_public;
-          $scope.Selected.isCover = photo1[0].cover;
-        }
-        console.log("Set Properties");
+    if($scope.Selecteds.length == 1){
+      if(photo.select){
+        $scope.Selected.isPublic = photo.is_public;
+        $scope.Selected.Type = photo.type;
+        $scope.Selected.isCover = photo.cover;
       }
       else{
-        $scope.Selected.Type = "";
-        $scope.Selected.isPublic = photo.is_public;
-        $scope.Selected.isCover = false;
-        console.log("Unset Properties");
+        $scope.Selected.Type = $scope.Selecteds[0].type;
+        $scope.Selected.isPublic = $scope.Selecteds[0].is_public;
+        $scope.Selected.isCover = $scope.Selecteds[0].cover;
       }
-      $scope.HasFilter = false;
+      console.log("Set Properties");
     }
-  }
-
-  $scope.Select_All = function (val) {
-    if(val){
-      var type = 'cv';
-      var ispublic = true;
-      var iscover = false;
-      $scope.paginated_gallery.forEach(function(photo, index){
-        photo.select = val;
-        if(!index){
-          type = photo.type;
-          ispublic = photo.is_public;
-          iscover = photo.cover;
-        }
-      });
-      if(calc_selected_count()>1){
+    else if($scope.Selecteds.length>1){
+      if(check_selecteds("type"))
         $scope.Selected.Type = "";
-        $scope.Selected.isPublic = true;
-        $scope.Selected.isCover = false;
+      else {
+        $scope.Selected.Type = $scope.Selecteds[0].type;
       }
+      if(check_selecteds("properties"))
+        $scope.Selected.isPublic = '';
+      else {
+        $scope.Selected.isPublic = $scope.Selecteds[0].is_public;
+      }
+      $scope.Selected.isCover = false;
     }
     else{
-      $scope.gallery.forEach(function(photo, index){
-        photo.select = val;
-      });
-      $scope.Selected_Count = 0;
-    }
-    if($scope.Selected_Count)
-      $scope.HasFilter = false;
-    else {
-      $scope.HasFilter = true;
+      $scope.Selected.Type = 'cv';
+      $scope.Selected.isPublic = true;
+      $scope.Selected.isCover = false;
     }
   }
 
-  $scope.Change_Cover = function(){
-    var updated = {};
-    $scope.paginated_gallery.forEach(function(photo, index){
-      if(photo.select){
-        if(photo.cover != $scope.Selected.isCover){
-          updated = {'index': index,
-            'data': {"main_image_id": $scope.Selected.isCover? photo.id : null}
-          };
-        }
-      }
+  $scope.Select_All = function () {
+    _.forEach($scope.paginated_gallery, function(photo, index) {
+      photo.select = true;
+      if(!_.some($scope.Selecteds, photo))
+        $scope.Selecteds.push(photo);
     });
-    if(Object.keys(updated).length){
-      LincServices.SetMaiImagenId($scope.imagesetId, updated.data, function(result){
-        $scope.paginated_gallery.forEach(function(photo, index){
-          if(index == updated.index){
-            photo.cover = updated.data.main_image_id == null ? false : true;
+    if($scope.Selecteds.length>1){
+      if(check_selecteds("type"))
+        $scope.Selected.Type = "";
+      else {
+        $scope.Selected.Type = $scope.Selecteds[0].type;
+      }
+      if(check_selecteds("properties"))
+        $scope.Selected.isPublic = '';
+      else {
+        $scope.Selected.isPublic = $scope.Selecteds[0].is_public;
+      }
+      $scope.Selected.isCover = false;
+    }
+  }
+  $scope.UnSelect_All = function () {
+    _.forEach($scope.gallery, function(photo, index) {
+      photo.select = false;
+    });
+    $scope.Selecteds = [];
+  }
+  $scope.Change_Cover = function(){
+    if($scope.Selecteds.length){
+      var image = $scope.Selecteds[0];
+      var data = {"main_image_id": $scope.Selected.isCover ? image.id : null};
+      LincServices.SetMaiImagenId($scope.imagesetId, data, function(result){
+        _.forEach($scope.paginated_gallery, function(photo, index) {
+          if(image == photo){
+            photo.cover = (data.main_image_id == null) ? false : true;
           }
           else{
             photo.cover = false;
           }
-          if(!$scope.Selected.isCover){
-            photo.select = false;
-            $scope.HasFilter = true;
-          }
         });
+        Reset_Filters();
         NotificationFactory.success({
           title: "Select", message: "Cover Image was Selected",
           position: "right", // right, left, center
@@ -307,60 +325,32 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     }
   }
   $scope.Change_isPublic = function(){
-    //if(!$scope.Selected.isPublic)
-    //  $scope.Selected.isCover = false;
-    var updated = [];
-    $scope.paginated_gallery.forEach(function(photo, index){
-      if(photo.select){
-        if($scope.Selected.isPublic != photo.is_public)
+    if($scope.Selecteds.length && ($scope.Selected.isPublic != undefined)){
+      var updated = [];
+      _.forEach($scope.Selecteds, function(photo, index) {
+        if($scope.Selected.isPublic != photo.is_public){
           updated.push({'index': index, 'image_id': photo.id, 'data': {'is_public': $scope.Selected.isPublic}});
-      }
-    });
-    if(updated.length==1){
-      var update = updated[0];
-      LincServices.UpdateImage(update.image_id , update.data, function(result){
-        var data = { "is_public": result.is_public };
-        var index = update.index;
-        _.merge($scope.paginated_gallery[index], $scope.paginated_gallery[index], data);
-        NotificationFactory.success({
-          title: "Update", message: "Image was updated",
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        //var index = _.findIndex($scope.paginated_gallery, 'is_public', $scope.Selected.isPublic);
-        //if(index == -1){
-          $scope.paginated_gallery = _.map($scope.paginated_gallery, function(photo, index) {
-            photo.select = false;
-            return photo;
-          });
-          $scope.HasFilter = true;
-        //}
-      },
-      function(error){
-        NotificationFactory.error({
-          title: "Error", message: "Unable to Update Image data",
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+
+          if(!$scope.Selected.isPublic && photo.cover){
+            var data = {"main_image_id": null};
+            LincServices.SetMaiImagenId($scope.imagesetId, data, function(result){
+              photo.cover = false;
+            });
+          }
+        }
       });
-    }
-    if(updated.length>1){
       LincServices.UpdateImages(updated, function(results){
         _.forEach(results, function(result, idx) {
           var data = { "is_public": result.is_public };
-          var index = updated[idx].index;
-          _.merge($scope.paginated_gallery[index], $scope.paginated_gallery[index], data);
+          var photo = _.find($scope.Selecteds, {'id': result.id});
+          _.merge(photo, photo, data);
         });
         NotificationFactory.success({
           title: "Update", message: "All Images have been updated",
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        $scope.paginated_gallery = _.map($scope.paginated_gallery, function(photo, index) {
-          photo.select = false;
-          return photo;
-        });
-        $scope.HasFilter = true;
+        Reset_Filters();
       },
       function(error){
         NotificationFactory.error({
@@ -372,59 +362,25 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     }
   }
   $scope.Change_Type = function(){
-    var updated = [];
-    $scope.paginated_gallery.forEach(function(photo, index){
-      if(photo.select){
-        if($scope.Selected.Type != photo.type)
+    if($scope.Selecteds.length){
+      var updated = [];
+      _.forEach($scope.Selecteds, function(photo, index) {
+        if($scope.Selected.Type != photo.type){
           updated.push({'index': index, 'image_id': photo.id, 'data': {'image_type': $scope.Selected.Type}});
-      }
-    });
-    if(updated.length==1){
-      var update = updated[0];
-      LincServices.UpdateImage(update.image_id , update.data, function(result){
-        var data = { "type" : result.image_type };
-        var index = update.index;
-        _.merge($scope.paginated_gallery[index], $scope.paginated_gallery[index], data);
-        NotificationFactory.success({
-          title: "Update", message: "Image was updated",
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        $scope.paginated_gallery = _.map($scope.paginated_gallery, function(photo, index) {
-          photo.select = false;
-          return photo;
-        });
-        $scope.HasFilter = true;
-        /*if(update.data.hasOwnProperty('image_type')){
-          $scope.FilterSel.Type = update.data.image_type;
-          $scope.itemsPerPage = 9;
-        }*/
-      },
-      function(error){
-        NotificationFactory.error({
-          title: "Error", message: "Unable to Update Image data",
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        }
       });
-    }
-    if(updated.length>1){
       LincServices.UpdateImages(updated, function(results){
         _.forEach(results, function(result, idx) {
-          var data = { "type" : result.image_type };
-          var index = updated[idx].index;
-          _.merge($scope.paginated_gallery[index], $scope.paginated_gallery[index], data);
+          var data = { "type": result.image_type };
+          var photo = _.find($scope.Selecteds, {'id': result.id});
+          _.merge(photo, photo, data);
         });
         NotificationFactory.success({
           title: "Update", message: "All Images have been updated",
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        $scope.paginated_gallery = _.map($scope.paginated_gallery, function(photo, index) {
-          photo.select = false;
-          return photo;
-        });
-        $scope.HasFilter = true;
+        Reset_Filters();
       },
       function(error){
         NotificationFactory.error({
@@ -449,17 +405,18 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
 
 }])
 
+// FILTERS
+
 .filter('unsafe', function($sce) {
   return $sce.trustAsHtml;
 })
-
-// FILTERS
 
 .filter('TypeFilter', function(){
   return function(input, type) {
     if(type == 'all') return input;
     var filtered = _.filter(input, function(value){
-        return value.type == type;
+      //if(value.select==true) return true;
+      return value.type == type;
     });
     return filtered;
   };
@@ -469,7 +426,8 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   return function(input, cover) {
     if(!cover) return input;
     var filtered = _.filter(input, function(value){
-        return value.cover == cover;
+      //if(value.select==true) return true;
+      return value.cover == cover;
     });
     return filtered;
   };
@@ -478,41 +436,57 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
 .filter('PropertiesFilter', function(){
   return function(input, properties) {
     var filtered = _.filter(input, function(value){
-        var name = 'Public';
-        if(!value.is_public) name = 'Private';
-        return (_.result(_.find(properties, {'name': name}), 'checked'));
+      //if(value.select==true) return true;
+      var name = 'Public';
+      if(!value.is_public) name = 'Private';
+      return (_.result(_.find(properties, {'name': name}), 'checked'));
     });
     return filtered;
   };
 })
 
-;
+.directive('ngRightClick', function($parse) {
+    return function(scope, element, attrs) {
+        var fn = $parse(attrs.ngRightClick);
+        element.bind('contextmenu', function(event) {
+            scope.$apply(function() {
+                event.preventDefault();
+                fn(scope, {$event:event});
+            });
+        });
+    };
+})
 
-/*$scope.OpenUpload = function(){
-  var modalInstance;
-  var modalScope = $scope.$new();
-  modalScope.ok = function () {
-    modalInstance.close(modalScope.selected);
-  };
+.directive('scaleImage', function () {
+  return {
+    restrict: 'A',
+    link: function (scope, elm, attrs) {
+      var parent = elm.parent().parent().parent().parent();
+      scope.$watch(function () {
+        return {
+            maxWidth: parent.prop('offsetHeight'),
+            maxHeight: parent.prop('offsetWidth') - 100,
+            Width: elm[0].naturalWidth,
+            Height: elm[0].naturalHeight
+        };
+      }, function (size) {
+        var tRatio = size.Width / size.maxWidth;
+        var tProportionalHeight =  size.Height / tRatio;
 
-  modalInstance = $uibModal.open({
-    animation: true,
-    backdrop: true,
-    templateUrl: "uploadimages.html",
-    controller:  "UploadImagesCtrl",
-    scope: modalScope,
-    //controllerAs: 'scope',
-    //bindToController: true,
-    size: "lg",
-    resolve: {
-      options: function () {
-        return ({'isnew': false, 'imagesetId': optionsSet.id});
-      }
+        var tRatio = size.Height / size.maxHeight
+        var tProportionalWidth = size.Width / tRatio;
+
+        if (tProportionalHeight > size.maxHeight){
+          elm.css('height', size.maxHeight + 'px');
+          elm.css('width', tProportionalHeight + 'px');
+        }
+        else{
+          elm.css('width', size.maxWidth + 'px');
+          elm.css('height', tProportionalHeight + 'px');
+        }
+      }, true);
     }
-  });
-  modalInstance.result.then(function (result) {
-    console.log(result);
-  }, function (result) {
-    console.log('Modal dismissed at: ' + result);
-  });
-}*/
+  };
+});
+
+;
