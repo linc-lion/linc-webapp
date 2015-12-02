@@ -373,8 +373,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   {
     // Result Datas
     $scope.selected = { "name": "", "owner_organization_id": "",
-                        "date_of_birth": new Date().toJSON().slice(0,10),
-                        "date_stamp": new Date().toJSON().slice(0,10),
+                        "date_of_birth": '',
+                        "date_stamp": '',
                         "latitude":"", "longitude": "", "gender": "",
                         "markings": {'ear': [],'mount': [],'tail': []},
                         "broken_teeth": [], "eye_damage": [],
