@@ -3,11 +3,25 @@
 
 angular.module('lion.guardians.admin.organiaztions.controller', [])
 
-.controller('AdminOrganizationsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+.controller('AdminOrganizationsCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
 
   $scope.Selecteds = $scope.CleanBracket.organizations;
-  $scope.select_all = $scope.ItemsSelecteds.organizations;
   $scope.Org_Mode  =  $scope.EmptyString.organizations;
+
+  var check_selects = function (){
+    var count = 0;
+    $scope.all_selected = false;
+    $scope.all_unselected = true;
+    if($scope.ordered_organizations) count = $scope.ordered_organizations.length;
+    if(count>0){
+      if($scope.Selecteds.length == count)
+        $scope.all_selected = true;
+      if($scope.Selecteds.length)
+        $scope.all_unselected = false;
+    }
+  }
+
+  check_selects();
 
   $scope.check_all = function (val){
     _.forEach($scope.organizations, function(organization) {
@@ -20,6 +34,7 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
         $scope.Selecteds = _.without($scope.Selecteds, organization);
       }
     });
+    check_selects();
   }
 
   $scope.Select_Org1 = function (organization){
@@ -28,18 +43,37 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
     $scope.Select_Org(organization);
   }
 
+  var lastSelId = -1;
   $scope.Select_Org = function (organization){
-    if(organization.selected){
-      if(!_.some($scope.Selecteds, organization))
-        $scope.Selecteds.push(organization);
+    var shiftKey = $window.event.shiftKey;
+    if(shiftKey && lastSelId>=0){
+      var index0 = _.findIndex($scope.ordered_organizations, {'id': lastSelId});
+      var index1 = _.findIndex($scope.ordered_organizations, {'id': organization.id});
+      var first = Math.min(index0, index1);
+      var second = Math.max(index0, index1);
+      for(var i = first; i < second; i++){
+        var org = $scope.ordered_organizations[i];
+        org.selected = organization.selected;
+        if(organization.selected){
+          if(!_.some($scope.Selecteds, org))
+            $scope.Selecteds.push(org);
+        }
+        else {
+          $scope.Selecteds = _.without($scope.Selecteds, org);
+        }
+      }
     }
-    else {
-      $scope.Selecteds = _.without($scope.Selecteds, organization);
+    else{
+      lastSelId = organization.id;
+      if(organization.selected){
+        if(!_.some($scope.Selecteds, organization))
+          $scope.Selecteds.push(organization);
+      }
+      else {
+        $scope.Selecteds = _.without($scope.Selecteds, organization);
+      }
     }
-    if($scope.Selecteds.length != $scope.organizations.length)
-      $scope.select_all = false;
-    else
-      $scope.select_all = true;
+    check_selects();
   }
 
   var modal = null;

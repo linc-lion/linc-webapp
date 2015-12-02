@@ -3,11 +3,25 @@
 
 angular.module('lion.guardians.admin.users.controller', [])
 
-.controller('AdminUsersCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+.controller('AdminUsersCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
 
   $scope.Selecteds = $scope.CleanBracket.users;
-  $scope.select_all = $scope.ItemsSelecteds.users;
   $scope.User_Mode  =  $scope.EmptyString.users;
+
+  var check_selects = function (){
+    var count = 0;
+    $scope.all_selected = false;
+    $scope.all_unselected = true;
+    if($scope.ordered_users) count = $scope.ordered_users.length;
+    if(count>0){
+      if($scope.Selecteds.length == count)
+        $scope.all_selected = true;
+      if($scope.Selecteds.length)
+        $scope.all_unselected = false;
+    }
+  }
+
+  check_selects();
 
   $scope.check_all = function (val){
     _.forEach($scope.users, function(user) {
@@ -20,6 +34,7 @@ angular.module('lion.guardians.admin.users.controller', [])
         $scope.Selecteds = _.without($scope.Selecteds, user);
       }
     });
+    check_selects();
   }
 
   $scope.Select_User1 = function (user){
@@ -28,18 +43,37 @@ angular.module('lion.guardians.admin.users.controller', [])
     $scope.Select_User(user);
   }
 
+  var lastSelId = -1;
   $scope.Select_User = function (user){
-    if(user.selected){
-      if(!_.some($scope.Selecteds, user))
-        $scope.Selecteds.push(user);
+    var shiftKey = $window.event.shiftKey;
+    if(shiftKey && lastSelId>=0){
+      var index0 = _.findIndex($scope.ordered_users, {'id': lastSelId});
+      var index1 = _.findIndex($scope.ordered_users, {'id': user.id});
+      var first = Math.min(index1, index0);
+      var second = Math.max(index1, index0);
+      for(var i = first; i < second; i++){
+        var person = $scope.ordered_users[i];
+        person.selected = user.selected;
+        if(user.selected){
+          if(!_.some($scope.Selecteds, person))
+            $scope.Selecteds.push(person);
+        }
+        else {
+          $scope.Selecteds = _.without($scope.Selecteds, person);
+        }
+      }
     }
-    else {
-      $scope.Selecteds = _.without($scope.Selecteds, user);
+    else{
+      lastSelId= user.id;
+      if(user.selected){
+        if(!_.some($scope.Selecteds, user))
+          $scope.Selecteds.push(user);
+      }
+      else {
+        $scope.Selecteds = _.without($scope.Selecteds, user);
+      }
     }
-    if($scope.Selecteds.length != $scope.users.length)
-      $scope.select_all = false;
-    else
-      $scope.select_all = true;
+    check_selects();
   }
 
   var modal = null;

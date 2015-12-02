@@ -3,14 +3,28 @@
 
 angular.module('lion.guardians.admin.cvrequests.controller', [])
 
-.controller('AdminCVRequestsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+.controller('AdminCVRequestsCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
 
   $scope.CVReq_Status = [{'type': 'submitted', 'label': 'Submitted'},
                          {'type': 'created', 'label': 'Created'}];
 
   $scope.Selecteds = $scope.CleanBracket.cvrequests;
-  $scope.select_all = $scope.ItemsSelecteds.cvrequests;
   $scope.CVRequest_Mode = $scope.EmptyString.cvrequests;
+
+  var check_selects = function (){
+    var count = 0;
+    $scope.all_selected = false;
+    $scope.all_unselected = true;
+    if($scope.ordered_cvrequests) count = $scope.ordered_cvrequests.length;
+    if(count>0){
+      if($scope.Selecteds.length == count)
+        $scope.all_selected = true;
+      if($scope.Selecteds.length)
+        $scope.all_unselected = false;
+    }
+  }
+
+  check_selects();
 
   $scope.check_all = function (val){
     _.forEach($scope.cvrequests, function(cvrequest) {
@@ -23,24 +37,46 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
         $scope.Selecteds = _.without($scope.Selecteds, cvrequest);
       }
     });
+    check_selects();
   }
+
   $scope.Select_CVRequest1 = function (cvrequest){
     if($scope.CVRequest_Mode != '') return;
     cvrequest.selected = !cvrequest.selected;
     $scope.Select_CVRequest(cvrequest);
   }
+
+  var lastSelId = -1;
   $scope.Select_CVRequest = function (cvrequest){
-    if(cvrequest.selected){
-      if(!_.some($scope.Selecteds, cvrequest))
-        $scope.Selecteds.push(cvrequest);
+    var shiftKey = $window.event.shiftKey;
+    if(shiftKey && lastSelId>=0){
+      var index0 = _.findIndex($scope.ordered_cvrequests, {'id': lastSelId});
+      var index1 = _.findIndex($scope.ordered_cvrequests, {'id': cvrequest.id});
+      var first = Math.min(index0, index1);
+      var second = Math.max(index0, index1);
+      for(var i = first; i < second; i++){
+        var cvres = $scope.ordered_cvrequests[i];
+        cvres.selected = cvrequest.selected;
+        if(cvrequest.selected){
+          if(!_.some($scope.Selecteds, cvres))
+            $scope.Selecteds.push(cvres);
+        }
+        else {
+          $scope.Selecteds = _.without($scope.Selecteds, cvres);
+        }
+      }
     }
-    else {
-      $scope.Selecteds = _.without($scope.Selecteds, cvrequest);
+    else{
+      lastSelId = cvrequest.id;
+      if(cvrequest.selected){
+        if(!_.some($scope.Selecteds, cvrequest))
+          $scope.Selecteds.push(cvrequest);
+      }
+      else {
+        $scope.Selecteds = _.without($scope.Selecteds, cvrequest);
+      }
     }
-    if($scope.Selecteds.length != $scope.cvrequests.length)
-      $scope.select_all = false;
-    else
-      $scope.select_all = true;
+    check_selects();
   }
 
   var modal = null;
