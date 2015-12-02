@@ -3,11 +3,25 @@
 
 angular.module('lion.guardians.admin.lions.controller', [])
 
-.controller('AdminLionsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+.controller('AdminLionsCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
 
   $scope.Selecteds = $scope.CleanBracket.lions;
-  $scope.select_all = $scope.ItemsSelecteds.lions;
   $scope.Lion_Mode  =  $scope.EmptyString.lions;
+
+  var check_selects = function (){
+    var count = 0;
+    $scope.all_selected = false;
+    $scope.all_unselected = true;
+    if($scope.ordered_lions) count = $scope.ordered_lions.length;
+    if(count>0){
+      if($scope.Selecteds.length == count)
+        $scope.all_selected = true;
+      if($scope.Selecteds.length)
+        $scope.all_unselected = false;
+    }
+  }
+
+  check_selects();
 
   $scope.check_all = function (val){
     _.forEach($scope.lions, function(lion) {
@@ -20,24 +34,45 @@ angular.module('lion.guardians.admin.lions.controller', [])
         $scope.Selecteds = _.without($scope.Selecteds, lion);
       }
     });
+    check_selects();
   }
   $scope.Select_Lion1 = function (lion){
     if($scope.Lion_Mode != '') return;
     lion.selected = !lion.selected;
     $scope.Select_Lion(lion);
   }
+
+  var lastSelId = -1;
   $scope.Select_Lion = function (lion){
-    if(lion.selected){
-      if(!_.some($scope.Selecteds, lion))
-        $scope.Selecteds.push(lion);
+    var shiftKey = $window.event.shiftKey;
+    if(shiftKey && lastSelId>=0){
+      var index0 = _.findIndex($scope.ordered_lions, {'id': lastSelId});
+      var index1 = _.findIndex($scope.ordered_lions, {'id': lion.id});
+      var first = Math.min(index0, index1);
+      var second = Math.max(index0, index1);
+      for(var i = first; i < second; i++){
+        var animal = $scope.ordered_lions[i];
+        animal.selected = lion.selected;
+        if(lion.selected){
+          if(!_.some($scope.Selecteds, animal))
+            $scope.Selecteds.push(animal);
+        }
+        else {
+          $scope.Selecteds = _.without($scope.Selecteds, animal);
+        }
+      }
     }
-    else {
-      $scope.Selecteds = _.without($scope.Selecteds, lion);
+    else{
+      lastSelId = lion.id;
+      if(lion.selected){
+        if(!_.some($scope.Selecteds, lion))
+          $scope.Selecteds.push(lion);
+      }
+      else {
+        $scope.Selecteds = _.without($scope.Selecteds, lion);
+      }
     }
-    if($scope.Selecteds.length != $scope.lions.length)
-      $scope.select_all = false;
-    else
-      $scope.select_all = true;
+    check_selects();
   }
 
   var modal = null;
@@ -186,6 +221,6 @@ angular.module('lion.guardians.admin.lions.controller', [])
     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
     $scope.predicate = predicate;
   };
-  
+
 }])
 ;

@@ -472,3 +472,10 @@ h4.h4data {display:inline; color: #333; padding-left: 5px;}
     margin-top: 2px;
   }
 }
+i.icon-border{
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 2px !important;
+  border-color: #333;
+}
+i.icon-border.active{background: #999 !important;}

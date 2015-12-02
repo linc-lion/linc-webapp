@@ -3,11 +3,25 @@
 
 angular.module('lion.guardians.admin.cvresults.controller', [])
 
-.controller('AdminCVResultsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+.controller('AdminCVResultsCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
 
   $scope.Selecteds = $scope.CleanBracket.cvresults;
-  $scope.select_all = $scope.ItemsSelecteds.cvresults;
   $scope.CVResult_Mode = $scope.EmptyString.cvresults;
+
+  var check_selects = function (){
+    var count = 0;
+    $scope.all_selected = false;
+    $scope.all_unselected = true;
+    if($scope.ordered_cvresults) count = $scope.ordered_cvresults.length;
+    if(count>0){
+      if($scope.Selecteds.length == count)
+        $scope.all_selected = true;
+      if($scope.Selecteds.length)
+        $scope.all_unselected = false;
+    }
+  }
+
+  check_selects();
 
   $scope.check_all = function (val){
     _.forEach($scope.cvresults, function(cvresult) {
@@ -20,24 +34,46 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
         $scope.Selecteds = _.without($scope.Selecteds, cvresult);
       }
     });
+    check_selects();
   }
+
   $scope.Select_CVresult1 = function (cvresult){
     if($scope.CVResult_Mode != '') return;
     cvresult.selected = !cvresult.selected;
     $scope.Select_CVresult(cvresult);
   }
+
+  var lastSelId = -1;
   $scope.Select_CVresult = function (cvresult){
-    if(cvresult.selected){
-      if(!_.some($scope.Selecteds, cvresult))
-        $scope.Selecteds.push(cvresult);
+    var shiftKey = $window.event.shiftKey;
+    if(shiftKey && lastSelId>=0){
+      var index0 = _.findIndex($scope.ordered_cvresults, {'id': lastSelId});
+      var index1 = _.findIndex($scope.ordered_cvresults, {'id': cvresult.id});
+      var first = Math.min(index0, index1);
+      var second = Math.max(index0, index1);
+      for(var i = first; i < second; i++){
+        var cvres = $scope.ordered_cvresults[i];
+        cvres.selected = cvresult.selected;
+        if(cvresult.selected){
+          if(!_.some($scope.Selecteds, cvres))
+            $scope.Selecteds.push(cvres);
+        }
+        else {
+          $scope.Selecteds = _.without($scope.Selecteds, cvres);
+        }
+      }
     }
-    else {
-      $scope.Selecteds = _.without($scope.Selecteds, cvresult);
+    else{
+      lastSelId = cvresult.id;
+      if(cvresult.selected){
+        if(!_.some($scope.Selecteds, cvresult))
+          $scope.Selecteds.push(cvresult);
+      }
+      else {
+        $scope.Selecteds = _.without($scope.Selecteds, cvresult);
+      }
     }
-    if($scope.Selecteds.length != $scope.cvresults.length)
-      $scope.select_all = false;
-    else
-      $scope.select_all = true;
+    check_selects();
   }
 
   var modal = null;
