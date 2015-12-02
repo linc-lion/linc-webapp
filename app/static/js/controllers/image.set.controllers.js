@@ -188,6 +188,8 @@ angular.module('lion.guardians.image.set.controllers', [])
     else if(element.cvrequest) elem["action"] = 'cvpending';
     else  elem["action"] = 'cvrequest';
 
+    if(!element.gender) element.gender = 'unknown';
+
     var TAGS = [];
     try{ TAGS = JSON.parse(element['tags']);
     }catch(e){ TAGS = element['tags'].split(","); }

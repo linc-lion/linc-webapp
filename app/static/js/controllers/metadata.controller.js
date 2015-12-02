@@ -289,7 +289,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   }
 
   // Gender List
-  $scope.genders = [{value: 'male', label: 'Male'}, {value: 'female',label: 'Female'}, {value: 'unknown',label: 'Unknown'}];
+  $scope.genders = [{value: 'male', label: 'Male'}, {value: 'female',label: 'Female'}, {value: null,label: 'Unknown'}];
   // Markings List
   $scope.markings = [
     {value: 'ear',  label: 'Ear', allText : 'All Ear Markings',
