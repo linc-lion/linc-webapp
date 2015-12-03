@@ -51,6 +51,9 @@ angular.module('lion.guardians.image.set.controllers', [])
     $scope.imageset.organization = _.find(organizations, {'id': $scope.imageset.owner_organization_id}).name;
     Set_Tags();
   }
+  $scope.goto_search_lion = function (){
+    $state.go("searchlion", {filter: {id: imageset.lion_id}});
+  }
   // Image Gallery
   $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.id};
   // Location History
@@ -158,6 +161,27 @@ angular.module('lion.guardians.image.set.controllers', [])
     LincServices.ClearAllImagesetsCaches();
     LincServices.ClearImagesetProfileCache(ImagesetId);
   }
+
+  $scope.Dissociate = function (id){
+    var data = {'lion_id': null};
+    LincServices.Associate(id, data, function(){
+      $scope.imageset.lion_id = null;
+      LincServices.ClearAllCaches();
+      NotificationFactory.success({
+        title: "Dissociate", message:'Lion was dissociated',
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
+    },
+    function(error){
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to Dissociate the Lion',
+        position: 'right', // right, left, center
+        duration: 5000   // milisecond
+      });
+      console.log(error);
+    });
+  };
 }])
 
 .controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$stateParams', '$bsTooltip', 'NotificationFactory','LincServices', 'imagesets_filters', 'imagesets', function ($scope, $timeout, $interval, $stateParams, $bsTooltip, NotificationFactory, LincServices, imagesets_filters, imagesets) {
@@ -426,10 +450,7 @@ angular.module('lion.guardians.image.set.controllers', [])
   $scope.filters = $stateParams.filter ? $stateParams.filter : {};
 
   if(Object.keys($scope.filters).length){
-    $scope.name_or_id = $scope.filters.hasOwnProperty('name') ? $scope.filters.name : '';
-    var id_filter = $scope.filters.hasOwnProperty('id') ? $scope.filters.id : '';
-    $scope.name_or_id = $scope.name_or_id + id_filter;
-    $scope.LionAge = $scope.filters.hasOwnProperty('age') ? $scope.filters.age : $scope.LionAge;
+    $scope.name_or_id = $scope.filters.hasOwnProperty('name_or_id') ? $scope.filters.name : '';
   }
 
 }]);

@@ -30,8 +30,7 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
     var data = {'lion_id': id};
     LincServices.Associate(imagesetId, data, function(){
       $scope.cvresults[index].associated = true;
-      LincServices.ClearAllImagesetsCaches();
-      LincServices.ClearImagesetProfileCache(imagesetId);
+      LincServices.ClearAllCaches();
       NotificationFactory.success({
         title: "Associate", message:'Lion (id: ' + id + ') was associated',
         position: "right", // right, left, center
