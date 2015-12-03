@@ -27,11 +27,16 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   };
   $scope.Default = {isPublic: true, ImageType: 'cv', isCover: ''};
 
-  var uploader = $scope.uploader = new FileUploader({
-    url: '/images/upload'
-  });
   var xsrfcookie = $cookies.get('_xsrf');
-  $scope.headers = { 'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie};
+  
+  var uploader = $scope.uploader = new FileUploader({
+    url: '/images/upload',
+    headers : {
+        'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie
+    },
+  });
+
+  //$scope.headers = { 'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie};
   // FILTERS
   uploader.filters.push({
     name: 'imageFilter',
