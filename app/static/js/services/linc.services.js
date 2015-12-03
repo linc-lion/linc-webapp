@@ -230,7 +230,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   }
   // Post ImageSet - New Imageset
   var PostImageset = function (data, success, error){
-    ClearAllCaches
+    ClearAllCaches();
     var cookies = {'_xsrf': $cookies.get('_xsrf')};
     angular.merge(data, cookies);
     return HTTP('POST', '/imagesets', data, {}, success, error);
@@ -269,7 +269,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   }
   // Post Lion - New Lion
   var PostLionImageset = function (data, success, error){
-    ClearAllCaches
+    ClearAllCaches();
     var xsrfcookie = $cookies.get('_xsrf');
     var result_data;
     // Imageset

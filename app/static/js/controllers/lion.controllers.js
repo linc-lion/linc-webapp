@@ -124,6 +124,7 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.lions = _.map(lions, function(element, index) {
     var elem = {};
     var TAGS = [];
+    if(!element.gender) element.gender = 'unknown';
     if(element['tags']==undefined)element['tags']="[]";
     try{ TAGS = JSON.parse(element['tags']);
     }catch(e){ TAGS = element['tags'].split(","); }
@@ -192,11 +193,11 @@ angular.module('lion.guardians.lions.controllers', [])
       break;
       case 3:
         $scope.itemsPerPage = Math.min(60, min_val);
-        lion_filters.PerPage = $scope.PerPages[2].index;
+        lion_filters.PerPage = $scope.PerPages[3].index;
       break;
       default:
         $scope.itemsPerPage = Math.min(100, min_val);
-        lion_filters.PerPage = $scope.PerPages[3].index;
+        lion_filters.PerPage = $scope.PerPages[4].index;
     }
   }
   // Change Name_or_Id input

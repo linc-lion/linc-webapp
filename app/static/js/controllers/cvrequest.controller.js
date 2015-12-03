@@ -28,6 +28,7 @@ angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest
   $scope.lions = _.map(lions, function(element, index) {
     var elem = {};
     var TAGS = [];
+    if(!element.gender) element.gender = 'unknown';
     if(element['tags']==undefined)element['tags']="[]";
     try{ TAGS = JSON.parse(element['tags']);
     }catch(e){ TAGS = element['tags'].split(","); }

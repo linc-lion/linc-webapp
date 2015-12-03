@@ -1,5 +1,16 @@
-<div class="image-view"><button type="button" class="close" ng-click="">&times;</button>
-  <img src="http://linc-test.s3.amazonaws.com/linc-api-lions/imageset_5_5633a5570640fd58c1e66681/2015-11-16_image_2174_56496bd11fb4f8000337a124_medium.jpg" class="img-responsive center-block">
+<div id="image_view" ng-show="image_view" class="image-view">
+  <!--<button type="button" class="close" ng-click="hide_image_view()">&times;</button>-->
+  <!--<img ng-src="{{!image_view_url || '//:0' }}" class="img-responsive center-block" ng-click="hide_image_view()" scale-image>-->
+
+  <uib-carousel interval="carousel_interval" no-wrap="noWrapSlides">
+    <uib-slide ng-repeat="(index, photo) in paginated_gallery = (filtered_gallery = (gallery | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" active="photo.active">
+      <img ng-src="{{!photo.medium || '//:0' }}" class="img-responsive center-block" ng-click="hide_image_view()" scale-image>
+      <div class="carousel-caption">
+        <i class="icon icon-globe" ng-if="photo.is_public"></i>
+        <i class="icon icon-star" ng-if="photo.cover"></i>{{!Type_Labels[photo.type]}}
+      </div>
+    </uib-slide>
+  </uib-carousel>
 </div>
 
 <div class="modal-header" ng-show="title">
@@ -9,14 +20,19 @@
 <div class="modal-body" ng-show="content">
   <div class="row">
     <div class="col-sm-9">
-      <a class="thumbnail" ng-repeat="(index, photo) in paginated_gallery = (filtered_gallery = (gallery | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" ng-class="{active:photo.select}" ng-click="show_photo(photo.medium)" target="_blank">
-        <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select;Image_Check(photo.select, photo, index); $event.stopPropagation();"></i>
+      <a class="thumbnail" ng-repeat="(index, photo) in paginated_gallery = (filtered_gallery = (gallery | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" ng-class="{active:photo.select}" ng-click="show_image_view(photo, index);" ng-right-click="show_photo(photo.medium)">
+
+        <i class="icon icon-check_circle select"
+        ng-click="photo.select=!photo.select; Select_Image(photo, index);$event.stopPropagation();"></i>
+
         <img ng-src="{{!photo.thumbnail}}" width="150" height="150">
+
         <div class="caption"><i class="icon icon-globe pull-right" ng-if="photo.is_public"></i><i class="icon icon-star" ng-if="photo.cover"></i>{{!Type_Labels[photo.type]}}</div>
+
       </a>
       <p class="clearfix">
-        <a href="#" class="btn btn-link" ng-click="Select_All(true)">Select All</a>
-        <a href="#" class="btn btn-link" ng-click="Select_All(false)">Select None</a>
+        <a class="btn btn-link" ng-click="Select_All()">Select All</a>
+        <a class="btn btn-link" ng-click="UnSelect_All()">Select None</a>
       </p>
       <p ng-show="itemsPerPage!=gallery.length" class="text-center">
         <a ng-click="increase_pages();" class="btn btn-link">
@@ -27,49 +43,49 @@
         {{!itemsPerPage}} of {{!filtered_gallery.length}} results.</a>
       </p>
     </div>
-
-
     <div class="col-sm-3 line-left">
     <ul class="nav nav-tabs tabs-sm">
-      <li role="presentation" ng-class="{active:HasFilter}"><a href="#" ng-click="HasFilter=true">Filter Mode</a></li>
-      <li role="presentation" class="tabs-primary" ng-class="{active:!HasFilter}"><a href="#" ng-click="HasFilter=false">Edit Mode</a></li>
+      <li role="presentation" ng-class="{active:isViewFilter}"><a ng-click="Change_Tab('filter')">Filter Mode</a></li>
+      <li role="presentation" class="tabs-primary" ng-class="{active:!isViewFilter}"><a ng-click="Change_Tab('edit')">Edit Mode</a></li>
     </ul>
-      <div ng-show="HasFilter">
-        <!--<h3><u>Filter Mode</u></h3>-->
+      <div ng-show="isViewFilter">
         <h4>Image type</h4>
         <div class="radio" ng-init="FilterSel.Type='all'" ng-repeat="item in Filters">
-          <label><input type="radio" ng-model="FilterSel.Type" ng-value="item.type" ng-click="calc_itemspage();">{{!item.label}}</label>
+          <label><input type="radio" ng-model="FilterSel.Type" ng-value="item.type" ng-click="UnSelect_All();calc_itemspage();">{{!item.label}}</label>
         </div>
         <h4>Properties</h4>
         <div class="checkbox" ng-repeat="(key, property)  in Properties">
-          <label><input type="checkbox" checked ng-model="property.checked" ng-click="calc_itemspage()">{{! property.name}}</label>
+          <label><input type="checkbox" checked ng-model="property.checked" ng-click="UnSelect_All();calc_itemspage()">{{! property.name}}</label>
         </div>
         <div class="checkbox">
-          <label><input type="checkbox" ng-model="FilterSel.isCover" ng-click="calc_itemspage()"> Cover image</label>
+          <label><input type="checkbox" ng-model="FilterSel.isCover" ng-click="UnSelect_All();calc_itemspage()"> Cover image</label>
         </div>
         <br>
       </div>
 
-      <div ng-show="!HasFilter">
-      <!--  <h3><u>Edit Mode</u></h3>-->
+      <div ng-show="!isViewFilter">
         <h4>Image type</h4>
         <div class="radio" ng-init="Selected.Type='all'" ng-repeat="item in Selects">
           <label><input type="radio" ng-model="Selected.Type" ng-value="item.type" ng-click="Change_Type()">{{!item.label}}</label>
         </div>
         <h4>Properties</h4>
+        <div class="form-group">
+          <select class="form-control custom-select" ng-change="Change_isPublic();" ng-options="property.value as property.name for property in Properties" ng-model="Selected.isPublic" required>
+            <option></option>
+          </select>
+        </div>
+        <!--
         <div class="checkbox">
           <label><input ng-click="Change_isPublic();" type="checkbox" checked ng-model="Selected.isPublic" >Public</label>
-        </div>
+        </div>-->
         <div class="checkbox">
-          <label><input ng-click="Change_Cover()" ng-disabled="!Selected.isPublic || Selected_Count>1" type="checkbox" ng-model="Selected.isCover">Cover image</label>
+          <label><input ng-click="Change_Cover()" ng-disabled="!Selected.isPublic || Selecteds.length>1" type="checkbox" ng-model="Selected.isCover">Cover image</label>
         </div>
       </div>
       <p>
-        <button ng-disabled="!Selected_Count" class="btn btn-default btn-block" ng-click="Delete()">Delete</button>
-        <button ng-disabled="!Selected_Count" class="btn btn-default btn-block" ng-click="Download()">Download original</button>
-        <!--<button ng-disabled="Selected_Count" class="btn btn-primary btn-block" ng-click="OpenUpload()">Upload images</button>-->
-        <br>
-        <upload-images disabled-btn="Selected_Count" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="edit" imageset-id="imagesetId" image-updated="UpdateImages()"></upload-images>
+        <button ng-disabled="!Selecteds.length" class="btn btn-default btn-block" ng-click="Delete()">Delete</button>
+        <button ng-disabled="!Selecteds.length" class="btn btn-default btn-block" ng-click="Download()">Download original</button>
+        <upload-images disabled-btn="Selecteds.length" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="edit" imageset-id="imagesetId" image-updated="UpdateImages()"></upload-images>
       </p>
     </div>
   </div>

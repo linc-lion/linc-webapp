@@ -3,12 +3,10 @@
 
 angular.module('lion.guardians.admin.imagesets.controller', [])
 
-.controller('AdminImageSetsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+.controller('AdminImageSetsCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
 
   $scope.Selecteds = $scope.CleanBracket.imagesets;
-  $scope.select_all = $scope.ItemsSelecteds.imagesets;
   $scope.ImageSet_Mode  =  $scope.EmptyString.imagesets;
-
 
   $scope.genders = [{'type': 'male', 'name' :'Male'},
                     {'type': 'female', 'name': 'Female'}];
@@ -22,6 +20,21 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
                   'scars': [{'value': 'SCARS_BODY_LEFT', 'label': 'Body Left'},{'value': 'SCARS_BODY_RIGHT', 'label': 'Body Right'},{'value': 'SCARS_FACE', 'label': 'Face'},{'value': 'SCARS_TAIL', 'label': 'Tail'}]
   };
 
+  var check_selects = function (){
+    var count = 0;
+    $scope.all_selected = false;
+    $scope.all_unselected = true;
+    if($scope.ordered_imagesets) count = $scope.ordered_imagesets.length;
+    if(count>0){
+      if($scope.Selecteds.length == count)
+        $scope.all_selected = true;
+      if($scope.Selecteds.length)
+        $scope.all_unselected = false;
+    }
+  }
+
+  check_selects();
+
   $scope.check_all = function (val){
     _.forEach($scope.imagesets, function(imageset) {
       imageset.selected = val;
@@ -33,24 +46,46 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
         $scope.Selecteds = _.without($scope.Selecteds, imageset);
       }
     });
+    check_selects();
   }
+
   $scope.Select_Imageset1 = function (imageset){
     if($scope.ImageSet_Mode != '') return;
     imageset.selected = !imageset.selected;
-    $scope.Select_Imageset(imageset);
+    $scope.Select_Imageset(imageset, index);
   }
+
+  var lastSelId = -1;
   $scope.Select_Imageset = function (imageset){
-    if(imageset.selected){
-      if(!_.some($scope.Selecteds, imageset))
-        $scope.Selecteds.push(imageset);
+    var shiftKey = $window.event.shiftKey;
+    if(shiftKey && lastSelId>=0){
+      var index0 = _.findIndex($scope.ordered_imagesets, {'id': lastSelId});
+      var index1 = _.findIndex($scope.ordered_imagesets, {'id': imageset.id});
+      var first = Math.min(index0, index1);
+      var second = Math.max(index0, index1);
+      for(var i = first; i < second; i++){
+        var imgset = $scope.ordered_imagesets[i];
+        imgset.selected = imageset.selected;
+        if(imageset.selected){
+          if(!_.some($scope.Selecteds, imgset))
+            $scope.Selecteds.push(imgset);
+        }
+        else {
+          $scope.Selecteds = _.without($scope.Selecteds, imgset);
+        }
+      }
     }
-    else {
-      $scope.Selecteds = _.without($scope.Selecteds, imageset);
+    else{
+      lastSelId = imageset.id;
+      if(imageset.selected){
+        if(!_.some($scope.Selecteds, imageset))
+          $scope.Selecteds.push(imageset);
+      }
+      else {
+        $scope.Selecteds = _.without($scope.Selecteds, imageset);
+      }
     }
-    if($scope.Selecteds.length != $scope.imagesets.length)
-      $scope.select_all = false;
-    else
-      $scope.select_all = true;
+    check_selects();
   }
 
   var modal = null;
@@ -315,7 +350,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
     $scope.predicate = predicate;
   };
-  
+
 }])
 
 ;

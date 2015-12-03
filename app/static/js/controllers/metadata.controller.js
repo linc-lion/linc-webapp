@@ -289,7 +289,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   }
 
   // Gender List
-  $scope.genders = [{value: 'male', label: 'Male'}, {value: 'female',label: 'Female'}];
+  $scope.genders = [{value: 'male', label: 'Male'}, {value: 'female',label: 'Female'}, {value: null,label: 'Unknown'}];
   // Markings List
   $scope.markings = [
     {value: 'ear',  label: 'Ear', allText : 'All Ear Markings',
@@ -373,12 +373,12 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   {
     // Result Datas
     $scope.selected = { "name": "", "owner_organization_id": "",
-                        "date_of_birth": new Date().toJSON().slice(0,10),
-                        "date_stamp": new Date().toJSON().slice(0,10),
+                        "date_of_birth": '',
+                        "date_stamp": '',
                         "latitude":"", "longitude": "", "gender": "",
                         "markings": {'ear': [],'mount': [],'tail': []},
                         "broken_teeth": [], "eye_damage": [],
-                        "nose_color": undefined, "scars": [], "notes": "Notes here"
+                        "nose_color": undefined, "scars": [], "notes": ""
     };
     $scope.tooltip = {'show_lion_name': true};
   }
