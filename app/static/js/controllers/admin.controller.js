@@ -22,8 +22,6 @@ angular.module('lion.guardians.admin.controller', [ 'lion.guardians.admin.users.
 
   $scope.EmptyString = {'users': '', 'organizations': '', 'lions': '', 'imagesets': '', 'images': '', 'cvrequests': '', 'cvresults': ''}
   $scope.CleanBracket = {'users': [], 'organizations': [], 'lions': [], 'imagesets': [], 'images': [], 'cvrequests': [], 'cvresults': []};
-  $scope.ItemsSelecteds = {'users': false, 'organizations': false, 'lions': false, 'imagesets': false, 'images': false, 'cvrequests': false, 'cvresults': false};
-
 
   $scope.tabs = [
     { title:'Organizations', disabled: false, sref: 'admin.organizations'},

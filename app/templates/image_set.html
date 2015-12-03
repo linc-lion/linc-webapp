@@ -16,7 +16,8 @@
       </div>
       <div>
         <h4 class="h4inline">Age:</h4>
-        <h4 class="h4data">{{!imageset.age}}</h4>
+        <h4 ng-show="imageset.gender" class="h4data">{{!imageset.gender}}</h4>
+        <h4 ng-show="!imageset.gender" class="h4data">Unknown</h4>
       </div>
       <div>
         <h4 class="h4inline">Gender:</h4>

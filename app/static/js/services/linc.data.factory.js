@@ -31,9 +31,9 @@ angular.module('lion.guardians.linc.data.factory', [])
       imagesets_filters.organizations = angular.copy(lions_filters.organizations);
       lions_cvreq_filters.organizations = angular.copy(lions_filters.organizations);
     });
-    lions_filters.genders = [{'name': 'male', 'label': 'Male', 'checked': true},{'name': 'female', 'label': 'Female', 'checked': true}];
-    imagesets_filters.genders = [{'name': 'male', 'label': 'Male', 'checked': true},{'name': 'female', 'label': 'Female', 'checked': true}];
-    lions_cvreq_filters.genders = [{'name': 'male', 'label': 'Male', 'checked': true},{'name': 'female', 'label': 'Female', 'checked': true}];
+    lions_filters.genders = [{'name': 'male', 'label': 'Male', 'checked': true},{'name': 'female', 'label': 'Female', 'checked': true}, {'name': 'unknown', 'label': 'Unknown', 'checked': true}];
+    imagesets_filters.genders = [{'name': 'male', 'label': 'Male', 'checked': true},{'name': 'female', 'label': 'Female', 'checked': true}, {'name': 'unknown', 'label': 'Unknown', 'checked': true}];
+    lions_cvreq_filters.genders = [{'name': 'male', 'label': 'Male', 'checked': true},{'name': 'female', 'label': 'Female', 'checked': true}, {'name': 'unknown', 'label': 'Unknown', 'checked': true}];
     lions_filters.LionAge = { 'min': 0, 'max': 30, 'options': {'ceil': 32, 'floor': 0 }};
     imagesets_filters.LionAge = { 'min': 0, 'max': 30, 'options': {'ceil': 32, 'floor': 0 }};
     lions_cvreq_filters.LionAge = { 'min': 0, 'max': 30,  'options': {'ceil': 32, 'floor': 0 }};

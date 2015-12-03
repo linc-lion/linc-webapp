@@ -456,3 +456,26 @@ h4.h4data {display:inline; color: #333; padding-left: 5px;}
     }
   }
 }
+
+
+.carousel-caption{
+  padding: 12px 0 40px;
+  .icon-globe{
+    padding-left: 10px;
+    font-size: 24px;
+    margin-top: 2px;
+  }
+  .icon-star{
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 24px;
+    margin-top: 2px;
+  }
+}
+i.icon-border{
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 2px !important;
+  border-color: #333;
+}
+i.icon-border.active{background: #999 !important;}

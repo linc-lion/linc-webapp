@@ -188,6 +188,8 @@ angular.module('lion.guardians.image.set.controllers', [])
     else if(element.cvrequest) elem["action"] = 'cvpending';
     else  elem["action"] = 'cvrequest';
 
+    if(!element.gender) element.gender = 'unknown';
+
     var TAGS = [];
     try{ TAGS = JSON.parse(element['tags']);
     }catch(e){ TAGS = element['tags'].split(","); }
@@ -255,11 +257,11 @@ angular.module('lion.guardians.image.set.controllers', [])
       break;
       case 3:
         $scope.itemsPerPage = Math.min(60, min_val);;
-        imagesets_filters.PerPage = $scope.PerPages[2].index;
+        imagesets_filters.PerPage = $scope.PerPages[3].index;
       break;
       default:
         $scope.itemsPerPage = Math.min(100, min_val);;
-        imagesets_filters.PerPage = $scope.PerPages[3].index;;
+        imagesets_filters.PerPage = $scope.PerPages[4].index;;
     }
   }
 

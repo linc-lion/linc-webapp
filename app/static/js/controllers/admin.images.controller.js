@@ -3,17 +3,73 @@
 
 angular.module('lion.guardians.admin.images.controller', [])
 
-.controller('AdminImagesCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+.controller('AdminImagesCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
 
   $scope.itemsPerPage = 100;
 
   $scope.Selecteds = $scope.CleanBracket.images;
-  $scope.select_all = $scope.ItemsSelecteds.images;
   $scope.Image_Mode  =  $scope.EmptyString.images;
 
+  var check_selects = function (){
+    var count = 0;
+    $scope.all_selected = false;
+    $scope.all_unselected = true;
+    if($scope.paginated_images) count = $scope.paginated_images.length;
+    if(count>0){
+      if($scope.Selecteds.length == count)
+        $scope.all_selected = true;
+      if($scope.Selecteds.length)
+        $scope.all_unselected = false;
+    }
+  }
+
+  check_selects();
+
   $scope.check_all = function (val){
-    _.forEach($scope.images, function(image) {
-      image.selected = val;
+    if(val){
+      _.forEach($scope.paginated_images, function(image) {
+        image.selected = val;
+        if(!_.some($scope.Selecteds, image))
+          $scope.Selecteds.push(image);
+      });
+    }
+    else{
+      _.forEach($scope.images, function(image) {
+        image.selected = val;
+        $scope.Selecteds = _.without($scope.Selecteds, image);
+      });
+    }
+    check_selects();
+  }
+
+  $scope.Select_Image1 = function (image){
+    if($scope.Image_Mode != '') return;
+    image.selected = !image.selected;
+    $scope.Select_Image(image);
+  }
+
+  var lastSelId = -1;
+  $scope.Select_Image = function (image){
+    var shiftKey = $window.event.shiftKey;
+    if(shiftKey && lastSelId>=0){
+      var index0 = _.findIndex($scope.paginated_images, {'id': lastSelId});
+      var index1 = _.findIndex($scope.paginated_images, {'id': image.id});
+      var first = Math.min(index0, index1);
+      var second = Math.max(index0, index1);
+      for(var i = first; i < second; i++){
+        var img = $scope.paginated_images[i];
+        img.selected = image.selected;
+        if(image.selected){
+          if(!_.some($scope.Selecteds, img))
+            $scope.Selecteds.push(img);
+        }
+        else {
+          $scope.Selecteds = _.without($scope.Selecteds, img);
+        }
+      }
+    }
+    else{
+      lastSelId = image.id;
       if(image.selected){
         if(!_.some($scope.Selecteds, image))
           $scope.Selecteds.push(image);
@@ -21,25 +77,8 @@ angular.module('lion.guardians.admin.images.controller', [])
       else {
         $scope.Selecteds = _.without($scope.Selecteds, image);
       }
-    });
-  }
-  $scope.Select_Image1 = function (image){
-    if($scope.Image_Mode != '') return;
-    image.selected = !image.selected;
-    $scope.Select_Image(image);
-  }
-  $scope.Select_Image = function (image){
-    if(image.selected){
-      if(!_.some($scope.Selecteds, image))
-        $scope.Selecteds.push(image);
     }
-    else {
-      $scope.Selecteds = _.without($scope.Selecteds, image);
-    }
-    if($scope.Selecteds.length != $scope.images.length)
-      $scope.select_all = false;
-    else
-      $scope.select_all = true;
+    check_selects();
   }
 
   var modal = null;

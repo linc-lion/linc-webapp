@@ -20,7 +20,8 @@
       </div>
       <div class="meta-info">
         <h4 class="h4inline">Gender:</h4>
-        <h4 class="h4data">{{!lion.gender}}</h4>
+        <h4 ng-show="lion.gender" class="h4data">{{!lion.gender}}</h4>
+        <h4 ng-show="!lion.gender" class="h4data">Unknown</h4>
       </div>
       <div class="meta-info" ng-show="lion.ear_markings">
         <h4 class="h4inline">Ear Markings:</h4>
