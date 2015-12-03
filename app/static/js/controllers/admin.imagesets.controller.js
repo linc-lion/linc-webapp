@@ -52,7 +52,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
   $scope.Select_Imageset1 = function (imageset){
     if($scope.ImageSet_Mode != '') return;
     imageset.selected = !imageset.selected;
-    $scope.Select_Imageset(imageset, index);
+    $scope.Select_Imageset(imageset);
   }
 
   var lastSelId = -1;
@@ -177,7 +177,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
         return {'id': imageset.id};
       }), 'id');
 
-      $scope.LincApiServices.ImageSets({'method': 'delete', 'imageset_id': data}).then(function(){
+      $scope.LincApiServices.ImageSets({'method': 'delete', 'imagesets_id': data}).then(function(){
         $scope.Notification.success({
           title: "Delete", message: 'ImageSets successfully deleted.',
           position: "right", // right, left, center
