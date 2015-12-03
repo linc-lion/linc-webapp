@@ -33,20 +33,19 @@
             <hr class="style-line">
             <div class="form-group group-input">
               <div class="form-inline">
-                <div class="form-group control">
+                <div class="form-group control" ng-class="{'has-error': metadataForm.latitude.$dirty && metadataForm.latitude.$error.required }">
                   <label class="meta_label" for="latitude">Latitude: </label>
-                  <input type="number" class="form-control meta_input" ng-model="selected.latitude" step="any" name="latitude" min="-90" max="90">
+                  <input class="form-control meta_input" type="text" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="selected.latitude" step="any" name="latitude" min="-90" max="90" oninvalid="this.setCustomValidity('Please enter a valid latitude number')" oninput="setCustomValidity('')">
                 </div>
               </div>
               <div class="form-inline">
-                <div class="form-group control">
+                <div class="form-group control" ng-class="{'has-error': metadataForm.longitude.$dirty && metadataForm.longitude.$error.required }">
                   <label class="meta_label" for="longitude">Longitude: </label>
-                  <input type="number" class="form-control meta_input" ng-model="selected.longitude" step="any" name="longitude" min="-180" max="180">
+                  <input class="form-control meta_input" type="text" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="selected.longitude" step="any" name="longitude" min="-180" max="180" oninvalid="this.setCustomValidity('Please enter a valid longitude number')" oninput="setCustomValidity('')">
                 </div>
               </div>
             </div>
             <pre ng-show="debug">{{!selected.latitude}} {{!selected.longitude}}</pre>
-
           </div>
           <div class="col-sm-6">
             <div ng-show="showLionName">
