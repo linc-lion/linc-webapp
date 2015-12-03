@@ -27,11 +27,13 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   };
   $scope.Default = {isPublic: true, ImageType: 'cv', isCover: ''};
 
-  var uploader = $scope.uploader = new FileUploader({
-    url: '/images/upload'
-  });
   var xsrfcookie = $cookies.get('_xsrf');
-  $scope.headers = { 'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie};
+  var uploader = $scope.uploader = new FileUploader({
+    url: '/images/upload',
+    headers: {'X-XSRFToken' : xsrfcookie}
+  });
+
+  //$scope.headers = { 'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie};
   // FILTERS
   uploader.filters.push({
     name: 'imageFilter',
@@ -40,7 +42,7 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
       return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
     }
   });
-  uploader.headers = {'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie};
+  //uploader.headers = {'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie};
   // CALLBACKS
   uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
     console.info('onWhenAddingFileFailed', item, filter, options);
