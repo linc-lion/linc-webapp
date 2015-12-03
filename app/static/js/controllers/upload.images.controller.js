@@ -40,7 +40,7 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
       return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
     }
   });
-  //uploader.headers = {'_xsrf': $cookies.get('_xsrf')};
+  uploader.headers = {'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie};
   // CALLBACKS
   uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
     console.info('onWhenAddingFileFailed', item, filter, options);
