@@ -174,7 +174,8 @@ angular.module('lion.guardians.admin.lions.controller', [])
         _.merge(lion, lion, response.data);
         lion.created_at = (lion.created_at || "").substring(0,19);
         lion.updated_at = (lion.updated_at || "").substring(0,19);
-        lion.organization = _.find($scope.organizations, {id: lion.organization_id}).name;
+        var org = _.find($scope.organizations, {'id': lion.organization_id});
+        lion.organization = (org == undefined)? '' : org.name;
       },
       function(error){
         $scope.Notification.error({
@@ -199,7 +200,8 @@ angular.module('lion.guardians.admin.lions.controller', [])
         var lion = response.data;
         lion.created_at = (lion.created_at || "").substring(0,19);
         lion.updated_at = (lion.updated_at || "").substring(0,19);
-        lion.organization = _.find($scope.organizations, {'id': lion.organization_id}).name;
+        var org = _.find($scope.organizations, {'id': lion.organization_id});
+        lion.organization = (org == undefined)? '' : org.name;
         lion.selected = true;
         $scope.lions.push(lion);
         $scope.Selecteds.push(lion);
@@ -212,6 +214,7 @@ angular.module('lion.guardians.admin.lions.controller', [])
         });
       });
     }
+    $scope.Lion_Mode = '';
   }
 
   // Order by

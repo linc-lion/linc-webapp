@@ -208,6 +208,7 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
         });
       });
     }
+    $scope.CVResult_Mode = '';
   }
 
   // Order by

@@ -14,7 +14,7 @@ angular.module('lion.guardians.api.services', [])
   var Organizations = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/organizations/';
+      var url = '/organizations?trashed=*';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
@@ -38,8 +38,7 @@ angular.module('lion.guardians.api.services', [])
       var xsrfcookie = $cookies.get('_xsrf');
       var promises = organizations_id.map(function(id) {
         var req = { method: 'DELETE',
-                    url: '/organizations/' + id,
-                    data: {'_xsrf': xsrfcookie},
+                    url: '/organizations/' + id + '?purge=true',
                     headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
                     config: {ignoreLoadingBar: true}};
         return $http(req);
@@ -55,8 +54,6 @@ angular.module('lion.guardians.api.services', [])
     if(data_in.method=='put'){
       var organization_id = data_in.organization_id;
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('PUT', '/organizations/' + organization_id, data, {},
       function (response) {
         deferred.resolve(response.data);
@@ -72,8 +69,6 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='post'){
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('POST', '/organizations/', data, {},
       function (response) {
         deferred.resolve(response.data);
@@ -93,7 +88,7 @@ angular.module('lion.guardians.api.services', [])
   var Users = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/users';
+      var url = '/users?trashed=*';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
@@ -138,8 +133,7 @@ angular.module('lion.guardians.api.services', [])
       var xsrfcookie = $cookies.get('_xsrf');
       var promises = users_id.map(function(id) {
         var req = { method: 'DELETE',
-                    url: '/users/' + id,
-                    data: {'_xsrf':xsrfcookie},
+                    url: '/users/' + id + '?purge=true',
                     headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
                     config: {ignoreLoadingBar: true}};
         return $http(req);
@@ -155,8 +149,6 @@ angular.module('lion.guardians.api.services', [])
     if(data_in.method=='put'){
       var user_id = data_in.user_id;
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('PUT', '/users/' + user_id, data, {},
       function (response) {
         deferred.resolve(response.data);
@@ -172,8 +164,6 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='post'){
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('POST', '/users/', data, {},
       function (response) {
         deferred.resolve(response.data);
@@ -193,7 +183,7 @@ angular.module('lion.guardians.api.services', [])
   var Lions = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/lions?api=true';
+      var url = '/lions?api=true&trashed=*';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
@@ -222,12 +212,11 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='delete'){
       var lions_id = data_in.lions_id;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
+      var xsrfcookie = $cookies.get('_xsrf');
       var promises = lions_id.map(function(id) {
         var req = { method: 'DELETE',
-                    url: '/lions/' + id,
-                    data: cookies,
-                    headers: { 'Content-Type': 'application/json'},
+                    url: '/lions/' + lions_id + '?purge=true',
+                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
                     config: {ignoreLoadingBar: true}};
         return $http(req);
       });
@@ -242,8 +231,6 @@ angular.module('lion.guardians.api.services', [])
     if(data_in.method=='put'){
       var lion_id = data_in.lion_id;
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('PUT', '/lions/' + lion_id, data, {},
       function (response) {
         deferred.resolve(response.data);
@@ -259,8 +246,6 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='post'){
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('POST', '/lions/', data, {},
       function (response) {
         deferred.resolve(response.data);
@@ -280,7 +265,7 @@ angular.module('lion.guardians.api.services', [])
   var ImageSets = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/imagesets';
+      var url = '/imagesets?trashed=*';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
@@ -323,12 +308,11 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='delete'){
       var imagesets_id = data_in.imagesets_id;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
+      var xsrfcookie = $cookies.get('_xsrf');
       var promises = imagesets_id.map(function(id) {
         var req = { method: 'DELETE',
-                    url: '/imagesets/' + id,
-                    data: cookies,
-                    headers: { 'Content-Type': 'application/json'},
+                    url: '/imagesets/' + imagesets_id + '?purge=true',
+                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
                     config: {ignoreLoadingBar: true}};
         return $http(req);
       });
@@ -343,8 +327,6 @@ angular.module('lion.guardians.api.services', [])
     if(data_in.method=='put'){
       var imageset_id = data_in.imageset_id;
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('PUT', '/imagesets/' + imageset_id, data, {},
       function (response) {
         deferred.resolve(response.data);
@@ -360,8 +342,6 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='post'){
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('POST', '/imagesets/', data, {},
       function (response) {
         deferred.resolve(response.data);
@@ -381,7 +361,7 @@ angular.module('lion.guardians.api.services', [])
   var Images = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/images';
+      var url = '/images?trashed=*';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
@@ -402,12 +382,11 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='delete'){
       var images_id = data_in.images_id;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
+      var xsrfcookie = $cookies.get('_xsrf');
       var promises = images_id.map(function(id) {
         var req = { method: 'DELETE',
-                    url: '/images/' + id,
-                    data: cookies,
-                    headers: { 'Content-Type': 'application/json'},
+                    url: '/images/' + id + '?purge=true',
+                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
                     config: {ignoreLoadingBar: true}};
         return $http(req);
       });
@@ -422,8 +401,6 @@ angular.module('lion.guardians.api.services', [])
     if(data_in.method=='put'){
       var image_id = data_in.image_id;
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('PUT', '/images/' + image_id, data, {},
       function (response) {
         deferred.resolve(response.data);
@@ -439,8 +416,6 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='post'){
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('POST', '/images/', data, {},
       function (response) {
         deferred.resolve(response.data);
@@ -460,7 +435,7 @@ angular.module('lion.guardians.api.services', [])
   var CVRequests = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/cvrequests';
+      var url = '/cvrequests?trashed=*';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
@@ -484,12 +459,11 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='delete'){
       var cvrequests_id = data_in.cvrequests_id;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
+      var xsrfcookie = $cookies.get('_xsrf');
       var promises = cvrequests_id.map(function(id) {
         var req = { method: 'DELETE',
-                    url: '/cvrequests/' + id,
-                    data: cookies,
-                    headers: { 'Content-Type': 'application/json'},
+                    url: '/cvrequests/' + id + '?purge=true',
+                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
                     config: {ignoreLoadingBar: true}};
         return $http(req);
       });
@@ -504,8 +478,6 @@ angular.module('lion.guardians.api.services', [])
     if(data_in.method=='put'){
       var cvrequest_id = data_in.cvrequest_id;
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('PUT', '/cvrequests/' + cvrequest_id, data, {},
       function (response) {
         deferred.resolve(response.data);
@@ -521,8 +493,6 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='post'){
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('POST', '/cvrequests/', data, {},
       function (response) {
         deferred.resolve(response.data);
@@ -542,7 +512,7 @@ angular.module('lion.guardians.api.services', [])
   var CVResults = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/cvresults';
+      var url = '/cvresults?trashed=*';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
@@ -563,12 +533,10 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='delete'){
       var cvresults_id = data_in.cvresults_id;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
       var promises = cvresults_id.map(function(id) {
         var req = { method: 'DELETE',
-                    url: '/cvresults/' + id,
-                    data: cookies,
-                    headers: { 'Content-Type': 'application/json'},
+                    url: '/cvresults/' + id + '?purge=true',
+                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
                     config: {ignoreLoadingBar: true}};
         return $http(req);
       });
@@ -583,8 +551,6 @@ angular.module('lion.guardians.api.services', [])
     if(data_in.method=='put'){
       var cvresult_id = data_in.cvresult_id;
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('PUT', '/cvresults/' + cvresult_id, data, {},
       function (response) {
         deferred.resolve(response.data);
@@ -600,8 +566,6 @@ angular.module('lion.guardians.api.services', [])
     }
     if(data_in.method=='post'){
       var data = data_in.data;
-      var cookies = {'_xsrf': $cookies.get('_xsrf')};
-      angular.merge(data, cookies);
       HTTP('POST', '/cvresults/', data, {},
       function (response) {
         deferred.resolve(response.data);

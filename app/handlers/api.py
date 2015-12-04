@@ -517,7 +517,6 @@ class UsersHandler(BaseHandler):
     @authenticated
     @allowedRole('admin')
     def delete(self, user_id=None):
-        print("AQUI")
         resource_url = '/users/' + user_id
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,

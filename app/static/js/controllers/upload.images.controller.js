@@ -7,6 +7,8 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   $scope.imagesetId = options.imagesetId;
   $scope.isNew = options.isNew;
 
+  $scope.SucessItems = [];
+  $scope.ErrorItems = [];
   var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
   $scope.title = 'Upload Images';
   $scope.content = 'Upload Images<br />Contents!';
@@ -30,7 +32,8 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   var xsrfcookie = $cookies.get('_xsrf');
   var uploader = $scope.uploader = new FileUploader({
     url: '/images/upload',
-    headers: {'X-XSRFToken' : xsrfcookie}
+    headers: {'X-XSRFToken' : xsrfcookie},
+    config: {ignoreLoadingBar: false}
   });
 
   //$scope.headers = { 'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie};
@@ -84,6 +87,7 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   };
   uploader.onSuccessItem = function(fileItem, response, status, headers) {
       console.info('onSuccessItem', fileItem, response, status, headers);
+      fileItem.remove();
   };
   uploader.onErrorItem = function(fileItem, response, status, headers) {
       console.info('onErrorItem', fileItem, response, status, headers);
@@ -92,17 +96,55 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
       console.info('onCancelItem', fileItem, response, status, headers);
   };
   uploader.onCompleteItem = function(fileItem, response, status, headers) {
+    var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
+    if(status==200)
+      $scope.SucessItems.push(photo);
+    else
+      $scope.ErrorItems.push(photo);
+
       console.info('onCompleteItem', fileItem, response, status, headers);
       if(!$scope.isNew)
         $scope.Update();
   };
   uploader.onCompleteAll = function() {
-      console.info('onCompleteAll');
+    console.info('onCompleteAll');
+    var message = '';
+    if($scope.SucessItems.length>0){
+      if($scope.SucessItems.length==1)
+        message = "Image (" + $scope.SucessItems[0].name + ") uploaded with success";
+      else{
+        var items = 'Images (';
+        _.forEach($scope.SucessItems, function(photo, i) {
+          items += photo.name;
+          if(i+1 < $scope.SucessItems.length)
+           items += '<br>';
+        });
+        message = items + ") uploaded with success";
+      }
       NotificationFactory.success({
-        title: "Upload", message:'Images uploaded with success',
+        title: "Upload", message: message,
         position: "right", // right, left, center
         duration: 2000     // milisecond
       });
+    }
+    if($scope.ErrorItems.length>0){
+      if($scope.ErrorItems.length==1)
+        message = "Unable to upload image (" + $scope.ErrorItems[0].name + ").";
+      else{
+        var items = 'Unable to upload images (';
+        _.forEach($scope.ErrorItems, function(photo, i) {
+          items += photo.name;
+          if(i+1 < $scope.ErrorItems.length)
+           items += '<br>';
+        });
+        message = items + ").";
+      }
+      NotificationFactory.error({
+        title: "Error", message: message,
+        position: 'right', // right, left, center
+        duration: 5000   // milisecond
+      });
+    }
   };
 
   console.info('uploader', uploader);

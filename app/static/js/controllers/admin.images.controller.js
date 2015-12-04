@@ -144,7 +144,7 @@ angular.module('lion.guardians.admin.images.controller', [])
         return {'id': image.id};
       }), 'id');
 
-      $scope.LincApiServices.Images({'method': 'delete', 'image_id': data}).then(function(){
+      $scope.LincApiServices.Images({'method': 'delete', 'images_id': data}).then(function(){
         $scope.Notification.success({
           title: "Delete", message: 'Images successfully deleted.',
           position: "right", // right, left, center
@@ -222,6 +222,7 @@ angular.module('lion.guardians.admin.images.controller', [])
         });
       });
     }
+    $scope.Image_Mode = '';
   }
 
   $scope.show_photo = function(url){

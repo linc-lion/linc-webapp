@@ -175,7 +175,8 @@ angular.module('lion.guardians.admin.users.controller', [])
         _.merge(user, user, response.data);
         user.created_at = (user.created_at || "").substring(0,19);
         user.updated_at = (user.updated_at || "").substring(0,19);
-        user.organization = _.find($scope.organizations, {'id': user.organization_id}).name;
+        var org = _.find($scope.organizations, {'id': user.organization_id});
+        user.organization =  (org == undefined)? '' : org.name;
       },
       function(error){
         $scope.Notification.error({
@@ -201,7 +202,8 @@ angular.module('lion.guardians.admin.users.controller', [])
         var user = response.data;
         user.created_at = (user.created_at || "").substring(0,19);
         user.updated_at = (user.updated_at || "").substring(0,19);
-        user.organization = _.find($scope.organizations, {'id': user.organization_id}).name;
+        var org = _.find($scope.organizations, {'id': user.organization_id});
+        user.organization =  (org == undefined)? '' : org.name;
         user.selected = true;
         $scope.users.push(user);
         $scope.Selecteds.push(user);
