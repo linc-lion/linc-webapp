@@ -426,13 +426,15 @@ h4.h4data {display:inline; color: #333; padding-left: 5px;}
 }
 .tabs-sm{
   li{
-  a{
-  padding: 10px;
-  }
-  &.tabs-primary a{
-    background: $orange;
-    color: #fff;
-  }
+    a{
+    padding: 10px;
+    }
+    &.tabs-primary a:hover,
+    &.tabs-primary.active a
+    {
+      background: $orange;
+      color: #fff;
+    }
   }
 }
 .pagination-1{@extend .pagination; margin: 0px; padding: 5px;

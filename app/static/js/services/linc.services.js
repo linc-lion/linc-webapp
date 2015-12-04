@@ -203,8 +203,6 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   }
   // Post Imageset (CV Request)
   var RequestCV = function (imageset_id, data, success) {
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
-    angular.merge(data, cookies);
     return HTTP('POST', '/imagesets/' + imageset_id + '/cvrequest', data, {}, success,
     function (error) {
       NotificationFactory.error({
@@ -215,24 +213,14 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
       console.log(error);
     });
   };
-  // Associate  (Update Imageset)
-  /*var Associate = function (imageset_id, data, success, error){
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
-    angular.merge(data, cookies);
-    return HTTP('PUT', '/imagesets/' + imageset_id, data, {}, success, error);
-  }*/
   // Put ImageSet (Update Imageset)
   var PutImageSet = function (imageset_id, data, success, error){
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
-    angular.merge(data, cookies);
     ClearAllCaches();
     return HTTP('PUT', '/imagesets/' + imageset_id, data, {}, success, error);
   }
   // Post ImageSet - New Imageset
   var PostImageset = function (data, success, error){
     ClearAllCaches();
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
-    angular.merge(data, cookies);
     return HTTP('POST', '/imagesets', data, {}, success, error);
   };
   // Put Lion (Update Lion)
@@ -280,21 +268,24 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     $http(req).then(function(response) {
       // Lion
       var data_lion = data.lion;
-      result_data = response;
+      //result_data = response;
       data_lion.primary_image_set_id = response.data.data.id;
       //angular.merge(data_lion, cookies);
       req = { method: 'POST', url: '/lions/', data: data_lion,
               headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: {ignoreLoadingBar: true}};
       $http(req).then(function(response) {
-        var results = _.merge({}, result_data, response);
-        success(results);
+        result_data = response;
+        var lion = response.data.data;
+        var data = {'lion_id': lion.id}
+        PutImageSet(lion.primary_image_set_id, data, function(response){
+          var results = _.merge({}, response, result_data);
+          success(results);
+        }, error);
       }, error);
     }, error);
   };
   // Put Lion (Update Lion)
   var PutImage = function (image_id, data, success, error){
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
-    angular.merge(data, cookies);
     return HTTP('PUT', '/images/' + image_id, data, {},
     function (result) {
       ClearAllCaches();
@@ -305,9 +296,6 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   var PutImages = function (items, success, error){
     var xsrfcookie = $cookies.get('_xsrf');
     var promises = items.map(function(item) {
-      //var deferred = $q.defer();
-      //var data = item.data;
-      //angular.merge(data, cookies);
       var req = { method: 'PUT',
                   url: '/images/' + item.image_id,
                   data: item.data,
@@ -329,8 +317,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   }
   // Delete CVRequest / CVResults
   var DeleteImage = function (image_id, success, error){
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
-    return HTTP('DELETE', '/images/' + image_id, cookies, {}, success, error);
+    return HTTP('DELETE', '/images/' + image_id, {}, {}, success, error);
   };
 
   var DeleteImages = function (items, success, error){
@@ -357,40 +344,12 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
 
   // Delete ImageSet
   var DeleteImageSet = function (imageset_id, success, error){
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
-    return HTTP('DELETE', '/imagesets/' + imageset_id, cookies, {}, success, error);
+    return HTTP('DELETE', '/imagesets/' + imageset_id, {}, {}, success, error);
   };
   // Delete Lion
   var DeleteLion = function (lion_id, success, error){
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
-    return HTTP('DELETE', '/lions/' + lion_id, cookies, {}, success, error);
+    return HTTP('DELETE', '/lions/' + lion_id, {}, {}, success, error);
   };
-  /*
-  var GetLists = function(names, fn){
-    var requests = [];
-    var promises = names.map(function(name) {
-      var url = databases[name].url;
-      var label = databases[name].label;
-      return Get(url, label);
-    });
-    $q.all(promises).then(function (results) {
-      var dados = {};
-      results.forEach( function (result, index) {
-        var key = names[index];
-        dados[key] = result.data;
-      })
-      notificationFactory.success({
-        title: "Database", message:'Database Successfully Loaded',
-        position: "right", // right, left, center
-        duration: 2000     // milisecond
-      });
-      fn(dados);
-    },
-    function (reason) {
-      console.log(reason);
-    });
-  };
-  */
   // Get CV Results
   var GetCVResults = function (cvresults_id) {
     var deferred = $q.defer();
@@ -418,9 +377,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   };
   // Post CVResults - Request CV Results
   var PostCVResults = function (cvrequest_id, success){
-    var cookies = {'_xsrf': $cookies.get('_xsrf')};
     var data = {"cvrequest_id":cvrequest_id};
-    angular.merge(data, cookies);
     return HTTP('POST', '/cvresults', data, {}, success,
     function(error){
       NotificationFactory.error({
@@ -433,10 +390,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   };
   // Put CVResults - Update Request CV Results
   var PutCVResults = function (cvrequest_id, success){
-    var data = {'_xsrf': $cookies.get('_xsrf')};
-    //var data = {"cvrequest_id":cvrequest_id};
-    //angular.merge(data, cookies);
-    return HTTP('PUT', '/cvresults/' + cvrequest_id, data, {}, success,
+    return HTTP('PUT', '/cvresults/' + cvrequest_id, {}, {}, success,
     function(error){
       NotificationFactory.error({
         title: "Error", message: 'Unable to Post CV Results',
@@ -448,10 +402,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   };
   // Delete CVRequest / CVResults
   var DeleteCVRequest = function (cvrequest_id, success){
-    var data = {'_xsrf': $cookies.get('_xsrf')};
-    //var data = {"cvrequest_id":cvrequest_id};
-    //angular.merge(data, cookies);
-    return HTTP('DELETE', '/cvrequests/' + cvrequest_id, data, {}, success,
+    return HTTP('DELETE', '/cvrequests/' + cvrequest_id, {}, {}, success,
     function(error){
       NotificationFactory.error({
         title: "Error", message: 'Unable to Delete CV Results/CVRequest',

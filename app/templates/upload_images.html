@@ -78,9 +78,9 @@
           </div>
         </td>
         <td class="text-center">
-          <span ng-show="item.isSuccess"><i class="icon icon-check"></i></span>
-          <span ng-show="item.isCancel"><i class="icon icon-circle-slash"></i></span>
-          <span ng-show="item.isError"><i class="icon icon-trash"></i></span>
+          <span ng-show="item.isSuccess"><i class="icon icon-check"></i></span>isSuccess {{!item.isSuccess}}
+          <span ng-show="item.isCancel"><i class="icon icon-circle-slash"></i></span>isCancel {{!item.isCancel}}
+          <span ng-show="item.isError"><i class="icon icon-trash"></i></span>isError {{!item.isError}}
         </td>
         <td nowrap class="text-center">
           <button type="button" class="btn btn-default btn-xs" ng-click="item.remove()" ng-show="!item.isSuccess">

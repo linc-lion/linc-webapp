@@ -56,7 +56,7 @@ angular.module('lion.guardians.lions.controllers', [])
     $state.go("imageset", {id: imageset_id});
   }
   $scope.goto_search_imageset = function (){
-    $state.go("searchimageset", {filter: {id: lion.primary_image_set_id}});
+    $state.go("searchimageset", {filter: {name_or_id: lion.primary_image_set_id}});
   }
 
   $scope.Delete = function (){
@@ -96,6 +96,26 @@ angular.module('lion.guardians.lions.controllers', [])
     $scope.cancel = function(){
       $scope.modalInstance.dismiss();
     }
+  };
+  $scope.Dissociate = function (id){
+    var data = {'lion_id': null};
+    LincServices.Associate(id, data, function(){
+      $scope.lion.primary_image_set_id = null;
+      LincServices.ClearAllCaches();
+      NotificationFactory.success({
+        title: "Dissociate", message:'Lion was dissociated',
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
+    },
+    function(error){
+      NotificationFactory.error({
+        title: "Error", message: 'Unable to Dissociate the Lion',
+        position: 'right', // right, left, center
+        duration: 5000   // milisecond
+      });
+      console.log(error);
+    });
   };
 }])
 
@@ -291,4 +311,5 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.changeItensPerPage();
   //$scope.currentPage = 0;
   $scope.currentPage = lion_filters.currentPage;
+
 }]);
