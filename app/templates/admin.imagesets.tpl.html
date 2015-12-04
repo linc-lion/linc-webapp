@@ -18,7 +18,7 @@
           <div class="form-group">
             <label for="main_image_id" >Main Image:</label>
             <div class="form-group" >
-              <img ng-src="{{!imageset.image_url}}"  width="80" height="80">
+              <img ng-src="{{!imageset.main_image}}"  width="80" height="80">
             </div>
             <div class="form-group" >
               <select class="form-control custom-select" name="main_image_id" ng-options="image.id as image.id for image in images" ng-change="change_url()" ng-model="imageset.main_image_id">
@@ -27,9 +27,10 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="gender_id">Gender: </label>
-            <select class="form-control custom-select" name="gender_id" ng-options="gender.type as gender.name for gender in genders" ng-model="imageset.gender" required><option></option>
-            </select>
+            <label for="id_gender" >Gender:</label>
+            <button type="button" id="id_gender" placeholder="Select Gender" class="btn btn-default btn-sm select_btn" ng-model="imageset.gender" data-html="1" bs-options="gender.value as gender.label for gender in genders" placement="bottom-right" bs-select>
+              Action <span class="caret"></span>
+            </button>
           </div>
           <div class="form-group">
             <textarea class="form-control" rows="5" ng-model="imageset.notes"></textarea>
