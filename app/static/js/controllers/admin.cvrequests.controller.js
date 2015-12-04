@@ -213,6 +213,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
         });
       });
     }
+    $scope.CVRequest_Mode = '';
   }
 
   // Order by

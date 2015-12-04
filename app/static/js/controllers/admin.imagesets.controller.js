@@ -8,8 +8,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
   $scope.Selecteds = $scope.CleanBracket.imagesets;
   $scope.ImageSet_Mode  =  $scope.EmptyString.imagesets;
 
-  $scope.genders = [{'type': 'male', 'name' :'Male'},
-                    {'type': 'female', 'name': 'Female'}];
+  $scope.genders = [{value: 'male', label: 'Male'}, {value: 'female',label: 'Female'}, {value: null,label: 'Unknown'}];
 
   $scope.tags = { 'ear_markings': [{'value': 'EAR_MARKING_LEFT',  'label': 'Left'},{'value': 'EAR_MARKING_RIGHT', 'label': 'Right'}],
                   'mount_markings': [{'value': 'MOUTH_MARKING_BACK',  'label': 'Back'},{'value': 'MOUTH_MARKING_FRONT', 'label': 'Front'},{'value': 'MOUTH_MARKING_LEFT',  'label': 'Left'},{'value': 'MOUTH_MARKING_RIGHT', 'label': 'Right'}],
@@ -97,7 +96,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
       'date_stamp': new Date().toJSON().slice(0,10), 'date_of_birth': new Date().toJSON().slice(0,10),
       'gender': '', 'tags': [], 'notes': '', 'is_verified': false, 'trashed': false, 'selected': true
     };
-    $scope.imageset.image_url = '';
+    $scope.imageset.main_image = '';
     modal = $uibModal.open({
         templateUrl: 'Edit_ImageSet.tmpl.html',
         scope:$scope
@@ -114,11 +113,13 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
   };
 
   $scope.change_url = function(){
-    $scope.imageset.image_url = '';
-    if($scope.imageset.main_image_id)
-      $scope.imageset.image_url = _.find($scope.images, {'id': $scope.imageset.main_image_id}).url;
-  };
+    $scope.imageset.main_image = '';
 
+    if($scope.imageset.main_image_id){
+      var main_image = _.find($scope.images, {'id': $scope.imageset.main_image_id});
+      $scope.imageset.main_image = (main_image == undefined)? '' : main_image.url;
+    }
+  };
   $scope.Edit_ImageSet = function(){
     $scope.modalTitle = 'Edit ImageSet';
     $scope.showValidationMessages = false;
@@ -126,10 +127,11 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
     if($scope.Selecteds.length == 1){
       $scope.ImageSet_Mode = 'edit';
       $scope.imageset = angular.copy($scope.Selecteds[0]);
-      $scope.imageset.image_url = '';
-      if($scope.imageset.main_image_id)
-        $scope.imageset.image_url = _.find($scope.images, {'id': $scope.imageset.main_image_id}).url;
-
+      $scope.imageset.main_image = '';
+      if($scope.imageset.main_image_id){
+        var main_image = _.find($scope.images, {'id': $scope.imageset.main_image_id});
+        $scope.imageset.main_image = (main_image == undefined)? '' : main_image.url;
+      }
       var TAGS = [];
       try{
         TAGS = JSON.parse($scope.imageset.tags);
@@ -247,19 +249,19 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
         if(imageset.date_of_birth)
           imageset.date_of_birth = (imageset.date_of_birth || "").substring(0,10);
         var id = imageset.lion_id;
-        var lion = _.find(lions, {'id': id});
+        var lion = _.find($scope.lions, {'id': id});
         imageset.lion_name = (lion == undefined)? '-' : lion.name;
         id = imageset.owner_organization_id;
-        var owner_organization = _.find(organizations, {'id': id});
+        var owner_organization = _.find($scope.organizations, {'id': id});
         imageset.owner_organization = (owner_organization == undefined)? '-' : owner_organization.name;
         id = imageset.uploading_organization_id;
-        var uploading_organization = _.find(organizations, {'id': id});
+        var uploading_organization = _.find($scope.organizations, {'id': id});
         imageset.uploading_organization = (uploading_organization == undefined)? '-' : uploading_organization.name;
         id = imageset.uploading_user_id;
-        var uploading_user = _.find(users, {'id': id});
+        var uploading_user = _.find($scope.users, {'id': id});
         imageset.uploading_user = (uploading_user == undefined)? '-' : uploading_user.email;
         id = imageset.main_image_id;
-        var main_image = _.find(images, {'id': id});
+        var main_image = _.find($scope.images, {'id': id});
         imageset.main_image = (main_image == undefined)? '' : main_image.url;
       },
       function(error){
@@ -314,19 +316,19 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
         if(imageset.date_of_birth)
           imageset.date_of_birth = (imageset.date_of_birth || "").substring(0,10);
         var id = imageset.lion_id;
-        var lion = _.find(lions, {'id': id});
+        var lion = _.find($scope.lions, {'id': id});
         imageset.lion_name = (lion == undefined)? '-' : lion.name;
         id = imageset.owner_organization_id;
-        var owner_organization = _.find(organizations, {'id': id});
+        var owner_organization = _.find($scope.organizations, {'id': id});
         imageset.owner_organization = (owner_organization == undefined)? '-' : owner_organization.name;
         id = imageset.uploading_organization_id;
-        var uploading_organization = _.find(organizations, {'id': id});
+        var uploading_organization = _.find($scope.organizations, {'id': id});
         imageset.uploading_organization = (uploading_organization == undefined)? '-' : uploading_organization.name;
         id = imageset.uploading_user_id;
-        var uploading_user = _.find(users, {'id': id});
+        var uploading_user = _.find($scope.users, {'id': id});
         imageset.uploading_user = (uploading_user == undefined)? '-' : uploading_user.email;
         id = imageset.main_image_id;
-        var main_image = _.find(images, {'id': id});
+        var main_image = _.find($scope.images, {'id': id});
         imageset.main_image = (main_image == undefined)? '' : main_image.url;
 
         imageset.selected = true;
@@ -341,6 +343,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
         });
       });
     }
+    $scope.ImageSet_Mode = '';
   }
 
   // Order by

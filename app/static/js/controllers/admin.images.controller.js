@@ -222,6 +222,7 @@ angular.module('lion.guardians.admin.images.controller', [])
         });
       });
     }
+    $scope.Image_Mode = '';
   }
 
   $scope.show_photo = function(url){
