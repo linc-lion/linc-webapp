@@ -1,9 +1,9 @@
 //angular.module('lion-guardians', [])  ['ngAnimate', 'ngSanitize', 'mgcrea.ngStrap']);
-var app = angular.module('lion.guardians', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'ngMap', 'mgcrea.ngStrap', 'angularFileUpload', 'cgNotify', 'ngCookies', 'angular-loading-bar', 'ngInputModified', 'lion.guardians.controllers', 'lion.guardians.services']);
+var app = angular.module('lion.guardians', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'ngMap', 'mgcrea.ngStrap', 'angularFileUpload', 'cgNotify', 'ngCookies', 'angular-loading-bar', 'ngInputModified', 'lion.guardians.controllers', 'lion.guardians.interceptor.factory', 'lion.guardians.services']);
 
 'use strict';
 
-app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($rootScope,   $state, $stateParams, $localStorage) {
+app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($rootScope, $state, $stateParams, $localStorage) {
 
     // It's very handy to add references to $state and $stateParams to the $rootScope
     // so that you can access them from any scope within your applications.For example,
@@ -47,7 +47,7 @@ app.config(['$urlMatcherFactoryProvider', function($urlMatcherFactory) {
   });
 }]);
 
-app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider,  $urlRouterProvider, $locationProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider, $urlRouterProvider, $locationProvider) {
   // Redirects and Otherwise //
   // Use $urlRouterProvider to configure any redirects (when) and invalid urls (otherwise).
   /*$urlRouterProvider

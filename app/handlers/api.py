@@ -26,9 +26,13 @@ class ImageSetsListHandler(BaseHandler):
         url = self.settings['API_URL']+resource_url
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=url,method='GET',headers=headers)
-        self.set_status(response.code)
         self.set_json_output()
-        self.finish(response.body)
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to get Image Sets GET'})
+
     @asynchronous
     @engine
     @authenticated
@@ -38,6 +42,7 @@ class ImageSetsListHandler(BaseHandler):
         url = self.settings['API_URL']+resource_url
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=url,method='POST',body=body,headers=headers)
+        self.set_json_output()
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
@@ -52,9 +57,12 @@ class ImagesListHandler(BaseHandler):
         resource_url = '/images/list'
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
-        self.set_status(response.code)
         self.set_json_output()
-        self.finish(response.body)
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to get Images GET'})
 
 class LionsListHandler(BaseHandler):
     @asynchronous
@@ -64,9 +72,12 @@ class LionsListHandler(BaseHandler):
         resource_url = '/lions/list'
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
-        self.set_status(response.code)
         self.set_json_output()
-        self.finish(response.body)
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to get Lions GET'})
 
 class OrganizationsListHandler(BaseHandler):
     @asynchronous
@@ -76,24 +87,37 @@ class OrganizationsListHandler(BaseHandler):
         resource_url = '/organizations/list'
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
-        self.set_status(response.code)
         self.set_json_output()
-        self.finish(response.body)
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to get Organizations GET'})
 
 class CVResultsHandler(BaseHandler):
     @asynchronous
     @engine
     @authenticated
     def get(self, res_id='', xlist=None):
-        if(res_id):
-            resource_url = '/cvresults/'+ res_id + '/list'
-        else:
-            resource_url = '/cvresults/'
+        # print('res-id '+ res_id)
+        # print('xlist '+ xlist)
+        resource_url = '/cvresults/';
+        if self.trashed:
+            resource_url += '?trashed=' + self.trashed
+        elif xlist and res_id:
+            if xlist:
+                resource_url += res_id + '/' + xlist
+            else:
+                resource_url += '/'+ res_id
+                
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
-        self.set_status(response.code)
         self.set_json_output()
-        self.finish(response.body)
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to get CV Results GET'})
 
     @asynchronous
     @engine
@@ -131,9 +155,12 @@ class CVRequestHandler(BaseHandler):
         resource_url = '/cvrequests/' + req_id
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
-        self.set_status(response.code)
         self.set_json_output()
-        self.finish(response.body)
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to get CV Requests GET'})
 
     @asynchronous
     @coroutine
@@ -154,28 +181,32 @@ class LionsHandler(BaseHandler):
     def get(self, lion_id='', locations=None):
         resource_url = '/lions/' + lion_id
         api=self.get_argument('api', '')
-        trashed=self.get_argument('trashed', '')
-        if api or trashed:
+        if api or self.trashed:
             resource_url += '?'
         if api:
             resource_url += 'api=true'
-        if trashed:
+        if self.trashed:
             if api:
                 resource_url += '&'
-            resource_url += 'trashed=' + trashed
+            resource_url += 'trashed=' + self.trashed
+
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
-        self.set_status(response.code)
         self.set_json_output()
-        self.finish(response.body)
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to get Lions GET'})
 
     @asynchronous
     @engine
     @authenticated
     def post(self):
         resource_url = '/lions'
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
-                   method='POST',body=self.json_encode(self.input_data),headers=headers)
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url, method='POST',body=self.json_encode(self.input_data),headers=headers)
+        self.set_json_output()
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
@@ -186,6 +217,7 @@ class LionsHandler(BaseHandler):
     @coroutine
     @authenticated
     def put(self, lion_id=None):
+        self.set_json_output()
         if lion_id:
             resource_url = '/lions/' + lion_id
             print(self.input_data)
@@ -203,7 +235,7 @@ class LionsHandler(BaseHandler):
                 self.finish({'status':'error','message':'fail to save lion data'})
         else:
             self.set_status(400)
-            self.finish({'status':'error','message':'you need provide an lion id PUT'})
+            self.finish({'status':'error','message':'you need to provide an lion id PUT'})
 
     @asynchronous
     @coroutine
@@ -216,6 +248,7 @@ class LionsHandler(BaseHandler):
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                     method='DELETE',body=self.json_encode({"message":"delete lion"}),headers=headers)
+        self.set_json_output()
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
@@ -229,11 +262,16 @@ class ImageSetsHandler(BaseHandler):
     def get(self, imageset_id='', param=None):
         print(param)
         resource_url = '/imagesets/' + imageset_id
+        if self.trashed:
+            resource_url += '?trashed=' + self.trashed
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
-        self.set_status(response.code)
         self.set_json_output()
-        self.finish(response.body)
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to get Image Sets GET'})
 
     @asynchronous
     @engine
@@ -243,6 +281,7 @@ class ImageSetsHandler(BaseHandler):
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                    method='POST',body=self.json_encode(self.input_data),headers=headers)
+        self.set_json_output()
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
@@ -253,6 +292,7 @@ class ImageSetsHandler(BaseHandler):
     @coroutine
     @authenticated
     def put(self, imageset_id=None):
+        self.set_json_output()
         if imageset_id:
             resource_url = '/imagesets/' + imageset_id
             print(self.input_data)
@@ -270,7 +310,7 @@ class ImageSetsHandler(BaseHandler):
                 self.finish({'status':'error','message':'fail to save imageset data'})
         else:
             self.set_status(400)
-            self.finish({'status':'error','message':'you need provide an imageset id PUT'})
+            self.finish({'status':'error','message':'you need to provide an imageset id PUT'})
 
     @asynchronous
     @coroutine
@@ -282,6 +322,7 @@ class ImageSetsHandler(BaseHandler):
             resource_url += '?purge=' + purge
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                    method='DELETE',body=self.json_encode({"message":"delete imageset"}),headers=headers)
+        self.set_json_output()
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
@@ -294,11 +335,16 @@ class OrganizationsHandler(BaseHandler):
     @authenticated
     def get(self, organization_id=''):
         resource_url = '/organizations/' + organization_id
+        if self.trashed:
+            resource_url += '?trashed=' + self.trashed
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
-        self.set_status(response.code)
         self.set_json_output()
-        self.finish(response.body)
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to get organizations GET'})
 
     @asynchronous
     @engine
@@ -308,6 +354,7 @@ class OrganizationsHandler(BaseHandler):
         resource_url = '/organizations'
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                    method='POST',body=self.json_encode(self.input_data),headers=headers)
+        self.set_json_output()
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
@@ -319,6 +366,7 @@ class OrganizationsHandler(BaseHandler):
     @authenticated
     @allowedRole('admin')
     def put(self, organization_id=None):
+        self.set_json_output()
         if organization_id:
             resource_url = '/organizations/' + organization_id
             data = dict(self.input_data)
@@ -334,7 +382,7 @@ class OrganizationsHandler(BaseHandler):
                 self.finish({'status':'error','message':'fail to save organization data'})
         else:
             self.set_status(400)
-            self.finish({'status':'error','message':'you need provide an organization id PUT'})
+            self.finish({'status':'error','message':'you need to provide an organization id PUT'})
 
     @asynchronous
     @coroutine
@@ -346,6 +394,7 @@ class OrganizationsHandler(BaseHandler):
             resource_url += '?purge=' + purge
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                    method='DELETE',body=self.json_encode({"message":"delete organization"}),headers=headers)
+        self.set_json_output()
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
@@ -358,11 +407,16 @@ class UsersHandler(BaseHandler):
     @authenticated
     def get(self, user_id=''):
         resource_url = '/users/' + user_id
+        if self.trashed:
+            resource_url += '?trashed=' + self.trashed
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
-        self.set_status(response.code)
         self.set_json_output()
-        self.finish(response.body)
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to get Users GET'})
 
     @asynchronous
     @engine
@@ -373,6 +427,7 @@ class UsersHandler(BaseHandler):
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                    method='POST',body=self.json_encode(self.input_data),headers=headers)
+        self.set_json_output()
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
@@ -384,6 +439,7 @@ class UsersHandler(BaseHandler):
     @authenticated
     @allowedRole('admin')
     def put(self, user_id=None):
+        self.set_json_output()
         if user_id:
             resource_url = '/users/' + user_id
             data = dict(self.input_data)
@@ -393,15 +449,13 @@ class UsersHandler(BaseHandler):
             response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                         method='PUT',body=self.json_encode(data),headers=headers)
             self.set_status(response.code)
-            self.set_json_output()
             if response.code == 200:
                 self.finish(response.body)
             else:
                 self.finish({'status':'error','message':'fail to save user data'})
         else:
-            self.set_json_output()
             self.set_status(400)
-            self.finish({'status':'error','message':'you need provide an user id PUT'})
+            self.finish({'status':'error','message':'you need to provide an user id PUT'})
 
     @asynchronous
     @coroutine
@@ -427,6 +481,7 @@ class ImagesHandler(BaseHandler):
     @engine
     @authenticated
     def get(self, image_id=''):
+        self.set_json_output()
         download = self.get_argument('download','')
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         if download:
@@ -459,24 +514,28 @@ class ImagesHandler(BaseHandler):
             else:
                 self.dropError(500,'fail to get urls to download the images')
                 return
-        elif trashed:
-            resource_url = '/images?trashed=' + trashed
+        elif self.trashed:
+            resource_url = '/images?trashed=' + self.trashed
             response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET')
             self.set_status(response.code)
-            self.set_json_output()
-            self.finish(response.body)
+            if response.code == 200:
+                self.finish(response.body)
+            else:
+                self.finish({'status':'error','message':'fail to get Images GET'})
         else:
             resource_url = '/images/' + image_id
             response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
             self.set_status(response.code)
-            self.set_json_output()
-            self.finish(response.body)
+            if response.code == 200:
+                self.finish(response.body)
+            else:
+                self.finish({'status':'error','message':'fail to get Images GET'})
 
     @asynchronous
     @coroutine
     @authenticated
     def put(self, image_id=None):
-        print(image_id)
+        self.set_json_output()
         if image_id:
             resource_url = '/images/' + image_id
             print(self.input_data)
@@ -494,7 +553,7 @@ class ImagesHandler(BaseHandler):
                 self.finish({'status':'error','message':'fail to save images data'})
         else:
             self.set_status(400)
-            self.finish({'status':'error','message':'you need provide an images id PUT'})
+            self.finish({'status':'error','message':'you need to provide an images id PUT'})
 
     @asynchronous
     @coroutine

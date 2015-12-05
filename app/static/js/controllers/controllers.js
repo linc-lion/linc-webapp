@@ -49,24 +49,49 @@ angular.module('lion.guardians.controllers', ['lion.guardians.admin.controller',
 })
 // Name or Id Filter
 .filter('nameid_filter', function(){
-  return function(input, name_str, id_str) {
-    if(!name_str.length)
+  return function(input, name_str, special_str) {
+    if(name_str == undefined || !name_str.length)
       return input;
 
     var name = name_str.toLowerCase();
+  /*  var special = '';
+    if(special_str.length){
+      var idx = name.indexOf('!');
+      if(idx != -1){
+        special = name.substring(idx+1, name.length-1);
+        name = name.substring(0,idx-1);
+      }
+    }*/
+
+    // split by space
     var name_pieces = name.match(/\S+/g);
-    var id = parseInt(id_str,10);
+    //var id = parseInt(name, 10);
 
     var filtered = _.filter(input, function(value){
       var val = value.name.toLowerCase();
-      var contain = true;
+      var contain = false;
       name_pieces.forEach(function (piece, i){
-        if(val.indexOf(piece) == -1){
-          contain = false;
-          return;
+        var idx = piece.indexOf('!');
+        if(special_str.length && idx!=-1)
+        {
+          var special = piece.substring(idx+1, piece.length);
+          if(_.has(value, special_str) && value[special_str] == special)
+          {
+            contain = true;
+            return;
+          }
+        }else{
+          if(val.indexOf(piece) != -1){
+            contain = true;
+            return;
+          }
+          if(parseInt(piece, 10) == value.id){
+            contain = true;
+            return;
+          }
         }
       });
-      return (contain || (value.id === id));
+      return contain; //(contain || (value.id === id));
     });
     return filtered;
   };
