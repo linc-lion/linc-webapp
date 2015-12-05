@@ -7,16 +7,16 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   var HTTPCachedGet = function (url, config){
     var cache = $httpcache.get(url);
     var deferred = $q.defer();
-    if(cache && cache.length>1){
+    /*if(cache && cache.length>1){
       var responde = JSON.parse(cache[1]);
       deferred.resolve(responde);
     }
-    else{
+    else{*/
       angular.merge(config, {cache: true});
       $http.get(url, config)
       .success(function (response) {deferred.resolve(response);})
       .error(function (error) {deferred.reject(error);});
-    }
+    //}
     return deferred.promise;
   };
 
