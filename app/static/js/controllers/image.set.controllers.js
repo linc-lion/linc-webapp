@@ -208,9 +208,14 @@ angular.module('lion.guardians.image.set.controllers', [])
 
   $scope.imagesets = _.map(imagesets, function(element, index) {
     var elem = {};
-    if(element.cvresults) elem["action"] = 'cvresults';
-    else if(element.cvrequest) elem["action"] = 'cvpending';
-    else  elem["action"] = 'cvrequest';
+    if(!element.is_primary){
+      if(element.cvresults) elem["action"] = 'cvresults';
+      else if(element.cvrequest) elem["action"] = 'cvpending';
+      else  elem["action"] = 'cvrequest';
+    }
+    else{
+      elem["action"] = '';
+    }
 
     if(!element.gender) element.gender = 'unknown';
 
