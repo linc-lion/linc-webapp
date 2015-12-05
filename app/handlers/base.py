@@ -30,6 +30,8 @@ class BaseHandler(RequestHandler):
                         self.input_data[k] = v[0].decode("utf-8")
             except ValueError:
                 self.dropError(400,'Fail to parse input data.')
+        else:
+            self.trashed='true'==self.get_argument('trashed',False)
 
     @asynchronous
     @engine
