@@ -8,7 +8,10 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
 
     $scope.$storage = $localStorage;
 
-    $scope.login = { logged: $scope.$storage.logged };
+    $scope.login = { 'logged': $scope.$storage.logged,
+                     'username': $scope.$storage.username,
+                     'orgname': $scope.$storage.orgname,
+                     'admin': $scope.$storage.admin };
 
 
     $scope.options = {
