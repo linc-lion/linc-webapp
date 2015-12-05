@@ -6,7 +6,6 @@ from tornado.web import authenticated
 from utils.rolecheck import allowedRole
 
 class MainHandler(BaseHandler):
-    @authenticated
     def get(self):
         self.render('main.html')
 
