@@ -29,10 +29,13 @@ angular.module('lion.guardians.metadata.directive', [])
       optionsSet: '=',
       gotoImagesetAction:'&',
       updateAction: '&',
-      debug: '='
+      debug: '=',
+      modalIsOpen: '='
     },
     link: function(scope, element, attrs) {
       scope.showNew = function(){
+        if(scope.modalIsOpen) return;
+        scope.modalIsOpen = true;
         var modalScope = scope.$new();
         modalScope.created = false;
         modalScope.id = 0;
@@ -58,9 +61,11 @@ angular.module('lion.guardians.metadata.directive', [])
           modalScope.id = obj.id;
         };
         modalInstance.result.then(function (result) {
+          scope.modalIsOpen = false;
           scope.gotoImagesetAction({Id: result.id});
           console.log('Modal ok' + result);
         }, function () {
+          scope.modalIsOpen = false;
           if(modalScope.created)
             scope.gotoImagesetAction({'Id': modalScope.id});
           else {
@@ -70,6 +75,8 @@ angular.module('lion.guardians.metadata.directive', [])
         });
       },
       scope.showEdit = function(){
+        if(scope.modalIsOpen) return;
+        scope.modalIsOpen = true;
         var modalScope = scope.$new();
         modalScope.debug = scope.debug;
         var modalInstance = $uibModal.open({
@@ -89,9 +96,11 @@ angular.module('lion.guardians.metadata.directive', [])
           }
         });
         modalInstance.result.then(function (result) {
+          scope.modalIsOpen = false;
           scope.updateAction({data: result.data});
           console.log('Modal ok' + result);
         }, function () {
+          scope.modalIsOpen = false;
           scope.cancelAction();
           console.log('Modal dismissed at: ' + new Date());
         });

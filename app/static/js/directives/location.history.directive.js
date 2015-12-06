@@ -20,11 +20,14 @@ angular.module('lion.guardians.location.history.directive', [])
           formSize: '@',
           options: '=',
           locationGoto:'&',
-          debug: '='
+          debug: '=',
+          modalIsOpen: '='
         },
         link: function(scope, element, attrs) {
           // Lions
           scope.Lion_show = function(){
+            if(scope.modalIsOpen) return;
+            scope.modalIsOpen = true;
             var modalScope = scope.$new();
             modalScope.debug = scope.debug;
             var modalInstance = $uibModal.open({
@@ -44,14 +47,18 @@ angular.module('lion.guardians.location.history.directive', [])
               }
             });
             modalInstance.result.then(function (imagesetId) {
+              scope.modalIsOpen = false;
               scope.locationGoto({imageset_Id: imagesetId});
               console.log('Goto Imageset ' + imagesetId);
             }, function () {
+              scope.modalIsOpen = false;
               console.log('Modal dismissed at: ' + new Date());
             });
           },
           // Imagesets
           scope.Imageset_show = function(){
+            if(scope.modalIsOpen) return;
+            scope.modalIsOpen = true;
             var modalScope = scope.$new();
             modalScope.debug = scope.debug;
             var modalInstance = $uibModal.open({
@@ -71,9 +78,11 @@ angular.module('lion.guardians.location.history.directive', [])
               }
             });
             modalInstance.result.then(function (imagesetId) {
+              scope.modalIsOpen = false;
               scope.locationGoto({imageset_Id: imagesetId});
               console.log('Goto Imageset ' + imagesetId);
             }, function () {
+              scope.modalIsOpen = false;
               console.log('Modal dismissed at: ' + new Date());
             });
           };

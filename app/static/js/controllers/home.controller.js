@@ -4,6 +4,8 @@
 angular.module('lion.guardians.home.controller', [])
 // Home
 .controller('HomeCtrl', ['$scope', '$state', function ($scope, $state) {
+
+  $scope.is_modal_open = false;
   $scope.options = {
     "imageset": {
         "type": "imageset", "edit": "new", "uploading_user_id": 6,
