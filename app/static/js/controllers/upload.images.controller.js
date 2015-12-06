@@ -29,11 +29,14 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   };
   $scope.Default = {isPublic: true, ImageType: 'cv', isCover: ''};
 
-  var xsrfcookie = $cookies.get('_xsrf');
+  // var xsrfcookie = $cookies.get('_xsrf');
+  // var uploader = $scope.uploader = new FileUploader({
+  //   url: '/images/upload',
+  //   headers: {'X-XSRFToken' : xsrfcookie},
+  //   config: {ignoreLoadingBar: true}
+  // });
   var uploader = $scope.uploader = new FileUploader({
-    url: '/images/upload',
-    headers: {'X-XSRFToken' : xsrfcookie},
-    config: {ignoreLoadingBar: false}
+    url: '/images/upload'
   });
 
   //$scope.headers = { 'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie};
@@ -70,6 +73,9 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   };
   uploader.onBeforeUploadItem = function(item) {
     console.info('onBeforeUploadItem', item);
+
+    var xsrfcookie = $cookies.get('_xsrf');
+    item.headers = {'X-XSRFToken' : xsrfcookie};
 
     var formData = [{'image_type' : item.ImageType},
                     {'is_public': item.isPublic},
