@@ -109,7 +109,7 @@ class CVResultsHandler(BaseHandler):
                 resource_url += res_id + '/' + xlist
             else:
                 resource_url += '/'+ res_id
-                
+
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_json_output()
@@ -320,6 +320,7 @@ class ImageSetsHandler(BaseHandler):
         resource_url = '/imagesets/' + imageset_id
         if purge:
             resource_url += '?purge=' + purge
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                    method='DELETE',body=self.json_encode({"message":"delete imageset"}),headers=headers)
         self.set_json_output()
@@ -352,6 +353,7 @@ class OrganizationsHandler(BaseHandler):
     @allowedRole('admin')
     def post(self):
         resource_url = '/organizations'
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                    method='POST',body=self.json_encode(self.input_data),headers=headers)
         self.set_json_output()
@@ -392,6 +394,7 @@ class OrganizationsHandler(BaseHandler):
         resource_url = '/organizations/' + organization_id
         if purge:
             resource_url += '?purge=' + purge
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                    method='DELETE',body=self.json_encode({"message":"delete organization"}),headers=headers)
         self.set_json_output()
@@ -618,6 +621,7 @@ class ImagesUploadHandler(BaseHandler):
                     logging.info('\n\n'+msg)
                     self.setSuccess(201,msg)
                 else:
+                    print (response.code)
                     self.dropError(500,'fail to upload image')
 
 def remove_file(sched,fn,jid):
