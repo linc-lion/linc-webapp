@@ -9,10 +9,10 @@
       <div>
         <h4 class="h4inline">Lion Name:</h4>
         <h4 class="h4data">
-          <a ui-sref="lion({id: imageset.lion_id})">{{!imageset.name}}</a>
+          <a ng-click="(imageset.lion_id==null) || goto_lion(imageset.lion_id);">{{!imageset.name || '-'}}</a>
         </h4>
       </div>
-      <div ng-show="imageset.lion_id">
+      <div ng-show="!imageset.is_primary && imageset.lion_id">
         <button type="button" class="btn btn-primary btn-xs" ng-click="Dissociate(imageset.id)">Dissociate</button>
       </div>
       <div>
