@@ -187,6 +187,9 @@ angular.module('lion.guardians.image.set.controllers', [])
       console.log(error);
     });
   };
+  $scope.Reload_Page = function () {
+    $state.go($state.current, {'id': imageset.id}, {reload: true});
+  };
 }])
 
 .controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$stateParams', '$bsTooltip', 'NotificationFactory','LincServices', 'imagesets_filters', 'imagesets', function ($scope, $timeout, $interval, $stateParams, $bsTooltip, NotificationFactory, LincServices, imagesets_filters, imagesets) {

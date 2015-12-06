@@ -135,6 +135,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
           });
           Adjust_Gallery($scope.delete_items);
           LincServices.ClearImageGalleryCache(optionsSet.id);
+          $scope.UpdateGallery();
         },
         function(error){
           if($scope.debug || (error.status != 401 && error.status != 403)){
@@ -311,6 +312,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
           }
         });
         Reset_Filters();
+        $scope.UpdateGallery();
         NotificationFactory.success({
           title: "Select", message: "Cover Image was Selected",
           position: "right", // right, left, center
@@ -349,6 +351,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
           var photo = _.find($scope.Selecteds, {'id': result.id});
           _.merge(photo, photo, data);
         });
+        $scope.UpdateGallery();
         NotificationFactory.success({
           title: "Update", message: "All Images have been updated",
           position: "right", // right, left, center
@@ -378,6 +381,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
           duration: 2000     // milisecond
         });
         Reset_Filters();
+        $scope.UpdateGallery();
       });
     }
   };
@@ -391,6 +395,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
       $scope.itemsPerPage = Math.min(9, $scope.gallery.length);
       console.log('updated: ' + $scope.ImagesChanged);
     });
+    $scope.UpdateGallery();
   };
 
 }])

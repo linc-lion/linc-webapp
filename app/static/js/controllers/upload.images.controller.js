@@ -154,6 +154,4 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
       }
     }
   };
-
-  console.info('uploader', uploader);
 }])

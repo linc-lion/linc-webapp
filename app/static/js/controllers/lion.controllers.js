@@ -122,6 +122,9 @@ angular.module('lion.guardians.lions.controllers', [])
       console.log(error);
     });
   };
+  $scope.Reload_Page = function () {
+    $state.go($state.current, {'id': lion.id}, {reload: true});
+  };
 }])
 
 .controller('SearchLionCtrl', ['$scope', '$timeout', '$bsTooltip', 'lions', 'lion_filters', function ($scope, $timeout, $bsTooltip, lions, lion_filters) {
