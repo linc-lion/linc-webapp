@@ -4,6 +4,7 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
 
 .controller('SideMenuCtrl', ['$scope', '$state', '$window', '$localStorage', '$http', '$cookies', 'NotificationFactory', function ($scope, $state, $window, $localStorage, $http, $cookies, NotificationFactory) {
 
+  $scope.is_modal_open = false;
   $scope.title = 'Menu';
   $scope.content = 'Menu';
 

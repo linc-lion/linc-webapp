@@ -4,6 +4,7 @@ angular.module('lion.guardians.lions.controllers', [])
 
 .controller('LionCtrl', ['$scope', '$rootScope', '$state', '$uibModal', 'NotificationFactory', 'LincServices', 'organizations', 'lion', function ($scope, $rootScope, $state, $uibModal, NotificationFactory, LincServices, organizations, lion) {
 
+  $scope.is_modal_open = false;
   $scope.lion = lion;
 
   var labels = function (damages, labels){

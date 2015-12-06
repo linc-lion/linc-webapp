@@ -22,10 +22,13 @@ angular.module('lion.guardians.cvresults.directive', [])
       cvresultsId: '=',
       cvrequestId: '=',
       cvResultErased: '&',
-      debug: '='
+      debug: '=',
+      modalIsOpen: '='
     },
     link: function(scope, element, attrs) {
       scope.show = function(){
+        if(scope.modalIsOpen) return;
+        scope.modalIsOpen = true;
         var modalScope = scope.$new();
         modalScope.debug = scope.debug;
         var modalInstance = $uibModal.open({
@@ -48,9 +51,11 @@ angular.module('lion.guardians.cvresults.directive', [])
           }
         });
         modalInstance.result.then(function (result) {
+          scope.modalIsOpen = false;
           scope.cvResultErased({change: result, imagesetId: scope.imagesetId});
           console.log('Modal ok' + result);
         }, function () {
+          scope.modalIsOpen = false;
           console.log('Modal dismissed at: ' + new Date());
         });
       };

@@ -20,10 +20,13 @@ angular.module('lion.guardians.cvrequest.directive', [])
       formSize: '@',
       imagesetId: '=',
       cvRequestSuccess:'&',
-      debug: '='
+      debug: '=',
+      modalIsOpen: '='
     },
     link: function(scope, element, attrs) {
       scope.show = function(){
+        if(scope.modalIsOpen) return;
+        scope.modalIsOpen = true;
         var modalScope = scope.$new();
         modalScope.debug = scope.debug;
         var modalInstance = $uibModal.open({
@@ -47,9 +50,11 @@ angular.module('lion.guardians.cvrequest.directive', [])
           }
         });
         modalInstance.result.then(function (cvrequest) {
+          scope.modalIsOpen = false;
           scope.cvRequestSuccess({imageset_Id: scope.imagesetId, request_Obj: cvrequest});
           console.log('Modal ok ' + cvrequest);
         }, function () {
+          scope.modalIsOpen = false;
           console.log('Modal dismissed at: ' + new Date());
         });
       };

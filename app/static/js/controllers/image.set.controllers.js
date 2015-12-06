@@ -4,6 +4,7 @@ angular.module('lion.guardians.image.set.controllers', [])
 
 .controller('ImageSetCtrl', ['$scope', '$rootScope', '$state', '$timeout', '$uibModal', '$interval', 'NotificationFactory', 'LincServices', 'organizations', 'imageset', function ($scope, $rootScope, $state, $timeout, $uibModal, $interval, NotificationFactory, LincServices, organizations, imageset) {
 
+  $scope.is_modal_open = false;
   $scope.imageset = imageset;
 
   var labels = function (damages, labels){
@@ -199,6 +200,7 @@ angular.module('lion.guardians.image.set.controllers', [])
     "Ear Marking: Left, Right, or Both; Mounth Marking: Back, Front, Left and Right; \n" +
     "Tail Marking: Missing Tuft; Nose Color: Black, Patchy, Pink, or Spotted; Scars: Body Left/Right, Face and Tail";
 
+  $scope.is_modal_open = false;
   $scope.title_tooltip = {'title': 'tips: ' + tool_title, 'checked': true};
 
   var get_features = function (tag_labels, TAGS){
