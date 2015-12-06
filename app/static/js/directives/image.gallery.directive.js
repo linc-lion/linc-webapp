@@ -12,15 +12,16 @@ angular.module('lion.guardians.image.gallery.directive', [])
       useCtrl: '@',
       formSize: '@',
       optionsSet: '=',
+      galleryUpdated:'&',
       debug: '=',
       modalIsOpen: '='
     },
     link: function(scope, element, attrs) {
       scope.show = function(){
-        console.log(scope.modalIsOpen);
         if(scope.modalIsOpen) return;
         scope.modalIsOpen = true;
         var modalScope = scope.$new();
+        modalScope.imagesChanged = false;
         modalScope.debug = scope.debug;
         var modalInstance = $uibModal.open({
           animation: true,
@@ -38,11 +39,18 @@ angular.module('lion.guardians.image.gallery.directive', [])
             }
           }
         });
+        modalScope.UpdateGallery = function () {
+          modalScope.imagesChanged = true;
+        };
         modalInstance.result.then(function (result) {
           scope.modalIsOpen = false;
+          if(modalScope.imagesChanged)
+            scope.galleryUpdated();
           console.log('Modal close : ' + result);
         }, function (result) {
           scope.modalIsOpen = false;
+          if(modalScope.imagesChanged)
+            scope.galleryUpdated();
           console.log('Modal dismissed : ' + result);
         });
       }
