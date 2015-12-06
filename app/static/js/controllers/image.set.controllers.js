@@ -459,7 +459,7 @@ angular.module('lion.guardians.image.set.controllers', [])
   $scope.filters = $stateParams.filter ? $stateParams.filter : {};
 
   if(Object.keys($scope.filters).length){
-    $scope.name_or_id = $scope.filters.hasOwnProperty('name_or_id') ? $scope.filters.name : '';
+    $scope.name_or_id = $scope.filters.hasOwnProperty('name_or_id') ? $scope.filters.name_or_id : '';
   }
 
 }]);
