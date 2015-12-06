@@ -4,7 +4,6 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
 .controller('MetadataCtrl', ['$scope', '$window', '$uibModalInstance', '$bsTooltip', 'LincServices', 'NotificationFactory', 'optionsSet', '$state', '$q',  'organizations', function ($scope, $window, $uibModalInstance, $bsTooltip, LincServices, NotificationFactory, optionsSet, $state, $q, organizations) {
 
-  $scope.debug = false;
   $scope.optionsSet = optionsSet;
 
   //$scope.optionsSet.isMetadata = true;
@@ -157,7 +156,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         deferred.resolve({type: 'save', 'data': data0, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
       },
       function(error){
-        deferred.reject({'title': 'Error', 'message': "Unable to Save Lion's Metadata"});
+        deferred.reject({'error': error, 'title': 'Error', 'message': "Unable to Save Lion's Metadata"});
       });
     }
     else{
@@ -169,7 +168,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         deferred.resolve({type: 'save', 'data': data, 'title': 'Save', 'message': "Image Set's Metadata saved with success"});
       },
       function(error){
-        deferred.reject({'title': 'Error', 'message': "Unable to Save Image Set's Metadata"});
+        deferred.reject({'error': error, 'title': 'Error', 'message': "Unable to Save Image Set's Metadata"});
       });
     }
     return deferred.promise;
@@ -185,7 +184,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         deferred.resolve({type: 'create', 'data': data0, 'title': 'Create', 'message': "Lion's Metadata created with success"});
       },
       function(error){
-        deferred.reject({'title': 'Error', 'message': "Unable to create new Lion's Metadata"});
+        deferred.reject({'error': error, 'title': 'Error', 'message': "Unable to create new Lion's Metadata"});
       });
     }
     else{
@@ -196,7 +195,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         deferred.resolve({type: 'create', 'data': data0, 'title': 'Create', 'message': "Image Set's Metadata created with success"});
       },
       function(error){
-        deferred.reject({'title': 'Error', 'message': "Unable to create new Image Set's Metadata"});
+        deferred.reject({'error': error, 'title': 'Error', 'message': "Unable to create new Image Set's Metadata"});
       });
     }
     return deferred.promise;
@@ -221,11 +220,13 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         $uibModalInstance.close({'data': result.data});
       },
       function(result){
-        NotificationFactory.error({
-          title: result.title, message: result.message,
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if($scope.debug || (result.error.status != 401 && result.error.status != 403)){
+          NotificationFactory.error({
+            title: result.title, message: result.message,
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         //$uibModalInstance.dismiss("error");
       });
     }
@@ -242,11 +243,13 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       $uibModalInstance.close({'id': result.data.id});
     },
     function(result){
+      if($scope.debug || (result.error.status != 401 && result.error.status != 403)){
         NotificationFactory.error({
           title: result.title, message: result.message,
           position: 'right', // right, left, center
           duration: 5000   // milisecond
         });
+      }
     });
   };
   // Create New and Upload
@@ -269,11 +272,13 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       }
     },
     function(result){
-      NotificationFactory.error({
-        title: result.title, message: result.message,
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if($scope.debug || (result.error.status != 401 && result.error.status != 403)){
+        NotificationFactory.error({
+          title: result.title, message: result.message,
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       deferred.reject({message: result.message});
     });
     return deferred.promise;

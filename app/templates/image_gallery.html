@@ -85,7 +85,7 @@
       <p>
         <button ng-disabled="!Selecteds.length" class="btn btn-default btn-block" ng-click="Delete()">Delete</button>
         <button ng-disabled="!Selecteds.length" class="btn btn-default btn-block" ng-click="Download()">Download original</button>
-        <upload-images disabled-btn="Selecteds.length" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="edit" imageset-id="imagesetId" image-updated="UpdateImages()"></upload-images>
+        <upload-images disabled-btn="Selecteds.length" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="edit" imageset-id="imagesetId" image-updated="UpdateImages()" debug="debug"></upload-images>
       </p>
     </div>
   </div>

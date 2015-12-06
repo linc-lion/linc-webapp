@@ -89,11 +89,13 @@ angular.module('lion.guardians.image.set.controllers', [])
         $state.go("searchimageset");
       },
       function(error){
-        NotificationFactory.error({
-          title: "Fail: " + $scope.modalTitle, message: $scope.ErrorMessage,
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if($scope.debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Fail: " + $scope.modalTitle, message: $scope.ErrorMessage,
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
       });
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
@@ -174,11 +176,13 @@ angular.module('lion.guardians.image.set.controllers', [])
       });
     },
     function(error){
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to Dissociate the Lion',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if($scope.debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to Dissociate the Lion',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       console.log(error);
     });
   };

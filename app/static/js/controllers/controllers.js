@@ -17,16 +17,19 @@ angular.module('lion.guardians.controllers', ['lion.guardians.admin.controller',
                                               'lion.guardians.linc.data.factory' ])
 
 .controller('BodyCtrl', ['$scope', '$state', '$localStorage', function ($scope, $state, $localStorage){
+
+  $scope.bodyClasses = 'default';
+  $scope.debug = false;
+  // this'll be called on every state change in the app
+  $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+    if (toState.data != undefined && angular.isDefined(toState.data.bodyClasses)) {
+      $scope.bodyClasses = toState.data.bodyClasses;
+      $scope.debug = $state.current.data.debug;
+      return;
+    }
     $scope.bodyClasses = 'default';
-    // this'll be called on every state change in the app
-    $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
-        if (toState.data != undefined && angular.isDefined(toState.data.bodyClasses)) {
-            $scope.bodyClasses = toState.data.bodyClasses;
-            return;
-        }
-        $scope.bodyClasses = 'default';
-    });
-    $scope.$storage = $localStorage;
+  });
+  $scope.$storage = $localStorage;
 }])
 
 .filter('offset', function() {

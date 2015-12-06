@@ -28,13 +28,15 @@ angular.module('lion.guardians.metadata.directive', [])
       formSize: '@',
       optionsSet: '=',
       gotoImagesetAction:'&',
-      updateAction: '&'
+      updateAction: '&',
+      debug: '='
     },
     link: function(scope, element, attrs) {
       scope.showNew = function(){
         var modalScope = scope.$new();
         modalScope.created = false;
         modalScope.id = 0;
+        modalScope.debug = scope.debug;
         var modalInstance = $uibModal.open({
           animation: true,
           backdrop: true,
@@ -68,12 +70,15 @@ angular.module('lion.guardians.metadata.directive', [])
         });
       },
       scope.showEdit = function(){
+        var modalScope = scope.$new();
+        modalScope.debug = scope.debug;
         var modalInstance = $uibModal.open({
           animation: true,
           backdrop: true,
           templateUrl: scope.useTemplateUrl,
           controller:  scope.useCtrl,
           size: scope.formSize,
+          scope: modalScope,
           resolve: {
             optionsSet: function () {
               return scope.optionsSet;

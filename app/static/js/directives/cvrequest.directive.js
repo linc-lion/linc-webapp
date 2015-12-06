@@ -19,16 +19,20 @@ angular.module('lion.guardians.cvrequest.directive', [])
       useCtrl: '@',
       formSize: '@',
       imagesetId: '=',
-      cvRequestSuccess:'&'
+      cvRequestSuccess:'&',
+      debug: '='
     },
     link: function(scope, element, attrs) {
       scope.show = function(){
+        var modalScope = scope.$new();
+        modalScope.debug = scope.debug;
         var modalInstance = $uibModal.open({
           animation: true,
           backdrop: true,
           templateUrl: scope.useTemplateUrl,
           controller:  scope.useCtrl,
           size: scope.formSize,
+          scope: modalScope,
           windowClass: 'large-Modal',
           resolve: {
             imagesetId: function () {
