@@ -12,10 +12,9 @@
       </div>
       <div class="meta-info">
         <h4 class="h4inline">Primary Image Set ID:</h4>
-        <h4 class="h4data">{{!lion.primary_image_set_id}}</h4>
-      </div>
-      <div ng-show="lion.primary_image_set_id">
-        <button type="button" class="btn btn-primary btn-xs" ng-click="Dissociate(lion.primary_image_set_id)">Dissociate</button>
+        <h4 class="h4data">
+          <a ui-sref="imageset({id: lion.primary_image_set_id})">{{!lion.primary_image_set_id}}</a>
+        </h4>
       </div>
       <div class="meta-info">
         <h4 class="h4inline">Organization:</h4>

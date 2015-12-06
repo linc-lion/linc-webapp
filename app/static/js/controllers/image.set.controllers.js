@@ -51,9 +51,6 @@ angular.module('lion.guardians.image.set.controllers', [])
     $scope.imageset.organization = _.find(organizations, {'id': $scope.imageset.owner_organization_id}).name;
     Set_Tags();
   }
-  $scope.goto_search_lion = function (){
-    $state.go("searchlion", {filter: {id: imageset.lion_id}});
-  }
   // Image Gallery
   $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.id};
   // Location History
