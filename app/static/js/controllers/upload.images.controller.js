@@ -139,11 +139,13 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
         });
         message = items + ").";
       }
-      NotificationFactory.error({
-        title: "Error", message: message,
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if($scope.debug || ($scope.ErrorItems[0].status != 401 && $scope.ErrorItems[0].status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: message,
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
     }
   };
 

@@ -48,6 +48,7 @@ app.config(['$urlMatcherFactoryProvider', function($urlMatcherFactory) {
 }]);
 
 app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider, $urlRouterProvider, $locationProvider) {
+  var debug = false;
   // Redirects and Otherwise //
   // Use $urlRouterProvider to configure any redirects (when) and invalid urls (otherwise).
   /*$urlRouterProvider
@@ -74,7 +75,8 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           controller: 'AdminCtrl',
           templateUrl: 'admin.html',
           data: {
-            bodyClasses: 'admin'
+            bodyClasses: 'admin',
+            debug: debug
           },
           resolve: {
             organizations: ['LincApiServices', function(LincApiServices) {
@@ -128,19 +130,22 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           url: '/cvresults',
           templateUrl: 'admin.cvresults.tpl.html'
         })
-
         // Home Menu
         .state("home", {
           url: "/home",
           controller: 'HomeCtrl',
-          templateUrl: 'home.html'
+          templateUrl: 'home.html',
+          data: {
+            debug: debug
+          }
         })
         .state("lion", {
           url: "/lion/{id:int}",
           controller: 'LionCtrl',
           templateUrl: 'lion.html',
           data: {
-            bodyClasses: 'lion'
+            bodyClasses: 'lion',
+            debug: debug
           },
           resolve: {
             organizations: ['LincServices', function(LincServices) {
@@ -157,7 +162,8 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           controller: 'ImageSetCtrl',
           templateUrl: 'imageset.html',
           data: {
-            bodyClasses: 'imageset'
+            bodyClasses: 'imageset',
+            debug: debug
           },
           resolve: {
             organizations: ['LincServices', function(LincServices) {
@@ -174,7 +180,8 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           controller: 'SearchLionCtrl',
           templateUrl: 'searchlion.html',
           data: {
-            bodyClasses: 'searchlion'
+            bodyClasses: 'searchlion',
+            debug: debug
           },
           resolve: {
             lions: ['LincServices', function(LincServices) {
@@ -191,7 +198,8 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           controller: 'SearchImageSetCtrl',
           templateUrl: 'searchimageset.html',
           data: {
-            bodyClasses: 'searchimageset'
+            bodyClasses: 'searchimageset',
+            debug: debug
           },
           resolve: {
             imagesets: ['LincServices', function(LincServices) {
@@ -208,7 +216,8 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           controller: 'ConservationistsCtrl',
           templateUrl: 'conservationists.html',
           data: {
-            bodyClasses: 'conservationists'
+            bodyClasses: 'conservationists',
+            debug: debug
           }
         })
         // About //

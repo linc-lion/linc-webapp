@@ -1,6 +1,8 @@
 angular.module('lion.guardians.api.services', [])
 
-.factory('LincApiServices', ['$http', '$q', '$cookies', 'NotificationFactory', function($http, $q, $cookies, NotificationFactory) {
+.factory('LincApiServices', ['$http', '$state', '$q', '$cookies', 'NotificationFactory', function($http, $state, $q, $cookies, NotificationFactory) {
+
+  var debug = ($state.current.data == undefined) ? false : ($state.current.data.debug || false);
 
   var HTTP = function (metod, url, data, config, success, error) {
     if(metod == 'GET'){ $http.get(url, config).then(success, error); }
@@ -25,11 +27,13 @@ angular.module('lion.guardians.api.services', [])
         });
         deferred.resolve(organizations);
       }, function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to load Organizations',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to load Organizations',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -59,11 +63,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Save Organizations data',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Save Organizations data',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -74,11 +80,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Create New Organization',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Create New Organization',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -120,11 +128,13 @@ angular.module('lion.guardians.api.services', [])
         });
         deferred.resolve(users);
       }, function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Get Users data',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Get Users data',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -154,11 +164,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Save User data',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Save User data',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -169,11 +181,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Create New User',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Create New User',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -202,11 +216,13 @@ angular.module('lion.guardians.api.services', [])
         });
         deferred.resolve(lions);
       }, function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to get Lions datas',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to get Lions datas',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -236,11 +252,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Save Lion data',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Save Lion data',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -251,11 +269,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Create New Lion',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Create New Lion',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -298,11 +318,13 @@ angular.module('lion.guardians.api.services', [])
         });
         deferred.resolve(imagesets);
       }, function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to get Image Sets datas',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to get Image Sets datas',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -332,11 +354,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Save Image Set data',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Save Image Set data',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -347,11 +371,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Create New Image Set',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Create New Image Set',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -372,11 +398,13 @@ angular.module('lion.guardians.api.services', [])
         });
         deferred.resolve(images);
       }, function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to get Images datas',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to get Images datas',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -406,11 +434,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Save Images data',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Save Images data',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -421,11 +451,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Create New Images',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Create New Images',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -449,11 +481,13 @@ angular.module('lion.guardians.api.services', [])
         });
         deferred.resolve(cvrequests);
       }, function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to get CV Requests datas',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to get CV Requests datas',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -483,11 +517,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Save CV Request data',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Save CV Request data',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -498,11 +534,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Create New CV Request',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Create New CV Request',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -523,11 +561,13 @@ angular.module('lion.guardians.api.services', [])
         });
         deferred.resolve(cvresults);
       }, function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to get CV Results datas',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to get CV Results datas',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -556,11 +596,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Save CV Result data',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Save CV Result data',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }
@@ -571,11 +613,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.resolve(response.data);
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Create New CV Result',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Create New CV Result',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
         deferred.reject(error);
       });
     }

@@ -38,11 +38,13 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
       });
     },
     function(error){
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to Associate the Lion (id: ' + id + ') ',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if($scope.debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to Associate the Lion (id: ' + id + ') ',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       console.log(error);
     });
   };
@@ -61,11 +63,13 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
       });
     },
     function(error){
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to Dissociate the Lion (id: ' + id + ')',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if($scope.debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to Dissociate the Lion (id: ' + id + ')',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       console.log(error);
     });
   };

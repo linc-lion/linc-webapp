@@ -158,7 +158,7 @@
 
     <button ng-show="isNew" type="submit" class="btn btn-primary" ng-click="metadataForm.$valid && CreateClose()">Create</button>
 
-    <upload-images disabled-btn="!metadataForm.$valid" ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new" save-metadata-action="CreateUpload()" close-action="Close()"></upload-images>
+    <upload-images disabled-btn="!metadataForm.$valid" ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new" save-metadata-action="CreateUpload()" close-action="Close()" debug="debug"></upload-images>
 
     <br>
   </div>

@@ -1,6 +1,8 @@
 angular.module('lion.guardians.services', ['lion.guardians.api.services'])
 
-.factory('LincServices', ['$http', '$cacheFactory', '$q', '$cookies', 'NotificationFactory', function($http, $cacheFactory, $q, $cookies, NotificationFactory) {
+.factory('LincServices', ['$http', '$state', '$cacheFactory', '$q', '$cookies', 'NotificationFactory', function($http, $state, $cacheFactory, $q, $cookies, NotificationFactory) {
+
+  var debug = ($state.current.data == undefined) ? false : ($state.current.data.debug || false);
   // cache
   var $httpcache = $cacheFactory.get('$http');
   // default get
@@ -13,9 +15,12 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     }
     else{*/
       angular.merge(config, {cache: true});
-      $http.get(url, config)
-      .success(function (response) {deferred.resolve(response);})
-      .error(function (error) {deferred.reject(error);});
+      $http.get(url, config).then(
+        function(response){
+          deferred.resolve(response.data);
+        }, function(response){
+          deferred.reject(response);
+        });
     //}
     return deferred.promise;
   };
@@ -33,11 +38,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
       deferred.resolve(results.data);
     },
     function (error) {
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to load Imagesets data',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if(debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to load Imagesets data',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       deferred.reject(error);
     });
     return deferred.promise;
@@ -50,11 +57,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
       deferred.resolve(results.data);
     },
     function (error) {
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to load Lions datas',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if(debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to load Lions datas',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       deferred.reject(error);
     });
     return deferred.promise;
@@ -67,11 +76,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
       deferred.resolve(results.data);
     },
     function (error) {
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to load Lions data',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if(debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to load Lions data',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       deferred.reject(error);
     });
     return deferred.promise;
@@ -85,11 +96,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
       deferred.resolve(results.data);
     },
     function (error) {
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to load Imageset data',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if(debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to load Imageset data',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       deferred.reject(error);
     });
     return deferred.promise;
@@ -102,11 +115,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
         deferred.resolve(results.data);
     },
     function (error) {
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to load Image Gallery',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if(debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to load Image Gallery',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       deferred.reject(error);
     });
     return deferred.promise;
@@ -119,11 +134,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
        deferred.resolve(results.data);
     },
     function (error) {
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to load Lion data',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if(debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to load Lion data',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       deferred.reject(error);
     });
     return deferred.promise;
@@ -136,11 +153,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
         deferred.resolve(results.data);
     },
     function (error) {
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to load History Locations data',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if(debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to load History Locations data',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       deferred.reject(error);
     });
     return deferred.promise;
@@ -169,17 +188,19 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
         return result;
       }
     };
-    $http(req)
-    .success(function (data, status, headers, response, statusText) {
-      deferred.resolve(data);
-    })
-    .error(function (error) {
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to Download Images',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
-      deferred.reject(error);
+
+    $http(req).then(function (response){
+      deferred.resolve(response.data);
+    },
+    function (error) {
+      if(debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to Download Images',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
+      deferred.reject(error.data);
     });
     //deferred.resolve({'filename': 'http://www.colorado.edu/conflict/peace/download/peace_essay.ZIP'});
     return deferred.promise;
@@ -193,24 +214,31 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
 
   // Http without cache
   var HTTP = function (method, url, data, config, success, error) {
-    if(method == 'GET'){ $http.get(url, config).then(success, error); }
+    if(method == 'GET'){
+      $http.get(url, config).then(success, error);
+    }
     else{
-        var xsrfcookie = $cookies.get('_xsrf');
-        var req = { method: method, url: url, data: data,
-              headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
-              config: config};
-          $http(req).then(success, error); }
+      var xsrfcookie = $cookies.get('_xsrf');
+      var req = {
+        method: method, url: url, data: data,
+        headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
+        config: config
+      };
+      $http(req).then(success, error);
+    }
   }
   // Post Imageset (CV Request)
   var RequestCV = function (imageset_id, data, success) {
     return HTTP('POST', '/imagesets/' + imageset_id + '/cvrequest', data, {}, success,
     function (error) {
-      NotificationFactory.error({
-        title: "Error", message: 'Request failed',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
-      console.log(error);
+      if(debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Request failed',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+        console.log(error.status);
+      }
     });
   };
   // Put ImageSet (Update Imageset)
@@ -285,15 +313,25 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     }, error);
   };
   // Put Lion (Update Lion)
-  var PutImage = function (image_id, data, success, error){
+  var PutImage = function (image_id, data, success){
     return HTTP('PUT', '/images/' + image_id, data, {},
-    function (result) {
-      ClearAllCaches();
-      success(result.data.data);
-    }, error);
+      function (result) {
+        ClearAllCaches();
+        success(result.data.data);
+      },
+      function(error){
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: "Unable to Update Image data",
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
+      }
+    );
   }
 
-  var PutImages = function (items, success, error){
+  var PutImages = function (items, success){
     var xsrfcookie = $cookies.get('_xsrf');
     var promises = items.map(function(item) {
       var req = { method: 'PUT',
@@ -303,17 +341,25 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
                   config: {ignoreLoadingBar: true}};
       return $http(req);
     });
-    $q.all(promises).then(function (results) {
-      var dados = [];
-      results.forEach( function (result, index) {
-        dados.push(result.data.data);
-      })
-      ClearAllCaches();
-      success(dados);
-    },
-    function (reason) {
-      error(reason);
-    });
+    $q.all(promises).then(
+      function (results) {
+        var dados = [];
+        results.forEach( function (result, index) {
+          dados.push(result.data.data);
+        })
+        ClearAllCaches();
+        success(dados);
+      },
+      function(error){
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: "Unable to Update Images data",
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
+      }
+    );
   }
   // Delete CVRequest / CVResults
   var DeleteImage = function (image_id, success, error){
@@ -355,24 +401,28 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     var deferred = $q.defer();
     var url = '/cvresults/' + cvresults_id + '/list';
     HTTP('GET', url, null, {ignoreLoadingBar: true},
-    function (results){
-      var data = results.data.data.table;
-      var associated_id = results.data.data.associated.id;
-      var cvresults = _.map(data, function(element, index) {
-        var elem = {};
-        if(associated_id == element.id) elem["associated"] = true;
-        else elem["associated"] = false;
-        return _.extend({}, element, elem);
-      });
-      deferred.resolve(cvresults);
-    }, function(error){
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to load CV Results List',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
-      deferred.reject(error);
-    });
+      function (results){
+        var data = results.data.data.table;
+        var associated_id = results.data.data.associated.id;
+        var cvresults = _.map(data, function(element, index) {
+          var elem = {};
+          if(associated_id == element.id) elem["associated"] = true;
+          else elem["associated"] = false;
+          return _.extend({}, element, elem);
+        });
+        deferred.resolve(cvresults);
+      },
+      function(error){
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to load CV Results List',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
+        deferred.reject(error);
+      }
+    );
     return deferred.promise;
   };
   // Post CVResults - Request CV Results
@@ -380,11 +430,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     var data = {"cvrequest_id":cvrequest_id};
     return HTTP('POST', '/cvresults', data, {}, success,
     function(error){
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to Post CV Results',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if(debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to Post CV Results',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       console.log(error);
     });
   };
@@ -392,11 +444,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   var PutCVResults = function (cvrequest_id, success){
     return HTTP('PUT', '/cvresults/' + cvrequest_id, {}, {}, success,
     function(error){
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to Post CV Results',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if(debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to Post CV Results',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       console.log(error);
     });
   };
@@ -404,11 +458,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   var DeleteCVRequest = function (cvrequest_id, success){
     return HTTP('DELETE', '/cvrequests/' + cvrequest_id, {}, {}, success,
     function(error){
-      NotificationFactory.error({
-        title: "Error", message: 'Unable to Delete CV Results/CVRequest',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
+      if(debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to Delete CV Results/CVRequest',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
       console.log(error);
     });
   };
@@ -467,8 +523,6 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   dataFactory.deleteCVRequest = DeleteCVRequest;
 
   dataFactory.getImageGallery = GetImageGallery;
-
-
 
   dataFactory.Download = GetDownload;
   dataFactory.Login = Login;

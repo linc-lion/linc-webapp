@@ -137,11 +137,13 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
           LincServices.ClearImageGalleryCache(optionsSet.id);
         },
         function(error){
-          NotificationFactory.error({
-            title: "Error", message: $scope.ErrorMessage,
-            position: 'right', // right, left, center
-            duration: 5000   // milisecond
-          });
+          if($scope.debug || (error.status != 401 && error.status != 403)){
+            NotificationFactory.error({
+              title: "Error", message: $scope.ErrorMessage,
+              position: 'right', // right, left, center
+              duration: 5000   // milisecond
+            });
+          }
         });
       }, function () {
         console.log('Modal dismissed at: ' + new Date());
@@ -316,11 +318,13 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
         });
       },
       function(error){
-        NotificationFactory.error({
-          title: "Error", message: "Unable to Select Cover Image",
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
+        if($scope.debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: "Unable to Select Cover Image",
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
       });
     }
   }
@@ -351,13 +355,6 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
           duration: 2000     // milisecond
         });
         Reset_Filters();
-      },
-      function(error){
-        NotificationFactory.error({
-          title: "Error", message: "Unable to Update Image data",
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
       });
     }
   }
@@ -381,13 +378,6 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
           duration: 2000     // milisecond
         });
         Reset_Filters();
-      },
-      function(error){
-        NotificationFactory.error({
-          title: "Error", message: "Unable to Update Image data",
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
       });
     }
   };

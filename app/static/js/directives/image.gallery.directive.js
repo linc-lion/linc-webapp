@@ -12,15 +12,19 @@ angular.module('lion.guardians.image.gallery.directive', [])
       useCtrl: '@',
       formSize: '@',
       optionsSet: '=',
+      debug: '='
     },
     link: function(scope, element, attrs) {
       scope.show = function(){
+        var modalScope = scope.$new();
+        modalScope.debug = scope.debug;
         var modalInstance = $uibModal.open({
           animation: true,
           backdrop: true,
           templateUrl: scope.useTemplateUrl,
           controller:  scope.useCtrl,
           size: scope.formSize,
+          scope: modalScope,
           resolve: {
             optionsSet: function () {
               return scope.optionsSet;

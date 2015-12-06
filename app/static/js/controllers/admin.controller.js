@@ -9,7 +9,9 @@ angular.module('lion.guardians.admin.controller', [ 'lion.guardians.admin.users.
                                                     'lion.guardians.admin.cvrequests.controller',
                                                     'lion.guardians.admin.cvresults.controller'])
 
-.controller('AdminCtrl', ['$scope', '$q', '$uibModal', 'LincApiServices', 'NotificationFactory', 'organizations', 'users', 'lions', 'imagesets', 'images', 'cvrequests', 'cvresults', function ($scope, $q, $uibModal, LincApiServices, NotificationFactory, organizations, users, lions, imagesets, images, cvrequests, cvresults) {
+.controller('AdminCtrl', ['$scope', '$state', '$q', '$uibModal', 'LincApiServices', 'NotificationFactory', 'organizations', 'users', 'lions', 'imagesets', 'images', 'cvrequests', 'cvresults', function ($scope, $state, $q, $uibModal, LincApiServices, NotificationFactory, organizations, users, lions, imagesets, images, cvrequests, cvresults) {
+
+  //$scope.debug = $state.current.data.debug;
   $scope.LincApiServices = LincApiServices;
   $scope.Notification = NotificationFactory;
   $scope.organizations = organizations;

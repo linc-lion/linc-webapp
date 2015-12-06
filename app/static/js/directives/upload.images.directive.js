@@ -22,17 +22,21 @@ angular.module('lion.guardians.upload.images.directive', [])
       saveMetadataAction:'&',
       closeAction:'&',
       disabledBtn: '=',
-      imageUpdated:'&'
+      imageUpdated:'&',
+      debug: '='
     },
     link: function(scope, element, attrs) {
       scope.showNew = function(){
         scope.saveMetadataAction().then(function (result) {
+          var modalScope = scope.$new();
+          modalScope.debug = scope.debug;
           var modalInstance = $uibModal.open({
             animation: true,
             backdrop: true,
             templateUrl: scope.useTemplateUrl,
             controller:  scope.useCtrl,
             size: scope.formSize,
+            scope: modalScope,
             resolve: {
               options: function () {
                 return ({'isNew': attrs.type == 'new', 'imagesetId': result.imagesetId});
@@ -53,6 +57,7 @@ angular.module('lion.guardians.upload.images.directive', [])
       scope.ShowOpen = function(){
         var modalScope = scope.$new();
         modalScope.imagesChanged = false;
+        modalScope.debug = scope.debug;
         var modalInstance = $uibModal.open({
           animation: true,
           backdrop: true,

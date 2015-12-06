@@ -19,17 +19,21 @@ angular.module('lion.guardians.location.history.directive', [])
           useCtrl: '@',
           formSize: '@',
           options: '=',
-          locationGoto:'&'
+          locationGoto:'&',
+          debug: '='
         },
         link: function(scope, element, attrs) {
           // Lions
           scope.Lion_show = function(){
+            var modalScope = scope.$new();
+            modalScope.debug = scope.debug;
             var modalInstance = $uibModal.open({
               animation: true,
               backdrop: true,
               templateUrl: scope.useTemplateUrl,
               controller:  scope.useCtrl,
               size: scope.formSize,
+              scope: modalScope,
               resolve: {
                 options: function () {
                   return scope.options;
@@ -48,12 +52,15 @@ angular.module('lion.guardians.location.history.directive', [])
           },
           // Imagesets
           scope.Imageset_show = function(){
+            var modalScope = scope.$new();
+            modalScope.debug = scope.debug;
             var modalInstance = $uibModal.open({
               animation: true,
               backdrop: true,
               templateUrl: scope.useTemplateUrl,
               controller:  scope.useCtrl,
               size: scope.formSize,
+              scope: modalScope,
               resolve: {
                 options: function () {
                   return scope.options;

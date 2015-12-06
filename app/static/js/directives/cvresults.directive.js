@@ -21,16 +21,20 @@ angular.module('lion.guardians.cvresults.directive', [])
       imagesetId: '=',
       cvresultsId: '=',
       cvrequestId: '=',
-      cvResultErased: '&'
+      cvResultErased: '&',
+      debug: '='
     },
     link: function(scope, element, attrs) {
       scope.show = function(){
+        var modalScope = scope.$new();
+        modalScope.debug = scope.debug;
         var modalInstance = $uibModal.open({
           animation: true,
           backdrop: true,
           templateUrl: scope.useTemplateUrl,
           controller:  scope.useCtrl,
           size: scope.formSize,
+          scope: modalScope,
           resolve: {
             imagesetId: function () {
               return scope.imagesetId;
