@@ -56,7 +56,7 @@ angular.module('lion.guardians.lions.controllers', [])
     $state.go("imageset", {id: imageset_id});
   }
   $scope.goto_search_imageset = function (){
-    $state.go("searchimageset", {filter: {name_or_id: lion.primary_image_set_id}});
+    $state.go("searchimageset", {filter: {name_or_id: '!'+lion.id}});
   }
 
   $scope.Delete = function (){
