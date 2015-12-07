@@ -31,7 +31,7 @@ class ImageSetsListHandler(BaseHandler):
         if response.code == 200:
             self.finish(response.body)
         else:
-            self.finish({'status':'error','message':'fail to get Image Sets GET'})
+            self.finish({'status':'error','message':'fail to get Image Set profile'})
 
     @asynchronous
     @engine
@@ -109,7 +109,7 @@ class CVResultsHandler(BaseHandler):
                 resource_url += res_id + '/' + xlist
             else:
                 resource_url += '/'+ res_id
-                
+
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_json_output()
@@ -617,8 +617,14 @@ class ImagesUploadHandler(BaseHandler):
                             msg = msg + 'new image '+str(newimg_id)+' defined as main_image of the imageset '+str(imgset_id)+'.'
                     logging.info('\n\n'+msg)
                     self.setSuccess(201,msg)
+                elif response.code == 409:
+                    self.dropError(response.code,'The file already exists in the system.')
+                elif response.code == 400:
+                    self.dropError(response.code,'The data or file sent is invalid to add the file in the system.')
                 else:
-                    self.dropError(500,'fail to upload image')
+                    self.dropError(500,'Fail to upload image')
+        else:
+            self.dropError(400,'Please send a file to upload.')
 
 def remove_file(sched,fn,jid):
     remove(fn)
