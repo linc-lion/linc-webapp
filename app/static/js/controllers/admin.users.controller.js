@@ -5,23 +5,7 @@ angular.module('lion.guardians.admin.users.controller', [])
 
 .controller('AdminUsersCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
 
-  $scope.Selecteds = $scope.CleanBracket.users;
-  $scope.User_Mode  =  $scope.EmptyString.users;
-
-  var check_selects = function (){
-    var count = 0;
-    $scope.all_selected = false;
-    $scope.all_unselected = true;
-    if($scope.ordered_users) count = $scope.ordered_users.length;
-    if(count>0){
-      if($scope.Selecteds.length == count)
-        $scope.all_selected = true;
-      if($scope.Selecteds.length)
-        $scope.all_unselected = false;
-    }
-  }
-
-  check_selects();
+  $scope.User_Mode = $scope.settings.users.Mode;
 
   $scope.check_all = function (val){
     _.forEach($scope.users, function(user) {
@@ -30,10 +14,11 @@ angular.module('lion.guardians.admin.users.controller', [])
         if(!_.some($scope.Selecteds, user))
           $scope.Selecteds.push(user);
       }
-      else {
-        $scope.Selecteds = _.without($scope.Selecteds, user);
-      }
     });
+    if(!val){
+      $scope.Selecteds = [];
+      $scope.settings.users.Selecteds = $scope.Selecteds;
+    }
     check_selects();
   }
 
@@ -60,6 +45,7 @@ angular.module('lion.guardians.admin.users.controller', [])
         }
         else {
           $scope.Selecteds = _.without($scope.Selecteds, person);
+          $scope.settings.users.Selecteds = $scope.Selecteds;
         }
       }
     }
@@ -71,6 +57,7 @@ angular.module('lion.guardians.admin.users.controller', [])
       }
       else {
         $scope.Selecteds = _.without($scope.Selecteds, user);
+        $scope.settings.users.Selecteds = $scope.Selecteds;
       }
     }
     check_selects();
@@ -244,12 +231,40 @@ angular.module('lion.guardians.admin.users.controller', [])
     };
   }
 
+  var check_selects = function (){
+    var count = 0;
+    $scope.all_selected = false;
+    $scope.all_unselected = true;
+    if($scope.ordered_users) count = $scope.ordered_users.length;
+    if(count>0){
+      if($scope.Selecteds.length == count)
+        $scope.all_selected = true;
+      if($scope.Selecteds.length)
+        $scope.all_unselected = false;
+    }
+  }
+
   // Order by
-  $scope.reverse = false;
-  $scope.predicate = 'id';
+  $scope.reverse = $scope.settings.users.reverse;
+  $scope.predicate = $scope.settings.users.predicate;
   $scope.order = function(predicate) {
     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
     $scope.predicate = predicate;
+    $scope.settings.users.predicate = $scope.predicate;
+    $scope.settings.users.reverse = $scope.reverse;
   };
+
+  $scope.Selecteds = _.map($scope.settings.users.Selecteds, function(selected) {
+    var sel_user = _.find($scope.users, function(user) {
+      return user.id == selected.id;
+    });
+    if(sel_user)
+      sel_user.selected = true;
+    return sel_user;
+  });
+  $scope.settings.users.Selecteds = $scope.Selecteds;
+
+  check_selects();
+
 }])
 ;

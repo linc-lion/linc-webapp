@@ -188,7 +188,8 @@ angular.module('lion.guardians.image.set.controllers', [])
     });
   };
   $scope.Reload_Page = function () {
-    $state.go($state.current, {'id': imageset.id}, {reload: true});
+    $state.go($state.current, {'id': $scope.imageset.id}, {reload: true});
+    $rootScope.remove_history('imageset', $scope.imageset.id);
   };
 }])
 

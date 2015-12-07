@@ -31,9 +31,9 @@
 <nav class="navbar navbar-default">
   <p class="navbar-text"><strong>Administration:</strong></p>
   <ul class="nav navbar-nav">
-    <li ui-sref="admin.users" ui-sref-active="active"><a>Users</a></li>
     <li ng-repeat="tab in tabs"
         ui-sref="{{!tab.sref}}"
+        ng-click="onTabClick(tab)"
         ui-sref-active="active"><a>{{!tab.title}}</a></li>
   </ul>
 </nav>
