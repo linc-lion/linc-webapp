@@ -5,25 +5,8 @@ angular.module('lion.guardians.admin.images.controller', [])
 
 .controller('AdminImagesCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
 
-  $scope.itemsPerPage = 100;
-
-  $scope.Selecteds = $scope.CleanBracket.images;
-  $scope.Image_Mode  =  $scope.EmptyString.images;
-
-  var check_selects = function (){
-    var count = 0;
-    $scope.all_selected = false;
-    $scope.all_unselected = true;
-    if($scope.paginated_images) count = $scope.paginated_images.length;
-    if(count>0){
-      if($scope.Selecteds.length == count)
-        $scope.all_selected = true;
-      if($scope.Selecteds.length)
-        $scope.all_unselected = false;
-    }
-  }
-
-  check_selects();
+  $scope.Image_Mode = $scope.settings.images.Mode;
+  $scope.itemsPerPage = 100;//$scope.settings.images.itemsPerPage;
 
   $scope.check_all = function (val){
     if(val){
@@ -36,8 +19,9 @@ angular.module('lion.guardians.admin.images.controller', [])
     else{
       _.forEach($scope.images, function(image) {
         image.selected = val;
-        $scope.Selecteds = _.without($scope.Selecteds, image);
       });
+      $scope.Selecteds = [];
+      $scope.settings.images.Selecteds = $scope.Selecteds;
     }
     check_selects();
   }
@@ -65,6 +49,7 @@ angular.module('lion.guardians.admin.images.controller', [])
         }
         else {
           $scope.Selecteds = _.without($scope.Selecteds, img);
+          $scope.settings.images.Selecteds = $scope.Selecteds;
         }
       }
     }
@@ -76,6 +61,7 @@ angular.module('lion.guardians.admin.images.controller', [])
       }
       else {
         $scope.Selecteds = _.without($scope.Selecteds, image);
+        $scope.settings.images.Selecteds = $scope.Selecteds;
       }
     }
     check_selects();
@@ -230,28 +216,41 @@ angular.module('lion.guardians.admin.images.controller', [])
     win.focus();
   }
 
+  var check_selects = function (){
+    var count = 0;
+    $scope.all_selected = false;
+    $scope.all_unselected = true;
+    if($scope.paginated_images) count = $scope.paginated_images.length;
+    if(count>0){
+      if($scope.Selecteds.length == count)
+        $scope.all_selected = true;
+      if($scope.Selecteds.length)
+        $scope.all_unselected = false;
+    }
+  }
+
   $scope.TypesLabel = [ {'type': 'cv', 'label': 'CV Image'},{'type': 'full-body', 'label': 'Full Body'},
                         {'type': 'whisker', 'label': 'Whisker'},{'type': 'main-id', 'label': 'Main Id'},
                         {'type': 'markings', 'label': 'Markings'}];
 
+
   // Order by
-  $scope.reverse = false;
-  $scope.predicate = 'id';
-  $scope.PerPage = 50;
-  $scope.currentPage = 0;
+  $scope.reverse = $scope.settings.images.reverse;
+  $scope.predicate = $scope.settings.images.predicate;
   $scope.order = function(predicate) {
     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
     $scope.predicate = predicate;
+    $scope.settings.images.predicate = $scope.predicate;
+    $scope.settings.images.reverse = $scope.reverse;
   };
-  /*$scope.TotalItems = function(){
-    var total = $scope.filtered_images? $scope.filtered_images.length : 0;
-  }*/
+
   $scope.pageCount = function() {
     var total = $scope.filtered_images? $scope.filtered_images.length : 0;
     return Math.ceil(total/$scope.itemsPerPage);
   };
   $scope.setPage = function(n) {
     $scope.currentPage = n;
+    $scope.settings.images.currentPage = $scope.currentPage;
   };
   $scope.prevPage = function() {
     if ($scope.currentPage > 0)
@@ -288,6 +287,20 @@ angular.module('lion.guardians.admin.images.controller', [])
     }
     return ret;
   };
-}])
 
+  check_selects();
+
+  $scope.Selecteds = _.map($scope.settings.images.Selecteds, function(selected) {
+    var sel_image = _.find($scope.images, function(image) {
+      return image.id == selected.id;
+    });
+    if(sel_image)
+      sel_image.selected = true;
+    return sel_image;
+  });
+  $scope.settings.images.Selecteds = $scope.Selecteds;
+
+  $scope.setPage($scope.settings.images.currentPage);
+
+}])
 ;

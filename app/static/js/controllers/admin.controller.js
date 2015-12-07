@@ -9,7 +9,7 @@ angular.module('lion.guardians.admin.controller', [ 'lion.guardians.admin.users.
                                                     'lion.guardians.admin.cvrequests.controller',
                                                     'lion.guardians.admin.cvresults.controller'])
 
-.controller('AdminCtrl', ['$scope', '$state', '$q', '$uibModal', 'LincApiServices', 'NotificationFactory', 'organizations', 'users', 'lions', 'imagesets', 'images', 'cvrequests', 'cvresults', function ($scope, $state, $q, $uibModal, LincApiServices, NotificationFactory, organizations, users, lions, imagesets, images, cvrequests, cvresults) {
+.controller('AdminCtrl', ['$scope', '$state', '$q', '$uibModal', 'LincApiServices', 'NotificationFactory', 'organizations', 'users', 'lions', 'imagesets', 'images', 'cvrequests', 'cvresults', 'settings', function ($scope, $state, $q, $uibModal, LincApiServices, NotificationFactory, organizations, users, lions, imagesets, images, cvrequests, cvresults, settings) {
 
   //$scope.debug = $state.current.data.debug;
   $scope.LincApiServices = LincApiServices;
@@ -22,17 +22,22 @@ angular.module('lion.guardians.admin.controller', [ 'lion.guardians.admin.users.
   $scope.cvrequests = cvrequests;
   $scope.cvresults = cvresults;
 
-  $scope.EmptyString = {'users': '', 'organizations': '', 'lions': '', 'imagesets': '', 'images': '', 'cvrequests': '', 'cvresults': ''}
-  $scope.CleanBracket = {'users': [], 'organizations': [], 'lions': [], 'imagesets': [], 'images': [], 'cvrequests': [], 'cvresults': []};
-
   $scope.tabs = [
-    { title:'Organizations', disabled: false, sref: 'admin.organizations'},
-    { title:'Lions', disabled: false, sref: 'admin.lions'},
-    { title:'Imagesets', disabled: false, sref: 'admin.imagesets'},
-    { title:'Images', disabled: false, sref: 'admin.images'},
-    { title:'CV Requests', disabled: false, sref: 'admin.cvrequests'},
-    { title:'CV Results', disabled: false, sref: 'admin.cvresults'}
+    { 'name': 'users', title:'Users', disabled: false, sref: 'admin.users'},
+    { 'name': 'organizations',title:'Organizations', disabled: false, sref: 'admin.organizations'},
+    { 'name': 'lions',title:'Lions', disabled: false, sref: 'admin.lions'},
+    { 'name': 'imagesets',title:'Imagesets', disabled: false, sref: 'admin.imagesets'},
+    { 'name': 'images',title:'Images', disabled: false, sref: 'admin.images'},
+    { 'name': 'cvrequests',title:'CV Requests', disabled: false, sref: 'admin.cvrequests'},
+    { 'name': 'cvresults',title:'CV Results', disabled: false, sref: 'admin.cvresults'}
   ];
+
+  $scope.settings = settings;
+  $state.go("admin." + settings.Selected_tab, {});
+
+  $scope.onTabClick = function (tab){
+    settings.Selected_tab = tab.name;
+  }
 
   $scope.Delete = function (title){
     var deferred = $q.defer();
