@@ -25,9 +25,14 @@ angular.module('lion.guardians.image.set.controllers', [])
   var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right', 'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
   var Set_Tags = function(){
-    if($scope.imageset.cvresults) $scope.imageset["action"] = 'cvresults';
-    else if($scope.imageset.cvrequest) $scope.imageset["action"] = 'cvpending';
-    else $scope.imageset["action"] = 'cvrequest';
+    if(!$scope.imageset.is_primary){
+      if($scope.imageset.cvresults) $scope.imageset["action"] = 'cvresults';
+      else if($scope.imageset.cvrequest) $scope.imageset["action"] = 'cvpending';
+      else $scope.imageset["action"] = 'cvrequest';
+    }
+    else{
+      $scope.imageset["action"] = '';
+    }
 
     var TAGS = [];
     try{
