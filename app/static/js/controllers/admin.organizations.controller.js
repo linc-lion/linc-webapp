@@ -134,6 +134,7 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
           });
         });
         $scope.Selecteds = [];
+        $scope.settings.organizations.Selecteds = $scope.Selecteds;
       });
     }, function () {
 
@@ -219,13 +220,17 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
     $scope.settings.organizations.reverse = $scope.reverse;
   };
 
-  $scope.Selecteds = _.map($scope.settings.organizations.Selecteds, function(selected) {
-    var sel_org = _.find($scope.organizations, function(org) {
-      return org.id == selected.id;
-    });
-    if(sel_org)
-      sel_org.selected = true;
-    return sel_org;
+  $scope.Selecteds = [];
+  _.forEach($scope.settings.organizations.Selecteds, function(selected) {
+    if(selected != undefined){
+      var sel_org = _.find($scope.organizations, function(org) {
+        return org.id == selected.id;
+      });
+      if(sel_org){
+        sel_org.selected = true;
+        $scope.Selecteds.push(sel_org);
+      }
+    }
   });
   $scope.settings.organizations.Selecteds = $scope.Selecteds;
 

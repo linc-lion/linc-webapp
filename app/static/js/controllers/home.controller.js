@@ -7,14 +7,8 @@ angular.module('lion.guardians.home.controller', [])
 
   $scope.is_modal_open = false;
   $scope.options = {
-    "imageset": {
-        "type": "imageset", "edit": "new", "uploading_user_id": 6,
-        "owner_organization_id": 2, "uploading_organization_id": 2
-    },
-    "lions": {
-        "type": "lion", "edit": "new", "uploading_user_id": 6,
-        "owner_organization_id": 2, "uploading_organization_id": 2
-    }
+    "imageset": {"type": "imageset", "edit": "new"},
+       "lions": {"type": "lion", "edit": "new"}
   };
 
   $scope.goto_imageset = function (Id) {
