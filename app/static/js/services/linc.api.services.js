@@ -200,7 +200,7 @@ angular.module('lion.guardians.api.services', [])
       var url = '/lions?api=true&trashed=*';
       HTTP('GET', url, null, {},
       function (results){
-        var data = results.data.data;
+        var data = results.data;
         var organizations = data_in.organizations;
         var lions = _.map(data, function(lion) {
           lion.created_at = (lion.created_at || "").substring(0,19);
