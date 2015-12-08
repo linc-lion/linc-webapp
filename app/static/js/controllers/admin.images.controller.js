@@ -142,6 +142,7 @@ angular.module('lion.guardians.admin.images.controller', [])
           });
         });
         $scope.Selecteds = [];
+        $scope.settings.images.Selecteds = $scope.Selecteds;
       });
     }, function () {
 
@@ -288,17 +289,21 @@ angular.module('lion.guardians.admin.images.controller', [])
     return ret;
   };
 
-  check_selects();
-
-  $scope.Selecteds = _.map($scope.settings.images.Selecteds, function(selected) {
-    var sel_image = _.find($scope.images, function(image) {
-      return image.id == selected.id;
-    });
-    if(sel_image)
-      sel_image.selected = true;
-    return sel_image;
+  $scope.Selecteds = [];
+  _.forEach($scope.settings.images.Selecteds, function(selected) {
+    if(selected != undefined){
+      var sel_image = _.find($scope.images, function(image) {
+        return image.id == selected.id;
+      });
+      if(sel_image){
+        sel_image.selected = true;
+        $scope.Selecteds.push(sel_image);
+      }
+    }
   });
   $scope.settings.images.Selecteds = $scope.Selecteds;
+
+  check_selects();
 
   $scope.setPage($scope.settings.images.currentPage);
 
