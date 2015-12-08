@@ -593,13 +593,11 @@ class ImagesUploadHandler(BaseHandler):
             if fileencoded:
                 remove(dirfs+'/'+fname)
                 image_type = self.get_argument("image_type","cv")
-                is_public = self.get_argument("is_public",True)
-                if not is_public:
-                    is_public = False
+                is_public = self.get_argument("is_public",'')
+                is_public = (is_public.lower() == 'true')
                 image_set_id = self.get_argument("image_set_id")
-                iscover = self.get_argument("iscover",False)
-                if iscover:
-                    iscover = True
+                iscover = self.get_argument("iscover",'')
+                iscover = (iscover.lower() == 'true')
                 body = {
                     "image_type" : image_type,
                     "is_public" : is_public,
@@ -613,7 +611,7 @@ class ImagesUploadHandler(BaseHandler):
                 response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                               method='POST',body=self.json_encode(body),headers=headers)
                 if response.code in [200,201]:
-                    self.setSuccess(response.code,'File successfully uploaded. You must wait the processing phase for your image.')
+                    self.setSuccess(200,'File successfully uploaded. You must wait the processing phase for your image.')
                 elif response.code == 409:
                     self.dropError(response.code,'The file already exists in the system.')
                 elif response.code == 400:
