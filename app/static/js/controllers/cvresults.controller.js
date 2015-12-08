@@ -12,10 +12,6 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
   $scope.Close = function () {
     $uibModalInstance.dismiss("close");
   };
-  $scope.open_new_lion = function(id){
-    var url = $state.href("lion", { 'id': id },  {absolute: true});
-    window.open(url,'_blank');
-  }
   $scope.ClearResults= function () {
     LincServices.deleteCVRequest(cvrequestId, function(){
       console.log("Results cleared");
