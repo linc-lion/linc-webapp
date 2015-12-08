@@ -54,14 +54,14 @@
                 <input type="text" class="form-control meta_input" name="lion_name" ng-model="selected.name" placeholder="Lion Name" ng-required="lion_required" oninput="setCustomValidity('')"
                 oninvalid="this.setCustomValidity('please fill out this field with Lion\'s Name')">
               </div>
-              <div ng-show="!tooltip.show_lion_name"  class="form-inline text-left">
+              <div ng-show="!tooltip.show_lion_name"  class="form-inline group-input-center">
                 <div ng-show="selected.name == '-'">
-                  <label class="meta_label" for="lion_name1">Lion Name: </label>
-                  <a class="a_meta"> {{!selected.name}}</a>
+                  <label class="meta_label" for="lion_name1">Lion: </label>
+                  <a class="a_meta">{{!selected.name}}</a>
                 </div>
                 <div ng-show="selected.name != '-'">
-                  <label class="meta_label" for="lion_name2">Lion Name: </label>
-                  <a type="text" class="link a_meta" ng-click="goto()" name="lion_name2" data-animation="am-flip-x" placement="bottom-right" bs-tooltip="tooltip.value">{{!selected.name}}</a>
+                  <label class="meta_label" for="lion_name2">Lion: </label>
+                  <a type="text" class="link a_meta" ng-click="goto()" name="lion_name2" data-animation="am-flip-x" placement="bottom-right" bs-tooltip="tooltip.value">{{!selected.id}}-{{!selected.name}}</a>
                 </div>
               </div>
               <pre ng-show="debug">{{!selected.name}}</pre>
