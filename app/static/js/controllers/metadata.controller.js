@@ -6,6 +6,12 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
   $scope.optionsSet = optionsSet;
 
+  //$scope.user = $localStorage.user;
+  $scope.users = {
+                  "uploading_user_id": 6,
+              "owner_organization_id": 2,
+          "uploading_organization_id": 2
+                  }
   //$scope.optionsSet.isMetadata = true;
   $scope.organizations = organizations;
   var titles = {}; titles['lion'] = 'Metadata'; titles['imageset'] = 'Metadata';
@@ -46,18 +52,18 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     if(optionsSet.edit === 'new'){
       if(optionsSet.type === 'lion'){
         var imageset_data = {
-          "date_stamp": selected.date_stamp,
+          "date_stamp": (selected.date_stamp == '') ? null : selected.date_stamp,
           "gender": selected.gender,
-          "date_of_birth": selected.date_of_birth,
+          "date_of_birth": (selected.date_of_birth == '') ? null : selected.date_of_birth,
           "tags": TAGS,
           "notes": selected.notes,
           'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
           'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
           "lion_id": null,
           "main_image_id": null,
-          "uploading_user_id": optionsSet.uploading_user_id,
-          "owner_organization_id": optionsSet.owner_organization_id,
-          "uploading_organization_id": optionsSet.uploading_organization_id,
+          "uploading_user_id": $scope.users.uploading_user_id,
+          "owner_organization_id": $scope.users.owner_organization_id,
+          "uploading_organization_id": $scope.users.uploading_organization_id,
           "is_primary": null,
           "is_verified": false
         }
@@ -71,18 +77,18 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       }
       else{
         var imageset_data = {
-          "date_stamp": selected.date_stamp,
+          "date_stamp": (selected.date_stamp == '') ? null : selected.date_stamp,
           'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
           'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
           "gender": selected.gender,
-          "date_of_birth": selected.date_of_birth,
+          "date_of_birth": (selected.date_of_birth == '') ? null : selected.date_of_birth,
           "tags": TAGS,
           "notes": selected.notes,
           "lion_id": null,
           "main_image_id": null,
-          "uploading_user_id": optionsSet.uploading_user_id,
-          "owner_organization_id": optionsSet.owner_organization_id,
-          "uploading_organization_id": optionsSet.uploading_organization_id,
+          "uploading_user_id": $scope.users.uploading_user_id,
+          "owner_organization_id": $scope.users.owner_organization_id,
+          "uploading_organization_id": $scope.users.uploading_organization_id,
           "is_primary": null,
           "is_verified": false
         }
@@ -94,11 +100,11 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         //Selected Dates
         var lion_sel_data = { "organization_id": selected.organization_id, "name" : selected.name };
         var imageset_sel_data = {
-          "date_stamp": selected.date_stamp,
+          "date_stamp": (selected.date_stamp == '') ? null : selected.date_stamp,
           'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
           'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
           "gender": selected.gender,
-          "date_of_birth": selected.date_of_birth,
+          "date_of_birth": (selected.date_of_birth == '') ? null : selected.date_of_birth,
           "tags": TAGS,
           "notes": selected.notes
         };
@@ -122,11 +128,11 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         //Selected Dates
         var sel_data = {
           "owner_organization_id": selected.owner_organization_id,
-          "date_stamp": selected.date_stamp,
+          "date_stamp": (selected.date_stamp == '') ? null : selected.date_stamp,
           'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
           'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
           "gender": selected.gender,
-          "date_of_birth": selected.date_of_birth,
+          "date_of_birth": (selected.date_of_birth == '') ? null : selected.date_of_birth,
           "tags": TAGS, 'notes': selected.notes
         };
         if($scope.showLionName){ sel_data.name = selected.name; }
@@ -355,10 +361,11 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     //optionsSet.data.name = optionsSet.data.name == '-' ? '': optionsSet.data.name;
     $scope.selected = {
       "name": optionsSet.data.name,
-      "date_stamp": optionsSet.data.date_stamp,
+      "id": optionsSet.data.id,
+      "date_stamp": (optionsSet.data.date_stamp == null) ? '' : optionsSet.data.date_stamp,
       "owner_organization_id": optionsSet.data.owner_organization_id,
       "organization_id": optionsSet.data.organization_id,
-      "date_of_birth": optionsSet.data.date_of_birth,
+      "date_of_birth": (optionsSet.data.date_of_birth  == null) ? '' : optionsSet.data.date_of_birth,
       "latitude": optionsSet.data.latitude,
       "longitude": optionsSet.data.longitude,
       "gender": optionsSet.data.gender,
@@ -377,9 +384,10 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   else
   {
     // Result Datas
+    var date = new Date();
     $scope.selected = { "name": "", "owner_organization_id": "",
                         "date_of_birth": '',
-                        "date_stamp": '',
+                        "date_stamp": (new Date()).toISOString().substring(0,10),
                         "latitude":"", "longitude": "", "gender": "",
                         "markings": {'ear': [],'mount': [],'tail': []},
                         "broken_teeth": [], "eye_damage": [],

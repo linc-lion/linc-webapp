@@ -58,6 +58,11 @@
         <div class="btn-group">
           <button ng-disabled="!(Selecteds.length>0)" type = "button" class = "btn btn btn-warning" ng-click="Delete_Image()">Delete</button>
         </div>
+        <div ng-show="debug" class="btn-group">
+          <button type = "button" class = "btn btn btn-default">
+            {{!settings.images.Selecteds.length}}
+          </button>
+        </div>
       </div>
     </div>
     <div class="col-sm-6">

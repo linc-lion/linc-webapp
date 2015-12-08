@@ -137,6 +137,7 @@ angular.module('lion.guardians.admin.lions.controller', [])
           });
         });
         $scope.Selecteds = [];
+        $scope.settings.lions.Selecteds = $scope.Selecteds;
       });
     }, function () {
 
@@ -228,13 +229,17 @@ angular.module('lion.guardians.admin.lions.controller', [])
     $scope.settings.lions.reverse = $scope.reverse;
   };
 
-  $scope.Selecteds = _.map($scope.settings.lions.Selecteds, function(selected) {
-    var sel_lion = _.find($scope.lions, function(lion) {
-      return lion.id == selected.id;
-    });
-    if(sel_lion)
-      sel_lion.selected = true;
-    return sel_lion;
+  $scope.Selecteds = [];
+  _.forEach($scope.settings.lions.Selecteds, function(selected) {
+    if(selected != undefined){
+      var sel_lion = _.find($scope.lions, function(lion) {
+        return lion.id == selected.id;
+      });
+      if(sel_lion){
+        sel_lion.selected = true;
+        $scope.Selecteds.push(sel_lion);
+      }
+    }
   });
   $scope.settings.lions.Selecteds = $scope.Selecteds;
 
