@@ -31,7 +31,7 @@ class ImageSetsListHandler(BaseHandler):
         if response.code == 200:
             self.finish(response.body)
         else:
-            self.finish({'status':'error','message':'fail to get Image Sets GET'})
+            self.finish({'status':'error','message':'fail to get Image Set profile'})
 
     @asynchronous
     @engine
@@ -600,12 +600,17 @@ class ImagesUploadHandler(BaseHandler):
                 remove(dirfs+'/'+fname)
                 image_type = self.get_argument("image_type","cv")
                 is_public = self.get_argument("is_public",True)
+                if not is_public:
+                    is_public = False
                 image_set_id = self.get_argument("image_set_id")
                 iscover = self.get_argument("iscover",False)
+                if iscover:
+                    iscover = True
                 body = {
                     "image_type" : image_type,
                     "is_public" : is_public,
-                    "image_set_id" : int(image_set_id)
+                    "image_set_id" : int(image_set_id),
+                    "iscover" : iscover
                 }
                 logging.info(body)
                 body["image"] = fileencoded
@@ -613,22 +618,16 @@ class ImagesUploadHandler(BaseHandler):
                 headers = {'Linc-Api-AuthToken':self.current_user['token']}
                 response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                               method='POST',body=self.json_encode(body),headers=headers)
-                if response.code == 200:
-                    msg = 'new image uploaded with success.'
-                    if iscover:
-                        respdata = loads(response.body)
-                        imgset_id = respdata['data']['image_set_id']
-                        newimg_id = respdata['data']['id']
-                        resource_url = '/imagesets/'+str(imgset_id)
-                        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,\
-                            method='PUT',body=self.json_encode({'main_image_id':newimg_id}))
-                        if response.code == 200:
-                            msg = msg + 'new image '+str(newimg_id)+' defined as main_image of the imageset '+str(imgset_id)+'.'
-                    logging.info('\n\n'+msg)
-                    self.setSuccess(201,msg)
+                if response.code in [200,201]:
+                    self.setSuccess(response.code,'File successfully uploaded. You must wait the processing phase for your image.')
+                elif response.code == 409:
+                    self.dropError(response.code,'The file already exists in the system.')
+                elif response.code == 400:
+                    self.dropError(response.code,'The data or file sent is invalid to add the image in the system.')
                 else:
-                    print (response.code)
-                    self.dropError(500,'fail to upload image')
+                    self.dropError(500,'Fail to upload image')
+        else:
+            self.dropError(400,'Please send a file to upload.')
 
 def remove_file(sched,fn,jid):
     remove(fn)
