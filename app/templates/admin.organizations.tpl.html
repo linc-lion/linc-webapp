@@ -38,6 +38,11 @@
     <div class="btn-group">
       <button ng-disabled="!(Selecteds.length>0)" type = "button" class = "btn btn btn-warning" ng-click="Delete_Organization()">Delete</button>
     </div>
+    <div ng-show="debug" class="btn-group">
+      <button type = "button" class = "btn btn btn-default">
+        {{!settings.organizations.Selecteds.length}}
+      </button>
+    </div>
   </div>
   <table class="table table-hover">
     <thead>

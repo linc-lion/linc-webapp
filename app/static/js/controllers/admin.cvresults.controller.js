@@ -138,6 +138,7 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
           });
         });
         $scope.Selecteds = [];
+        $scope.settings.cvresults.Selecteds = $scope.Selecteds;
       });
     }, function () {
 
@@ -221,18 +222,22 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
     $scope.settings.cvresults.reverse = $scope.reverse;
   };
 
-  $scope.Selecteds = _.map($scope.settings.cvresults.Selecteds, function(selected) {
-    var sel_cvresult = _.find($scope.cvresults, function(cvresult) {
-      return cvresult.id == selected.id;
-    });
-    if(sel_cvresult)
-      sel_cvresult.selected = true;
-    return sel_cvresult;
+  $scope.Selecteds = [];
+  _.forEach($scope.settings.cvresults.Selecteds, function(selected) {
+    if(selected != undefined){
+      var sel_cvresult = _.find($scope.cvresults, function(cvresult) {
+        return cvresult.id == selected.id;
+      });
+      if(sel_cvresult){
+        sel_cvresult.selected = true;
+        $scope.Selecteds.push(sel_cvresult);
+      }
+    }
   });
   $scope.settings.cvresults.Selecteds = $scope.Selecteds;
 
   check_selects();
-  
+
 }])
 
 ;

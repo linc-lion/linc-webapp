@@ -107,7 +107,6 @@ angular.module('lion.guardians.linc.data.factory', [])
         'Selecteds': [],
         'Mode': ''
       }
-
   }
 
   return {
