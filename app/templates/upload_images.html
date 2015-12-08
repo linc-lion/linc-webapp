@@ -83,6 +83,9 @@
           <span ng-show="item.isError"><i class="icon icon-trash"></i></span>
         </td>
         <td nowrap class="text-center">
+          <button type="button" class="btn btn-default btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading" ng-show="!item.isSuccess">
+            <span class="icon icon-circle-slash"></span> Cancel
+          </button>
           <button type="button" class="btn btn-default btn-xs" ng-click="item.remove()" ng-show="!item.isSuccess">
             <span class="icon icon-trash"></span> Remove
           </button>
@@ -107,6 +110,9 @@
   </div>
 </div>
 <div class="modal-footer">
+  <button type="button" class="btn btn-default btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+    <span class="icon icon-circle-slash"></span> Cancel all
+  </button>
   <button type="button" class="btn btn-default btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length || uploader.isUploading">
     <span class="icon icon-trash"></span> Remove all
   </button>
