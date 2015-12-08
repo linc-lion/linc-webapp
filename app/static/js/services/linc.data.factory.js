@@ -58,4 +58,64 @@ angular.module('lion.guardians.linc.data.factory', [])
       lions_cvreq_filters = filter;
     }
   };
+}])
+
+.factory('LincApiDataFactory', [ 'LincApiServices',function(LincApiServices) {
+  var initialized = false;
+  var settings = {
+      'Selected_tab': 'users',
+      'users': {
+        'reverse': false,
+        'predicative': 'id',
+        'Selecteds': [],
+        'Mode': ''
+      },
+      'organizations': {
+        'reverse': false,
+        'predicative': 'id',
+        'Selecteds': [],
+        'Mode': ''
+      },
+      'lions': {
+        'reverse': false,
+        'predicative': 'id',
+        'Selecteds': [],
+        'Mode': ''
+      },
+      'imagesets': {
+        'reverse': false,
+        'predicative': 'id',
+        'Selecteds': [],
+        'Mode': ''
+      },
+      'images': {
+        'reverse': false,
+        'predicative': 'id',
+        'Selecteds': [],
+        'Mode': '',
+        'currentPage': 0
+      },
+      'cvrequests': {
+        'reverse': false,
+        'predicative': 'id',
+        'Selecteds': [],
+        'Mode': ''
+      },
+      'cvresults': {
+        'reverse': false,
+        'predicative': 'id',
+        'Selecteds': [],
+        'Mode': ''
+      }
+
+  }
+
+  return {
+    get_settings: function () {
+      return (settings);
+    },
+    set_settings: function (source) {
+      settings = source;
+    }
+  };
 }]);

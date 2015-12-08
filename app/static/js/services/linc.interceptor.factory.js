@@ -18,11 +18,14 @@ angular.module('lion.guardians.interceptor.factory', [])
             console.log("Response Error 401");
           }
           if (rejection.status === 403) {
-            NotificationFactory.info({
-              title: 'Forbidden', message: 'Not authorized to access',
-              position: 'left',  // right, left, center
-              duration: 5000     // milisecond
-            });
+            var notification = $injector.get('NotificationFactory');
+            if(notification){
+              notification.info({
+                title: 'Forbidden', message: 'Not authorized to access',
+                position: 'left',  // right, left, center
+                duration: 5000     // milisecond
+              });
+            }
           }
           return $q.reject(rejection);
       }

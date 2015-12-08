@@ -5,23 +5,7 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
 
 .controller('AdminOrganizationsCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
 
-  $scope.Selecteds = $scope.CleanBracket.organizations;
-  $scope.Org_Mode  =  $scope.EmptyString.organizations;
-
-  var check_selects = function (){
-    var count = 0;
-    $scope.all_selected = false;
-    $scope.all_unselected = true;
-    if($scope.ordered_organizations) count = $scope.ordered_organizations.length;
-    if(count>0){
-      if($scope.Selecteds.length == count)
-        $scope.all_selected = true;
-      if($scope.Selecteds.length)
-        $scope.all_unselected = false;
-    }
-  }
-
-  check_selects();
+  $scope.Org_Mode  =  $scope.settings.organizations.Mode;
 
   $scope.check_all = function (val){
     _.forEach($scope.organizations, function(organization) {
@@ -30,10 +14,11 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
         if(!_.some($scope.Selecteds, organization))
           $scope.Selecteds.push(organization);
       }
-      else {
-        $scope.Selecteds = _.without($scope.Selecteds, organization);
-      }
     });
+    if(!val){
+      $scope.Selecteds = [];
+      $scope.settings.organizations.Selecteds = $scope.Selecteds;
+    }
     check_selects();
   }
 
@@ -60,6 +45,7 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
         }
         else {
           $scope.Selecteds = _.without($scope.Selecteds, org);
+          $scope.settings.organizations.Selecteds = $scope.Selecteds;
         }
       }
     }
@@ -71,6 +57,7 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
       }
       else {
         $scope.Selecteds = _.without($scope.Selecteds, organization);
+        $scope.settings.organizations.Selecteds = $scope.Selecteds;
       }
     }
     check_selects();
@@ -205,12 +192,43 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
     $scope.Org_Mode = '';
   }
 
+  var check_selects = function (){
+    var count = 0;
+    $scope.all_selected = false;
+    $scope.all_unselected = true;
+    if($scope.ordered_organizations) count = $scope.ordered_organizations.length;
+    if(count>0){
+      if($scope.Selecteds.length == count)
+        $scope.all_selected = true;
+      if($scope.Selecteds.length)
+        $scope.all_unselected = false;
+    }
+  }
+
+  $scope.Change_Org_Mode = function(mode){
+    $scope.Org_Mode = mode;
+    $scope.settings.organizations.Mode = mode;
+  }
   // Order by
-  $scope.reverse = false;
-  $scope.predicate = 'id';
+  $scope.reverse = $scope.settings.organizations.reverse;
+  $scope.predicate = $scope.settings.organizations.predicate;
   $scope.order = function(predicate) {
     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
     $scope.predicate = predicate;
+    $scope.settings.organizations.predicate = $scope.predicate;
+    $scope.settings.organizations.reverse = $scope.reverse;
   };
+
+  $scope.Selecteds = _.map($scope.settings.organizations.Selecteds, function(selected) {
+    var sel_org = _.find($scope.organizations, function(org) {
+      return org.id == selected.id;
+    });
+    if(sel_org)
+      sel_org.selected = true;
+    return sel_org;
+  });
+  $scope.settings.organizations.Selecteds = $scope.Selecteds;
+
+  check_selects();
 }])
 ;

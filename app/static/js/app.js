@@ -32,8 +32,8 @@ app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($roo
     $rootScope.remove_history = function(name, id) {
       var find = _.findWhere(history, {'name': name, 'param' : {'id': id}});
       var result = _.without(history,find);
-      if(result[result.length-1].name == ('search' + name))
-       result.pop();
+      //if(result[result.length-1].name == ('search' + name))
+      // result.pop();
       history = result;
     }
 }]);
@@ -99,6 +99,9 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             }],
             cvresults: ['LincApiServices', function(LincApiServices) {
               return LincApiServices.CVResults({'method': 'get'});
+            }],
+            settings: ['LincApiDataFactory', function(LincApiDataFactory) {
+              return LincApiDataFactory.get_settings();
             }]
           }
         })

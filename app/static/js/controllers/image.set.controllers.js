@@ -4,6 +4,7 @@ angular.module('lion.guardians.image.set.controllers', [])
 
 .controller('ImageSetCtrl', ['$scope', '$rootScope', '$state', '$timeout', '$uibModal', '$interval', 'NotificationFactory', 'LincServices', 'organizations', 'imageset', function ($scope, $rootScope, $state, $timeout, $uibModal, $interval, NotificationFactory, LincServices, organizations, imageset) {
 
+  $scope.is_modal_open = false;
   $scope.imageset = imageset;
 
   var labels = function (damages, labels){
@@ -51,8 +52,8 @@ angular.module('lion.guardians.image.set.controllers', [])
     $scope.imageset.organization = _.find(organizations, {'id': $scope.imageset.owner_organization_id}).name;
     Set_Tags();
   }
-  $scope.goto_search_lion = function (){
-    $state.go("searchlion", {filter: {id: imageset.lion_id}});
+  $scope.goto_lion = function (id){
+    $state.go("lion", {'id': id});
   }
   // Image Gallery
   $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.id};
@@ -186,6 +187,10 @@ angular.module('lion.guardians.image.set.controllers', [])
       console.log(error);
     });
   };
+  $scope.Reload_Page = function () {
+    $state.go($state.current, {'id': $scope.imageset.id}, {reload: true});
+    $rootScope.remove_history('imageset', $scope.imageset.id);
+  };
 }])
 
 .controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$stateParams', '$bsTooltip', 'NotificationFactory','LincServices', 'imagesets_filters', 'imagesets', function ($scope, $timeout, $interval, $stateParams, $bsTooltip, NotificationFactory, LincServices, imagesets_filters, imagesets) {
@@ -199,6 +204,7 @@ angular.module('lion.guardians.image.set.controllers', [])
     "Ear Marking: Left, Right, or Both; Mounth Marking: Back, Front, Left and Right; \n" +
     "Tail Marking: Missing Tuft; Nose Color: Black, Patchy, Pink, or Spotted; Scars: Body Left/Right, Face and Tail";
 
+  $scope.is_modal_open = false;
   $scope.title_tooltip = {'title': 'tips: ' + tool_title, 'checked': true};
 
   var get_features = function (tag_labels, TAGS){
