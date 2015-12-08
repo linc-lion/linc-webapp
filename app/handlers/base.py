@@ -31,7 +31,11 @@ class BaseHandler(RequestHandler):
             except ValueError:
                 self.dropError(400,'Fail to parse input data.')
         else:
-            self.trashed='true'==self.get_argument('trashed',False)
+            trashed = str(self.get_argument('trashed',False)).strip()
+            if trashed == '*':
+                self.trashed = '*'
+            else:
+                self.trashed = 'true'==trashed
 
     @asynchronous
     @engine
