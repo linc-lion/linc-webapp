@@ -467,7 +467,7 @@ angular.module('lion.guardians.api.services', [])
   var CVRequests = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/cvrequests?trashed=*';
+      var url = '/cvrequests';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
@@ -550,7 +550,7 @@ angular.module('lion.guardians.api.services', [])
   var CVResults = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/cvresults?trashed=*';
+      var url = '/cvresults';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;

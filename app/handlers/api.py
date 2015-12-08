@@ -99,14 +99,10 @@ class CVResultsHandler(BaseHandler):
     @engine
     @authenticated
     def get(self, res_id='', xlist=None):
-        resource_url = '/cvresults';
-        if self.trashed:
-            resource_url += '?trashed=' + str(self.trashed)
-        elif xlist and res_id:
-            if xlist:
-                resource_url += '/' + res_id + '/' + xlist
-            else:
-                resource_url += '/' + res_id
+        resource_url = '/cvresults/' + res_id;
+        if xlist:
+            resource_url += '/' + xlist
+
         print(resource_url)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
@@ -150,11 +146,7 @@ class CVRequestHandler(BaseHandler):
     @engine
     @authenticated
     def get(self, req_id=''):
-        resource_url = '/cvrequests'
-        if self.trashed:
-            resource_url += '?trashed=' + str(self.trashed)
-        elif res_id:
-            resource_url += '/' + req_id
+        resource_url = '/cvrequests/' + req_id
         print(resource_url)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
