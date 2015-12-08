@@ -16,14 +16,8 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
                    'admin': $scope.$storage.admin };
 
   $scope.options = {
-    "imageset": {
-      "type": "imageset", "edit": "new", "uploading_user_id": 1,
-      "owner_organization_id": 2, "uploading_organization_id": 2
-    },
-    "lions": {
-      "type": "lion", "edit": "new", "uploading_user_id": 1,
-      "owner_organization_id": 2, "uploading_organization_id": 2
-    }
+    "imageset": {"type": "imageset", "edit": "new"},
+    "lions": {"type": "lion", "edit": "new"}
   };
 
   $scope.goto_imageset = function (Id) {
