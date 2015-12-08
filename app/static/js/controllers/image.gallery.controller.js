@@ -50,6 +50,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     $scope.Properties[0].checked = true;
     $scope.Properties[0].checked = true;
     $scope.isViewFilter = true;
+    $scope.Selecteds = [];
   }
 
   var check_selecteds = function(type){

@@ -7,8 +7,6 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   $scope.imagesetId = options.imagesetId;
   $scope.isNew = options.isNew;
 
-  $scope.SucessItems = [];
-  $scope.ErrorItems = [];
   var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
   $scope.title = 'Upload Images';
   $scope.content = 'Upload Images<br />Contents!';
@@ -91,23 +89,32 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   uploader.onProgressAll = function(progress) {
       console.info('onProgressAll', progress);
   };
+  $scope.SucessItems = [];
+  $scope.Duplicateds = [];
+  $scope.InvalidData = [];
+  $scope.ErrorItems = [];
   uploader.onSuccessItem = function(fileItem, response, status, headers) {
       console.info('onSuccessItem', fileItem, response, status, headers);
+      var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
+      $scope.SucessItems.push(photo);
       fileItem.remove();
   };
   uploader.onErrorItem = function(fileItem, response, status, headers) {
       console.info('onErrorItem', fileItem, response, status, headers);
+      var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
+      if(status==409){
+        $scope.Duplicateds.push(photo);
+      }
+      else if(status==400){
+        $scope.InvalidData.push(photo);
+      }
+      else
+        $scope.ErrorItems.push(photo);
   };
   uploader.onCancelItem = function(fileItem, response, status, headers) {
       console.info('onCancelItem', fileItem, response, status, headers);
   };
   uploader.onCompleteItem = function(fileItem, response, status, headers) {
-    var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
-    if(status==200)
-      $scope.SucessItems.push(photo);
-    else
-      $scope.ErrorItems.push(photo);
-
       console.info('onCompleteItem', fileItem, response, status, headers);
       if(!$scope.isNew)
         $scope.Update();
@@ -116,8 +123,10 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
     console.info('onCompleteAll');
     var message = '';
     if($scope.SucessItems.length>0){
-      if($scope.SucessItems.length==1)
-        message = "Image (" + $scope.SucessItems[0].name + ") uploaded with success";
+      if($scope.SucessItems.length==1){
+        message = "Image (" + $scope.SucessItems[0].name + ") uploaded with success.<br>";
+        message += "It's being processed now."
+      }
       else{
         var items = 'Images (';
         _.forEach($scope.SucessItems, function(photo, i) {
@@ -125,33 +134,88 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
           if(i+1 < $scope.SucessItems.length)
            items += '<br>';
         });
-        message = items + ") uploaded with success";
+        message = items + ") uploaded with success.<br>";
+        message += "The images are being processed now."
       }
       NotificationFactory.success({
         title: "Upload", message: message,
         position: "right", // right, left, center
-        duration: 2000     // milisecond
+        duration: 5000     // milisecond
       });
     }
-    if($scope.ErrorItems.length>0){
-      if($scope.ErrorItems.length==1)
-        message = "Unable to upload image (" + $scope.ErrorItems[0].name + ").";
+    if($scope.Duplicateds.length>0){
+      var title = "Duplicate image"
+      if($scope.Duplicateds.length==1){
+        message = "The image (" + $scope.Duplicateds[0].name + ")<br>";
+        message += "is already on base."
+      }
       else{
-        var items = 'Unable to upload images (';
-        _.forEach($scope.ErrorItems, function(photo, i) {
+        title = "Duplicate images"
+        var items = 'The images (';
+        _.forEach($scope.Duplicateds, function(photo, i) {
           items += photo.name;
-          if(i+1 < $scope.ErrorItems.length)
+          if(i+1 < $scope.Duplicateds.length)
            items += '<br>';
         });
-        message = items + ").";
+        message = items + ")<br>";
+        message += "already exists in the base."
       }
-      if($scope.debug || ($scope.ErrorItems[0].status != 401 && $scope.ErrorItems[0].status != 403)){
+      if($scope.debug || ($scope.Duplicateds[0].status != 401 && $scope.Duplicateds[0].status != 403)){
         NotificationFactory.error({
-          title: "Error", message: message,
+          title: title, message: message,
           position: 'right', // right, left, center
           duration: 5000   // milisecond
         });
       }
     }
+    if($scope.InvalidData.length>0){
+      var title = "Invalid Data or Image"
+      if($scope.InvalidData.length==1){
+        message = "There is an error in the data or image <br> (" + $scope.InvalidData[0].name + ")<br>";
+        message += "."
+      }
+      else{
+        title = "Invalid Data or Image"
+        var items = 'There are errors in the data or images <br>(';
+        _.forEach($scope.InvalidData, function(photo, i) {
+          items += photo.name;
+          if(i+1 < $scope.InvalidData.length)
+           items += '<br>';
+        });
+        message = items + ")";
+      }
+      if($scope.debug || ($scope.InvalidData[0].status != 401 && $scope.InvalidData[0].status != 403)){
+        NotificationFactory.error({
+          title: title, message: message,
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
+    }
+    if($scope.ErrorItems.length>0){
+      var title = "Upload Error"
+      if($scope.ErrorItems.length==1){
+        message = "Error in processing image <br> (" + $scope.ErrorItems[0].name + ")<br>";
+        message += "."
+      }
+      else{
+        title = "Upload Errors"
+        var items = 'Errors in processing of images <br>(';
+        _.forEach($scope.ErrorItems, function(photo, i) {
+          items += photo.name;
+          if(i+1 < $scope.ErrorItems.length)
+           items += '<br>';
+        });
+        message = items + ")";
+      }
+      if($scope.debug || ($scope.ErrorItems[0].status != 401 && $scope.ErrorItems[0].status != 403)){
+        NotificationFactory.error({
+          title: title, message: message,
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
+    }
+
   };
 }])
