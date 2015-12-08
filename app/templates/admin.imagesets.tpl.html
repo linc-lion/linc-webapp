@@ -233,8 +233,14 @@
         <td class="text-center">{{!imageset.gender}}</td>
         <td class="text-center">{{!imageset.notes}}</td>
         <td class="text-center"><div>{{!imageset.tags}}</div></td>
-        <td class="text-center">{{!imageset.is_verified}}</td>
-        <td class="text-center">{{!imageset.trashed}}</td>
+        <td class="text-center">
+          <i ng-if="imageset.is_verified" class="icon icon-check"></i>
+          <i ng-if="!imageset.is_verified" class="icon icon-cross"></i>
+        </td>
+        <td class="text-center">
+          <i ng-if="imageset.trashed" class="icon icon-check"></i>
+          <i ng-if="!imageset.trashed" class="icon icon-cross"></i>
+        </td>
         <td class="text-center">{{!imageset.created_at}}</td>
         <td class="text-center">{{!imageset.updated_at}}</td>
       </tr>
