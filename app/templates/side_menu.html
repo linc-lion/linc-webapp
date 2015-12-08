@@ -11,15 +11,15 @@
           <li role="presentation" class="active"><a ui-sref="conservationists" ng-click="$hide()">Directory of conservationists</a></li>
           <li role="separator" class="divider"><hr></li>
           <li role="presentation">
-            <metadata use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="side_lion" goto-imageset-action="goto_lion(Id); $hide()" cancel_action="$hide()" options-set="options.lions" debug="debug"></metadata>
+            <metadata use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="side_lion" goto-imageset-action="goto_lion(Id); $hide()" cancel_action="$hide()" options-set="options.lions" debug="debug" modal-is-open="is_modal_open"></metadata>
           </li>
           <li role="presentation"><a ui-sref="searchlion" ng-click="$hide()">Search Lion</a></li>
           <li role="presentation">
-            <metadata use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="side_image_set"  goto-imageset-action="goto_imageset(Id); $hide()" cancel-action="$hide()" options-set="options.imageset" debug="debug"></metadata>
+            <metadata use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="side_image_set"  goto-imageset-action="goto_imageset(Id); $hide()" cancel-action="$hide()" options-set="options.imageset" debug="debug" modal-is-open="is_modal_open"></metadata>
           </li>
           <li role="presentation"><a ui-sref="searchimageset" ng-click="$hide()">Search Image Sets</a></li>
           <li role="separator" class="divider"><hr></li>
-          <li role="presentation" ng-show="login.admin"><a ui-sref="admin.users" ng-click="$hide()">Manage Users</a></li>
+          <li role="presentation" ng-show="login.admin"><a ui-sref="admin" ng-click="$hide()">Administration</a></li>
           <li role="presentation"><a ng-click="logout($hide)">Logout</a></li>
         </ul>
       </div>

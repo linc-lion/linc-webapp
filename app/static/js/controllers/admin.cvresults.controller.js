@@ -5,23 +5,7 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
 
 .controller('AdminCVResultsCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
 
-  $scope.Selecteds = $scope.CleanBracket.cvresults;
-  $scope.CVResult_Mode = $scope.EmptyString.cvresults;
-
-  var check_selects = function (){
-    var count = 0;
-    $scope.all_selected = false;
-    $scope.all_unselected = true;
-    if($scope.ordered_cvresults) count = $scope.ordered_cvresults.length;
-    if(count>0){
-      if($scope.Selecteds.length == count)
-        $scope.all_selected = true;
-      if($scope.Selecteds.length)
-        $scope.all_unselected = false;
-    }
-  }
-
-  check_selects();
+  $scope.CVResult_Mode = $scope.settings.cvresults.Mode;
 
   $scope.check_all = function (val){
     _.forEach($scope.cvresults, function(cvresult) {
@@ -30,10 +14,11 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
         if(!_.some($scope.Selecteds, cvresult))
           $scope.Selecteds.push(cvresult);
       }
-      else {
-        $scope.Selecteds = _.without($scope.Selecteds, cvresult);
-      }
     });
+    if(!val){
+      $scope.Selecteds = [];
+      $scope.settings.cvresults.Selecteds = $scope.Selecteds;
+    }
     check_selects();
   }
 
@@ -60,6 +45,7 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
         }
         else {
           $scope.Selecteds = _.without($scope.Selecteds, cvres);
+          $scope.settings.cvresults.Selecteds = $scope.Selecteds;
         }
       }
     }
@@ -71,6 +57,7 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
       }
       else {
         $scope.Selecteds = _.without($scope.Selecteds, cvresult);
+        $scope.settings.cvresults.Selecteds = $scope.Selecteds;
       }
     }
     check_selects();
@@ -211,13 +198,41 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
     $scope.CVResult_Mode = '';
   }
 
+  var check_selects = function (){
+    var count = 0;
+    $scope.all_selected = false;
+    $scope.all_unselected = true;
+    if($scope.ordered_cvresults) count = $scope.ordered_cvresults.length;
+    if(count>0){
+      if($scope.Selecteds.length == count)
+        $scope.all_selected = true;
+      if($scope.Selecteds.length)
+        $scope.all_unselected = false;
+    }
+  }
+
   // Order by
-  $scope.reverse = false;
-  $scope.predicate = 'id';
+  $scope.reverse = $scope.settings.cvresults.reverse;
+  $scope.predicate = $scope.settings.cvresults.predicate;
   $scope.order = function(predicate) {
     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
     $scope.predicate = predicate;
+    $scope.settings.cvresults.predicate = $scope.predicate;
+    $scope.settings.cvresults.reverse = $scope.reverse;
   };
+
+  $scope.Selecteds = _.map($scope.settings.cvresults.Selecteds, function(selected) {
+    var sel_cvresult = _.find($scope.cvresults, function(cvresult) {
+      return cvresult.id == selected.id;
+    });
+    if(sel_cvresult)
+      sel_cvresult.selected = true;
+    return sel_cvresult;
+  });
+  $scope.settings.cvresults.Selecteds = $scope.Selecteds;
+
+  check_selects();
+  
 }])
 
 ;

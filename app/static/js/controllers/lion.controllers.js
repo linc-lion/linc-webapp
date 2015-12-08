@@ -4,6 +4,7 @@ angular.module('lion.guardians.lions.controllers', [])
 
 .controller('LionCtrl', ['$scope', '$rootScope', '$state', '$uibModal', 'NotificationFactory', 'LincServices', 'organizations', 'lion', function ($scope, $rootScope, $state, $uibModal, NotificationFactory, LincServices, organizations, lion) {
 
+  $scope.is_modal_open = false;
   $scope.lion = lion;
 
   var labels = function (damages, labels){
@@ -120,6 +121,9 @@ angular.module('lion.guardians.lions.controllers', [])
       }
       console.log(error);
     });
+  };
+  $scope.Reload_Page = function () {
+    $state.go($state.current, {'id': lion.id}, {reload: true});
   };
 }])
 
