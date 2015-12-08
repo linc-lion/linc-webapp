@@ -46,7 +46,8 @@ class BaseHandler(RequestHandler):
         params={
             'headers' : h,
             'url' : url,
-            'method' : method        }
+            'method' : method,
+            'request_timeout': 720}
         if method in ['POST','PUT']:
             params['body']=body
         request = HTTPRequest(**params)
