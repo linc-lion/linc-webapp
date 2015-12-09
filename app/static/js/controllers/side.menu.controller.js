@@ -29,7 +29,6 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
 
   $scope.logout = function($hide){
     $hide();
-    // Clear storage info
     var xsrfcookie = $cookies.get('_xsrf');
     var req = { method: 'POST',
                    url: '/logout',
@@ -37,21 +36,18 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
                headers: { 'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie},
                 config: {}};
     $http(req).then(function(){
-      // Cleanning storage
-      $scope.$storage.$reset();
-
-      NotificationFactory.success({
-        title: "Logout", message:'Good bye.',
-        position: "right", // right, left, center
-        duration: 3000     // milisecond
-      });
-      $state.go("login");
+      console.log('Logout ok!');
     }, function(){
-      NotificationFactory.error({
-        title: "Logout", message:'Logout failed.',
-        position: "right", // right, left, center
-        duration: 5000     // milisecond
-      });
+      console.log('Logout ok but the token is already invalid');
     });
+    // Cleanning storage
+    $scope.$storage.$reset();
+    $cookies.remove('userlogin');
+    NotificationFactory.success({
+      title: "Logout", message:'Good bye.',
+      position: "right", // right, left, center
+      duration: 3000     // milisecond
+    });
+    $state.go("login");
   }
 }]);
