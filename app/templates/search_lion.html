@@ -119,7 +119,7 @@
         <tbody>
           <tr class="link" ui-sref="lion({id: lion.id})" ng-repeat="lion in paginated_lions = (filtered_lions = (lions | orderBy:predicate:reverse | nameid_filter:name_or_id:'primary_image_set_id' | age_filter:LionAge | organization_filter:organizations | features_filter:tag_features | gender_filter:genders ) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)">
             <td class="text-center">{{!lion.id}}</td>
-            <td class="text-center"><img ng-src="{{!lion.thumbnail}}" width="40" height="40"></td>
+            <td class="text-center" ng-right-click="show_photo(lion.image)"><img ng-src="{{!lion.thumbnail}}" width="40" height="40"></td>
             <td class="text-center">{{!lion.name}}</td>
             <td class="text-center">{{!lion.age}} y/o</td>
             <td class="text-center">{{!lion.primary_image_set_id}}</td>

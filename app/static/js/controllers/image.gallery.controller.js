@@ -252,6 +252,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
         $scope.Selected.isCover = $scope.Selecteds[0].cover;
       }
       console.log("Set Properties");
+      $scope.isViewFilter = false;
     }
     else if($scope.Selecteds.length>1){
       if(check_selecteds("type"))
@@ -265,11 +266,13 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
         $scope.Selected.isPublic = $scope.Selecteds[0].is_public;
       }
       $scope.Selected.isCover = false;
+      $scope.isViewFilter = false;
     }
     else{
       $scope.Selected.Type = 'cv';
       $scope.Selected.isPublic = true;
       $scope.Selected.isCover = false;
+      $scope.isViewFilter = true;
     }
   }
 
@@ -474,7 +477,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
 
         if (tProportionalHeight > size.maxHeight){
           elm.css('height', size.maxHeight + 'px');
-          elm.css('width', tProportionalHeight + 'px');
+          elm.css('width', tProportionalWidth + 'px');
         }
         else{
           elm.css('width', size.maxWidth + 'px');

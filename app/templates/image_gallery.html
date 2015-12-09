@@ -4,13 +4,15 @@
 
   <uib-carousel interval="carousel_interval" no-wrap="noWrapSlides">
     <uib-slide ng-repeat="(index, photo) in paginated_gallery = (filtered_gallery = (gallery | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" active="photo.active">
-      <img ng-src="{{!photo.medium || '//:0' }}" class="img-responsive center-block" ng-click="hide_image_view()" scale-image>
+      <img ng-src="{{!photo.medium || '//:0' }}" class="img-responsive center-block" ng-click="hide_image_view()" >
       <div class="carousel-caption">
-        <i class="icon icon-globe" ng-if="photo.is_public"></i>
-        <i class="icon icon-star" ng-if="photo.cover"></i>{{!Type_Labels[photo.type]}}
+        <i class="icon icon-star" ng-if="photo.cover">&nbsp;</i>
+        {{!Type_Labels[photo.type]}}
+        <i class="icon icon-globe" ng-if="photo.is_public">&nbsp;</i>
       </div>
     </uib-slide>
   </uib-carousel>
+
 </div>
 
 <div class="modal-header" ng-show="title">
@@ -45,8 +47,8 @@
     </div>
     <div class="col-sm-3 line-left">
     <ul class="nav nav-tabs tabs-sm">
-      <li role="presentation" ng-class="{active:isViewFilter}"><a ng-click="Change_Tab('filter')">Filter Mode</a></li>
-      <li role="presentation" class="tabs-primary" ng-class="{active:!isViewFilter}"><a ng-click="Change_Tab('edit')">Edit Mode</a></li>
+      <li role="presentation" ng-class="{active:isViewFilter}"><a ng-click="Change_Tab('filter')">Filter</a></li>
+      <li role="presentation" class="tabs-primary" ng-class="{active:!isViewFilter}"><a ng-click="Change_Tab('edit')">Edit</a></li>
     </ul>
       <div ng-show="isViewFilter">
         <h4>Image type</h4>
@@ -66,11 +68,11 @@
       <div ng-show="!isViewFilter">
         <h4>Image type</h4>
         <div class="radio" ng-init="Selected.Type='all'" ng-repeat="item in Selects">
-          <label><input type="radio" ng-model="Selected.Type" ng-value="item.type" ng-click="Change_Type()">{{!item.label}}</label>
+          <label><input type="radio" ng-model="Selected.Type" ng-value="item.type" ng-click="Change_Type()" ng-disabled="!Selecteds.length">{{!item.label}}</label>
         </div>
         <h4>Properties</h4>
         <div class="form-group">
-          <select class="form-control custom-select" ng-change="Change_isPublic();" ng-options="property.value as property.name for property in Properties" ng-model="Selected.isPublic" required>
+          <select class="form-control custom-select" ng-change="Change_isPublic();" ng-options="property.value as property.name for property in Properties" ng-model="Selected.isPublic" required ng-disabled="!Selecteds.length">
             <option></option>
           </select>
         </div>
@@ -79,7 +81,7 @@
           <label><input ng-click="Change_isPublic();" type="checkbox" checked ng-model="Selected.isPublic" >Public</label>
         </div>-->
         <div class="checkbox">
-          <label><input ng-click="Change_Cover()" ng-disabled="!Selected.isPublic || Selecteds.length>1" type="checkbox" ng-model="Selected.isCover">Cover image</label>
+          <label><input ng-click="Change_Cover()" ng-disabled="!Selected.isPublic || Selecteds.length!=1" type="checkbox" ng-model="Selected.isCover">Cover image</label>
         </div>
       </div>
       <p>

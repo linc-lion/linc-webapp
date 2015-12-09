@@ -127,7 +127,7 @@
         <tbody>
           <tr class="link" ng-repeat="imageset in paginated_image_set = (filtered_image_sets = (imagesets | orderBy:predicate:reverse | nameid_filter:name_or_id:'lion_id' | age_filter:LionAge | organization_filter:organizations | features_filter:tag_features | gender_filter:genders ) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)">
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.id}}</td>
-            <td class="text-center" ui-sref="imageset({id: imageset.id})"><img ng-src="{{!imageset.thumbnail}}" width="40" height="40"></td>
+            <td class="text-center" ui-sref="imageset({id: imageset.id})" ng-right-click="show_photo(imageset.image)"><img ng-src="{{!imageset.thumbnail}}" width="40" height="40"></td>
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.name}}</td>
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.lion_id}}</td>
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.age}} y/o</td>

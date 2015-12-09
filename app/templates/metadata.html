@@ -73,12 +73,10 @@
               <input type="text" class="form-control meta_input" ng-model="selected.date_of_birth" ng-change='Calc_Age()' data-date-format="yyyy-MM-dd" data-date-type="string" data-max-date="today" data-autoclose="1" name="date1" bs-datepicker placement="bottom-right">
             </div>
             <pre ng-show="debug">{{!selected.date_of_birth}}</pre>
-
-            <div class="form-inline group-input">
-              <label for="id_age">Age <small>(years): </small></label>
-              <input type="number" class="form-control meta_input" min="0" name="id_age" ng-model="selected.age" placeholder="Age" readonly>
+            <div class="form-inline group-input-center">
+              <label for="id_age">Age: {{!lion_age}} <small>(years)</small></label>
             </div>
-            <pre ng-show="debug">{{!selected.age}}</pre>
+            <pre ng-show="debug">{{!lion_age}}</pre>
 
             <hr class="style-line">
             <!--<div class="form-inline group-select"  ng-class="{'has-error': metadataForm.gender.$dirty && metadataForm.gender.$error.required }">
