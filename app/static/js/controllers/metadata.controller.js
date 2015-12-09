@@ -98,13 +98,14 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     else{
       if(optionsSet.type === 'lion'){
         //Selected Dates
-        var lion_sel_data = { "organization_id": selected.organization_id, "name" : selected.name };
+        var lion_sel_data = { "organization_id": selected.organization_id,
+                              "name" : selected.name };
         var imageset_sel_data = {
-          "date_stamp": (selected.date_stamp == '') ? null : selected.date_stamp,
-          'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
-          'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
+          "date_stamp": (selected.date_stamp == null) ? '' : selected.date_stamp,
+          'latitude': isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
+          'longitude': isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
           "gender": selected.gender,
-          "date_of_birth": (selected.date_of_birth == '') ? null : selected.date_of_birth,
+          "date_of_birth": (selected.date_of_birth == null) ? '' : selected.date_of_birth,
           "tags": TAGS,
           "notes": selected.notes
         };
@@ -121,6 +122,16 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           }
           return result;
         }, {});
+
+        if(_.has(imageset_data, 'date_stamp') && imageset_data['date_stamp'] == '')
+          imageset_data['date_stamp'] = null;
+        if(_.has(imageset_data, 'date_of_birth') && imageset_data['date_of_birth'] == '')
+          imageset_data['date_of_birth'] = null;
+        if(_.has(imageset_data, 'latitude') && imageset_data['latitude'] == '')
+          imageset_data['latitude'] = null;
+        if(_.has(imageset_data, 'longitude') && imageset_data['longitude'] == '')
+          imageset_data['longitude'] = null;
+
         if(Object.keys(lion_data).length || Object.keys(imageset_data).length)
           data = {"lion": lion_data, "imageset": imageset_data, 'imagesetId': optionsSet.data.primary_image_set_id};
       }
@@ -128,21 +139,31 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         //Selected Dates
         var sel_data = {
           "owner_organization_id": selected.owner_organization_id,
-          "date_stamp": (selected.date_stamp == '') ? null : selected.date_stamp,
-          'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
-          'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
+          "date_stamp": (selected.date_stamp == null) ? '' : selected.date_stamp,
+          'latitude': isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
+          'longitude': isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
           "gender": selected.gender,
-          "date_of_birth": (selected.date_of_birth == '') ? null : selected.date_of_birth,
+          "date_of_birth": (selected.date_of_birth == null) ? '' : selected.date_of_birth,
           "tags": TAGS, 'notes': selected.notes
         };
         if($scope.showLionName){ sel_data.name = selected.name; }
         // Check Changed Datas
         var imageset_data = _.reduce(sel_data, function(result, n, key) {
-          if (sel_data[key] && sel_data[key] != optionsSet.data[key]) {
+          if (sel_data[key] != optionsSet.data[key]) {
               result[key] = sel_data[key];
           }
           return result;
         }, {});
+
+        if(_.has(imageset_data, 'date_stamp') && imageset_data['date_stamp'] == '')
+          imageset_data['date_stamp'] = null;
+        if(_.has(imageset_data, 'date_of_birth') && imageset_data['date_of_birth'] == '')
+          imageset_data['date_of_birth'] = null;
+        if(_.has(imageset_data, 'latitude') && imageset_data['latitude'] == '')
+          imageset_data['latitude'] = null;
+        if(_.has(imageset_data, 'longitude') && imageset_data['longitude'] == '')
+          imageset_data['longitude'] = null;
+
         if(Object.keys(imageset_data).length)
           data = imageset_data;
       }
@@ -339,33 +360,40 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       TAGS = optionsSet.data.tags.split(",");
     }
 
-    //var eyes_dams = _.includes(_.intersection(TAGS,['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']), 'EYE_DAMAGE_BOTH') ?  ['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT'] : _.intersection(TAGS,['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']);
-    //var ear_marks = _.includes(_.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']),'EAR_MARKING_BOTH') ? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] : _.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']);
-
     var eyes_dams = _.includes(TAGS,'EYE_DAMAGE_BOTH')? ['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT'] :  _.intersection(TAGS,['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']);
 
     var ear_marks = _.includes(TAGS,'EAR_MARKING_BOTH')? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] :  _.intersection(TAGS,['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'])
 
-
-    //optionsSet.data.date_of_birth = (new Date(Date.parse(optionsSet.data.date_of_birth))).toJSON();
-    try{
-      optionsSet.data.date_of_birth = new Date(optionsSet.data.date_of_birth).toJSON().slice(0,10);
-    }catch(e){
-      optionsSet.data.date_of_birth = "";
+    if(optionsSet.data.date_of_birth==null)
+      optionsSet.data.date_of_birth = '';
+    else{
+      try{
+        optionsSet.data.date_of_birth = new Date(optionsSet.data.date_of_birth).toJSON().slice(0,10);
+      }
+      catch(e){
+        optionsSet.data.date_of_birth = '';
+      }
     }
-    try{
-      optionsSet.data.date_stamp = new Date(optionsSet.data.date_stamp).toJSON().slice(0,10);
-    }catch(e){
-      optionsSet.data.date_stamp = "";
+    if(optionsSet.data.date_stamp==null)
+      optionsSet.data.date_stamp = '';
+    else{
+      try{
+        optionsSet.data.date_stamp = new Date(optionsSet.data.date_stamp).toJSON().slice(0,10);
+      }
+      catch(e){
+        optionsSet.data.date_stamp = '';
+      }
     }
+    optionsSet.data.latitude = (optionsSet.data.latitude == null) ? '' : optionsSet.data.latitude;
+    optionsSet.data.longitude = (optionsSet.data.longitude == null) ? '' : optionsSet.data.longitude;
     //optionsSet.data.name = optionsSet.data.name == '-' ? '': optionsSet.data.name;
     $scope.selected = {
       "name": optionsSet.data.name,
       "id": optionsSet.data.id,
-      "date_stamp": (optionsSet.data.date_stamp == null) ? '' : optionsSet.data.date_stamp,
+      "date_stamp": optionsSet.data.date_stamp,
       "owner_organization_id": optionsSet.data.owner_organization_id,
       "organization_id": optionsSet.data.organization_id,
-      "date_of_birth": (optionsSet.data.date_of_birth  == null) ? '' : optionsSet.data.date_of_birth,
+      "date_of_birth": optionsSet.data.date_of_birth,
       "latitude": optionsSet.data.latitude,
       "longitude": optionsSet.data.longitude,
       "gender": optionsSet.data.gender,
@@ -376,7 +404,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       "markings":{'ear': ear_marks,'mount': _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']),'tail': _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT'])},
       "notes": optionsSet.data.notes
     }
-    $scope.selected.age = getAge($scope.selected.date_of_birth);
+    $scope.lion_age = getAge($scope.selected.date_of_birth);
 
     $scope.tooltip = {'show_lion_name': (optionsSet.type === 'lion'),
                       'value': {'title': optionsSet.data.name + "'s Lion Page", 'checked': true}};
@@ -386,7 +414,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     // Result Datas
     var date = new Date();
     $scope.selected = { "name": "", "owner_organization_id": "",
-                        "date_of_birth": '',
+                        "date_of_birth": null,
                         "date_stamp": (new Date()).toISOString().substring(0,10),
                         "latitude":"", "longitude": "", "gender": "",
                         "markings": {'ear': [],'mount': [],'tail': []},
@@ -420,7 +448,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     return age;
   }
   $scope.Calc_Age = function(){
-    $scope.selected.age = getAge($scope.selected.date_of_birth);
+    $scope.lion_age = getAge($scope.selected.date_of_birth);
   }
 
 }]);

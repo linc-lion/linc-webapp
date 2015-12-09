@@ -176,6 +176,11 @@ angular.module('lion.guardians.lions.controllers', [])
         $scope.$broadcast('rzSliderForceRender');
     });
   };
+  // Click in Photo - Show Big Image
+  $scope.show_photo = function(url){
+    var win = window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=100, left=100, width=600, height=600");
+    win.focus();
+  }
   $scope.refreshSlider();
   //$scope.name_or_id ='';
   $scope.name_or_id = lion_filters.name_or_id;

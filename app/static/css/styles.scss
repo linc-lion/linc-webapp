@@ -482,3 +482,13 @@ i.icon-border{
   border-color: #333;
 }
 i.icon-border.active{background: #999 !important;}
+
+.custom-select{
+  width: 100%;
+  color: #333 !important;
+  text-align: left;
+}
+
+.custom-select .caret{
+  float:right;
+}
