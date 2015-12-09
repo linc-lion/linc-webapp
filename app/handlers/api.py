@@ -176,13 +176,17 @@ class LionsHandler(BaseHandler):
     @authenticated
     def get(self, lion_id='', locations=None):
         resource_url = '/lions'
-        if self.trashed:
-            resource_url += '?trashed=' + str(self.trashed)
-        elif lion_id:
+        api=self.get_argument('api', '')
+        if lion_id:
             resource_url += '/' + lion_id
-            api=self.get_argument('api', '')
             if api:
                 resource_url += '?api=true'
+        elif api and self.trashed:
+            resource_url += '?api=true&trashed=' + str(self.trashed)
+        elif api:
+            resource_url += '?api=true'
+        elif self.trashed:
+            resource_url += '?trashed=' + str(self.trashed)
         print(resource_url)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)

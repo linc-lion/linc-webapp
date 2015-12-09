@@ -115,8 +115,14 @@
         <td class="text-center" ng-click="show_photo(image.url)"><img ng-src="{{!image.url}}" width="40" height="40"></td>
         <td class="text-center">{{!image.image_type}}</td>
         <td class="text-center">{{!image.image_set_id}}</td>
-        <td class="text-center">{{!image.is_public}}</td>
-        <td class="text-center">{{!image.trashed}}</td>
+        <td class="text-center">
+          <i ng-if="image.is_public" class="icon icon-check"></i>
+          <i ng-if="!image.is_public" class="icon icon-cross"></i>
+        </td>
+        <td class="text-center">
+          <i ng-if="image.trashed" class="icon icon-check"></i>
+          <i ng-if="!image.trashed" class="icon icon-cross"></i>
+        </td>
         <td class="text-center">{{!image.created_at}}</td>
         <td class="text-center">{{!image.updated_at}}</td>
       </tr>
