@@ -16,6 +16,7 @@ from zipfile import ZipFile
 from shutil import rmtree
 from datetime import datetime,timedelta
 from utils.rolecheck import allowedRole
+from tornadoist import ProcessMixin
 
 class ImageSetsListHandler(BaseHandler):
     @asynchronous
@@ -573,7 +574,7 @@ class ImagesHandler(BaseHandler):
         else:
             self.finish({'status':'error','message':'fail to delete image DELETE'})
 
-class ImagesUploadHandler(BaseHandler):
+class ImagesUploadHandler(BaseHandler, ProcessMixin):
     @asynchronous
     @engine
     @authenticated
