@@ -6,8 +6,8 @@
         <h4 class="aside-title" ng-bind-html="title"></h4>
       </div>
       <div class="aside-body" ng-show="content">
-        <p>Logged in as <strong>{{!login.username}}</strong> of <strong>{{!login.orgname}}</strong></p>
-        <ul class="nav nav-stacked" ng-show="login.logged" >
+        <p>Logged in as <strong>{{!user.name}}</strong> of <strong>{{!user.organization}}</strong></p>
+        <ul class="nav nav-stacked" ng-show="user.logged" >
           <li role="presentation" class="active"><a ui-sref="conservationists" ng-click="$hide()">Directory of conservationists</a></li>
           <li role="separator" class="divider"><hr></li>
           <li role="presentation">
@@ -19,7 +19,7 @@
           </li>
           <li role="presentation"><a ui-sref="searchimageset" ng-click="$hide()">Search Image Sets</a></li>
           <li role="separator" class="divider"><hr></li>
-          <li role="presentation" ng-show="login.admin"><a ui-sref="admin" ng-click="$hide()">Administration</a></li>
+          <li role="presentation" ng-show="user.admin"><a ui-sref="admin" ng-click="$hide()">Administration</a></li>
           <li role="presentation"><a ng-click="logout($hide)">Logout</a></li>
         </ul>
       </div>

@@ -14,7 +14,8 @@ app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($roo
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
         //console.log(toState);
-        if(!$localStorage.logged && toState.name != "login"){
+        var user = $localStorage.user;
+        if((!user || !user.logged) && toState.name != "login"){
           event.preventDefault();
           $state.go("login");
         }

@@ -2,11 +2,11 @@
 
 angular.module('lion.guardians.lions.controllers', [])
 
-.controller('LionCtrl', ['$scope', '$rootScope', '$state', '$uibModal', 'NotificationFactory', 'LincServices', 'organizations', 'lion', function ($scope, $rootScope, $state, $uibModal, NotificationFactory, LincServices, organizations, lion) {
+.controller('LionCtrl', ['$scope', '$localStorage', '$rootScope', '$state', '$uibModal', 'NotificationFactory', 'LincServices', 'organizations', 'lion', function ($scope, $localStorage, $rootScope, $state, $uibModal, NotificationFactory, LincServices, organizations, lion) {
 
   $scope.is_modal_open = false;
   $scope.lion = lion;
-
+  $scope.user = $localStorage.user;
   var labels = function (damages, labels){
     var label = "";
     labels.forEach(function (elem, i){

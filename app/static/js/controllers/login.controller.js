@@ -4,44 +4,44 @@ angular.module('lion.guardians.login.controller', [])
 // Login
 .controller('LoginCtrl', ['$scope', '$state', '$timeout', '$localStorage', 'LincServices', 'NotificationFactory', function ($scope, $state, $timeout, $localStorage, LincServices, NotificationFactory) {
 
-  $scope.loginData = { username : '' , password : '', _xsrf: '', token : '' , admin : false, id : 0, organization_id: 0};
+  $scope.loginData = { username : '' , password : '', _xsrf: ''};
   $scope.dataLoading = false;
   $scope.remember = true;
 
-  $scope.$storage = $localStorage;
-
-  $localStorage.$reset();
-
+  //$scope.$storage = $localStorage;
+  var user = $localStorage.user;
   $scope.checkLogged = function(){
-    if ($scope.$storage.logged){
+    if (user && user.logged){
       $scope.dataLoading = true;
-
       $timeout(function() {
         $scope.dataLoading = false;
         $state.go("home");
       }, 1000);
-
     }
   }
 
   $scope.login = function() {
-    if (!$scope.$storage.logged){
+    if (!user || !user.logged){
       if (!$scope.loginData.username || !$scope.loginData.password){
         alert('Please fill the email address and password to login.');
       }else{
         $scope.dataLoading = true;
+        $localStorage.$reset();
         // Authentication Service
         LincServices.Login($scope.loginData, function(result){
-          $scope.$storage.logged = true;
           var data = result.data.data;
-          $scope.$storage.username = data['username'];
-          $scope.$storage.orgname = data['orgname']
-          $scope.$storage.admin = data['admin'];
-          $scope.$storage.token = data['token'];
-          $scope.$storage.user_id = data['id'];
-          $scope.$storage.org_id = data['organization_id'];
+          user = {
+            'name': data['username'],
+            'id': data['id'],
+            'organization': data['orgname'],
+            'organization_id': data['organization_id'],
+            'admin': data['admin'],
+            'logged': true,
+            'token': data['token']
+          }
+          $localStorage.user = user;
           $scope.dataLoading = false;
-          if (!$scope.$storage.logged){
+          if (!user.logged){
             NotificationFactory.error({
               title: 'Login', message: 'Login error.',
               position: 'left', // right, left, center
@@ -49,13 +49,6 @@ angular.module('lion.guardians.login.controller', [])
             });
           }
           else{
-            /*
-            NotificationFactory.success({
-              title: "Login", message:'Successfully connected.',
-              position: "right", // right, left, center
-              duration: 3000     // milisecond
-            });
-            */
             $state.go("home");
           }
         }, function (error){

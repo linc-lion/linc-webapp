@@ -2,11 +2,11 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.controller('ImageSetCtrl', ['$scope', '$rootScope', '$state', '$timeout', '$uibModal', '$interval', 'NotificationFactory', 'LincServices', 'organizations', 'imageset', function ($scope, $rootScope, $state, $timeout, $uibModal, $interval, NotificationFactory, LincServices, organizations, imageset) {
+.controller('ImageSetCtrl', ['$scope', '$localStorage', '$rootScope', '$state', '$timeout', '$uibModal', '$interval', 'NotificationFactory', 'LincServices', 'organizations', 'imageset', function ($scope, $localStorage, $rootScope, $state, $timeout, $uibModal, $interval, NotificationFactory, LincServices, organizations, imageset) {
 
   $scope.is_modal_open = false;
   $scope.imageset = imageset;
-
+  $scope.user = $localStorage.user;
   var labels = function (damages, labels){
     var label = "";
     labels.forEach(function (elem, i){
@@ -156,12 +156,12 @@ angular.module('lion.guardians.image.set.controllers', [])
           $scope.imageset.cvresults = cvresult.obj_id;
           console.log('Success Results CV');
         }
-        else if (cvresult.status == "queued"){
+        else if (cvresult.status == "queued" || cvresult.status == "submitted" || cvresult.status == "fail"){
           $scope.requesCVpromise = $interval(requestCVResults(requestObj.id), 60000);
         }
         else{
           NotificationFactory.error({
-            title: "Error", message: 'Unable to Get CV Results',
+            title: "Error", message: 'Unable to Connect CV Server',
             position: 'right', // right, left, center
             duration: 5000   // milisecond
           });
