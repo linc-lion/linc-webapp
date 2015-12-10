@@ -45,7 +45,7 @@ angular.module('lion.guardians.cvresults.directive', [])
             cvrequestId: function () {
               return scope.cvrequestId;
             },
-            cvresults: function(LincServices) {
+            data_cvresults: function(LincServices) {
               return LincServices.getCVResults(scope.cvresultsId);
             }
           }
