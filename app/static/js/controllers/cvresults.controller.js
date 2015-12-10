@@ -2,12 +2,12 @@
 
 angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults.directive'])
 
-.controller('CVResultsCtrl', ['$scope', '$state', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'imagesetId', 'cvrequestId', 'cvresults', function ($scope, $state, $uibModalInstance, LincServices, NotificationFactory, imagesetId, cvrequestId, cvresults) {
+.controller('CVResultsCtrl', ['$scope', '$state', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'imagesetId', 'cvrequestId', 'cvresults', function ($scope, $state, $uibModalInstance, LincServices, NotificationFactory, imagesetId, cvrequestId, data_cvresults) {
 
-  $scope.title = 'CV Results';
+  $scope.title = 'CV Results' + '(CV Request Id: '+ data_cvresults.req_id + ' - Status: ' + data_cvresults.status + ')';
   $scope.content = 'Form';
 
-  $scope.cvresults = cvresults;
+  $scope.cvresults = data_cvresults.cvresults;
 
   $scope.Close = function () {
     $uibModalInstance.dismiss("close");

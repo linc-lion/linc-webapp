@@ -423,13 +423,15 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
       function (results){
         var data = results.data.data.table;
         var associated_id = results.data.data.associated.id;
+        var status = results.data.data.status;
+        var req_id = results.data.data.req_id;
         var cvresults = _.map(data, function(element, index) {
           var elem = {};
           if(associated_id == element.id) elem["associated"] = true;
           else elem["associated"] = false;
           return _.extend({}, element, elem);
         });
-        deferred.resolve(cvresults);
+        deferred.resolve({'cvresults': cvresults, 'req_id': req_id, 'status': status});
       },
       function(error){
         if(debug || (error.status != 401 && error.status != 403)){
