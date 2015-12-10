@@ -12,12 +12,6 @@
         <label for="org_name">Name:</label>
         <input style="text-align: left;" type="text" required class="form-control" name="org_name" ng-model="organization.name">
       </div>
-      <div class="checkbox">
-        <label for="org_trashed">
-        <input name="org_trashed" id="org_trashed" type="checkbox"  ng-model="organization.trashed" ng-checked="organization.trashed">
-          Trashed
-        </label>
-      </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-default" ng-click="Cancel_Edit_Org()" data-dismiss="modal">Cancel</button>
@@ -37,6 +31,9 @@
     </div>
     <div class="btn-group">
       <button ng-disabled="!(Selecteds.length>0)" type = "button" class = "btn btn btn-warning" ng-click="Delete_Organization()">Delete</button>
+    </div>
+    <div class="btn-group">
+      <button ng-disabled="!(Selecteds.length>0)" type="button" class = "btn btn btn-warning" ng-click="Undo_Trash()">Restore</button>
     </div>
     <div ng-show="debug" class="btn-group">
       <button type = "button" class = "btn btn btn-default">
