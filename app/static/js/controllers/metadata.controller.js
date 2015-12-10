@@ -55,13 +55,12 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
           "lion_id": null,
           "main_image_id": null,
-          "uploading_user_id": $scope.user.id,
-          "owner_organization_id": selected.organization_id,
+          "uploading_user_id": selected.uploading_user_id,
           "uploading_organization_id": selected.organization_id,
+          "owner_organization_id": selected.organization_id,
           "is_primary": null,
           "is_verified": false
         }
-
         var lion_data = {
           "name": selected.name,
           "organization_id": selected.organization_id,
@@ -80,9 +79,9 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           "notes": selected.notes,
           "lion_id": null,
           "main_image_id": null,
-          "uploading_user_id": $scope.user.id,
-          "owner_organization_id": selected.organization_id,
+          "uploading_user_id": selected.uploading_user_id,
           "uploading_organization_id": selected.organization_id,
+          "owner_organization_id": selected.organization_id,
           "is_primary": null,
           "is_verified": false
         }
@@ -96,7 +95,6 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
                               "name" : selected.name };
         var imageset_sel_data = {
           "owner_organization_id": selected.organization_id,
-          "uploading_organization_id": selected.organization_id,
           "date_stamp": (selected.date_stamp == null) ? '' : selected.date_stamp,
           'latitude': isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
           'longitude': isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
@@ -135,7 +133,6 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         //Selected Dates
         var sel_data = {
           "owner_organization_id": selected.owner_organization_id,
-          "uploading_organization_id": selected.owner_organization_id,
           "date_stamp": (selected.date_stamp == null) ? '' : selected.date_stamp,
           'latitude': isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
           'longitude': isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
@@ -411,8 +408,9 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     // Result Datas
     var date = new Date();
     $scope.selected = { "name": "",
-                        "owner_organization_id": $scope.user.organization_id,
+                        "uploading_user_id": $scope.user.id,
                         "uploading_organization_id": $scope.user.organization_id,
+                        "owner_organization_id": $scope.user.organization_id,
                         "organization_id": $scope.user.organization_id,
                         "date_of_birth": null,
                         "date_stamp": (new Date()).toISOString().substring(0,10),
