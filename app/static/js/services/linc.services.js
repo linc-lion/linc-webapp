@@ -165,6 +165,25 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     return deferred.promise;
   };
 
+  var Conservationists = function () {
+    var deferred = $q.defer();
+    var url = '/users/conservationists';
+    HTTPCachedGet(url, {}).then(function (results) {
+       deferred.resolve(results.data);
+    },
+    function (error) {
+      if(debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to load Conservationists data',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
+      deferred.reject(error);
+    });
+    return deferred.promise;
+  };
+
   var GetDownload = function (data) {
     var deferred = $q.defer();
     var getFileNameFromHeader = function(header) {
@@ -478,6 +497,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     $http(req).then(success, error);
   };
 
+
   var dataFactory = {};
   // List of ImageSets , Lions and Organizations
   dataFactory.Organizations = GetAllOrganizations;
@@ -489,6 +509,8 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   dataFactory.Lion = GetLion;
   // Location History
   dataFactory.LocationHistory = GetLocations;
+  // Conservationists
+  dataFactory.Conservationists = Conservationists;
   // Clean Caches
   dataFactory.ClearAllCaches = ClearAllCaches;
   dataFactory.ClearAllImagesetsCaches = ClearAllImagesetsCaches;
