@@ -4,7 +4,7 @@ angular.module('lion.guardians.login.controller', [])
 // Login
 .controller('LoginCtrl', ['$scope', '$state', '$timeout', '$localStorage', 'LincServices', 'NotificationFactory', function ($scope, $state, $timeout, $localStorage, LincServices, NotificationFactory) {
 
-  $scope.loginData = { username : '' , password : '', _xsrf: '', token : '' , admin : false};
+  $scope.loginData = { username : '' , password : '', _xsrf: '', token : '' , admin : false, id : 0, organization_id: 0};
   $scope.dataLoading = false;
   $scope.remember = true;
 
@@ -38,6 +38,8 @@ angular.module('lion.guardians.login.controller', [])
           $scope.$storage.orgname = data['orgname']
           $scope.$storage.admin = data['admin'];
           $scope.$storage.token = data['token'];
+          $scope.$storage.user_id = data['id'];
+          $scope.$storage.org_id = data['organization_id'];
           $scope.dataLoading = false;
           if (!$scope.$storage.logged){
             NotificationFactory.error({
