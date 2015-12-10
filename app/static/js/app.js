@@ -221,6 +221,11 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           data: {
             bodyClasses: 'conservationists',
             debug: debug
+          },
+          resolve: {
+            conservationists: ['LincServices', function(LincServices) {
+              return LincServices.Conservationists();
+            }]
           }
         })
         // About //
