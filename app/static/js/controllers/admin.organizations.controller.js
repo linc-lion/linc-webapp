@@ -8,7 +8,7 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
   $scope.Org_Mode  =  $scope.settings.organizations.Mode;
 
   $scope.check_all = function (val){
-    _.forEach($scope.organizations, function(organization) {
+    _.forEach($scope.$parent.organizations, function(organization) {
       organization.selected = val;
       if(organization.selected){
         if(!_.some($scope.Selecteds, organization))
@@ -118,26 +118,84 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
   $scope.Delete_Organization = function() {
     $scope.Delete('Organizations')
     .then(function (result) {
-      var data = _.pluck(_.map($scope.Selecteds, function (organization){
+      var organizations_id = _.pluck(_.map($scope.Selecteds, function (organization){
         return {'id': organization.id};
       }), 'id');
 
-      $scope.LincApiServices.Organizations({'method': 'delete', 'organizations_id': data}).then(function(){
-        $scope.Notification.success({
-          title: "Delete", message: 'Organizations successfully deleted.',
+      $scope.LincApiServices.Organizations({'method': 'delete', 'organizations_id': organizations_id}).then(function(response){
+        if(response.error.length>0){
+          var data = _.pluck(_.map(response.error, function (organization){
+            return {'id': organization.id};
+          }), 'id');
+          var msg = (data.length>1) ? 'Unable to delete organizations ' + data : 'Unable to delete organization ' + data;
+          $scope.Notification.error({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        }
+        else if(response.success.length>0){
+          var msg = (response.success.length>1) ? 'Organizations successfully deleted' : 'Organization successfully deleted';
+          $scope.Notification.success({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        }
+        _.forEach(response.success, function(organization, i){
+          var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': organization.id}));
+          if(index>-1){
+            $scope.Selecteds[index].trashed = true;
+          }
+        });
+      });
+    }, function () {
+      $scope.Notification.info({
+        title: "Cancel", message: 'Delete canceled',
+        position: 'right', // right, left, center
+        duration: 2000   // milisecond
+      });
+    });
+  }
+
+  $scope.Undo_Trash = function() {
+    var organization_id = _.pluck(_.map($scope.Selecteds, function (organization){
+      return {'id': organization.id};
+    }), 'id');
+
+    $scope.LincApiServices.Organizations({'method': 'undo_trash', 'organization_id': organization_id}).then(function(response){
+      if(response.error.length>0){
+        var data = _.pluck(_.map(response.error, function (organization){
+          return {'id': organization.id};
+        }), 'id');
+        var msg = (data.length>1) ? 'Unable to restore organizations ' + data : 'Unable to restore organization ' + data;
+        $scope.Notification.error({
+          title: "Restore", message: msg,
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        $scope.Selecteds.forEach(function(item, i){
-          var remove = _.remove($scope.organizations, function(organization) {
-            return organization.id == item.id;
-          });
+      }
+      else if(response.success.length>0){
+        var msg = (response.success.length>1) ? 'Organizations successfully restored' : 'Organization successfully restored';
+        $scope.Notification.success({
+          title: "Restore", message: msg,
+          position: "right", // right, left, center
+          duration: 2000     // milisecond
         });
-        $scope.Selecteds = [];
-        $scope.settings.organizations.Selecteds = $scope.Selecteds;
+      }
+      _.forEach(response.success, function(organization, i){
+        var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': organization.id}));
+        if(index>-1){
+          $scope.Selecteds[index].trashed = false;
+        }
       });
-    }, function () {
-
+    },
+    function(error){
+      $scope.Notification.error({
+        title: "Fail", message: 'Fail to restore from Trash',
+        position: 'right', // right, left, center
+        duration: 5000   // milisecond
+      });
     });
   }
 
@@ -179,7 +237,7 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
         organization.created_at = (organization.created_at || "").substring(0,19);
         organization.updated_at = (organization.updated_at || "").substring(0,19);
         organization.selected = true;
-        $scope.organizations.push(organization);
+        $scope.$parent.organizations.push(organization);
         $scope.Selecteds.push(organization);
       },
       function(error){
@@ -223,7 +281,7 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
   $scope.Selecteds = [];
   _.forEach($scope.settings.organizations.Selecteds, function(selected) {
     if(selected != undefined){
-      var sel_org = _.find($scope.organizations, function(org) {
+      var sel_org = _.find($scope.$parent.organizations, function(org) {
         return org.id == selected.id;
       });
       if(sel_org){

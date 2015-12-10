@@ -8,7 +8,7 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
   $scope.CVResult_Mode = $scope.settings.cvresults.Mode;
 
   $scope.check_all = function (val){
-    _.forEach($scope.cvresults, function(cvresult) {
+    _.forEach($$scope.$parent.cvresults, function(cvresult) {
       cvresult.selected = val;
       if(cvresult.selected){
         if(!_.some($scope.Selecteds, cvresult))
@@ -67,6 +67,9 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
   $scope.Add_CVResult = function () {
     $scope.modalTitle = 'Add CV Result';
     $scope.showValidationMessages = false;
+
+    $scope.cvrequests = angular.copy($scope.$parent.cvrequests);
+
     $scope.cvresult = {
       'cvrequest_id': -1, 'match_probability': '',
       'trashed': false, 'selected': true
@@ -89,6 +92,8 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
   $scope.Edit_CVResult = function() {
     $scope.modalTitle = 'Edit CV Result';
     $scope.showValidationMessages = false;
+
+  $scope.cvrequests = angular.copy($scope.$parent.cvrequests);
 
     if($scope.Selecteds.length == 1){
       $scope.CVResult_Mode = 'edit';
@@ -122,26 +127,45 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
   $scope.Delete_CVResult = function() {
     $scope.Delete('CV Results')
     .then(function (result) {
-      var data = _.pluck(_.map($scope.Selecteds, function (cvresult){
+      var cvresults_id = _.pluck(_.map($scope.Selecteds, function (cvresult){
         return {'id': cvresult.id};
       }), 'id');
 
-      $scope.LincApiServices.CVResults({'method': 'delete', 'cvresults_id': data}).then(function(){
-        $scope.Notification.success({
-          title: "Delete", message: 'CV Results successfully deleted.',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        $scope.Selecteds.forEach(function(item, i){
-          var remove = _.remove($scope.cvresults, function(cvresult) {
-            return cvresult.id == item.id;
+      $scope.LincApiServices.CVResults({'method': 'delete', 'cvresults_id': cvresults_id}).then(function(response){
+        if(response.error.length>0){
+          var data = _.pluck(_.map(response.error, function (cvresult){
+            return {'id': cvresult.id};
+          }), 'id');
+          var msg = (data.length>1) ? 'Unable to delete cv results ' + data : 'Unable to delete cv result ' + data;
+          $scope.Notification.error({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        }
+        else if(response.success.length>0){
+          var msg = (response.success.length>1) ? 'CV Results successfully deleted' : 'CV Result successfully deleted';
+          $scope.Notification.success({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        }
+        _.forEach(response.success, function(cvresult, i){
+          var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': cvresult.id}));
+          var remove = _.remove($scope.$parent.cvresults, function(cvresult) {
+            return cvresult.id == index;
           });
         });
         $scope.Selecteds = [];
         $scope.settings.cvresults.Selecteds = $scope.Selecteds;
       });
     }, function () {
-
+      $scope.Notification.info({
+        title: "Cancel", message: 'Delete canceled',
+        position: 'right', // right, left, center
+        duration: 2000   // milisecond
+      });
     });
   }
 
@@ -159,8 +183,8 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
         });
         var cvresult = $scope.Selecteds[0];
         _.merge(cvresult, cvresult, response.data);
-        cvresult.created_at = (cvrequest.created_at || "").substring(0,19);
-        cvresult.updated_at = (cvrequest.updated_at || "").substring(0,19);
+        cvresult.created_at = (cvresult.created_at || "").substring(0,19);
+        cvresult.updated_at = (cvresult.updated_at || "").substring(0,19);
       },
       function(error){
         $scope.Notification.error({
@@ -182,10 +206,10 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
           duration: 2000     // milisecond
         });
         var cvresult = response.data;
-        cvresult.created_at = (cvrequest.created_at || "").substring(0,19);
-        cvresult.updated_at = (cvrequest.updated_at || "").substring(0,19);
+        cvresult.created_at = (cvresult.created_at || "").substring(0,19);
+        cvresult.updated_at = (cvresult.updated_at || "").substring(0,19);
         cvresult.selected = true;
-        $scope.cvresults.push(cvresult);
+        $scope.$parent.cvresults.push(cvresult);
         $scope.Selecteds.push(cvresult);
       },
       function(error){
@@ -225,7 +249,7 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
   $scope.Selecteds = [];
   _.forEach($scope.settings.cvresults.Selecteds, function(selected) {
     if(selected != undefined){
-      var sel_cvresult = _.find($scope.cvresults, function(cvresult) {
+      var sel_cvresult = _.find($scope.$parent.cvresults, function(cvresult) {
         return cvresult.id == selected.id;
       });
       if(sel_cvresult){

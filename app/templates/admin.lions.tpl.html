@@ -14,19 +14,13 @@
       </div>
       <div class="form-group">
         <label for="organization_id">Organization:</label>
-        <select class="form-control custom-select" name="organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="lion.organization_id" required><option></option>
+        <select class="form-control custom-select" name="owner_organization_id" ng-options="organization.id as organization.name group by Trash_Label(organization) for organization in organizations" ng-model="lion.organization_id" required><option></option>
         </select>
       </div>
       <div class="form-group">
         <label for="imageset_id">Primary Image Set:</label>
-        <select class="form-control custom-select" name="imageset_id" ng-options="imageset.id as imageset.id for imageset in imagesets" ng-model="lion.primary_image_set_id" required><option></option>
+        <select class="form-control custom-select" name="imageset_id" ng-options="imageset.id as imageset.id group by Trash_Label(imageset) for imageset in imagesets" ng-model="lion.primary_image_set_id" required><option></option>
         </select>
-      </div>
-      <div class="checkbox">
-        <label for="lion_trashed">
-        <input name="lion_trashed" id="lion_trashed"  type="checkbox"  ng-model="lion.trashed" ng-checked="lion.trashed">
-          Trashed
-        </label>
       </div>
     </div>
     <div class="modal-footer">
@@ -47,6 +41,9 @@
     </div>
     <div class="btn-group">
       <button ng-disabled="!(Selecteds.length>0)" type = "button" class = "btn btn btn-warning" ng-click="Delete_Lion()">Delete</button>
+    </div>
+    <div class="btn-group">
+      <button ng-disabled="!(Selecteds.length>0)" type="button" class = "btn btn btn-warning" ng-click="Undo_Trash()">Restore</button>
     </div>
     <div ng-show="debug" class="btn-group">
       <button type = "button" class = "btn btn btn-default">

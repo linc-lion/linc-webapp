@@ -8,7 +8,7 @@ angular.module('lion.guardians.admin.users.controller', [])
   $scope.User_Mode = $scope.settings.users.Mode;
 
   $scope.check_all = function (val){
-    _.forEach($scope.users, function(user) {
+    _.forEach($scope.$parent.users, function(user) {
       user.selected = val;
       if(user.selected){
         if(!_.some($scope.Selecteds, user))
@@ -68,6 +68,9 @@ angular.module('lion.guardians.admin.users.controller', [])
     $scope.password_required = true;
     $scope.modalTitle = 'Add User';
     $scope.showValidationMessages = false;
+
+    $scope.organizations = angular.copy($scope.$parent.organizations);
+
     $scope.user = {
       'email': '', 'organization_id': -1, 'password': '', 'confirmPassword': '', 'admin': false, 'trashed': false, 'selected': true
     }
@@ -89,6 +92,8 @@ angular.module('lion.guardians.admin.users.controller', [])
     $scope.password_required = false;
     $scope.modalTitle = 'Edit User';
     $scope.showValidationMessages = false;
+
+    $scope.organizations = angular.copy($scope.$parent.organizations);
 
     if($scope.Selecteds.length == 1){
       $scope.User_Mode = 'edit';
@@ -122,26 +127,84 @@ angular.module('lion.guardians.admin.users.controller', [])
   $scope.Delete_User = function() {
     $scope.Delete('Users')
     .then(function (result) {
-      var data = _.pluck(_.map($scope.Selecteds, function (user){
+      var users_id = _.pluck(_.map($scope.Selecteds, function (user){
         return {'id': user.id};
       }), 'id');
 
-      $scope.LincApiServices.Users({'method': 'delete', 'users_id': data}).then(function(){
-        $scope.Notification.success({
-          title: "Delete", message: 'Users successfully deleted.',
+      $scope.LincApiServices.Users({'method': 'delete', 'users_id': users_id}).then(function(response){
+        if(response.error.length>0){
+          var data = _.pluck(_.map(response.error, function (user){
+            return {'id': user.id};
+          }), 'id');
+          var msg = (data.length>1) ? 'Unable to delete users ' + data : 'Unable to delete user ' + data;
+          $scope.Notification.error({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        }
+        else if(response.success.length>0){
+          var msg = (response.success.length>1) ? 'Users successfully deleted' : 'User successfully deleted';
+          $scope.Notification.success({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        }
+        _.forEach(response.success, function(user, i){
+          var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': user.id}));
+          if(index>-1){
+            $scope.Selecteds[index].trashed = true;
+          }
+        });
+      });
+    }, function () {
+      $scope.Notification.info({
+        title: "Cancel", message: 'Delete canceled',
+        position: 'right', // right, left, center
+        duration: 2000   // milisecond
+      });
+    });
+  }
+
+  $scope.Undo_Trash = function() {
+    var users_id = _.pluck(_.map($scope.Selecteds, function (user){
+      return {'id': user.id};
+    }), 'id');
+
+    $scope.LincApiServices.Users({'method': 'undo_trash', 'users_id': users_id}).then(function(response){
+      if(response.error.length>0){
+        var data = _.pluck(_.map(response.error, function (user){
+          return {'id': user.id};
+        }), 'id');
+        var msg = (data.length>1) ? 'Unable to restore users ' + data : 'Unable to restore user ' + data;
+        $scope.Notification.error({
+          title: "Restore", message: msg,
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        $scope.Selecteds.forEach(function(item, i){
-          var remove = _.remove($scope.users, function(user) {
-            return user.id == item.id;
-          });
+      }
+      else if(response.success.length>0){
+        var msg = (response.success.length>1) ? 'Users successfully restored' : 'User successfully restored';
+        $scope.Notification.success({
+          title: "Restore", message: msg,
+          position: "right", // right, left, center
+          duration: 2000     // milisecond
         });
-        $scope.Selecteds = [];
-        $scope.settings.users.Selecteds = $scope.Selecteds;
+      }
+      _.forEach(response.success, function(user, i){
+        var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': user.id}));
+        if(index>-1){
+          $scope.Selecteds[index].trashed = false;
+        }
       });
-    }, function () {
-
+    },
+    function(error){
+      $scope.Notification.error({
+        title: "Fail", message: 'Fail to restore from Trash',
+        position: 'right', // right, left, center
+        duration: 5000   // milisecond
+      });
     });
   }
 
@@ -149,8 +212,7 @@ angular.module('lion.guardians.admin.users.controller', [])
     if($scope.User_Mode == 'edit'){
       var data = {'email': $scope.user.email,
           'organization_id': $scope.user.organization_id,
-                    'admin': $scope.user.admin,
-                  'trashed': $scope.user.trashed
+                    'admin': $scope.user.admin
       };
       $scope.LincApiServices.Users({'method': 'put', 'user_id' : $scope.user.id, 'data': data}).then(function(response){
         $scope.Notification.success({
@@ -163,7 +225,7 @@ angular.module('lion.guardians.admin.users.controller', [])
         _.merge(user, user, response.data);
         user.created_at = (user.created_at || "").substring(0,19);
         user.updated_at = (user.updated_at || "").substring(0,19);
-        var org = _.find($scope.organizations, {'id': user.organization_id});
+        var org = _.find($scope.$parent.organizations, {'id': user.organization_id});
         user.organization =  (org == undefined)? '' : org.name;
       },
       function(error){
@@ -179,7 +241,7 @@ angular.module('lion.guardians.admin.users.controller', [])
           'organization_id': $scope.user.organization_id,
           'password': $scope.user.password,
                     'admin': $scope.user.admin,
-                  'trashed': $scope.user.trashed
+                  'trashed': false
       };
       $scope.LincApiServices.Users({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({
@@ -190,10 +252,10 @@ angular.module('lion.guardians.admin.users.controller', [])
         var user = response.data;
         user.created_at = (user.created_at || "").substring(0,19);
         user.updated_at = (user.updated_at || "").substring(0,19);
-        var org = _.find($scope.organizations, {'id': user.organization_id});
+        var org = _.find($scope.$parent.organizations, {'id': user.organization_id});
         user.organization =  (org == undefined)? '' : org.name;
         user.selected = true;
-        $scope.users.push(user);
+        $scope.$parent.users.push(user);
         $scope.Selecteds.push(user);
       },
       function(error){
@@ -258,7 +320,7 @@ angular.module('lion.guardians.admin.users.controller', [])
   $scope.Selecteds = [];
   _.forEach($scope.settings.users.Selecteds, function(selected) {
     if(selected != undefined){
-      var sel_user = _.find($scope.users, function(user) {
+      var sel_user = _.find($scope.$parent.users, function(user) {
         return user.id == selected.id;
       });
       if(sel_user){

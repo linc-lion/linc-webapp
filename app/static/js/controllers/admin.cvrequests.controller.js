@@ -6,12 +6,13 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
 .controller('AdminCVRequestsCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
 
   $scope.CVReq_Status = [{'type': 'submitted', 'label': 'Submitted'},
-                         {'type': 'created', 'label': 'Created'}];
+                         {'type': 'created', 'label': 'Created',
+                          'type': 'fail', 'label': 'Fail'}];
 
   $scope.CVRequest_Mode = $scope.settings.cvrequests.Mode;
 
   $scope.check_all = function (val){
-    _.forEach($scope.cvrequests, function(cvrequest) {
+    _.forEach($scope.$parent.cvrequests, function(cvrequest) {
       cvrequest.selected = val;
       if(cvrequest.selected){
         if(!_.some($scope.Selecteds, cvrequest))
@@ -20,7 +21,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
     });
     if(!val){
       $scope.Selecteds = [];
-      $scope.settings.cvrequest.Selecteds = $scope.Selecteds;
+      $scope.settings.cvrequests.Selecteds = $scope.Selecteds;
     }
     check_selects();
   }
@@ -48,7 +49,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
         }
         else {
           $scope.Selecteds = _.without($scope.Selecteds, cvres);
-          $scope.settings.cvrequest.Selecteds = $scope.Selecteds;
+          $scope.settings.cvrequests.Selecteds = $scope.Selecteds;
         }
       }
     }
@@ -60,7 +61,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
       }
       else {
         $scope.Selecteds = _.without($scope.Selecteds, cvrequest);
-        $scope.settings.cvrequest.Selecteds = $scope.Selecteds;
+        $scope.settings.cvrequests.Selecteds = $scope.Selecteds;
       }
     }
     check_selects();
@@ -70,6 +71,10 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
   $scope.Add_CVRequest = function () {
     $scope.modalTitle = 'Add CV Request';
     $scope.showValidationMessages = false;
+
+    $scope.organizations = angular.copy($scope.$parent.organizations);
+    $scope.imagesets = angular.copy($scope.$parent.imagesets);
+
     $scope.cvrequest = {
       'requesting_organization_id': -1, 'image_set_id': -1, 'status': '', 'request_body': '',
       'trashed': false, 'selected': true
@@ -92,6 +97,9 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
   $scope.Edit_CVRequest = function() {
     $scope.modalTitle = 'Edit CV Request';
     $scope.showValidationMessages = false;
+
+    $scope.organizations = angular.copy($scope.$parent.organizations);
+    $scope.imagesets = angular.copy($scope.$parent.imagesets);
 
     if($scope.Selecteds.length == 1){
       $scope.CVRequest_Mode = 'edit';
@@ -124,26 +132,45 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
   $scope.Delete_CVRequest = function() {
     $scope.Delete('CV Request')
     .then(function (result) {
-      var data = _.pluck(_.map($scope.Selecteds, function (cvrequest){
+      var cvrequests_id = _.pluck(_.map($scope.Selecteds, function (cvrequest){
         return {'id': cvrequest.id};
       }), 'id');
 
-      $scope.LincApiServices.CVRequests({'method': 'delete', 'cvrequests_id': data}).then(function(){
-        $scope.Notification.success({
-          title: "Delete", message: 'CV Requests successfully deleted.',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        $scope.Selecteds.forEach(function(item, i){
-          var remove = _.remove($scope.cvrequests, function(cvrequest) {
-            return cvrequest.id == item.id;
+      $scope.LincApiServices.CVRequests({'method': 'delete', 'cvrequests_id': cvrequests_id}).then(function(response){
+        if(response.error.length>0){
+          var data = _.pluck(_.map(response.error, function (cvrequest){
+            return {'id': cvrequest.id};
+          }), 'id');
+          var msg = (data.length>1) ? 'Unable to delete cv requests ' + data : 'Unable to delete cv request ' + data;
+          $scope.Notification.error({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        }
+        else if(response.success.length>0){
+          var msg = (response.success.length>1) ? 'CV Requests successfully deleted' : 'CV Request successfully deleted';
+          $scope.Notification.success({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        }
+        _.forEach(response.success, function(cvrequest, i){
+          var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': cvrequest.id}));
+          var remove = _.remove($scope.$parent.cvrequests, function(cvrequest) {
+            return cvrequest.id == index;
           });
         });
         $scope.Selecteds = [];
-        $scope.settings.cvrequest.Selecteds = $scope.Selecteds;
+        $scope.settings.cvrequests.Selecteds = $scope.Selecteds;
       });
     }, function () {
-
+      $scope.Notification.info({
+        title: "Cancel", message: 'Delete canceled',
+        position: 'right', // right, left, center
+        duration: 2000   // milisecond
+      });
     });
   }
 
@@ -190,7 +217,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
         cvrequest.created_at = (cvrequest.created_at || "").substring(0,19);
         cvrequest.updated_at = (cvrequest.updated_at || "").substring(0,19);
         cvrequest.selected = true;
-        $scope.cvrequests.push(cvrequest);
+        $scope.$parent.cvrequests.push(cvrequest);
         $scope.Selecteds.push(cvrequest);
       },
       function(error){
@@ -230,7 +257,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
   $scope.Selecteds = [];
   _.forEach($scope.settings.cvrequests.Selecteds, function(selected) {
     if(selected != undefined){
-      var sel_cvrequest = _.find($scope.cvrequests, function(cvrequest) {
+      var sel_cvrequest = _.find($scope.$parent.cvrequests, function(cvrequest) {
         return cvrequest.id == selected.id;
       });
       if(sel_cvrequest){
