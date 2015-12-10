@@ -24,7 +24,9 @@ class LoginHandler(BaseHandler):
                 obj = {'username' : username,
                        'orgname' : data['orgname'],
                        'admin' : (data['role']=='admin'),
-                       'token' : data['token']
+                       'token' : data['token'],
+                       'id' : data['id'],
+                       'organization_id' : data['organization_id']
                 }
                 self.set_secure_cookie("userlogin",dumps(obj))
                 # this will be acquired with the api
