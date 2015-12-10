@@ -22,10 +22,10 @@
 <div class="modal-body" ng-show="content">
   <div class="row">
     <div class="col-sm-9">
-      <a class="thumbnail" ng-repeat="(index, photo) in paginated_gallery = (filtered_gallery = (gallery | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" ng-class="{active:photo.select}" ng-click="show_image_view(photo, index);" ng-right-click="show_photo(photo.medium)">
+      <a class="thumbnail" ng-repeat="(index, photo) in paginated_gallery = (filtered_gallery = (gallery | PrivateFilter:showPrivated | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" ng-class="{active:photo.select}" ng-click="show_image_view(photo, index);" ng-right-click="show_photo(photo.medium)">
 
         <i class="icon icon-check_circle select"
-        ng-click="photo.select=!photo.select; Select_Image(photo, index);$event.stopPropagation();"></i>
+        ng-click="photo.select=!photo.select; Select_Image(photo, index); $event.stopPropagation();"></i>
 
         <img ng-src="{{!photo.thumbnail}}" width="150" height="150">
 
@@ -46,10 +46,10 @@
       </p>
     </div>
     <div class="col-sm-3 line-left">
-    <ul class="nav nav-tabs tabs-sm">
-      <li role="presentation" ng-class="{active:isViewFilter}"><a ng-click="Change_Tab('filter')">Filter</a></li>
-      <li role="presentation" class="tabs-primary" ng-class="{active:!isViewFilter}"><a ng-click="Change_Tab('edit')">Edit</a></li>
-    </ul>
+      <ul class="nav nav-tabs tabs-sm" ng-hide="!showPrivated">
+        <li role="presentation" ng-class="{active:isViewFilter}"><a ng-click="Change_Tab('filter')">Filter</a></li>
+        <li role="presentation" class="tabs-primary" ng-class="{active:!isViewFilter}"><a ng-click="Change_Tab('edit')">Edit</a></li>
+      </ul>
       <div ng-show="isViewFilter">
         <h4>Image type</h4>
         <div class="radio" ng-init="FilterSel.Type='all'" ng-repeat="item in Filters">
@@ -65,8 +65,8 @@
         <br>
       </div>
 
-      <div ng-show="!isViewFilter">
-        <h4>Image type</h4>
+      <div ng-hide="isViewFilter || !showPrivated">
+        <h4>Image type</h4> {{!showPrivated}}
         <div class="radio" ng-init="Selected.Type='all'" ng-repeat="item in Selects">
           <label><input type="radio" ng-model="Selected.Type" ng-value="item.type" ng-click="Change_Type()" ng-disabled="!Selecteds.length">{{!item.label}}</label>
         </div>

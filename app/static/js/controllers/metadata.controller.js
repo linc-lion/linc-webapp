@@ -2,17 +2,11 @@
 
 angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.directive'])
 
-.controller('MetadataCtrl', ['$scope', '$window', '$uibModalInstance', '$bsTooltip', 'LincServices', 'NotificationFactory', 'optionsSet', '$state', '$q',  'organizations', function ($scope, $window, $uibModalInstance, $bsTooltip, LincServices, NotificationFactory, optionsSet, $state, $q, organizations) {
+.controller('MetadataCtrl', ['$scope', '$window', '$localStorage', '$uibModalInstance', '$bsTooltip', 'LincServices', 'NotificationFactory', 'optionsSet', '$state', '$q',  'organizations', function ($scope, $window, $localStorage, $uibModalInstance, $bsTooltip, LincServices, NotificationFactory, optionsSet, $state, $q, organizations) {
 
   $scope.optionsSet = optionsSet;
+  $scope.user = $localStorage.user;
 
-  //$scope.user = $localStorage.user;
-  $scope.users = {
-                  "uploading_user_id": 6,
-              "owner_organization_id": 2,
-          "uploading_organization_id": 2
-                  }
-  //$scope.optionsSet.isMetadata = true;
   $scope.organizations = organizations;
   var titles = {}; titles['lion'] = 'Metadata'; titles['imageset'] = 'Metadata';
   $scope.showLionName = (optionsSet.type === 'lion' || (optionsSet.type === 'imageset' && optionsSet.edit === 'edit'));
@@ -61,9 +55,9 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
           "lion_id": null,
           "main_image_id": null,
-          "uploading_user_id": $scope.users.uploading_user_id,
-          "owner_organization_id": $scope.users.owner_organization_id,
-          "uploading_organization_id": $scope.users.uploading_organization_id,
+          "uploading_user_id": $scope.user.id,
+          "owner_organization_id": selected.organization_id,
+          "uploading_organization_id": selected.organization_id,
           "is_primary": null,
           "is_verified": false
         }
@@ -86,9 +80,9 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           "notes": selected.notes,
           "lion_id": null,
           "main_image_id": null,
-          "uploading_user_id": $scope.users.uploading_user_id,
-          "owner_organization_id": $scope.users.owner_organization_id,
-          "uploading_organization_id": $scope.users.uploading_organization_id,
+          "uploading_user_id": $scope.user.id,
+          "owner_organization_id": selected.organization_id,
+          "uploading_organization_id": selected.organization_id,
           "is_primary": null,
           "is_verified": false
         }
@@ -101,6 +95,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         var lion_sel_data = { "organization_id": selected.organization_id,
                               "name" : selected.name };
         var imageset_sel_data = {
+          "owner_organization_id": selected.organization_id,
+          "uploading_organization_id": selected.organization_id,
           "date_stamp": (selected.date_stamp == null) ? '' : selected.date_stamp,
           'latitude': isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
           'longitude': isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
@@ -139,6 +135,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
         //Selected Dates
         var sel_data = {
           "owner_organization_id": selected.owner_organization_id,
+          "uploading_organization_id": selected.owner_organization_id,
           "date_stamp": (selected.date_stamp == null) ? '' : selected.date_stamp,
           'latitude': isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
           'longitude': isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
@@ -391,8 +388,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       "name": optionsSet.data.name,
       "id": optionsSet.data.id,
       "date_stamp": optionsSet.data.date_stamp,
-      "owner_organization_id": optionsSet.data.owner_organization_id,
-      "organization_id": optionsSet.data.organization_id,
+      "owner_organization_id": $scope.user.organization_id,
+      "organization_id": $scope.user.organization_id,
       "date_of_birth": optionsSet.data.date_of_birth,
       "latitude": optionsSet.data.latitude,
       "longitude": optionsSet.data.longitude,
@@ -413,7 +410,10 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   {
     // Result Datas
     var date = new Date();
-    $scope.selected = { "name": "", "owner_organization_id": "",
+    $scope.selected = { "name": "",
+                        "owner_organization_id": $scope.user.organization_id,
+                        "uploading_organization_id": $scope.user.organization_id,
+                        "organization_id": $scope.user.organization_id,
                         "date_of_birth": null,
                         "date_stamp": (new Date()).toISOString().substring(0,10),
                         "latitude":"", "longitude": "", "gender": "",

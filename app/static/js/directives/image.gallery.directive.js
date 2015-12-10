@@ -14,7 +14,8 @@ angular.module('lion.guardians.image.gallery.directive', [])
       optionsSet: '=',
       galleryUpdated:'&',
       debug: '=',
-      modalIsOpen: '='
+      modalIsOpen: '=',
+      showPrivated: '='
     },
     link: function(scope, element, attrs) {
       scope.show = function(){
@@ -22,6 +23,7 @@ angular.module('lion.guardians.image.gallery.directive', [])
         scope.modalIsOpen = true;
         var modalScope = scope.$new();
         modalScope.imagesChanged = false;
+        modalScope.showPrivated = scope.showPrivated;
         modalScope.debug = scope.debug;
         var modalInstance = $uibModal.open({
           animation: true,
