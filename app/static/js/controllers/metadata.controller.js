@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.directive'])
 
-.controller('MetadataCtrl', ['$scope', '$window', '$localStorage', '$uibModalInstance', '$bsTooltip', 'LincServices', 'NotificationFactory', 'optionsSet', '$state', '$q',  'organizations', function ($scope, $window, $localStorage, $uibModalInstance, $bsTooltip, LincServices, NotificationFactory, optionsSet, $state, $q, organizations) {
+.controller('MetadataCtrl', ['$scope', '$window', '$uibModal', '$localStorage', '$uibModalInstance', '$bsTooltip', 'LincServices', 'NotificationFactory', 'optionsSet', '$state', '$q',  'organizations', function ($scope, $window, $uibModal, $localStorage, $uibModalInstance, $bsTooltip, LincServices, NotificationFactory, optionsSet, $state, $q, organizations) {
 
   $scope.optionsSet = optionsSet;
   $scope.user = $localStorage.user;
@@ -24,6 +24,23 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     if(optionsSet.data.lion_id){
       $state.go("lion", { id: optionsSet.data.lion_id });
       $uibModalInstance.dismiss('cancel');
+    }
+  }
+
+  $scope.ChangeWarning = function (){
+
+    $scope.modalTitle = 'Warning';
+    $scope.modalMessage = 'This change transfers Ownership of Lion/Image Set, and can not be undone!';
+    $scope.modalContent = 'Form';
+    $scope.modalInstance = $uibModal.open({
+        templateUrl: 'Warning.tmpl.html',
+        scope:$scope
+    });
+    $scope.ok = function (){
+      $scope.modalInstance.close();
+    }
+    $scope.cancel = function(){
+      $scope.modalInstance.dismiss();
     }
   }
 
