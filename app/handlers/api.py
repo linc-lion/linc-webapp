@@ -163,7 +163,8 @@ class CVRequestHandler(BaseHandler):
     @authenticated
     def delete(self, req_id=None):
         resource_url = '/cvrequests/' + req_id
-        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"updating resources"}))
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='DELETE',body=self.json_encode({"message":"updating resources"}),headers=headers)
         self.set_status(response.code)
         if response.code == 200:
             self.finish(response.body)
