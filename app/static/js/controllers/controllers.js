@@ -152,4 +152,17 @@ angular.module('lion.guardians.controllers', ['lion.guardians.admin.controller',
     return $filter('number')(input * 100, decimals) + '%';
   };
 }])
+
+.filter('PrivateFilter', function(){
+  return function(input, show_private) {
+    if (show_private)
+      return input;
+    else{
+      var filtered = _.filter(input, function(value){
+        return value.is_public;
+      });
+      return filtered;
+    }
+  };
+})
 ;
