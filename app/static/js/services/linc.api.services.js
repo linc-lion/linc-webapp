@@ -13,6 +13,24 @@ angular.module('lion.guardians.api.services', [])
       $http(req).then(success, error); }
   }
 
+  var http_defer = function (id,data){
+    var deferred = $q.defer();
+    var xsrfcookie = $cookies.get('_xsrf');
+    var req = { method: data.method,
+                url: data.url,
+                data: data.data,
+                headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
+                config: {ignoreLoadingBar: true}};
+    $http(req).then(function(response){
+      var data = {'id': id, 'data': response.data};
+      deferred.resolve({'success': true, 'data': data});
+    }, function(response){
+      var data = {'id': id, 'data': response.data};
+      deferred.resolve({'success': false, 'data': data});
+    });
+    return deferred.promise;
+  }
+
   var Organizations = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
@@ -35,24 +53,6 @@ angular.module('lion.guardians.api.services', [])
           });
         }
         deferred.reject(error);
-      });
-    }
-    if(data_in.method=='delete'){
-      var organizations_id = data_in.organizations_id;
-      var xsrfcookie = $cookies.get('_xsrf');
-      var promises = organizations_id.map(function(id) {
-        var req = { method: 'DELETE',
-                    url: '/organizations/' + id + '?purge=true',
-                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
-                    config: {ignoreLoadingBar: true}};
-        return $http(req);
-      });
-      $q.all(promises).then(function (results) {
-        var result = {'message': 'success'};
-        deferred.resolve(result);
-      },
-      function (reason) {
-        deferred.reject(reason);
       });
     }
     if(data_in.method=='put'){
@@ -88,6 +88,58 @@ angular.module('lion.guardians.api.services', [])
           });
         }
         deferred.reject(error);
+      });
+    }
+    if(data_in.method=='delete'){
+      var promises = data_in.organizations_id.map(function(id) {
+        var data = {
+          'method': 'DELETE',
+          'url': '/organizations/' + id,
+          'data': {}
+        };
+        return http_defer(id,data);
+      });
+      $q.all(promises).then(function (results) {
+        var success = [];
+        var error = [];
+        _.forEach(results, function (result, index){
+          if (result.success) {
+            success.push(result.data);
+          }
+          else{
+            error.push(result.data);
+          }
+        });
+        deferred.resolve({'success': success, 'error': error});
+      },
+      function (reason) {
+        deferred.reject(reason);
+      });
+    }
+    if(data_in.method=='undo_trash'){
+      var promises = data_in.organization_id.map(function(id) {
+        var data = {
+          'method': 'PUT',
+          'url': '/organizations/' + id,
+          'data': {'trashed': false}
+        };
+        return http_defer(id,data);
+      });
+      $q.all(promises).then(function (results) {
+        var success = [];
+        var error = [];
+        _.forEach(results, function (result, index){
+          if (result.success) {
+            success.push(result.data);
+          }
+          else{
+            error.push(result.data);
+          }
+        });
+        deferred.resolve({'success': success, 'error': error});
+      },
+      function (reason) {
+        deferred.reject(reason);
       });
     }
     return deferred.promise;
@@ -138,24 +190,6 @@ angular.module('lion.guardians.api.services', [])
         deferred.reject(error);
       });
     }
-    if(data_in.method=='delete'){
-      var users_id = data_in.users_id;
-      var xsrfcookie = $cookies.get('_xsrf');
-      var promises = users_id.map(function(id) {
-        var req = { method: 'DELETE',
-                    url: '/users/' + id + '?purge=true',
-                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
-                    config: {ignoreLoadingBar: true}};
-        return $http(req);
-      });
-      $q.all(promises).then(function (results) {
-        var result = {'message': 'success'};
-        deferred.resolve(result);
-      },
-      function (reason) {
-        deferred.reject(reason);
-      });
-    }
     if(data_in.method=='put'){
       var user_id = data_in.user_id;
       var data = data_in.data;
@@ -191,6 +225,58 @@ angular.module('lion.guardians.api.services', [])
         deferred.reject(error);
       });
     }
+    if(data_in.method=='delete'){
+      var promises = data_in.users_id.map(function(id) {
+        var data = {
+          'method': 'DELETE',
+          'url': '/users/' + id,
+          'data': {}
+        }
+        return http_defer(id,data);
+      });
+      $q.all(promises).then(function (results) {
+        var success = [];
+        var error = [];
+        _.forEach(results, function (result, index){
+          if (result.success) {
+            success.push(result.data);
+          }
+          else{
+            error.push(result.data);
+          }
+        });
+        deferred.resolve({'success': success, 'error': error});
+      },
+      function (reason) {
+        deferred.reject(reason);
+      });
+    }
+    if(data_in.method=='undo_trash'){
+      var promises = data_in.users_id.map(function(id) {
+        var data = {
+          'method': 'PUT',
+          'url': '/users/' + id,
+          'data': {'trashed': false}
+        };
+        return http_defer(id,data);
+      });
+      $q.all(promises).then(function (results) {
+        var success = [];
+        var error = [];
+        _.forEach(results, function (result, index){
+          if (result.success) {
+            success.push(result.data);
+          }
+          else{
+            error.push(result.data);
+          }
+        });
+        deferred.resolve({'success': success, 'error': error});
+      },
+      function (reason) {
+        deferred.reject(reason);
+      });
+    }
     return deferred.promise;
   };
 
@@ -205,6 +291,7 @@ angular.module('lion.guardians.api.services', [])
         var lions = _.map(data, function(lion) {
           lion.created_at = (lion.created_at || "").substring(0,19);
           lion.updated_at = (lion.updated_at || "").substring(0,19);
+
           var id = lion.organization_id;
           var organization = _.find(organizations, {'id': id});
           if(organization != undefined){
@@ -224,24 +311,6 @@ angular.module('lion.guardians.api.services', [])
           });
         }
         deferred.reject(error);
-      });
-    }
-    if(data_in.method=='delete'){
-      var lions_id = data_in.lions_id;
-      var xsrfcookie = $cookies.get('_xsrf');
-      var promises = lions_id.map(function(id) {
-        var req = { method: 'DELETE',
-                    url: '/lions/' + lions_id + '?purge=true',
-                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
-                    config: {ignoreLoadingBar: true}};
-        return $http(req);
-      });
-      $q.all(promises).then(function (results) {
-        var result = {'message': 'success'};
-        deferred.resolve(result);
-      },
-      function (reason) {
-        deferred.reject(reason);
       });
     }
     if(data_in.method=='put'){
@@ -277,6 +346,58 @@ angular.module('lion.guardians.api.services', [])
           });
         }
         deferred.reject(error);
+      });
+    }
+    if(data_in.method=='delete'){
+      var promises = data_in.lions_id.map(function(id) {
+        var data = {
+          'method': 'DELETE',
+          'url': '/lions/' + id,
+          'data': {}
+        };
+        return http_defer(id,data);
+      });
+      $q.all(promises).then(function (results) {
+        var success = [];
+        var error = [];
+        _.forEach(results, function (result, index){
+          if (result.success) {
+            success.push(result.data);
+          }
+          else{
+            error.push(result.data);
+          }
+        });
+        deferred.resolve({'success': success, 'error': error});
+      },
+      function (reason) {
+        deferred.reject(reason);
+      });
+    }
+    if(data_in.method=='undo_trash'){
+      var promises = data_in.lions_id.map(function(id) {
+        var data = {
+          'method': 'PUT',
+          'url': '/lions/' + id,
+          'data': {'trashed': false}
+        };
+        return http_defer(id,data);
+      });
+      $q.all(promises).then(function (results) {
+        var success = [];
+        var error = [];
+        _.forEach(results, function (result, index){
+          if (result.success) {
+            success.push(result.data);
+          }
+          else{
+            error.push(result.data);
+          }
+        });
+        deferred.resolve({'success': success, 'error': error});
+      },
+      function (reason) {
+        deferred.reject(reason);
       });
     }
     return deferred.promise;
@@ -328,24 +449,6 @@ angular.module('lion.guardians.api.services', [])
         deferred.reject(error);
       });
     }
-    if(data_in.method=='delete'){
-      var imagesets_id = data_in.imagesets_id;
-      var xsrfcookie = $cookies.get('_xsrf');
-      var promises = imagesets_id.map(function(id) {
-        var req = { method: 'DELETE',
-                    url: '/imagesets/' + imagesets_id + '?purge=true',
-                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
-                    config: {ignoreLoadingBar: true}};
-        return $http(req);
-      });
-      $q.all(promises).then(function (results) {
-        var result = {'message': 'success'};
-        deferred.resolve(result);
-      },
-      function (reason) {
-        deferred.reject(reason);
-      });
-    }
     if(data_in.method=='put'){
       var imageset_id = data_in.imageset_id;
       var data = data_in.data;
@@ -381,6 +484,58 @@ angular.module('lion.guardians.api.services', [])
         deferred.reject(error);
       });
     }
+    if(data_in.method=='delete'){
+      var promises = data_in.imagesets_id.map(function(id) {
+        var data = {
+          'method': 'DELETE',
+          'url': '/imagesets/' + id,
+          'data': {}
+        }
+        return http_defer(id,data);
+      });
+      $q.all(promises).then(function (results) {
+        var success = [];
+        var error = [];
+        _.forEach(results, function (result, index){
+          if (result.success) {
+            success.push(result.data);
+          }
+          else{
+            error.push(result.data);
+          }
+        });
+        deferred.resolve({'success': success, 'error': error});
+      },
+      function (reason) {
+        deferred.reject(reason);
+      });
+    }
+    if(data_in.method=='undo_trash'){
+      var promises = data_in.imagesets_id.map(function(id) {
+        var data = {
+          'method': 'PUT',
+          'url': '/imagesets/' + id,
+          'data': {'trashed': false}
+        }
+        return http_defer(id,data);
+      });
+      $q.all(promises).then(function (results) {
+        var success = [];
+        var error = [];
+        _.forEach(results, function (result, index){
+          if (result.success) {
+            success.push(result.data);
+          }
+          else{
+            error.push(result.data);
+          }
+        });
+        deferred.resolve({'success': success, 'error': error});
+      },
+      function (reason) {
+        deferred.reject(reason);
+      });
+    }
     return deferred.promise;
   };
 
@@ -394,6 +549,7 @@ angular.module('lion.guardians.api.services', [])
         var images = _.map(data, function(image) {
           image.created_at = (image.created_at || "").substring(0,19);
           image.updated_at = (image.updated_at || "").substring(0,19);
+
           return _.extend({}, image, {'selected': false});
         });
         deferred.resolve(images);
@@ -406,24 +562,6 @@ angular.module('lion.guardians.api.services', [])
           });
         }
         deferred.reject(error);
-      });
-    }
-    if(data_in.method=='delete'){
-      var images_id = data_in.images_id;
-      var xsrfcookie = $cookies.get('_xsrf');
-      var promises = images_id.map(function(id) {
-        var req = { method: 'DELETE',
-                    url: '/images/' + id + '?purge=true',
-                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
-                    config: {ignoreLoadingBar: true}};
-        return $http(req);
-      });
-      $q.all(promises).then(function (results) {
-        var result = {'message': 'success'};
-        deferred.resolve(result);
-      },
-      function (reason) {
-        deferred.reject(reason);
       });
     }
     if(data_in.method=='put'){
@@ -461,6 +599,32 @@ angular.module('lion.guardians.api.services', [])
         deferred.reject(error);
       });
     }
+    if(data_in.method=='delete'){
+      var promises = data_in.images_id.map(function(id) {
+        var data = {
+          'method': 'DELETE',
+          'url': '/images/' + id + '?purge=true',
+          'data': {}
+        };
+        return http_defer(id,data);
+      });
+      $q.all(promises).then(function (results) {
+        var success = [];
+        var error = [];
+        _.forEach(results, function (result, index){
+          if (result.success) {
+            success.push(result.data);
+          }
+          else{
+            error.push(result.data);
+          }
+        });
+        deferred.resolve({'success': success, 'error': error});
+      },
+      function (reason) {
+        deferred.reject(reason);
+      });
+    }
     return deferred.promise;
   };
 
@@ -489,24 +653,6 @@ angular.module('lion.guardians.api.services', [])
           });
         }
         deferred.reject(error);
-      });
-    }
-    if(data_in.method=='delete'){
-      var cvrequests_id = data_in.cvrequests_id;
-      var xsrfcookie = $cookies.get('_xsrf');
-      var promises = cvrequests_id.map(function(id) {
-        var req = { method: 'DELETE',
-                    url: '/cvrequests/' + id + '?purge=true',
-                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
-                    config: {ignoreLoadingBar: true}};
-        return $http(req);
-      });
-      $q.all(promises).then(function (results) {
-        var result = {'message': 'success'};
-        deferred.resolve(result);
-      },
-      function (reason) {
-        deferred.reject(reason);
       });
     }
     if(data_in.method=='put'){
@@ -544,6 +690,32 @@ angular.module('lion.guardians.api.services', [])
         deferred.reject(error);
       });
     }
+    if(data_in.method=='delete'){
+      var promises = data_in.cvrequests_id.map(function(id) {
+        var data = {
+          'method': 'DELETE',
+          'url': '/cvrequests/' + id,
+          'data': {}
+        };
+        return http_defer(id,data);
+      });
+      $q.all(promises).then(function (results) {
+        var success = [];
+        var error = [];
+        _.forEach(results, function (result, index){
+          if (result.success) {
+            success.push(result.data);
+          }
+          else{
+            error.push(result.data);
+          }
+        });
+        deferred.resolve({'success': success, 'error': error});
+      },
+      function (reason) {
+        deferred.reject(reason);
+      });
+    }
     return deferred.promise;
   };
 
@@ -569,23 +741,6 @@ angular.module('lion.guardians.api.services', [])
           });
         }
         deferred.reject(error);
-      });
-    }
-    if(data_in.method=='delete'){
-      var cvresults_id = data_in.cvresults_id;
-      var promises = cvresults_id.map(function(id) {
-        var req = { method: 'DELETE',
-                    url: '/cvresults/' + id + '?purge=true',
-                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
-                    config: {ignoreLoadingBar: true}};
-        return $http(req);
-      });
-      $q.all(promises).then(function (results) {
-        var result = {'message': 'success'};
-        deferred.resolve(result);
-      },
-      function (reason) {
-        deferred.reject(reason);
       });
     }
     if(data_in.method=='put'){
@@ -621,6 +776,32 @@ angular.module('lion.guardians.api.services', [])
           });
         }
         deferred.reject(error);
+      });
+    }
+    if(data_in.method=='delete'){
+      var promises = data_in.cvresults_id.map(function(id) {
+        var data = {
+          'method': 'DELETE',
+          'url': '/cvresults/' + id,
+          'data': {}
+        };
+        return http_defer(id,data);
+      });
+      $q.all(promises).then(function (results) {
+        var success = [];
+        var error = [];
+        _.forEach(results, function (result, index){
+          if (result.success) {
+            success.push(result.data);
+          }
+          else{
+            error.push(result.data);
+          }
+        });
+        deferred.resolve({'success': success, 'error': error});
+      },
+      function (reason) {
+        deferred.reject(reason);
       });
     }
     return deferred.promise;

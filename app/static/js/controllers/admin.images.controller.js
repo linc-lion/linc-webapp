@@ -17,7 +17,7 @@ angular.module('lion.guardians.admin.images.controller', [])
       });
     }
     else{
-      _.forEach($scope.images, function(image) {
+      _.forEach($scope.$parent.images, function(image) {
         image.selected = val;
       });
       $scope.Selecteds = [];
@@ -71,6 +71,9 @@ angular.module('lion.guardians.admin.images.controller', [])
   $scope.Add_Image = function () {
     $scope.modalTitle = 'Add Image';
     $scope.showValidationMessages = false;
+
+    $scope.organizations = angular.copy($scope.$parent.organizations);
+
     $scope.image = {
       'url': '', 'image_type': 'cv', 'image_set_id': '',
       'is_public': true, 'trashed': false, 'selected': true
@@ -93,6 +96,8 @@ angular.module('lion.guardians.admin.images.controller', [])
   $scope.Edit_Image = function() {
     $scope.modalTitle = 'Edit Image';
     $scope.showValidationMessages = false;
+
+    $scope.imagesets = angular.copy($scope.$parent.imagesets);
 
     if($scope.Selecteds.length == 1){
       $scope.Image_Mode = 'edit';
@@ -126,26 +131,45 @@ angular.module('lion.guardians.admin.images.controller', [])
   $scope.Delete_Image = function() {
     $scope.Delete('Images')
     .then(function (result) {
-      var data = _.pluck(_.map($scope.Selecteds, function (image){
+      var images_id = _.pluck(_.map($scope.Selecteds, function (image){
         return {'id': image.id};
       }), 'id');
 
-      $scope.LincApiServices.Images({'method': 'delete', 'images_id': data}).then(function(){
-        $scope.Notification.success({
-          title: "Delete", message: 'Images successfully deleted.',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        $scope.Selecteds.forEach(function(item, i){
-          var remove = _.remove($scope.images, function(image) {
-            return image.id == item.id;
+      $scope.LincApiServices.Images({'method': 'delete', 'images_id': images_id}).then(function(response){
+        if(response.error.length>0){
+          var data = _.pluck(_.map(response.error, function (image){
+            return {'id': image.id};
+          }), 'id');
+          var msg = (data.length>1) ? 'Unable to delete images ' + data : 'Unable to delete image ' + data;
+          $scope.Notification.error({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        }
+        else if(response.success.length>0){
+          var msg = (response.success.length>1) ? 'Images successfully deleted' : 'Image successfully deleted';
+          $scope.Notification.success({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        }
+        _.forEach(response.success, function(image, i){
+          var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': image.id}));
+          var remove = _.remove($scope.$parent.images, function(image) {
+            return image.id == index;
           });
         });
         $scope.Selecteds = [];
         $scope.settings.images.Selecteds = $scope.Selecteds;
       });
     }, function () {
-
+      $scope.Notification.info({
+        title: "Cancel", message: 'Delete canceled',
+        position: 'right', // right, left, center
+        duration: 2000   // milisecond
+      });
     });
   }
 
@@ -198,7 +222,7 @@ angular.module('lion.guardians.admin.images.controller', [])
         image.created_at = (image.created_at || "").substring(0,19);
         image.updated_at = (image.updated_at || "").substring(0,19);
         image.selected = true;
-        $scope.images.push(image);
+        $scope.$parent.images.push(image);
         $scope.Selecteds.push(image);
       },
       function(error){
@@ -292,7 +316,7 @@ angular.module('lion.guardians.admin.images.controller', [])
   $scope.Selecteds = [];
   _.forEach($scope.settings.images.Selecteds, function(selected) {
     if(selected != undefined){
-      var sel_image = _.find($scope.images, function(image) {
+      var sel_image = _.find($scope.$parent.images, function(image) {
         return image.id == selected.id;
       });
       if(sel_image){

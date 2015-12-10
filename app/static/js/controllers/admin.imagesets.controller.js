@@ -19,7 +19,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
   };
 
   $scope.check_all = function (val){
-    _.forEach($scope.imagesets, function(imageset) {
+    _.forEach($scope.$parent.imagesets, function(imageset) {
       imageset.selected = val;
       if(imageset.selected){
         if(!_.some($scope.Selecteds, imageset))
@@ -78,6 +78,11 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
   $scope.Add_ImageSet = function () {
     $scope.modalTitle = 'Add ImageSet';
     $scope.showValidationMessages = false;
+
+    $scope.organizations = angular.copy($scope.$parent.organizations);
+    $scope.lions = angular.copy($scope.$parent.lions);
+    $scope.images = angular.copy($scope.$parent.images);
+
     $scope.imageset = { 'lion_id': -1, 'main_image_id': -1, 'owner_organization_id': -1,
       'uploading_organization_id':-1, 'uploading_user_id': -1, 'latitude' : '', 'longitude' : '',
       'date_stamp': new Date().toJSON().slice(0,10), 'date_of_birth': new Date().toJSON().slice(0,10),
@@ -110,6 +115,10 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
   $scope.Edit_ImageSet = function(){
     $scope.modalTitle = 'Edit ImageSet';
     $scope.showValidationMessages = false;
+
+    $scope.organizations = angular.copy($scope.$parent.organizations);
+    $scope.lions = angular.copy($scope.$parent.lions);
+    $scope.images = angular.copy($scope.$parent.images);
 
     if($scope.Selecteds.length == 1){
       $scope.ImageSet_Mode = 'edit';
@@ -162,29 +171,86 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
   $scope.Delete_ImageSet = function() {
     $scope.Delete('Image Sets')
     .then(function (result) {
-      var data = _.pluck(_.map($scope.Selecteds, function (imageset){
+      var imagesets_id = _.pluck(_.map($scope.Selecteds, function (imageset){
         return {'id': imageset.id};
       }), 'id');
 
-      $scope.LincApiServices.ImageSets({'method': 'delete', 'imagesets_id': data}).then(function(){
-        $scope.Notification.success({
-          title: "Delete", message: 'ImageSets successfully deleted.',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        $scope.Selecteds.forEach(function(item, i){
-          var remove = _.remove($scope.imagesets, function(imageset) {
-            return imageset.id == item.id;
+      $scope.LincApiServices.ImageSets({'method': 'delete', 'imagesets_id': imagesets_id}).then(function(response){
+        if(response.error.length>0){
+          var data = _.pluck(_.map(response.error, function (imageset){
+            return {'id': imageset.id};
+          }), 'id');
+          var msg = (data.length>1) ? 'Unable to delete imagesets ' + data : 'Unable to delete imageset ' + data;
+          $scope.Notification.error({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
           });
+        }
+        else if(response.success.length>0){
+          var msg = (response.success.length>1) ? 'Imagesets successfully deleted' : 'Imageset successfully deleted';
+          $scope.Notification.success({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        }
+        _.forEach(response.success, function(imageset, i){
+          var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': imageset.id}));
+          if(index>-1){
+            $scope.Selecteds[index].trashed = true;
+          }
         });
-        $scope.Selecteds = [];
-        $scope.settings.imagesets.Selecteds = $scope.Selecteds;
       });
     }, function () {
-
+      $scope.Notification.info({
+        title: "Cancel", message: 'Delete canceled',
+        position: 'right', // right, left, center
+        duration: 2000   // milisecond
+      });
     });
   }
 
+  $scope.Undo_Trash = function() {
+    var imagesets_id = _.pluck(_.map($scope.Selecteds, function (imageset){
+      return {'id': imageset.id};
+    }), 'id');
+
+    $scope.LincApiServices.ImageSets({'method': 'undo_trash', 'imagesets_id': imagesets_id}).then(function(response){
+      if(response.error.length>0){
+        var data = _.pluck(_.map(response.error, function (imageset){
+          return {'id': imageset.id};
+        }), 'id');
+        var msg = (data.length>1) ? 'Unable to restore imagesets ' + data : 'Unable to restore imageset ' + data;
+        $scope.Notification.error({
+          title: "Restore", message: msg,
+          position: "right", // right, left, center
+          duration: 2000     // milisecond
+        });
+      }
+      else if(response.success.length>0){
+        var msg = (response.success.length>1) ? 'Imagesets successfully restored' : 'Imageset successfully restored';
+        $scope.Notification.success({
+          title: "Restore", message: msg,
+          position: "right", // right, left, center
+          duration: 2000     // milisecond
+        });
+      }
+      _.forEach(response.success, function(imageset, i){
+        var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': imageset.id}));
+        if(index>-1){
+          $scope.Selecteds[index].trashed = false;
+        }
+      });
+    },
+    function(error){
+      $scope.Notification.error({
+        title: "Fail", message: 'Fail to restore from Trash',
+        position: 'right', // right, left, center
+        duration: 5000   // milisecond
+      });
+    });
+  }
 
   var Submit_Imageset = function(){
     if($scope.ImageSet_Mode == 'edit'){
@@ -237,19 +303,19 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
         if(imageset.date_of_birth)
           imageset.date_of_birth = (imageset.date_of_birth || "").substring(0,10);
         var id = imageset.lion_id;
-        var lion = _.find($scope.lions, {'id': id});
+        var lion = _.find($scope.$parent.lions, {'id': id});
         imageset.lion_name = (lion == undefined)? '-' : lion.name;
         id = imageset.owner_organization_id;
-        var owner_organization = _.find($scope.organizations, {'id': id});
+        var owner_organization = _.find($scope.$parent.organizations, {'id': id});
         imageset.owner_organization = (owner_organization == undefined)? '-' : owner_organization.name;
         id = imageset.uploading_organization_id;
-        var uploading_organization = _.find($scope.organizations, {'id': id});
+        var uploading_organization = _.find($scope.$parent.organizations, {'id': id});
         imageset.uploading_organization = (uploading_organization == undefined)? '-' : uploading_organization.name;
         id = imageset.uploading_user_id;
-        var uploading_user = _.find($scope.users, {'id': id});
+        var uploading_user = _.find($scope.$parent.users, {'id': id});
         imageset.uploading_user = (uploading_user == undefined)? '-' : uploading_user.email;
         id = imageset.main_image_id;
-        var main_image = _.find($scope.images, {'id': id});
+        var main_image = _.find($scope.$parent.images, {'id': id});
         imageset.main_image = (main_image == undefined)? '' : main_image.url;
       },
       function(error){
@@ -301,22 +367,23 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
         var imageset = response.data;
         imageset.created_at = (imageset.created_at || "").substring(0,19);
         imageset.updated_at = (imageset.updated_at || "").substring(0,19);
+
         if(imageset.date_of_birth)
           imageset.date_of_birth = (imageset.date_of_birth || "").substring(0,10);
         var id = imageset.lion_id;
-        var lion = _.find($scope.lions, {'id': id});
+        var lion = _.find($scope.$parent.lions, {'id': id});
         imageset.lion_name = (lion == undefined)? '-' : lion.name;
         id = imageset.owner_organization_id;
-        var owner_organization = _.find($scope.organizations, {'id': id});
+        var owner_organization = _.find($scope.$parent.organizations, {'id': id});
         imageset.owner_organization = (owner_organization == undefined)? '-' : owner_organization.name;
         id = imageset.uploading_organization_id;
-        var uploading_organization = _.find($scope.organizations, {'id': id});
+        var uploading_organization = _.find($scope.$parent.organizations, {'id': id});
         imageset.uploading_organization = (uploading_organization == undefined)? '-' : uploading_organization.name;
         id = imageset.uploading_user_id;
-        var uploading_user = _.find($scope.users, {'id': id});
+        var uploading_user = _.find($scope.$parent.users, {'id': id});
         imageset.uploading_user = (uploading_user == undefined)? '-' : uploading_user.email;
         id = imageset.main_image_id;
-        var main_image = _.find($scope.images, {'id': id});
+        var main_image = _.find($scope.$parent.images, {'id': id});
         imageset.main_image = (main_image == undefined)? '' : main_image.url;
 
         imageset.selected = true;
@@ -360,7 +427,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
   $scope.Selecteds = [];
   _.forEach($scope.settings.imagesets.Selecteds, function(selected) {
     if(selected != undefined){
-      var sel_imageset = _.find($scope.imagesets, function(imageset) {
+      var sel_imageset = _.find($scope.$parent.imagesets, function(imageset) {
         return imageset.id == selected.id;
       });
       if(sel_imageset){
