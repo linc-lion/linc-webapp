@@ -113,7 +113,7 @@ angular.module('lion.guardians.image.set.controllers', [])
       $scope.modalInstance.dismiss();
     }
   };
-  var cancel_intervals = function (){
+  /*var cancel_intervals = function (){
     if($scope.requesCVpromise != null){
       $interval.cancel($scope.requesCVpromise);
       $scope.requesCVpromise = undefined;
@@ -143,12 +143,12 @@ angular.module('lion.guardians.image.set.controllers', [])
     }, function(error){
       cancel_intervals();
     });
-  }
+  }*/
   $scope.CVReqSuccess = function (imageset_Id, requestObj) {
     $scope.imageset.action = 'cvpending';
     $scope.imageset.cvrequest = requestObj.obj_id;
     console.log('Success CV Request');
-    $timeout(function() {
+    /*$timeout(function() {
       LincServices.postCVResults(requestObj.id, function(result){
         var cvresult = result.data.data;
         if(cvresult.status == "finished"){
@@ -167,7 +167,7 @@ angular.module('lion.guardians.image.set.controllers', [])
           });
         }
       });
-    }, 180000);
+    }, 180000);*/
   };
 
   $scope.Change_results = function (change, ImagesetId) {
@@ -412,7 +412,7 @@ angular.module('lion.guardians.image.set.controllers', [])
   // Pagination scopes
   $scope.currentPage = imagesets_filters.currentPage;
 
-  var cancel_intervals = function (){
+  /*var cancel_intervals = function (){
     if($scope.requesCVpromise != null){
       $interval.cancel($scope.requesCVpromise);
       $scope.requesCVpromise = undefined;
@@ -443,13 +443,13 @@ angular.module('lion.guardians.image.set.controllers', [])
     }, function(error){
       cancel_intervals();
     });
-  }
+  }*/
   $scope.CVReqSuccess = function (imageset_Id, requestObj) {
     var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: imageset_Id}));
     $scope.imagesets[index].action = 'cvpending';
     $scope.imagesets[index].cvrequest = requestObj.obj_id;
     console.log('Success CV Request');
-    $timeout(function() {
+    /*$timeout(function() {
       LincServices.postCVResults(requestObj.id, function(result){
         var cvresult = result.data.data;
         if(cvresult.status == "finished"){
@@ -468,7 +468,7 @@ angular.module('lion.guardians.image.set.controllers', [])
           });
         }
       });
-    }, 180000);
+    }, 180000);*/
   };
   $scope.Change_results = function (change, ImagesetId) {
     var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
