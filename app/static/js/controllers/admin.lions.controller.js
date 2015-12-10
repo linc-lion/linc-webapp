@@ -8,7 +8,7 @@ angular.module('lion.guardians.admin.lions.controller', [])
   $scope.Lion_Mode = $scope.settings.lions.Mode;
 
   $scope.check_all = function (val){
-    _.forEach($scope.lions, function(lion) {
+    _.forEach($scope.$parent.lions, function(lion) {
       lion.selected = val;
       if(lion.selected){
         if(!_.some($scope.Selecteds, lion))
@@ -66,6 +66,10 @@ angular.module('lion.guardians.admin.lions.controller', [])
   $scope.Add_Lion = function () {
     $scope.modalTitle = 'Add Lion';
     $scope.showValidationMessages = false;
+
+    $scope.organizations = angular.copy($scope.$parent.organizations);
+    $scope.imagesets = angular.copy($scope.$parent.imagesets);
+
     $scope.lion = {
       'name': '', 'organization_id': -1, 'primary_image_set_id': '',
       'trashed': false, 'selected': true
@@ -88,6 +92,9 @@ angular.module('lion.guardians.admin.lions.controller', [])
   $scope.Edit_Lion = function() {
     $scope.modalTitle = 'Edit Lion';
     $scope.showValidationMessages = false;
+
+    $scope.organizations = angular.copy($scope.$parent.organizations);
+    $scope.imagesets = angular.copy($scope.$parent.imagesets);
 
     if($scope.Selecteds.length == 1){
       $scope.Lion_Mode = 'edit';
@@ -121,26 +128,84 @@ angular.module('lion.guardians.admin.lions.controller', [])
   $scope.Delete_Lion = function() {
     $scope.Delete('Lions')
     .then(function (result) {
-      var data = _.pluck(_.map($scope.Selecteds, function (lion){
+      var lions_id = _.pluck(_.map($scope.Selecteds, function (lion){
         return {'id': lion.id};
       }), 'id');
 
-      $scope.LincApiServices.Lions({'method': 'delete', 'lions_id': data}).then(function(){
-        $scope.Notification.success({
-          title: "Delete", message: 'Lions successfully deleted.',
+      $scope.LincApiServices.Lions({'method': 'delete', 'lions_id': lions_id}).then(function(response){
+        if(response.error.length>0){
+          var data = _.pluck(_.map(response.error, function (lion){
+            return {'id': lion.id};
+          }), 'id');
+          var msg = (data.length>1) ? 'Unable to delete lions ' + data : 'Unable to delete lion ' + data;
+          $scope.Notification.error({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        }
+        else if(response.success.length>0){
+          var msg = (response.success.length>1) ? 'Lions successfully deleted' : 'Lion successfully deleted';
+          $scope.Notification.success({
+            title: "Delete", message: msg,
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+        }
+        _.forEach(response.success, function(lion, i){
+          var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': lion.id}));
+          if(index>-1){
+            $scope.Selecteds[index].trashed = true;
+          }
+        });
+      });
+    }, function () {
+      $scope.Notification.info({
+        title: "Cancel", message: 'Delete canceled',
+        position: 'right', // right, left, center
+        duration: 2000   // milisecond
+      });
+    });
+  }
+
+  $scope.Undo_Trash = function() {
+    var lions_id = _.pluck(_.map($scope.Selecteds, function (lion){
+      return {'id': lion.id};
+    }), 'id');
+
+    $scope.LincApiServices.Lions({'method': 'undo_trash', 'lions_id': lions_id}).then(function(response){
+      if(response.error.length>0){
+        var data = _.pluck(_.map(response.error, function (lion){
+          return {'id': lion.id};
+        }), 'id');
+        var msg = (data.length>1) ? 'Unable to restore lions ' + data : 'Unable to restore lion ' + data;
+        $scope.Notification.error({
+          title: "Restore", message: msg,
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        $scope.Selecteds.forEach(function(item, i){
-          var remove = _.remove($scope.lions, function(lion) {
-            return lion.id == item.id;
-          });
+      }
+      else if(response.success.length>0){
+        var msg = (response.success.length>1) ? 'Lions successfully restored' : 'Lion successfully restored';
+        $scope.Notification.success({
+          title: "Restore", message: msg,
+          position: "right", // right, left, center
+          duration: 2000     // milisecond
         });
-        $scope.Selecteds = [];
-        $scope.settings.lions.Selecteds = $scope.Selecteds;
+      }
+      _.forEach(response.success, function(lion, i){
+        var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': lion.id}));
+        if(index>-1){
+          $scope.Selecteds[index].trashed = false;
+        }
       });
-    }, function () {
-
+    },
+    function(error){
+      $scope.Notification.error({
+        title: "Fail", message: 'Fail to restore from Trash',
+        position: 'right', // right, left, center
+        duration: 5000   // milisecond
+      });
     });
   }
 
@@ -162,7 +227,8 @@ angular.module('lion.guardians.admin.lions.controller', [])
         _.merge(lion, lion, response.data);
         lion.created_at = (lion.created_at || "").substring(0,19);
         lion.updated_at = (lion.updated_at || "").substring(0,19);
-        var org = _.find($scope.organizations, {'id': lion.organization_id});
+
+        var org = _.find($scope.$parent.organizations, {'id': lion.organization_id});
         lion.organization = (org == undefined)? '' : org.name;
       },
       function(error){
@@ -188,10 +254,10 @@ angular.module('lion.guardians.admin.lions.controller', [])
         var lion = response.data;
         lion.created_at = (lion.created_at || "").substring(0,19);
         lion.updated_at = (lion.updated_at || "").substring(0,19);
-        var org = _.find($scope.organizations, {'id': lion.organization_id});
+        var org = _.find($scope.$parent.organizations, {'id': lion.organization_id});
         lion.organization = (org == undefined)? '' : org.name;
         lion.selected = true;
-        $scope.lions.push(lion);
+        $scope.$parent.lions.push(lion);
         $scope.Selecteds.push(lion);
       },
       function(error){
@@ -232,7 +298,7 @@ angular.module('lion.guardians.admin.lions.controller', [])
   $scope.Selecteds = [];
   _.forEach($scope.settings.lions.Selecteds, function(selected) {
     if(selected != undefined){
-      var sel_lion = _.find($scope.lions, function(lion) {
+      var sel_lion = _.find($scope.$parent.lions, function(lion) {
         return lion.id == selected.id;
       });
       if(sel_lion){

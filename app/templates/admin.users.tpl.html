@@ -14,7 +14,7 @@
       </div>
       <div class="form-group">
         <label for="organization_id">Organization:</label>
-        <select class="form-control custom-select" name="organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="user.organization_id" required><option></option>
+        <select class="form-control custom-select trashed" name="organization_id" ng-options="organization.id as organization.name group by Trash_Label(organization) for organization in organizations" ng-model="user.organization_id" required><option></option>
         </select>
       </div>
       <div ng-hide="User_Mode=='edit'" class="form-group">
@@ -23,19 +23,15 @@
       </div>
       <div ng-hide="User_Mode=='edit'" class="form-group">
         <label for="lion_name">Password:</label>
-        <input class="form-control" type="password" name="verify" ng-model="user.confirmPassword" placeholder="Confirm Password" ng-required="password_required" oninput="setCustomValidity('')" nx-equal-ex="user.password"
-              oninvalid="this.setCustomValidity('please repeat the Password in this field')">
-              <div ><span ng-show="showValidationMessages && form.verify.$error.nxEqualEx" class="help-inline">Passwords must match!</span></div>
+        <input class="form-control" type="password" name="verify" ng-model="user.confirmPassword" placeholder="Confirm Password" ng-required="password_required" oninput="setCustomValidity('')" nx-equal-ex="user.password" oninvalid="this.setCustomValidity('please repeat the Password in this field')">
+        <div>
+          <span ng-show="showValidationMessages && form.verify.$error.nxEqualEx" class="help-inline">Passwords must match!</span>
+        </div>
       </div>
-      <div class="checkbox">
+      <div class="form-group checkbox">
         <label for="user_admin">
-        <input name="user_admin" id="user_admin" type="checkbox"  ng-model="user.admin" ng-checked="user.admin">
-        Administrator</label>
-      </div>
-      <div class="checkbox">
-        <label for="user_trashed">
-        <input name="user_trashed" id="user_trashed" type="checkbox"  ng-model="user.trashed" ng-checked="user.trashed">
-        Trashed</label>
+          <input name="user_admin" id="user_admin" type="checkbox"  ng-model="user.admin" ng-checked="user.admin">Administrator
+        </label>
       </div>
     </div>
     <div class="modal-footer">
@@ -56,6 +52,9 @@
     </div>
     <div class="btn-group">
       <button ng-disabled="!(Selecteds.length>0)" type="button" class = "btn btn btn-warning" ng-click="Delete_User()">Delete</button>
+    </div>
+    <div class="btn-group">
+      <button ng-disabled="!(Selecteds.length>0)" type="button" class = "btn btn btn-warning" ng-click="Undo_Trash()">Restore</button>
     </div>
     <div class="btn-group">
       <button ng-disabled="!(Selecteds.length==1)" type="button" class = "btn btn btn-warning" ng-click="ChangePassword()">Change Password</button>

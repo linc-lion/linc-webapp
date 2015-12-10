@@ -23,18 +23,13 @@
       </div>
       <div class="form-group">
         <label for="image_set_id">Image Set:</label>
-        <select class="form-control custom-select" name="image_set_id" ng-options="imageset.id as imageset.id for imageset in imagesets" ng-model="image.image_set_id" required><option></option>
+        <select class="form-control custom-select" name="image_set_id" ng-options="imageset.id as imageset.id group by Trash_Label(imageset) for imageset in imagesets" ng-model="image.image_set_id" required><option></option>
         </select>
       </div>
       <div class="checkbox">
         <label for="is_public">
         <input name="is_public" id="is_public"  type="checkbox"  ng-model="image.is_public" ng-checked="image.is_public">
           Is Public </label>
-      </div>
-      <div class="checkbox">
-        <label for="img_trashed">
-        <input name="img_trashed" id="img_trashed"  type="checkbox"  ng-model="image.trashed" ng-checked="image.trashed">
-          Trashed </label>
       </div>
     </div>
     <div class="modal-footer">
