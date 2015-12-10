@@ -8,12 +8,7 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
   $scope.title = 'Menu';
   $scope.content = 'Menu';
 
-  $scope.$storage = $localStorage;
-
-  $scope.login = { 'logged': $scope.$storage.logged,
-                   'username': $scope.$storage.username,
-                   'orgname': $scope.$storage.orgname,
-                   'admin': $scope.$storage.admin };
+  $scope.user = $localStorage.user;
 
   $scope.options = {
     "imageset": {"type": "imageset", "edit": "new"},
@@ -37,17 +32,21 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
                 config: {}};
     $http(req).then(function(){
       console.log('Logout ok!');
+      // Cleanning storage
+      $localStorage.$reset();
+      $cookies.remove('userlogin');
+      $state.go("login");
+      NotificationFactory.success({
+        title: "Logout", message:'Good bye.',
+        position: "right", // right, left, center
+        duration: 3000     // milisecond
+      });
     }, function(){
       console.log('Logout ok but the token is already invalid');
+      // Cleanning storage
+      $localStorage.$reset();
+      $cookies.remove('userlogin');
+      $state.go("login");
     });
-    // Cleanning storage
-    $scope.$storage.$reset();
-    $cookies.remove('userlogin');
-    NotificationFactory.success({
-      title: "Logout", message:'Good bye.',
-      position: "right", // right, left, center
-      duration: 3000     // milisecond
-    });
-    $state.go("login");
   }
 }]);

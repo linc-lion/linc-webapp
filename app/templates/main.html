@@ -25,9 +25,9 @@
       <nav class="navbar navbar-default navbar-fixed-top" role="navigation" bs-navbar>
         <div class="container-fluid">
           <div class="navbar-header">
-            <a class="navbar-brand" ng-disabled="!$storage.logged" ui-sref="home"><img src="static/logo.png" alt="logo" ></a>
+            <a class="navbar-brand" ng-disabled="!$storage.user.logged" ui-sref="home"><img src="static/logo.png" alt="logo" ></a>
           </div>
-          <ul class="nav navbar-nav navbar-right" ng-show="$storage.logged">
+          <ul class="nav navbar-nav navbar-right" ng-show="$storage.user.logged">
             <sidemenu debug="debug"></sidemenu>
           </ul>
         </div>

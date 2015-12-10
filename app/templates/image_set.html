@@ -65,11 +65,10 @@
       <image-gallery ng-show="imageset" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="gallery_options" debug="debug" modal-is-open="is_modal_open" gallery-updated="Reload_Page()"></image-gallery>
       <location-history ng-show="imageset" use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" type="imageset" options="location_options" location-goto="location_goto(imageset_Id)" debug="debug" modal-is-open="is_modal_open"></location-history>
       <br>
-      <metadata ng-show="imageset" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options" update-action="update_imageset(data)" debug="debug" modal-is-open="is_modal_open"></metadata>
+      <metadata ng-show="imageset && user.organization_id == imageset.organization_id" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options" update-action="update_imageset(data)" debug="debug" modal-is-open="is_modal_open"></metadata>
       <br>
-      <cvresults ng-show="imageset" use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" cvresults-id="imageset.cvresults" cvrequest-id="imageset.cvrequest" ng-if="imageset.action == 'cvresults'" cv-result-erased="Change_results(change, imagesetId)" debug="debug" modal-is-open="is_modal_open"></cvresults>
-      <cvrequest ng-show="imageset" use-ctrl="CVRequesCtrl" use-template-url="cvrequest.html" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)" debug="debug" modal-is-open="is_modal_open"></cvrequest>
-  <!--    <p><a class="btn btn-lg btn-default btn-block text-muted" ng-show="imageset" ng-if="imageset.action == 'cvpending'"><span class="text-muted">CV Request pending</span></a></p> -->
-      <p ng-show="imageset"><a class="btn btn-lg btn-default btn-block" ng-click="Delete()"><i class="icon icon-trash"></i> DELETE IMAGE SET</a></p>
+      <cvresults ng-show="imageset && user.organization_id == imageset.organization_id" use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" cvresults-id="imageset.cvresults" cvrequest-id="imageset.cvrequest" ng-if="imageset.action == 'cvresults'" cv-result-erased="Change_results(change, imagesetId)" debug="debug" modal-is-open="is_modal_open"></cvresults>
+      <cvrequest ng-show="imageset && user.organization_id == imageset.organization_id" use-ctrl="CVRequesCtrl" use-template-url="cvrequest.html" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)" debug="debug" modal-is-open="is_modal_open"></cvrequest>
+      <p ng-show="imageset && user.organization_id == imageset.organization_id"><a class="btn btn-lg btn-default btn-block" ng-click="Delete()"><i class="icon icon-trash"></i> DELETE IMAGE SET</a></p>
     </div>
   </div>
