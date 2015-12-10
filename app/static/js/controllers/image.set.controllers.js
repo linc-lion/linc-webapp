@@ -113,6 +113,13 @@ angular.module('lion.guardians.image.set.controllers', [])
       $scope.modalInstance.dismiss();
     }
   };
+  var cancel_intervals = function (){
+    if($scope.requesCVpromise != null){
+      $interval.cancel($scope.requesCVpromise);
+      $scope.requesCVpromise = undefined;
+      console.log('Interval cancel');
+    }
+  }
   var requestCVResults = function (ReqObjid){
     NotificationFactory.info({
       title: "Notify", message:'Trying to get CV Results',
@@ -121,7 +128,7 @@ angular.module('lion.guardians.image.set.controllers', [])
     });
     LincServices.putCVResults(ReqObjid, function(result){
       var cvresult = result.data.data;
-      if(cvresult.status == "queued"){
+      if(cvresult.status == "finished"){
         $scope.imageset.action = 'cvresults';
         $scope.imageset.cvresults = cvresult.obj_id;
         cancel_intervals();
@@ -150,8 +157,7 @@ angular.module('lion.guardians.image.set.controllers', [])
           console.log('Success Results CV');
         }
         else if (cvresult.status == "queued"){
-          $scope.requesCVpromise = $interval(
-            requestCVResults('PUT', requestObj.id), 60000);
+          $scope.requesCVpromise = $interval(requestCVResults(requestObj.id), 60000);
         }
         else{
           NotificationFactory.error({
@@ -422,7 +428,7 @@ angular.module('lion.guardians.image.set.controllers', [])
     });
     LincServices.putCVResults(ReqObjid, function(result){
       var cvresult = result.data.data;
-      if(cvresult.status == "queued"){
+      if(cvresult.status == "finished"){
         $scope.imagesets[index].action = 'cvresults';
         $scope.imagesets[index].cvresults = cvresult.obj_id;
         cancel_intervals();
@@ -452,8 +458,7 @@ angular.module('lion.guardians.image.set.controllers', [])
           console.log('Success Results CV');
         }
         else if (cvresult.status == "queued"){
-          $scope.requesCVpromise = $interval(
-            requestCVResults('PUT', index, requestObj.id), 60000);
+          $scope.requesCVpromise = $interval(requestCVResults(index, requestObj.id), 60000);
         }
         else{
           NotificationFactory.error({
