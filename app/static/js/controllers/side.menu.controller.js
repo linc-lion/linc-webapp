@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu.directive'])
 
-.controller('SideMenuCtrl', ['$scope', '$state', '$window', '$localStorage', '$http', '$cookies', 'NotificationFactory', function ($scope, $state, $window, $localStorage, $http, $cookies, NotificationFactory) {
+.controller('SideMenuCtrl', ['$scope', '$state', '$localStorage', 'AuthService', 'NotificationFactory', function ($scope, $state, $localStorage, AuthService, NotificationFactory) {
 
   $scope.is_modal_open = false;
   $scope.title = 'Menu';
@@ -24,17 +24,7 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
 
   $scope.logout = function($hide){
     $hide();
-    var xsrfcookie = $cookies.get('_xsrf');
-    var req = { method: 'POST',
-                   url: '/logout',
-                  data: {},
-               headers: { 'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie},
-                config: {}};
-    $http(req).then(function(){
-      console.log('Logout ok!');
-      // Cleanning storage
-      $localStorage.$reset();
-      $cookies.remove('userlogin');
+    AuthService.Logout(function(result){
       $state.go("login");
       NotificationFactory.success({
         title: "Logout", message:'Good bye.',
@@ -42,10 +32,6 @@ angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu
         duration: 3000     // milisecond
       });
     }, function(){
-      console.log('Logout ok but the token is already invalid');
-      // Cleanning storage
-      $localStorage.$reset();
-      $cookies.remove('userlogin');
       $state.go("login");
     });
   }

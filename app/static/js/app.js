@@ -1,9 +1,9 @@
 //angular.module('lion-guardians', [])  ['ngAnimate', 'ngSanitize', 'mgcrea.ngStrap']);
-var app = angular.module('lion.guardians', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'ngMap', 'mgcrea.ngStrap', 'angularFileUpload', 'cgNotify', 'ngCookies', 'angular-loading-bar', 'ngInputModified', 'lion.guardians.controllers', 'lion.guardians.interceptor.factory', 'lion.guardians.services']);
+var app = angular.module('lion.guardians', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'ngMap', 'mgcrea.ngStrap', 'angularFileUpload', 'cgNotify', 'ngCookies', 'angular-loading-bar', 'ngInputModified', 'lion.guardians.controllers', 'lion.guardians.interceptor.factory', 'lion.guardians.services', 'lion.guardians.auth.services']);
 
 'use strict';
 
-app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($rootScope, $state, $stateParams, $localStorage) {
+app.run(['$rootScope', '$state', '$stateParams', 'AuthService', function ($rootScope, $state, $stateParams, AuthService) {
 
     // It's very handy to add references to $state and $stateParams to the $rootScope
     // so that you can access them from any scope within your applications.For example,
@@ -13,12 +13,16 @@ app.run(['$rootScope', '$state', '$stateParams', '$localStorage', function ($roo
     $rootScope.$stateParams = $stateParams;
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-        //console.log(toState);
-        var user = $localStorage.user;
-        if((!user || !user.logged) && toState.name != "login"){
+      var authorized = toState.data.authorized;
+      if (toState.name != "login"){
+        if (!AuthService.isAuthenticated()){
           event.preventDefault();
           $state.go("login");
         }
+        else if (!AuthService.isAuthorized(authorized)) {
+          event.preventDefault();
+        }
+      }
     });
 
     var history = [];
@@ -68,7 +72,10 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           url: '/login',
           controller: 'LoginCtrl',
           controllerAs: 'vm',
-          templateUrl: 'login.html'
+          templateUrl: 'login.html',
+          data:{
+            authorized: '*',
+          }
         })
         // Search Lion
         .state("admin", {
@@ -77,6 +84,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           templateUrl: 'admin.html',
           data: {
             bodyClasses: 'admin',
+            authorized: 'admin',
             debug: debug
           },
           resolve: {
@@ -108,31 +116,52 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         })
         .state('admin.users', {
           url: '/users',
-          templateUrl: 'admin.users.tpl.html'
+          templateUrl: 'admin.users.tpl.html',
+          data:{
+            authorized: 'admin'
+          }
         })
         .state('admin.organizations', {
           url: '/organizations',
-          templateUrl: 'admin.organizations.tpl.html'
+          templateUrl: 'admin.organizations.tpl.html',
+          data:{
+            authorized: 'admin'
+          }
         })
         .state('admin.lions', {
           url: '/lions',
-          templateUrl: 'admin.lions.tpl.html'
+          templateUrl: 'admin.lions.tpl.html',
+          data:{
+            authorized: 'admin'
+          }
         })
         .state('admin.imagesets', {
           url: '/imagesets',
-          templateUrl: 'admin.imagesets.tpl.html'
+          templateUrl: 'admin.imagesets.tpl.html',
+          data:{
+            authorized: 'admin'
+          }
         })
         .state('admin.images', {
           url: '/images',
-          templateUrl: 'admin.images.tpl.html'
+          templateUrl: 'admin.images.tpl.html',
+          data:{
+            authorized: 'admin'
+          }
         })
         .state('admin.cvrequests', {
           url: '/cvrequests',
-          templateUrl: 'admin.cvrequests.tpl.html'
+          templateUrl: 'admin.cvrequests.tpl.html',
+          data:{
+            authorized: 'admin'
+          }
         })
         .state('admin.cvresults', {
           url: '/cvresults',
-          templateUrl: 'admin.cvresults.tpl.html'
+          templateUrl: 'admin.cvresults.tpl.html',
+          data:{
+            authorized: 'admin'
+          }
         })
         // Home Menu
         .state("home", {
@@ -140,7 +169,8 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           controller: 'HomeCtrl',
           templateUrl: 'home.html',
           data: {
-            debug: debug
+            debug: debug,
+            authorized: 'logged'
           }
         })
         .state("lion", {
@@ -149,6 +179,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           templateUrl: 'lion.html',
           data: {
             bodyClasses: 'lion',
+            authorized: 'logged',
             debug: debug
           },
           resolve: {
@@ -167,6 +198,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           templateUrl: 'imageset.html',
           data: {
             bodyClasses: 'imageset',
+            authorized: 'logged',
             debug: debug
           },
           resolve: {
@@ -185,6 +217,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           templateUrl: 'searchlion.html',
           data: {
             bodyClasses: 'searchlion',
+            authorized: 'logged',
             debug: debug
           },
           resolve: {
@@ -203,6 +236,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           templateUrl: 'searchimageset.html',
           data: {
             bodyClasses: 'searchimageset',
+            authorized: 'logged',
             debug: debug
           },
           resolve: {
@@ -221,6 +255,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
           templateUrl: 'conservationists.html',
           data: {
             bodyClasses: 'conservationists',
+            authorized: 'logged',
             debug: debug
           },
           resolve: {
@@ -250,4 +285,6 @@ app.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
     cfpLoadingBarProvider.includeSpinner = false;
     cfpLoadingBarProvider.includeBar = true;
     cfpLoadingBarProvider.latencyThreshold = 500;
-}]);
+}])
+
+;
