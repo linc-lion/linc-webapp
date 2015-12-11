@@ -67,8 +67,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="link" ng-repeat="cvresult in ordered_cvresults = (cvresults | orderBy:predicate:reverse)" ng-class="{active:cvresult.selected}" ng-click="Select_CVresult1(cvresult);$event.stopPropagation();">
-        <td class="text-center"><input type="checkbox" ng-disabled="CVResult_Mode != ''" ng-model="cvresult.selected" ng-click="Select_CVresult(cvresult);$event.stopPropagation();"></td>
+      <tr class="link" ng-repeat="cvresult in ordered_cvresults = (cvresults | orderBy:predicate:reverse)" ng-class="{active:cvresult.selected}" ng-click="Select_CVresult1($event, cvresult);$event.stopPropagation();">
+        <td class="text-center"><input type="checkbox" ng-disabled="CVResult_Mode != ''" ng-model="cvresult.selected" ng-click="Select_CVresult($event, cvresult);$event.stopPropagation();"></td>
         <td class="text-center">{{!cvresult.id}}</td>
         <td class="text-center">{{!cvresult.cvrequest_id}}</td>
         <td class="text-center">

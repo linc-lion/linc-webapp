@@ -97,8 +97,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="link" ng-repeat="user in ordered_users = (users | orderBy:predicate:reverse)"  ng-class="{active:user.selected}" ng-click="Select_User1(user);$event.stopPropagation();">
-        <td class="text-center"><input type="checkbox" ng-disabled="User_Mode != ''" ng-model="user.selected" ng-click="Select_User(user);$event.stopPropagation();"></td>
+      <tr class="link" ng-repeat="user in ordered_users = (users | orderBy:predicate:reverse)"  ng-class="{active:user.selected}" ng-click="Select_User1($event, user);$event.stopPropagation();">
+        <td class="text-center"><input type="checkbox" ng-disabled="User_Mode != ''" ng-model="user.selected" ng-click="Select_User($event, user);$event.stopPropagation();"></td>
         <td class="text-center">{{!user.id}}</td>
         <td >{{!user.email}}</td>
         <td >{{!user.organization}}</td>

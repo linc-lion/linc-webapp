@@ -3,7 +3,7 @@
 
 angular.module('lion.guardians.admin.images.controller', [])
 
-.controller('AdminImagesCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
+.controller('AdminImagesCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
   $scope.Image_Mode = $scope.settings.images.Mode;
   $scope.itemsPerPage = 100;//$scope.settings.images.itemsPerPage;
@@ -26,15 +26,15 @@ angular.module('lion.guardians.admin.images.controller', [])
     check_selects();
   }
 
-  $scope.Select_Image1 = function (image){
+  $scope.Select_Image1 = function ($event, image){
     if($scope.Image_Mode != '') return;
     image.selected = !image.selected;
-    $scope.Select_Image(image);
+    $scope.Select_Image($event, image);
   }
 
   var lastSelId = -1;
-  $scope.Select_Image = function (image){
-    var shiftKey = $window.event.shiftKey;
+  $scope.Select_Image = function ($event, image){
+    var shiftKey = $event.shiftKey;
     if(shiftKey && lastSelId>=0){
       var index0 = _.findIndex($scope.paginated_images, {'id': lastSelId});
       var index1 = _.findIndex($scope.paginated_images, {'id': image.id});

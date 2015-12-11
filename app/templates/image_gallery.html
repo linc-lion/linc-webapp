@@ -24,14 +24,9 @@
   <div class="row">
     <div class="col-sm-9">
       <a class="thumbnail" ng-repeat="(index, photo) in paginated_gallery = (filtered_gallery = (gallery | PrivateFilter:showPrivated | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" ng-class="{active:photo.select}" ng-click="show_image_view(photo, index);" ng-right-click="show_photo(photo.medium)">
-
-        <i class="icon icon-check_circle select"
-        ng-click="photo.select=!photo.select; Select_Image(photo, index); $event.stopPropagation();"></i>
-
+        <i class="icon icon-check_circle select" ng-click="photo.select=!photo.select; Select_Image($event, photo, index); $event.stopPropagation();"></i>
         <img ng-src="{{!photo.thumbnail}}" width="150" height="150">
-
         <div class="caption"><i class="icon icon-globe pull-right" ng-if="photo.is_public"></i><i class="icon icon-star" ng-if="photo.cover"></i>{{!Type_Labels[photo.type]}}</div>
-
       </a>
       <p class="clearfix">
         <a class="btn btn-link" ng-click="Select_All()">Select All</a>

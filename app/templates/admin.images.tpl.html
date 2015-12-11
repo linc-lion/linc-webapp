@@ -104,8 +104,8 @@
       <tr>
     </thead>
     <tbody>
-      <tr class="link" ng-repeat="image in paginated_images = (filtered_images = (images | orderBy:predicate:reverse) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)"  ng-class="{active:image.selected}" ng-click="Select_Image1(image);$event.stopPropagation();">
-        <td class="text-center"><input type="checkbox" ng-disabled="Image_Mode != ''" ng-model="image.selected" ng-click="Select_Image(image);$event.stopPropagation();"></td>
+      <tr class="link" ng-repeat="image in paginated_images = (filtered_images = (images | orderBy:predicate:reverse) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)"  ng-class="{active:image.selected}" ng-click="Select_Image1($event, image);$event.stopPropagation();">
+        <td class="text-center"><input type="checkbox" ng-disabled="Image_Mode != ''" ng-model="image.selected" ng-click="Select_Image($event, image);$event.stopPropagation();"></td>
         <td class="text-center">{{!image.id}}</td>
         <td class="text-center" ng-click="show_photo(image.url)"><img ng-src="{{!image.url}}" width="40" height="40"></td>
         <td class="text-center">{{!image.image_type}}</td>

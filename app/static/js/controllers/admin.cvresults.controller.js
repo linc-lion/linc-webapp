@@ -3,7 +3,7 @@
 
 angular.module('lion.guardians.admin.cvresults.controller', [])
 
-.controller('AdminCVResultsCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
+.controller('AdminCVResultsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
   $scope.CVResult_Mode = $scope.settings.cvresults.Mode;
 
@@ -22,15 +22,15 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
     check_selects();
   }
 
-  $scope.Select_CVresult1 = function (cvresult){
+  $scope.Select_CVresult1 = function ($event, cvresult){
     if($scope.CVResult_Mode != '') return;
     cvresult.selected = !cvresult.selected;
-    $scope.Select_CVresult(cvresult);
+    $scope.Select_CVresult($event, cvresult);
   }
 
   var lastSelId = -1;
-  $scope.Select_CVresult = function (cvresult){
-    var shiftKey = $window.event.shiftKey;
+  $scope.Select_CVresult = function ($event, cvresult){
+    var shiftKey = $event.shiftKey;
     if(shiftKey && lastSelId>=0){
       var index0 = _.findIndex($scope.ordered_cvresults, {'id': lastSelId});
       var index1 = _.findIndex($scope.ordered_cvresults, {'id': cvresult.id});

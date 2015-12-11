@@ -213,8 +213,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="link" ng-repeat="imageset in ordered_imagesets = (imagesets | orderBy:predicate:reverse)" ng-class="{active:imageset.selected}" ng-click="Select_Imageset1(imageset);$event.stopPropagation();">
-        <td class="text-center"><input type="checkbox" ng-disabled="ImageSet_Mode != ''" ng-model="imageset.selected" ng-click="Select_Imageset(imageset);$event.stopPropagation();"></td>
+      <tr class="link" ng-repeat="imageset in ordered_imagesets = (imagesets | orderBy:predicate:reverse)" ng-class="{active:imageset.selected}" ng-click="Select_Imageset1($event, imageset);$event.stopPropagation();">
+        <td class="text-center"><input type="checkbox" ng-disabled="ImageSet_Mode != ''" ng-model="imageset.selected" ng-click="Select_Imageset($event, imageset);$event.stopPropagation();"></td>
         <td class="text-center">{{!imageset.id}}</td>
         <td class="text-center">{{!imageset.lion_id}}</td>
         <td class="text-center">{{!imageset.lion_name}}</td>
