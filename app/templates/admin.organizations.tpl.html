@@ -66,8 +66,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="link" ng-repeat="org in ordered_organizations = (organizations | orderBy:predicate:reverse)" ng-class="{active:org.selected}" ng-click="Select_Org1(org);$event.stopPropagation();">
-        <td class="text-center"><input type="checkbox" ng-disabled="Org_Mode != ''" ng-model="org.selected" ng-click="Select_Org(org);$event.stopPropagation();"></td>
+      <tr class="link" ng-repeat="org in ordered_organizations = (organizations | orderBy:predicate:reverse)" ng-class="{active:org.selected}" ng-click="Select_Org1($event, org);$event.stopPropagation();">
+        <td class="text-center"><input type="checkbox" ng-disabled="Org_Mode != ''" ng-model="org.selected" ng-click="Select_Org($event, org);$event.stopPropagation();"></td>
         <td class="text-center">{{!org.id}}</td>
         <td class="text-center">{{!org.name}}</td>
         <td class="text-center">

@@ -3,7 +3,7 @@
 
 angular.module('lion.guardians.admin.cvrequests.controller', [])
 
-.controller('AdminCVRequestsCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
+.controller('AdminCVRequestsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
   $scope.CVReq_Status = [{'type': 'submitted', 'label': 'Submitted'},
                          {'type': 'created', 'label': 'Created',
@@ -26,15 +26,15 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
     check_selects();
   }
 
-  $scope.Select_CVRequest1 = function (cvrequest){
+  $scope.Select_CVRequest1 = function ($event, cvrequest){
     if($scope.CVRequest_Mode != '') return;
     cvrequest.selected = !cvrequest.selected;
-    $scope.Select_CVRequest(cvrequest);
+    $scope.Select_CVRequest($event, cvrequest);
   }
 
   var lastSelId = -1;
-  $scope.Select_CVRequest = function (cvrequest){
-    var shiftKey = $window.event.shiftKey;
+  $scope.Select_CVRequest = function ($event, cvrequest){
+    var shiftKey = $event.shiftKey;
     if(shiftKey && lastSelId>=0){
       var index0 = _.findIndex($scope.ordered_cvrequests, {'id': lastSelId});
       var index1 = _.findIndex($scope.ordered_cvrequests, {'id': cvrequest.id});

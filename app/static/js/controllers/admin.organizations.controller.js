@@ -3,7 +3,7 @@
 
 angular.module('lion.guardians.admin.organiaztions.controller', [])
 
-.controller('AdminOrganizationsCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
+.controller('AdminOrganizationsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
   $scope.Org_Mode  =  $scope.settings.organizations.Mode;
 
@@ -22,15 +22,15 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
     check_selects();
   }
 
-  $scope.Select_Org1 = function (organization){
+  $scope.Select_Org1 = function ($event, organization){
     if($scope.Org_Mode !='') return;
     organization.selected = !organization.selected;
-    $scope.Select_Org(organization);
+    $scope.Select_Org($event, organization);
   }
 
   var lastSelId = -1;
-  $scope.Select_Org = function (organization){
-    var shiftKey = $window.event.shiftKey;
+  $scope.Select_Org = function ($event, organization){
+    var shiftKey = $event.shiftKey;
     if(shiftKey && lastSelId>=0){
       var index0 = _.findIndex($scope.ordered_organizations, {'id': lastSelId});
       var index1 = _.findIndex($scope.ordered_organizations, {'id': organization.id});

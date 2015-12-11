@@ -3,7 +3,7 @@
 
 angular.module('lion.guardians.admin.imagesets.controller', [])
 
-.controller('AdminImageSetsCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
+.controller('AdminImageSetsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
   $scope.ImageSet_Mode  =  $scope.settings.imagesets.Mode;
 
@@ -33,15 +33,15 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
     check_selects();
   }
 
-  $scope.Select_Imageset1 = function (imageset){
+  $scope.Select_Imageset1 = function ($event, imageset){
     if($scope.ImageSet_Mode != '') return;
     imageset.selected = !imageset.selected;
-    $scope.Select_Imageset(imageset);
+    $scope.Select_Imageset($event, imageset);
   }
 
   var lastSelId = -1;
-  $scope.Select_Imageset = function (imageset){
-    var shiftKey = $window.event.shiftKey;
+  $scope.Select_Imageset = function ($event, imageset){
+    var shiftKey = $event.shiftKey;
     if(shiftKey && lastSelId>=0){
       var index0 = _.findIndex($scope.ordered_imagesets, {'id': lastSelId});
       var index1 = _.findIndex($scope.ordered_imagesets, {'id': imageset.id});

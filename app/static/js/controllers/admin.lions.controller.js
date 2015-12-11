@@ -3,7 +3,7 @@
 
 angular.module('lion.guardians.admin.lions.controller', [])
 
-.controller('AdminLionsCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
+.controller('AdminLionsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
   $scope.Lion_Mode = $scope.settings.lions.Mode;
 
@@ -21,15 +21,15 @@ angular.module('lion.guardians.admin.lions.controller', [])
     }
     check_selects();
   }
-  $scope.Select_Lion1 = function (lion){
+  $scope.Select_Lion1 = function ($event, lion){
     if($scope.Lion_Mode != '') return;
     lion.selected = !lion.selected;
-    $scope.Select_Lion(lion);
+    $scope.Select_Lion($event, lion);
   }
 
   var lastSelId = -1;
-  $scope.Select_Lion = function (lion){
-    var shiftKey = $window.event.shiftKey;
+  $scope.Select_Lion = function ($event, lion){
+    var shiftKey = $event.shiftKey;
     if(shiftKey && lastSelId>=0){
       var index0 = _.findIndex($scope.ordered_lions, {'id': lastSelId});
       var index1 = _.findIndex($scope.ordered_lions, {'id': lion.id});

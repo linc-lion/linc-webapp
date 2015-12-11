@@ -212,8 +212,8 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   }
   // Click on the images check mark
   var lastSelIndex = -1;
-  $scope.Select_Image = function (photo, index){
-    var shiftKey = $window.event.shiftKey;
+  $scope.Select_Image = function ($event, photo, index){
+    var shiftKey = $event.shiftKey;
     if(shiftKey && lastSelIndex>=0){
       var first = Math.min(lastSelIndex, index);
       var second = Math.max(lastSelIndex, index);
@@ -252,8 +252,8 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
         $scope.Selected.isCover = $scope.Selecteds[0].cover;
       }
       console.log("Set Properties");
-      //if(showPrivated)
-      //  $scope.isViewFilter = false;
+      if($scope.showPrivated)
+        $scope.Change_Tab('edit');
     }
     else if($scope.Selecteds.length>1){
       if(check_selecteds("type"))
@@ -267,14 +267,14 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
         $scope.Selected.isPublic = $scope.Selecteds[0].is_public;
       }
       $scope.Selected.isCover = false;
-      //if(showPrivated)
-      //  $scope.isViewFilter = false;
+      if($scope.showPrivated)
+        $scope.Change_Tab('edit');
     }
     else{
       $scope.Selected.Type = 'cv';
       $scope.Selected.isPublic = true;
       $scope.Selected.isCover = false;
-      $scope.isViewFilter = true;
+      $scope.Change_Tab('filter');
     }
   }
 

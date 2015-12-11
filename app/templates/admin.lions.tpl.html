@@ -82,8 +82,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="link" ng-repeat="lion in ordered_lions = (lions | orderBy:predicate:reverse)" ng-class="{active:lion.selected}" ng-click="Select_Lion1(lion);$event.stopPropagation();">
-        <td class="text-center"><input type="checkbox" ng-disabled="Lion_Mode != ''" ng-model="lion.selected" ng-click="Select_Lion(lion);$event.stopPropagation();"></td>
+      <tr class="link" ng-repeat="lion in ordered_lions = (lions | orderBy:predicate:reverse)" ng-class="{active:lion.selected}" ng-click="Select_Lion1($event, lion);$event.stopPropagation();">
+        <td class="text-center"><input type="checkbox" ng-disabled="Lion_Mode != ''" ng-model="lion.selected" ng-click="Select_Lion($event, lion);$event.stopPropagation();"></td>
         <td class="text-center">{{!lion.id}}</td>
         <td class="text-center">{{!lion.name}}</td>
         <td class="text-center">{{!lion.organization}}</td>

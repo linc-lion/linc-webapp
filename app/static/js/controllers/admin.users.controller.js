@@ -3,7 +3,7 @@
 
 angular.module('lion.guardians.admin.users.controller', [])
 
-.controller('AdminUsersCtrl', ['$scope', '$window', '$uibModal', function ($scope, $window, $uibModal) {
+.controller('AdminUsersCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
   $scope.User_Mode = $scope.settings.users.Mode;
 
@@ -22,15 +22,15 @@ angular.module('lion.guardians.admin.users.controller', [])
     check_selects();
   }
 
-  $scope.Select_User1 = function (user){
+  $scope.Select_User1 = function ($event, user){
     if($scope.User_Mode != '') return;
     user.selected = !user.selected;
-    $scope.Select_User(user);
+    $scope.Select_User($event, user);
   }
 
   var lastSelId = -1;
-  $scope.Select_User = function (user){
-    var shiftKey = $window.event.shiftKey;
+  $scope.Select_User = function ($event, user){
+    var shiftKey = $event.shiftKey;
     if(shiftKey && lastSelId>=0){
       var index0 = _.findIndex($scope.ordered_users, {'id': lastSelId});
       var index1 = _.findIndex($scope.ordered_users, {'id': user.id});
@@ -279,7 +279,22 @@ angular.module('lion.guardians.admin.users.controller', [])
           scope:$scope
       });
       $scope.modalInstance.result.then(function (result) {
-        alert("Update Password");
+        var data = $scope.sel_user;
+        $scope.LincApiServices.Users({'method': 'put', 'user_id' : $scope.user.id, 'data': data}).then(function(response){
+          /*var user = $scope.Selecteds[0];
+          _.merge(user, user, response.data);
+          user.created_at = (user.created_at || "").substring(0,19);
+          user.updated_at = (user.updated_at || "").substring(0,19);
+          var org = _.find($scope.$parent.organizations, {'id': user.organization_id});
+          user.organization =  (org == undefined)? '' : org.name;*/
+        },
+        function(error){
+          $scope.Notification.error({
+            title: "Fail", message: 'Fail to change User Password',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        });
       });
       $scope.submit_password = function (valid){
         if(valid)
@@ -293,6 +308,30 @@ angular.module('lion.guardians.admin.users.controller', [])
       }
     };
   }
+
+  /*
+  $scope.LincApiServices.Users({'method': 'put', 'user_id' : $scope.user.id, 'data': data}).then(function(response){
+    $scope.Notification.success({
+      title: 'User Info', message: 'User data successfully updated',
+      position: "right", // right, left, center
+      duration: 2000     // milisecond
+    });
+
+    var user = $scope.Selecteds[0];
+    _.merge(user, user, response.data);
+    user.created_at = (user.created_at || "").substring(0,19);
+    user.updated_at = (user.updated_at || "").substring(0,19);
+    var org = _.find($scope.$parent.organizations, {'id': user.organization_id});
+    user.organization =  (org == undefined)? '' : org.name;
+  },
+  function(error){
+    $scope.Notification.error({
+      title: "Fail", message: 'Fail to change User data',
+      position: 'right', // right, left, center
+      duration: 5000   // milisecond
+    });
+  });
+  */
 
   var check_selects = function (){
     var count = 0;
