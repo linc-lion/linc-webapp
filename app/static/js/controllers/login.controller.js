@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.login.controller', [])
 // Login
-.controller('LoginCtrl', ['$scope', '$state', '$timeout', '$localStorage', 'LincServices', 'NotificationFactory', function ($scope, $state, $timeout, $localStorage, LincServices, NotificationFactory) {
+.controller('LoginCtrl', ['$scope', '$state', '$timeout', '$localStorage', 'AuthService', 'NotificationFactory', function ($scope, $state, $timeout, $localStorage, AuthService, NotificationFactory) {
 
   $scope.loginData = { username : '' , password : '', _xsrf: ''};
   $scope.dataLoading = false;
@@ -28,7 +28,7 @@ angular.module('lion.guardians.login.controller', [])
         $scope.dataLoading = true;
         $localStorage.$reset();
         // Authentication Service
-        LincServices.Login($scope.loginData, function(result){
+        AuthService.Login($scope.loginData, function(result){
           var data = result.data.data;
           user = {
             'name': data['username'],

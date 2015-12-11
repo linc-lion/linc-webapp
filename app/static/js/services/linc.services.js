@@ -490,16 +490,6 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     });
   };
 
-  var Login = function (data, success, error){
-    var req = { method: 'POST',
-                url: '/login',
-                data: data,
-                headers: { 'Content-Type': 'application/json', 'X-XSRFToken' : data['_xsrf']},
-                config: {}};
-    $http(req).then(success, error);
-  };
-
-
   var dataFactory = {};
   // List of ImageSets , Lions and Organizations
   dataFactory.Organizations = GetAllOrganizations;
@@ -549,7 +539,6 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   dataFactory.getImageGallery = GetImageGallery;
 
   dataFactory.Download = GetDownload;
-  dataFactory.Login = Login;
   return dataFactory;
 }])
 
