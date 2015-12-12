@@ -2,57 +2,77 @@
   <div class="row">
     <div class="col-sm-3 line-right">
       <p><img src="{{!imageset.image}}" class="img-responsive"></p>
-      <div>
+      <div class="meta-info">
         <h4 class="h4inline">Image Set ID:</h4>
         <h4 class="h4data">{{!imageset.id}}</h4>
       </div>
-      <div>
+      <div class="meta-info">
         <h4 class="h4inline">Lion Name:</h4>
         <h4 class="h4data">
           <a ng-click="(imageset.lion_id==null) || goto_lion(imageset.lion_id);">{{!imageset.name || '-'}}</a>
         </h4>
       </div>
-      <div ng-show="!imageset.is_primary && imageset.lion_id">
+      <div class="meta-info">
+        <h4 class="h4inline">Lion ID:</h4>
+        <h4 class="h4data">{{!imageset.lion_id}}</h4>
+      </div>
+      <div class="meta-info" ng-show="!imageset.is_primary && imageset.lion_id">
         <button type="button" class="btn btn-primary btn-xs" ng-click="Dissociate(imageset.id)">Dissociate</button>
       </div>
-      <div>
+      <div class="meta-info">
         <h4 class="h4inline">Organization:</h4>
         <h4 class="h4data">{{!imageset.organization}}</h4>
       </div>
-      <div>
+      <div class="meta-info">
+        <h4 class="h4inline">Date Stamp:</h4>
+        <h4 class="h4data">{{!imageset.date_stamp | date:'yyyy/MM/dd'}}</h4>
+      </div>
+      <div class="meta-info">
+        <h4 class="h4inline">Date of Birth:</h4>
+        <h4 class="h4data">{{!imageset.date_of_birth | date:'yyyy/MM/dd'}}</h4>
+      </div>
+      <div class="meta-info">
         <h4 class="h4inline">Age:</h4>
         <h4 class="h4data">{{!imageset.age}}</h4>
       </div>
-      <div>
+      <div class="meta-info">
+        <h4 class="h4inline">Latitude:</h4>
+        <h4 class="h4data">{{!imageset.latitude | number:4}}</h4>
+      </div>
+      <div class="meta-info">
+        <h4 class="h4inline">Longitude:</h4>
+        <h4 class="h4data">{{!imageset.longitude | number:4}}</h4>
+      </div>
+      <div class="meta-info">
         <h4 class="h4inline">Gender:</h4>
         <h4 ng-show="imageset.gender" class="h4data">{{!imageset.gender}}</h4>
         <h4 ng-show="!imageset.gender" class="h4data">Unknown</h4>
       </div>
-      <div ng-show="imageset.ear_markings">
+      <div class="meta-info" ng-show="imageset.ear_markings">
         <h4 class="h4inline">Ear Markings:</h4>
         <h4 class="h4data">{{!imageset.ear_markings}}</h4>
       </div>
-      <div ng-show="imageset.mount_markings">
+      <div class="meta-info" ng-show="imageset.mount_markings">
         <h4 class="h4inline">Mouth Markings:</h4>
         <h4 class="h4data">{{!imageset.mount_markings}}</h4>
       </div>
-      <div ng-show="imageset.tail_markings">
+      <div class="meta-info" ng-show="imageset.tail_markings">
         <h4 class="h4inline">Tail Markings:</h4>
         <h4 class="h4data">{{!imageset.tail_markings}}</h4>
       </div>
-      <div ng-show="imageset.nose_color">
+      <div class="meta-info" ng-show="imageset.nose_color">
         <h4 class="h4inline">Nose Color:</h4>
         <h4 class="h4data">{{!imageset.nose_color}}</h4>
       </div>
-      <div ng-show="imageset.scars">
+      <div class="meta-info" ng-show="imageset.scars">
         <h4 class="h4inline">Scars:</h4>
         <h4 class="h4data">{{!imageset.scars}}</h4>
       </div>
-      <div ng-show="imageset.eye_damage">
+      <div class="meta-info" ng-show="imageset.eye_damage">
         <h4 class="h4inline">Eye Damage:</h4>
         <h4 class="h4data" >{{!imageset.eye_damage}}</h4>
       </div>
-      <div ng-show="imageset.broken_teet">
+      <div class="meta-info" ng-show="imageset.broken_teet">
         <h4 class="h4inline">Broken Teeth:</h4>
         <h4 class="h4data">{{!imageset.broken_teet}}</h4>
       </div>
