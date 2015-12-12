@@ -14,7 +14,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
       deferred.resolve(responde);
     }
     else{*/
-      angular.merge(config, {cache: true});
+      angular.merge(config, {cache: false});
       $http.get(url, config).then(
         function(response){
           deferred.resolve(response.data);
