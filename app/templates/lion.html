@@ -21,8 +21,24 @@
         <h4 class="h4data">{{!lion.organization}}</h4>
       </div>
       <div class="meta-info">
+        <h4 class="h4inline">Date Stamp:</h4>
+        <h4 class="h4data">{{!lion.date_stamp | date:'yyyy/MM/dd'}}</h4>
+      </div>
+      <div class="meta-info">
+        <h4 class="h4inline">Date of Birth:</h4>
+        <h4 class="h4data">{{!lion.date_of_birth | date:'yyyy/MM/dd'}}</h4>
+      </div>
+      <div class="meta-info">
         <h4 class="h4inline">Age:</h4>
         <h4 class="h4data">{{!lion.age}}</h4>
+      </div>
+      <div class="meta-info">
+        <h4 class="h4inline">Latitude:</h4>
+        <h4 class="h4data">{{!lion.latitude | number:4}}</h4>
+      </div>
+      <div class="meta-info">
+        <h4 class="h4inline">Longitude:</h4>
+        <h4 class="h4data">{{!lion.longitude | number:4}}</h4>
       </div>
       <div class="meta-info">
         <h4 class="h4inline">Gender:</h4>

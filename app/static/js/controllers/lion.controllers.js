@@ -125,6 +125,32 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.Reload_Page = function () {
     $state.go($state.current, {'id': lion.id}, {reload: true});
   };
+  var local_date = function(data){
+    function isValidDate(d) {
+      if ( Object.prototype.toString.call(d) !== "[object Date]" )
+        return false;
+      return !isNaN(d.getTime());
+    }
+    if(data == null || data =="" || data =="-"){
+      return null;
+    }
+    if((typeof data === 'date' || data instanceof Date) && isValidDate(data)){
+      return data;
+    }
+    else{
+      if(typeof data === 'string' || data instanceof String){
+        var val = data;
+        if(data.length>10){
+          val = data.substring(0, 10) + 'T' + data.substring(11, data.length) + 'Z';
+        }
+        return new Date(Date.parse(val));
+      }
+      else return null;
+    }
+  }
+  $scope.lion.date_of_birth = local_date($scope.lion.date_of_birth);
+  $scope.lion.date_stamp = local_date($scope.lion.date_stamp);
+
 }])
 
 .controller('SearchLionCtrl', ['$scope', '$timeout', '$bsTooltip', 'lions', 'lion_filters', function ($scope, $timeout, $bsTooltip, lions, lion_filters) {
