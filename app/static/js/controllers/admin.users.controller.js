@@ -275,13 +275,13 @@ angular.module('lion.guardians.admin.users.controller', [])
     if($scope.Selecteds.length == 1){
       $scope.sel_user = { 'email': $scope.Selecteds[0].email,
                           'id': $scope.Selecteds[0].id,
-                          'newpassword': "", 'confirmPassword': "" };
+                          'password': "", 'confirmPassword': "" };
       $scope.modalInstance = $uibModal.open({
           templateUrl: 'Password.tmpl.html',
           scope:$scope
       });
       $scope.modalInstance.result.then(function (result) {
-        var data = {'password': $scope.sel_user.newpassword};
+        var data = {'password': $scope.sel_user.password};
         $scope.LincApiServices.Users({'method': 'put', 'user_id' : $scope.sel_user.id, 'data': data}).then(function(response){
           $scope.Notification.success({
             title: 'Change Password', message: 'Password of '+ $scope.sel_user.email +' successfully updated',
@@ -309,30 +309,6 @@ angular.module('lion.guardians.admin.users.controller', [])
       }
     };
   }
-
-  /*
-  $scope.LincApiServices.Users({'method': 'put', 'user_id' : $scope.user.id, 'data': data}).then(function(response){
-    $scope.Notification.success({
-      title: 'User Info', message: 'User data successfully updated',
-      position: "right", // right, left, center
-      duration: 2000     // milisecond
-    });
-
-    var user = $scope.Selecteds[0];
-    _.merge(user, user, response.data);
-    user.created_at = (user.created_at || "").substring(0,19);
-    user.updated_at = (user.updated_at || "").substring(0,19);
-    var org = _.find($scope.$parent.organizations, {'id': user.organization_id});
-    user.organization =  (org == undefined)? '' : org.name;
-  },
-  function(error){
-    $scope.Notification.error({
-      title: "Fail", message: 'Fail to change User data',
-      position: 'right', // right, left, center
-      duration: 5000   // milisecond
-    });
-  });
-  */
 
   var check_selects = function (){
     var count = 0;

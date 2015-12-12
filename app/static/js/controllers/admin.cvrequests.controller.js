@@ -5,9 +5,10 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
 
 .controller('AdminCVRequestsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
-  $scope.CVReq_Status = [{'type': 'submitted', 'label': 'Submitted'},
-                         {'type': 'created', 'label': 'Created',
-                          'type': 'fail', 'label': 'Fail'}];
+  $scope.CVReq_Status = [{'status': 'submitted', 'label': 'Submitted'},
+                         {'status': 'created', 'label': 'Created'},
+                         {'status': 'fail', 'label': 'Fail'},
+                         {'status': 'finished', 'label': 'Finished'}];
 
   $scope.CVRequest_Mode = $scope.settings.cvrequests.Mode;
 
