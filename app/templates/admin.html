@@ -5,17 +5,17 @@
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label  for="lion_name">Name:</label>
-        <input class="form-control" readonly type="text" name="email" ng-model="sel_user.email">
+        <label  for="admin_email">Name:</label>
+        <input class="form-control" readonly type="text" name="admin_email" ng-model="sel_user.email">
       </div>
       <div class="form-group">
-        <label  for="lion_name">Password:</label>
-        <input type="password" name="password_fake" id="password_fake" value="" style="display:none;" />
-        <input class="form-control" type="password" name="password" ng-model="sel_user.newpassword" placeholder="New Password" required oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('please fill out this field with Password')">
+        <label  for="password">Password:</label>
+        <input type="password" name="password_fake" value="" style="display:none;" />
+        <input class="form-control" type="password" name="password" ng-model="sel_user.password" placeholder="New Password" required oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('please fill out this field with Password')">
       </div>
       <div class="form-group">
-        <label  for="lion_name">Password:</label>
-        <input class="form-control" type="password" name="verify" ng-model="sel_user.confirmPassword" placeholder="Confirm Password" required oninput="setCustomValidity('')" nx-equal-ex="sel_user.password"
+        <label  for="confirm_password">Password:</label>
+        <input class="form-control" type="password" name="confirm_password" ng-model="sel_user.confirmPassword" placeholder="Confirm Password" required oninput="setCustomValidity('')" nx-equal-ex="sel_user.password"
               oninvalid="this.setCustomValidity('please repeat the Password in this field')">
               <div class="alert alert-danger" ng-show="showValidationMessages && form.verify.$error.nxEqualEx" class="help-inline ">Passwords must match!</div>
       </div>

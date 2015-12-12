@@ -13,17 +13,17 @@
         <input type="email" required class="form-control" name="user_email" ng-model="user.email">
       </div>
       <div class="form-group">
-        <label for="organization_id">Organization:</label>
-        <select class="form-control custom-select trashed" name="organization_id" ng-options="organization.id as organization.name group by Trash_Label(organization) for organization in organizations" ng-model="user.organization_id" required><option></option>
+        <label for="user_organization_id">Organization:</label>
+        <select class="form-control custom-select trashed" name="user_organization_id" ng-options="organization.id as organization.name group by Trash_Label(organization) for organization in organizations" ng-model="user.organization_id" required><option></option>
         </select>
       </div>
       <div ng-hide="User_Mode=='edit'" class="form-group">
-        <label for="lion_name">Password:</label>
-        <input class="form-control" type="password" name="password" ng-model="user.password" placeholder="New Password" ng-required="password_required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('please fill out this field with Password')">
+        <label for="user_password">Password:</label>
+        <input class="form-control" type="password" name="user_password" ng-model="user.password" placeholder="New Password" ng-required="password_required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('please fill out this field with Password')">
       </div>
       <div ng-hide="User_Mode=='edit'" class="form-group">
-        <label for="lion_name">Password:</label>
-        <input class="form-control" type="password" name="verify" ng-model="user.confirmPassword" placeholder="Confirm Password" ng-required="password_required" oninput="setCustomValidity('')" nx-equal-ex="user.password" oninvalid="this.setCustomValidity('please repeat the Password in this field')">
+        <label for="user_verify">Password:</label>
+        <input class="form-control" type="password" name="user_verify" ng-model="user.confirmPassword" placeholder="Confirm Password" ng-required="password_required" oninput="setCustomValidity('')" nx-equal-ex="user.password" oninvalid="this.setCustomValidity('please repeat the Password in this field')">
         <div>
           <span ng-show="showValidationMessages && form.verify.$error.nxEqualEx" class="help-inline">Passwords must match!</span>
         </div>

@@ -11,24 +11,24 @@
             <input readonly type="text" class="form-control" name="imageset_id" ng-model="imageset.id">
           </div>
           <div class="form-group">
-            <label for="lion_id">Lion:</label>
-            <select class="form-control custom-select" name="lion_id" ng-options="lion.id as lion.id + '- ' + lion.name group by Trash_Label(lion) for lion in lions" ng-model="imageset.lion_id"><option></option>
+            <label for="imageset_lion_id">Lion:</label>
+            <select class="form-control custom-select" name="imageset_lion_id" ng-options="lion.id as lion.id + '- ' + lion.name group by Trash_Label(lion) for lion in lions" ng-model="imageset.lion_id"><option></option>
             </select>
           </div>
           <div class="form-group">
-            <label for="main_image_id" >Main Image:</label>
+            <label for="imageset_main_image_id" >Main Image:</label>
             <div class="form-group" >
               <img ng-src="{{!imageset.main_image}}"  width="80" height="80">
             </div>
             <div class="form-group" >
-              <select class="form-control custom-select" name="main_image_id" ng-options="image.id as image.id group by Trash_Label(image) for image in images" ng-change="change_url()" ng-model="imageset.main_image_id">
+              <select class="form-control custom-select" name="imageset_main_image_id" ng-options="image.id as image.id group by Trash_Label(image) for image in images" ng-change="change_url()" ng-model="imageset.main_image_id">
                 <option></option>
               </select>
             </div>
           </div>
           <div class="form-group">
-            <label for="id_gender" >Gender:</label>
-            <button type="button" id="id_gender" placeholder="Select Gender" class="btn btn-default btn-sm select_btn" ng-model="imageset.gender" data-html="1" bs-options="gender.value as gender.label for gender in genders" placement="bottom-right" bs-select>
+            <label for="imageset_id_gender" >Gender:</label>
+            <button type="button" name="imageset_id_gender" placeholder="Select Gender" class="btn btn-default btn-sm select_btn" ng-model="imageset.gender" data-html="1" bs-options="gender.value as gender.label for gender in genders" placement="bottom-right" bs-select>
               Action <span class="caret"></span>
             </button>
           </div>
@@ -36,25 +36,25 @@
             <textarea class="form-control" rows="5" ng-model="imageset.notes"></textarea>
           </div>
           <div class="form-group checkbox">
-            <label for="is_verified">
-            <input  type="checkbox" id="is_verified" name="is_verified" ng-model="imageset.is_verified" ng-checked="imageset.is_verified">
+            <label for="imageset_is_verified">
+            <input  type="checkbox" name="imageset_is_verified" ng-model="imageset.is_verified" ng-checked="imageset.is_verified">
               Is Verified </label>
           </div>
         </div>
         <div class="col-sm-4">
           <div class="form-group">
-            <label for="owner_organization_id">Owner Organization:</label>
-            <select class="form-control custom-select" name="owner_organization_id" ng-options="organization.id as organization.name group by Trash_Label(organization) for organization in organizations" ng-model="imageset.owner_organization_id" required><option></option>
+            <label for="imageset_owner_organization_id">Owner Organization:</label>
+            <select class="form-control custom-select" name="imageset_owner_organization_id" ng-options="organization.id as organization.name group by Trash_Label(organization) for organization in organizations" ng-model="imageset.owner_organization_id" required><option></option>
             </select>
           </div>
           <div class="form-group">
-            <label for="uploading_organization_id">Uploading Organization:</label>
-            <select class="form-control custom-select" name="uploading_organization_id" ng-options="organization.id as organization.name group by Trash_Label(organization) for organization in organizations" ng-model="imageset.uploading_organization_id" required><option></option>
+            <label for="imageset_uploading_organization_id">Uploading Organization:</label>
+            <select class="form-control custom-select" name="imageset_uploading_organization_id" ng-options="organization.id as organization.name group by Trash_Label(organization) for organization in organizations" ng-model="imageset.uploading_organization_id" required><option></option>
             </select>
           </div>
           <div class="form-group">
-            <label for="uploading_user_id">Uploading User:</label>
-            <select class="form-control custom-select" name="uploading_user_id" ng-options="user.id as user.email group by Trash_Label(user) for user in users" ng-model="imageset.uploading_user_id" required><option></option>
+            <label for="imageset_uploading_user_id">Uploading User:</label>
+            <select class="form-control custom-select" name="imageset_uploading_user_id" ng-options="user.id as user.email group by Trash_Label(user) for user in users" ng-model="imageset.uploading_user_id" required><option></option>
             </select>
           </div>
           <div class="form-group">
@@ -66,12 +66,12 @@
             <input  type="number" class="form-control" ng-model="imageset.longitude" step="any" name="longitude" min="-180" max="180">
           </div>
           <div class="form-group" ng-class="{'has-error': datepickerForm.date.$invalid}">
-            <label class="control-label"><i class="fa fa-calendar"></i>Date Stamp: </label>
-            <input type="text" class="form-control"  ng-model="imageset.date_stamp" data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date" bs-datepicker placement="top-right">
+            <label for="date_stamp" class="control-label"><i class="fa fa-calendar"></i>Date Stamp: </label>
+            <input type="text" class="form-control"  ng-model="imageset.date_stamp" data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date_stamp" bs-datepicker placement="top-right">
           </div>
-          <div class="form-group" ng-class="{'has-error': datepickerForm.date1.$invalid}">
+          <div for="date_of_birth" class="form-group" ng-class="{'has-error': datepickerForm.date1.$invalid}">
             <label class="control-label"><i class="fa fa-calendar"></i>Date of Birth: </label>
-            <input type="text" class="form-control" ng-model="imageset.date_of_birth"  data-date-format="yyyy-MM-dd" data-date-type="string" data-max-date="today" data-autoclose="1" name="date1" bs-datepicker placement="top-right">
+            <input type="text" class="form-control" ng-model="imageset.date_of_birth"  data-date-format="yyyy-MM-dd" data-date-type="string" data-max-date="today" data-autoclose="1" name="date_of_birth" bs-datepicker placement="top-right">
           </div>
         </div>
         <div class="col-sm-4">

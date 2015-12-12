@@ -45,7 +45,10 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      deferred.reject(error);
+      if(error.status == 401 || error.status == 403)
+        deferred.resolve({});
+      else
+        deferred.reject(error);
     });
     return deferred.promise;
   };
@@ -64,7 +67,10 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      deferred.reject(error);
+      if(error.status == 401 || error.status == 403)
+        deferred.resolve({});
+      else
+        deferred.reject(error);
     });
     return deferred.promise;
   };
@@ -83,7 +89,10 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      deferred.reject(error);
+      if(error.status == 401 || error.status == 403)
+        deferred.resolve({});
+      else
+        deferred.reject(error);
     });
     return deferred.promise;
   };
@@ -103,7 +112,10 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      deferred.reject(error);
+      if(error.status == 401 || error.status == 403)
+        deferred.resolve({});
+      else
+        deferred.reject(error);
     });
     return deferred.promise;
   };
@@ -122,7 +134,10 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      deferred.reject(error);
+      if(error.status == 401 || error.status == 403)
+        deferred.resolve({});
+      else
+        deferred.reject(error);
     });
     return deferred.promise;
   };
@@ -141,7 +156,10 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      deferred.reject(error);
+      if(error.status == 401 || error.status == 403)
+        deferred.resolve({});
+      else
+        deferred.reject(error);
     });
     return deferred.promise;
   };
@@ -160,7 +178,10 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      deferred.reject(error);
+      if(error.status == 401 || error.status == 403)
+        deferred.resolve({});
+      else
+        deferred.reject(error);
     });
     return deferred.promise;
   };
@@ -179,7 +200,10 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      deferred.reject(error);
+      if(error.status == 401 || error.status == 403)
+        deferred.resolve({});
+      else
+        deferred.reject(error);
     });
     return deferred.promise;
   };
@@ -219,7 +243,10 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      deferred.reject(error.data);
+      if(error.status == 401 || error.status == 403)
+        deferred.resolve({});
+      else
+        deferred.reject(error.data);
     });
     //deferred.resolve({'filename': 'http://www.colorado.edu/conflict/peace/download/peace_essay.ZIP'});
     return deferred.promise;
@@ -446,7 +473,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     );
     return deferred.promise;
   };
-  // Post CVResults - Request CV Results
+  /*// Post CVResults - Request CV Results
   var PostCVResults = function (cvrequest_id, success){
     var data = {"cvrequest_id":cvrequest_id};
     return HTTP('POST', '/cvresults', data, {}, success,
@@ -460,8 +487,9 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
       }
       console.log(error);
     });
-  };
+  };*/
   // Put CVResults - Update Request CV Results
+  /*
   var PutCVResults = function (cvrequest_id, success){
     return HTTP('PUT', '/cvresults/' + cvrequest_id, {}, {}, success,
     function(error){
@@ -474,7 +502,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
       }
       console.log(error);
     });
-  };
+  };*/
   // Delete CVRequest / CVResults
   var DeleteCVRequest = function (cvrequest_id, success){
     return HTTP('DELETE', '/cvrequests/' + cvrequest_id, {}, {}, success,
@@ -530,9 +558,9 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   // Get List of CV Results
   dataFactory.getCVResults = GetCVResults;
   // Post CV Results - Request Results
-  dataFactory.postCVResults = PostCVResults;
+//dataFactory.postCVResults = PostCVResults;
   // Update Request CV Results
-  dataFactory.putCVResults = PutCVResults;
+//dataFactory.putCVResults = PutCVResults;
   // Delete CV Results and CV Request
   dataFactory.deleteCVRequest = DeleteCVRequest;
 
@@ -542,4 +570,16 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   return dataFactory;
 }])
 
+.factory('PollerCVResults', ['$q', '$http', function($q, $http){
+  return {
+    poller : function(){
+      var url = '/cvrequests/list';
+      var deferred = $q.defer();
+      $http.get(url).then(function (response) {
+        deferred.resolve(response.data);
+      });
+      return deferred.promise;
+    }
+  }
+}])
 ;

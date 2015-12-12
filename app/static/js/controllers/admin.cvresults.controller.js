@@ -8,7 +8,7 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
   $scope.CVResult_Mode = $scope.settings.cvresults.Mode;
 
   $scope.check_all = function (val){
-    _.forEach($$scope.$parent.cvresults, function(cvresult) {
+    _.forEach($scope.$parent.cvresults, function(cvresult) {
       cvresult.selected = val;
       if(cvresult.selected){
         if(!_.some($scope.Selecteds, cvresult))
@@ -93,7 +93,7 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
     $scope.modalTitle = 'Edit CV Result';
     $scope.showValidationMessages = false;
 
-  $scope.cvrequests = angular.copy($scope.$parent.cvrequests);
+    $scope.cvrequests = angular.copy($scope.$parent.cvrequests);
 
     if($scope.Selecteds.length == 1){
       $scope.CVResult_Mode = 'edit';

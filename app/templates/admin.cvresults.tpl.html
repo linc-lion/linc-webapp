@@ -9,12 +9,12 @@
         <input name="cvresult_id" readonly type="text" class="form-control" ng-model="cvresult.id">
       </div>
       <div class="form-group">
-        <label for="cvrequest_id">CV Request Id:</label>
-        <select class="form-control custom-select" name="cvrequest_id" ng-options="cvrequest.id as cvrequest.id for cvrequest in cvrequests" ng-model="cvresult.cvrequest_id" required><option></option>
+        <label for="cvresult_cvrequest_id">CV Request Id:</label>
+        <select class="form-control custom-select" name="cvresult_cvrequest_id" ng-options="cvreq.id as cvreq.id  for cvreq in cvrequests" ng-model="cvresult.cvrequest_id" required><option></option>
         </select>
       </div>
       <div class="form-group">
-        <label for="match_probability">Id:</label>
+        <label for="match_probability">Match Probability:</label>
         <textarea class="form-control" rows="4" ng-model="cvresult.match_probability"></textarea>
       </div>
     </div>
