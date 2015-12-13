@@ -2,13 +2,13 @@
 
 angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu.directive'])
 
-.controller('SideMenuCtrl', ['$scope', '$state', '$localStorage', 'AuthService', 'NotificationFactory', function ($scope, $state, $localStorage, AuthService, NotificationFactory) {
+.controller('SideMenuCtrl', ['$scope', '$state', 'AuthService', 'NotificationFactory', function ($scope, $state, AuthService, NotificationFactory) {
 
   $scope.is_modal_open = false;
   $scope.title = 'Menu';
   $scope.content = 'Menu';
 
-  $scope.user = $localStorage.user;
+  $scope.user = AuthService.user;
 
   $scope.options = {
     "imageset": {"type": "imageset", "edit": "new"},

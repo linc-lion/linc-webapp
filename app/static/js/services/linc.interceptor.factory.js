@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.interceptor.factory', [])
 
-.factory('httpInterceptor', ['$q', '$injector', '$localStorage', '$cookies', function($q, $injector, $localStorage, $cookies){
+.factory('httpInterceptor', ['$q', '$injector', '$cookies', function($q, $injector, $cookies){
   return {
       'response': function (response) {
           if (response.status === 401) {
@@ -12,7 +12,7 @@ angular.module('lion.guardians.interceptor.factory', [])
       },
       'responseError': function (rejection) {
           if (rejection.status === 401) {
-            $localStorage.$reset();
+            $injector.get('AuthService').setUser(null);
             $cookies.remove("userlogin");
             $injector.get('$state').transitionTo('login');
             console.log("Response Error 401");
