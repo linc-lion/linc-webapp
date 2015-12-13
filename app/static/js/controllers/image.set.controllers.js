@@ -2,7 +2,8 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.controller('ImageSetCtrl', ['$scope', '$localStorage', '$rootScope', '$state', '$timeout', '$uibModal', '$interval', 'NotificationFactory', 'LincServices', 'organizations', 'imageset', function ($scope, $localStorage, $rootScope, $state, $timeout, $uibModal, $interval, NotificationFactory, LincServices, organizations, imageset) {
+.controller('ImageSetCtrl', ['$scope', '$localStorage', '$rootScope', '$state', '$timeout', '$uibModal', '$interval', 'NotificationFactory', 'LincServices', 'PollerService', 'organizations', 'imageset', function ($scope, $localStorage, $rootScope, $state, $timeout, $uibModal, $interval,
+NotificationFactory, LincServices, PollerService, organizations, imageset) {
 
   $scope.is_modal_open = false;
   $scope.imageset = imageset;
@@ -24,11 +25,62 @@ angular.module('lion.guardians.image.set.controllers', [])
   var nose_color     = {'NOSE_COLOUR_BLACK': 'Black', 'NOSE_COLOUR_PATCHY': 'Patchy', 'NOSE_COLOUR_PINK': 'Pink', 'NOSE_COLOUR_SPOTTED': 'Spotted'};
   var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right', 'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
+  var count = 0;
+  var Poller = function () {
+    PollerService.cvrequests_list().then(function(response){
+      var cvrequests = response.data;
+      var cvrequest = _.find(cvrequests, {'imageset_id': $scope.imageset.id});
+      if(cvrequest){
+        $scope.imageset.cvresults = cvrequest.cvres_obj_id;
+        $scope.imageset.req_status = cvrequest.status;
+        //if(count == 2)
+        //  $scope.imageset.req_status = "success";
+        if($scope.imageset.cvresults && $scope.imageset.req_status != 'fail' &&
+          $scope.imageset.req_status != 'submitted'){
+            $scope.imageset.action = 'cvresults';
+            $scope.cancel_Poller();
+        }
+      }
+      count++;
+      console.log('Req Count: ' + count + ' Still pendings');
+    });
+  };
+
+  $scope.start_Poller = function (timer){
+    if($scope.promisse == undefined){
+      var delay_timer = 180000;
+      var repeat_timer = 180000;
+      if(!timer)
+        delay_timer = 0;
+      $timeout(function() {
+        count = 0;
+        $scope.$apply(function () {
+          $scope.promisse = $interval(Poller, repeat_timer);
+          console.log("Result CV Req Poller started");
+        });
+      }, delay_timer);
+    }
+  }
+
+  $scope.cancel_Poller = function(){
+    if($scope.promisse != null){
+      $interval.cancel($scope.promisse);
+      $scope.promisse = undefined;
+      console.log("Result CV Req Poller canceled");
+    }
+  }
+
   var Set_Tags = function(){
     if(!$scope.imageset.is_primary){
-      if($scope.imageset.cvresults) $scope.imageset["action"] = 'cvresults';
-      else if($scope.imageset.cvrequest) $scope.imageset["action"] = 'cvpending';
-      else $scope.imageset["action"] = 'cvrequest';
+      if($scope.imageset.cvresults && $scope.imageset.req_status &&
+        $scope.imageset.req_status != 'fail' && $scope.imageset.req_status != 'submitted')
+        $scope.imageset["action"] = 'cvresults';
+      else if($scope.imageset.cvrequest){
+        $scope.imageset["action"] = 'cvpending';
+        $scope.start_Poller(0);
+      }
+      else
+        $scope.imageset["action"] = 'cvrequest';
     }
     else{
       $scope.imageset["action"] = '';
@@ -49,6 +101,7 @@ angular.module('lion.guardians.image.set.controllers', [])
     $scope.imageset.scars = labels(scars,_.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE', 'SCARS_TAIL']));
   };
   Set_Tags();
+
   // Metadata Options
   $scope.metadata_options = { type: 'imageset', edit: 'edit', data: $scope.imageset};
   // Updated in Metadata
@@ -69,9 +122,7 @@ angular.module('lion.guardians.image.set.controllers', [])
                  locations: [{'id': $scope.imageset.id, 'label': label, 'updated_at': date, 'longitude': $scope.imageset.longitude, 'latitude': $scope.imageset.latitude }]}
   };
 
-  $scope.location_goto = function (imageset_id){
-    //$state.go("imageset", {id: imageset_id});
-  }
+  $scope.location_goto = function (imageset_id){}
 
   $scope.Delete = function (){
     $scope.modalTitle = 'Delete Image Set';
@@ -113,61 +164,12 @@ angular.module('lion.guardians.image.set.controllers', [])
       $scope.modalInstance.dismiss();
     }
   };
-  /*var cancel_intervals = function (){
-    if($scope.requesCVpromise != null){
-      $interval.cancel($scope.requesCVpromise);
-      $scope.requesCVpromise = undefined;
-      console.log('Interval cancel');
-    }
-  }
-  var requestCVResults = function (ReqObjid){
-    NotificationFactory.info({
-      title: "Notify", message:'Trying to get CV Results',
-      position: "right", // right, left, center
-      duration: 2000     // milisecond
-    });
-    LincServices.putCVResults(ReqObjid, function(result){
-      var cvresult = result.data.data;
-      if(cvresult.status == "finished"){
-        $scope.imageset.action = 'cvresults';
-        $scope.imageset.cvresults = cvresult.obj_id;
-        cancel_intervals();
-      }
-      else if (cvresult.status == "error"){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Get CV Results',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      }
-    }, function(error){
-      cancel_intervals();
-    });
-  }*/
+
   $scope.CVReqSuccess = function (imageset_Id, requestObj) {
     $scope.imageset.action = 'cvpending';
     $scope.imageset.cvrequest = requestObj.obj_id;
     console.log('Success CV Request');
-    /*$timeout(function() {
-      LincServices.postCVResults(requestObj.id, function(result){
-        var cvresult = result.data.data;
-        if(cvresult.status == "finished"){
-          $scope.imageset.action = 'cvresults';
-          $scope.imageset.cvresults = cvresult.obj_id;
-          console.log('Success Results CV');
-        }
-        else if (cvresult.status == "queued" || cvresult.status == "submitted" || cvresult.status == "fail"){
-          $scope.requesCVpromise = $interval(requestCVResults(requestObj.id), 60000);
-        }
-        else{
-          NotificationFactory.error({
-            title: "Error", message: 'Unable to Connect CV Server',
-            position: 'right', // right, left, center
-            duration: 5000   // milisecond
-          });
-        }
-      });
-    }, 180000);*/
+    $scope.start_Poller(1);
   };
 
   $scope.Change_results = function (change, ImagesetId) {
@@ -230,7 +232,7 @@ angular.module('lion.guardians.image.set.controllers', [])
   $scope.imageset.date_stamp = local_date($scope.imageset.date_stamp);
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$localStorage', '$timeout', '$interval', '$stateParams', '$bsTooltip', 'NotificationFactory','LincServices', 'imagesets_filters', 'imagesets', function ($scope, $localStorage, $timeout, $interval, $stateParams, $bsTooltip, NotificationFactory, LincServices, imagesets_filters, imagesets) {
+.controller('SearchImageSetCtrl', ['$scope', '$localStorage', '$timeout', '$interval', '$stateParams', '$bsTooltip', 'NotificationFactory', 'LincServices', 'PollerService', 'imagesets_filters', 'imagesets', function ($scope, $localStorage, $timeout, $interval, $stateParams, $bsTooltip, NotificationFactory, LincServices, PollerService, imagesets_filters, imagesets) {
 
   $scope.user = $localStorage.user;
   var tag_labels    = {'EYE_DAMAGE_BOTH': 'Eye Damage Both', 'EYE_DAMAGE_LEFT': 'Eye Damage Left', 'EYE_DAMAGE_RIGHT': 'Eye Damage Right', 'TEETH_BROKEN_CANINE_LEFT': 'Broken Teeth Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Broken Teeth Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Broken Teeth Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Broken Teeth Incisor Right',
@@ -245,6 +247,65 @@ angular.module('lion.guardians.image.set.controllers', [])
   $scope.is_modal_open = false;
   $scope.title_tooltip = {'title': 'tips: ' + tool_title, 'checked': true};
 
+  var count = 0;
+  var cvrequest_pendings = [];
+  var Poller = function () {
+    PollerService.cvrequests_list().then(function(response){
+      var cvrequests = response.data;
+      var resolved = [];
+      _.map(cvrequest_pendings, function(pendings, index){
+        console.log("cvrequests" + index);
+        var id = pendings.imageset.id;
+        var index = pendings.id;
+        var imageset = $scope.imagesets[index];
+        var cvrequest = _.find(cvrequests, {'imageset_id': id});
+        if(cvrequest){
+          imageset.cvresults = cvrequest.cvres_obj_id;
+          imageset.req_status = cvrequest.status;
+          //if(count == 2)
+          //  imageset.req_status = "success";
+          if(imageset.cvresults && imageset.req_status != 'fail' &&
+            imageset.req_status != 'submitted'){
+            imageset.action = 'cvresults';
+            resolved.push(pendings)
+          }
+        }
+      });
+      _.forEach(resolved, function(item, i) {
+        cvrequest_pendings = _.without(cvrequest_pendings, item);
+      });
+      count++;
+      console.log('Count: ' + count + ' Still: ' + cvrequest_pendings.length) + 'pendings';
+      if(!cvrequest_pendings.length){
+        $scope.cancel_Poller();
+      }
+    });
+  };
+
+  $scope.start_Poller = function (timer){
+    if($scope.promisse == undefined){
+      var delay_timer = 180000;
+      var repeat_timer = 180000;
+      if(!timer)
+        delay_timer = 0;
+      $timeout(function() {
+        count = 0;
+        $scope.$apply(function () {
+          $scope.promisse = $interval(Poller, repeat_timer);
+          console.log("Results CV Request Poller started");
+        });
+      }, delay_timer);
+    }
+  }
+
+  $scope.cancel_Poller = function(){
+    if($scope.promisse){
+      $interval.cancel($scope.promisse);
+      $scope.promisse = undefined;
+      console.log("Results CV Request Poller canceled");
+    }
+  }
+
   var get_features = function (tag_labels, TAGS){
     var label = "";
     TAGS.forEach(function (elem, i){
@@ -257,9 +318,15 @@ angular.module('lion.guardians.image.set.controllers', [])
   $scope.imagesets = _.map(imagesets, function(element, index) {
     var elem = {};
     if(!element.is_primary){
-      if(element.cvresults) elem["action"] = 'cvresults';
-      else if(element.cvrequest) elem["action"] = 'cvpending';
-      else  elem["action"] = 'cvrequest';
+      if(element.cvresults && element.req_status &&
+        element.req_status != 'fail' && element.req_status != 'submitted')
+        elem["action"] = 'cvresults';
+      else if(element.cvrequest){
+        cvrequest_pendings.push({'imageset': element, 'id': index});
+        elem["action"] = 'cvpending';
+      }
+      else
+        elem["action"] = 'cvrequest';
     }
     else{
       elem["action"] = '';
@@ -277,6 +344,8 @@ angular.module('lion.guardians.image.set.controllers', [])
 
     return _.extend({}, element, elem);
   });
+  if(cvrequest_pendings.length)
+    $scope.start_Poller(0);
 
   $scope.organizations = imagesets_filters.organizations;
   $scope.genders = imagesets_filters.genders;
@@ -441,63 +510,12 @@ angular.module('lion.guardians.image.set.controllers', [])
   // Pagination scopes
   $scope.currentPage = imagesets_filters.currentPage;
 
-  /*var cancel_intervals = function (){
-    if($scope.requesCVpromise != null){
-      $interval.cancel($scope.requesCVpromise);
-      $scope.requesCVpromise = undefined;
-      console.log('Interval cancel');
-    }
-  }
-
-  var requestCVResults = function (index, ReqObjid){
-    NotificationFactory.info({
-      title: "Notify", message:'Trying to get CV Results',
-      position: "right", // right, left, center
-      duration: 2000     // milisecond
-    });
-    LincServices.putCVResults(ReqObjid, function(result){
-      var cvresult = result.data.data;
-      if(cvresult.status == "finished"){
-        $scope.imagesets[index].action = 'cvresults';
-        $scope.imagesets[index].cvresults = cvresult.obj_id;
-        cancel_intervals();
-      }
-      else if (cvresult.status == "error"){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Get CV Results',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      }
-    }, function(error){
-      cancel_intervals();
-    });
-  }*/
   $scope.CVReqSuccess = function (imageset_Id, requestObj) {
     var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: imageset_Id}));
     $scope.imagesets[index].action = 'cvpending';
     $scope.imagesets[index].cvrequest = requestObj.obj_id;
     console.log('Success CV Request');
-    /*$timeout(function() {
-      LincServices.postCVResults(requestObj.id, function(result){
-        var cvresult = result.data.data;
-        if(cvresult.status == "finished"){
-          $scope.imagesets[index].action = 'cvresults';
-          $scope.imagesets[index].cvresults = cvresult.obj_id;
-          console.log('Success Results CV');
-        }
-        else if (cvresult.status == "queued"){
-          $scope.requesCVpromise = $interval(requestCVResults(index, requestObj.id), 60000);
-        }
-        else{
-          NotificationFactory.error({
-            title: "Error", message: 'Unable to Get CV Results',
-            position: 'right', // right, left, center
-            duration: 5000   // milisecond
-          });
-        }
-      });
-    }, 180000);*/
+    $scope.start_Poller(1);
   };
   $scope.Change_results = function (change, ImagesetId) {
     var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
