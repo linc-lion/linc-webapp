@@ -2,11 +2,11 @@
 
 angular.module('lion.guardians.lions.controllers', [])
 
-.controller('LionCtrl', ['$scope', '$localStorage', '$rootScope', '$state', '$uibModal', 'NotificationFactory', 'LincServices', 'organizations', 'lion', function ($scope, $localStorage, $rootScope, $state, $uibModal, NotificationFactory, LincServices, organizations, lion) {
+.controller('LionCtrl', ['$scope', '$rootScope', '$state', '$uibModal', 'NotificationFactory', 'LincServices', 'AuthService', 'organizations', 'lion', function ($scope, $rootScope, $state, $uibModal, NotificationFactory, LincServices, AuthService, organizations, lion) {
 
   $scope.is_modal_open = false;
   $scope.lion = lion;
-  $scope.user = $localStorage.user;
+  $scope.user = AuthService.user;
   var labels = function (damages, labels){
     var label = "";
     labels.forEach(function (elem, i){
@@ -25,7 +25,7 @@ angular.module('lion.guardians.lions.controllers', [])
   var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right', 'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
   var Set_Tags = function(){
-    $scope.Private = $scope.user.admin || $scope.user.organization_id == $scope.lion.organization_id;
+    $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.lion.organization_id);
     var TAGS = [];
     try{
       TAGS = JSON.parse($scope.lion.tags);

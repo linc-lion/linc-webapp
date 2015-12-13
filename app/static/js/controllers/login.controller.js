@@ -2,14 +2,13 @@
 
 angular.module('lion.guardians.login.controller', [])
 // Login
-.controller('LoginCtrl', ['$scope', '$state', '$timeout', '$localStorage', 'AuthService', 'NotificationFactory', function ($scope, $state, $timeout, $localStorage, AuthService, NotificationFactory) {
+.controller('LoginCtrl', ['$scope', '$state', '$timeout', 'AuthService', 'NotificationFactory', function ($scope, $state, $timeout, AuthService, NotificationFactory) {
 
   $scope.loginData = { username : '' , password : '', _xsrf: ''};
   $scope.dataLoading = false;
   $scope.remember = true;
 
-  //$scope.$storage = $localStorage;
-  var user = $localStorage.user;
+  var user = AuthService.user;
   $scope.checkLogged = function(){
     if (user && user.logged){
       $scope.dataLoading = true;
@@ -26,22 +25,11 @@ angular.module('lion.guardians.login.controller', [])
         alert('Please fill the email address and password to login.');
       }else{
         $scope.dataLoading = true;
-        $localStorage.$reset();
+        AuthService.setUser(null);
         // Authentication Service
-        AuthService.Login($scope.loginData, function(result){
-          var data = result.data.data;
-          user = {
-            'name': data['username'],
-            'id': data['id'],
-            'organization': data['orgname'],
-            'organization_id': data['organization_id'],
-            'admin': data['admin'],
-            'logged': true,
-            'token': data['token']
-          }
-          $localStorage.user = user;
+        AuthService.Login($scope.loginData, function(logged){
           $scope.dataLoading = false;
-          if (!user.logged){
+          if (!logged){
             NotificationFactory.error({
               title: 'Login', message: 'Login error.',
               position: 'left', // right, left, center

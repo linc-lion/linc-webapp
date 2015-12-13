@@ -2,12 +2,12 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.controller('ImageSetCtrl', ['$scope', '$localStorage', '$rootScope', '$state', '$timeout', '$uibModal', '$interval', 'NotificationFactory', 'LincServices', 'PollerService', 'organizations', 'imageset', function ($scope, $localStorage, $rootScope, $state, $timeout, $uibModal, $interval,
-NotificationFactory, LincServices, PollerService, organizations, imageset) {
+.controller('ImageSetCtrl', ['$scope', '$rootScope', '$state', '$timeout', '$uibModal', '$interval', 'NotificationFactory', 'LincServices', 'AuthService', 'PollerService', 'organizations', 'imageset', function ($scope, $rootScope, $state, $timeout, $uibModal, $interval,
+NotificationFactory, LincServices, AuthService, PollerService, organizations, imageset) {
 
   $scope.is_modal_open = false;
   $scope.imageset = imageset;
-  $scope.user = $localStorage.user;
+  $scope.user = AuthService.user;
   var labels = function (damages, labels){
     var label = "";
     labels.forEach(function (elem, i){
@@ -26,7 +26,6 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
   var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right', 'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
   var count = 0;
-  var poller_promise = undefined;
   var Poller = function () {
     PollerService.cvrequests_list().then(function(response){
       var cvrequests = response.data;
@@ -34,55 +33,48 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
       if(cvrequest){
         $scope.imageset.cvresults = cvrequest.cvres_obj_id;
         $scope.imageset.req_status = cvrequest.status;
-        //if(count == 2)
-        //  $scope.imageset.req_status = "success";
         if($scope.imageset.cvresults && $scope.imageset.req_status != 'fail' &&
           $scope.imageset.req_status != 'submitted'){
             $scope.imageset.action = 'cvresults';
-            cancel_Poller();
+            $cope.$parent.cancel_Poller();
         }
       }
       count++;
       console.log('Req Count: ' + count + ' Still pendings');
     }, function(error){
       if(error.status != 403)
-        cancel_Poller();
+        $cope.$parent.cancel_Poller();
     });
   };
 
   var start_Poller = function (timer){
-    if(poller_promise == undefined){
-      var delay_timer = 180000;
-      var repeat_timer = 180000;
-      if(!timer)
-        delay_timer = 0;
-      $timeout(function() {
-        count = 0;
-        $scope.$apply(function () {
-          poller_promise = $interval(Poller, repeat_timer);
-          console.log("Result CV Req Poller started");
-        });
-      }, delay_timer);
-    }
-  }
+    if($scope.$parent.poller_promisse)
+      $cope.$parent.cancel_Poller();
 
-  var cancel_Poller = function(){
-    if(poller_promise != null){
-      $interval.cancel(poller_promise);
-      poller_promise = undefined;
-      console.log("Result CV Req Poller canceled");
-    }
+    var delay_timer = 180000;
+    var repeat_timer = 180000;
+    if(!timer)
+      delay_timer = 0;
+    $timeout(function() {
+      count = 0;
+      $scope.$apply(function () {
+        $scope.$parent.poller_promisse = $interval(Poller, repeat_timer);
+        console.log("Result CV Req Poller started");
+      });
+    }, delay_timer);
+
   }
 
   var Set_Tags = function(){
-    $scope.Private = $scope.user.admin || $scope.user.organization_id == $scope.imageset.organization_id;
+    $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.imageset.organization_id);
     if(!$scope.imageset.is_primary){
       if($scope.imageset.cvresults && $scope.imageset.req_status &&
         $scope.imageset.req_status != 'fail' && $scope.imageset.req_status != 'submitted')
         $scope.imageset["action"] = 'cvresults';
       else if($scope.imageset.cvrequest){
         $scope.imageset["action"] = 'cvpending';
-        start_Poller(0);
+        if($scope.canShow)
+          start_Poller(0);
       }
       else
         $scope.imageset["action"] = 'cvrequest';
@@ -238,9 +230,9 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
   $scope.imageset.date_stamp = local_date($scope.imageset.date_stamp);
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$localStorage', '$timeout', '$interval', '$stateParams', '$bsTooltip', 'NotificationFactory', 'LincServices', 'PollerService', 'imagesets_filters', 'imagesets', function ($scope, $localStorage, $timeout, $interval, $stateParams, $bsTooltip, NotificationFactory, LincServices, PollerService, imagesets_filters, imagesets) {
+.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$stateParams', '$bsTooltip', 'NotificationFactory', 'LincServices', 'AuthService', 'PollerService', 'imagesets_filters', 'imagesets', function ($scope, $timeout, $interval, $stateParams, $bsTooltip, NotificationFactory, LincServices, AuthService, PollerService, imagesets_filters, imagesets) {
 
-  $scope.user = $localStorage.user;
+  $scope.user = AuthService.user;
   var tag_labels    = {'EYE_DAMAGE_BOTH': 'Eye Damage Both', 'EYE_DAMAGE_LEFT': 'Eye Damage Left', 'EYE_DAMAGE_RIGHT': 'Eye Damage Right', 'TEETH_BROKEN_CANINE_LEFT': 'Broken Teeth Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Broken Teeth Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Broken Teeth Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Broken Teeth Incisor Right',
   'EAR_MARKING_BOTH': 'Ear Marking Both', 'EAR_MARKING_LEFT': 'Ear Marking Left', 'EAR_MARKING_RIGHT': 'Ear Marking Right',
   'MOUTH_MARKING_BACK': 'Mounth Marking Back', 'MOUTH_MARKING_FRONT': 'Mounth Marking Front', 'MOUTH_MARKING_LEFT': 'Mounth Marking Left', 'MOUTH_MARKING_RIGHT': 'Mounth Marking Right', 'TAIL_MARKING_MISSING_TUFT': 'Tail Marking Missing Tuft', 'NOSE_COLOUR_BLACK': 'Nose Color Black', 'NOSE_COLOUR_PATCHY': 'Nose Color Patchy', 'NOSE_COLOUR_PINK': 'Nose Color Pink',
@@ -255,7 +247,6 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
 
   var count = 0;
   var cvrequest_pendings = [];
-  var poller_promise = undefined;
   var Poller = function () {
     PollerService.cvrequests_list().then(function(response){
       var cvrequests = response.data;
@@ -284,36 +275,28 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
       count++;
       console.log('Count: ' + count + ' Still: ' + cvrequest_pendings.length) + 'pendings';
       if(!cvrequest_pendings.length){
-        cancel_Poller();
+        $cope.$parent.cancel_Poller();
       }
     }, function(error){
       if(error.status != 403)
-        cancel_Poller();
+        $cope.$parent.cancel_Poller();
     });
   };
 
   var start_Poller = function (timer){
-    if(poller_promise == undefined){
-      var delay_timer = 3000;
-      var repeat_timer = 3000;
-      if(!timer)
-        delay_timer = 0;
-      $timeout(function() {
-        count = 0;
-        $scope.$apply(function () {
-          poller_promise = $interval(Poller, repeat_timer);
-          console.log("Results CV Request Poller started");
-        });
-      }, delay_timer);
-    }
-  }
-
-  var cancel_Poller = function(){
-    if(poller_promise){
-      $interval.cancel(poller_promise);
-      poller_promise = undefined;
-      console.log("Results CV Request Poller canceled");
-    }
+    if($scope.$parent.poller_promisse)
+      $cope.$parent.cancel_Poller();
+    var delay_timer = 3000;
+    var repeat_timer = 3000;
+    if(!timer)
+      delay_timer = 0;
+    $timeout(function() {
+      count = 0;
+      $scope.$apply(function () {
+        $scope.$parent.poller_promisse = $interval(Poller, repeat_timer);
+        console.log("Results CV Request Poller started");
+      });
+    }, delay_timer);
   }
 
   var get_features = function (tag_labels, TAGS){
@@ -326,14 +309,16 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
   }
 
   $scope.imagesets = _.map(imagesets, function(element, index) {
+    element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
     var elem = {};
     if(!element.is_primary){
       if(element.cvresults && element.req_status &&
         element.req_status != 'fail' && element.req_status != 'submitted')
         elem["action"] = 'cvresults';
       else if(element.cvrequest){
-        cvrequest_pendings.push({'imageset': element, 'id': index});
         elem["action"] = 'cvpending';
+        if(element.canShow)
+          cvrequest_pendings.push({'imageset': element, 'id': index});
       }
       else
         elem["action"] = 'cvrequest';
@@ -343,8 +328,6 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
     }
 
     if(!element.gender) element.gender = 'unknown';
-
-    element.private = !($scope.user.admin || $scope.user.organization_id == element.organization_id);
 
     var TAGS = [];
     try{ TAGS = JSON.parse(element['tags']);

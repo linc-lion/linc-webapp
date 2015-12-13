@@ -16,12 +16,13 @@ angular.module('lion.guardians.controllers', ['lion.guardians.admin.controller',
                                               'lion.guardians.notification.factory',
                                               'lion.guardians.linc.data.factory' ])
 
-.controller('BodyCtrl', ['$scope', '$state', '$localStorage', function ($scope, $state, $localStorage){
+.controller('BodyCtrl', ['$scope', '$state', '$interval', 'AuthService', function ($scope, $state, $interval, AuthService){
 
   $scope.bodyClasses = 'default';
   $scope.debug = false;
   // this'll be called on every state change in the app
   $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+    $scope.cancel_Poller();
     if (toState.data != undefined && angular.isDefined(toState.data.bodyClasses)) {
       $scope.bodyClasses = toState.data.bodyClasses;
       $scope.debug = $state.current.data.debug;
@@ -29,7 +30,16 @@ angular.module('lion.guardians.controllers', ['lion.guardians.admin.controller',
     }
     $scope.bodyClasses = 'default';
   });
-  $scope.$storage = $localStorage;
+  $scope.Auth = AuthService;
+  $scope.poller_promisse = undefined;
+  $scope.cancel_Poller = function(){
+    if($scope.poller_promisse){
+      $interval.cancel($scope.poller_promisse);
+      $scope.poller_promisse = undefined;
+      console.log("Results CV Request Poller canceled");
+    }
+  }
+
 }])
 
 .filter('offset', function() {

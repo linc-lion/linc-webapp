@@ -79,12 +79,12 @@
       <h4 class="h4data">{{!lion.notes}}</h4>
     </div>
     <div class="col-sm-3 line-left" >
-      <image-gallery ng-show="lion" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="gallery_options" debug="debug" modal-is-open="is_modal_open" gallery-updated="Reload_Page()" show-privated="Private"></image-gallery>
+      <image-gallery ng-show="lion" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="gallery_options" debug="debug" modal-is-open="is_modal_open" gallery-updated="Reload_Page()" show-privated="canShow"></image-gallery>
       <location-history ng-show="lion" use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" type="lion" options="location_options" location-goto="location_goto(imageset_Id)" debug="debug" modal-is-open="is_modal_open"></location-history>
       <br>
-      <metadata ng-if="lion && Private" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options" update-action="update_lion(data)" debug="debug" modal-is-open="is_modal_open"></metadata>
+      <metadata ng-if="lion && canShow" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options" update-action="update_lion(data)" debug="debug" modal-is-open="is_modal_open"></metadata>
       <br>
       <p ng-click="goto_search_imageset()"><a class="btn btn-lg btn-default btn-block"><i class="icon icon-images"></i> LION IMAGE SETS</a></p>
-      <p ng-if="lion && Private"><a ng-click="Delete()" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE LION</a></p>
+      <p ng-if="lion && canShow"><a ng-click="Delete()" class="btn btn-lg btn-default btn-block"><i class="icon icon-trash"></i> DELETE LION</a></p>
     </div>
   </div>
