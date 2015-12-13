@@ -610,6 +610,8 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
       var deferred = $q.defer();
       $http.get(url).then(function (response) {
         deferred.resolve(response.data);
+      }, function(error){
+        deferred.reject(error);
       });
       return deferred.promise;
     }
