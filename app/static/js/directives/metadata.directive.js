@@ -51,8 +51,16 @@ angular.module('lion.guardians.metadata.directive', [])
             optionsSet: function () {
               return scope.optionsSet;
             },
-            organizations: function(LincServices) {
-              return LincServices.Organizations();
+            organizations: function($q, LincServices) {
+              var deferred = $q.defer();
+              LincServices.Organizations().then(function(response){
+                if (response.length)
+                  deferred.resolve(response);
+                else
+                  deferred.reject(response);
+              });
+              return deferred.promise;
+              //return LincServices.Organizations();
             }
           }
         });
@@ -90,8 +98,16 @@ angular.module('lion.guardians.metadata.directive', [])
             optionsSet: function () {
               return scope.optionsSet;
             },
-            organizations: function(LincServices) {
-              return LincServices.Organizations();
+            organizations: function($q, LincServices) {
+              var deferred = $q.defer();
+              LincServices.Organizations().then(function(response){
+                if (response.length)
+                  deferred.resolve(response);
+                else
+                  deferred.reject(response);
+              });
+              return deferred.promise;
+              //return LincServices.Organizations();
             }
           }
         });
