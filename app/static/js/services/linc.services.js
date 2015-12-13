@@ -570,9 +570,9 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   return dataFactory;
 }])
 
-.factory('PollerCVResults', ['$q', '$http', function($q, $http){
+.factory('PollerService', ['$q', '$http', function($q, $http){
   return {
-    poller : function(){
+    cvrequests_list : function(){
       var url = '/cvrequests/list';
       var deferred = $q.defer();
       $http.get(url).then(function (response) {
