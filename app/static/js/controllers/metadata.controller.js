@@ -9,14 +9,13 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
   $scope.organizations = organizations;
   var titles = {}; titles['lion'] = 'Metadata'; titles['imageset'] = 'Metadata';
-  //$scope.showLionName = (optionsSet.type === 'lion' || (optionsSet.type === 'imageset' && optionsSet.edit === 'edit'));
   $scope.isLion = (optionsSet.type === 'lion');
   $scope.isNew = (optionsSet.edit === 'new');
   $scope.lion_required = (optionsSet.type === 'lion');
   // Title
   $scope.title = titles[optionsSet.type];
   $scope.content = 'Form';
-
+  $scope.Editable = ($scope.user.admin || (optionsSet.edit === 'edit' && optionsSet.data && $scope.user.organization_id === optionsSet.data.organization_id));
   $scope.Cancel = function () {
    $uibModalInstance.dismiss('cancel');
   };

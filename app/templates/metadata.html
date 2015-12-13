@@ -21,14 +21,14 @@
           <div class="col-sm-6 line-right">
             <div ng-show="optionsSet.type === 'imageset'" class="form-inline group-select"  ng-class="{'has-error': metadataForm.owner_organization_id.$dirty && metadataForm.owner_organization_id.$error.required }">
               <label class="meta_label" for="owner_organization_id">Organization:</label>
-              <select class="form-control custom-select" name="owner_organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="selected.owner_organization_id" ng-disabled="!user.admin" oninvalid="this.setCustomValidity('Please select an Organization in this list')" oninput="setCustomValidity('')" ng-change="ChangeWarning($event);"><option value="">Select Organization</option>
+              <select class="form-control custom-select" name="owner_organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="selected.owner_organization_id" ng-disabled="!Editable" oninvalid="this.setCustomValidity('Please select an Organization in this list')" oninput="setCustomValidity('')" ng-change="ChangeWarning($event);"><option value="">Select Organization</option>
               </select>
             </div>
             <pre ng-show="debug">{{!selected.owner_organization_id}}</pre>
 
             <div ng-show="optionsSet.type === 'lion'" class="form-inline group-select"  ng-class="{'has-error': metadataForm.organization_id.$dirty && metadataForm.organization_id.$error.required }">
               <label class="meta_label" for="organization_id">Organization:</label>
-              <select class="form-control custom-select" name="organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="selected.organization_id" ng-required="lion_required" ng-disabled="!user.admin" oninvalid="this.setCustomValidity('Please select an Organization in this list')" oninput="setCustomValidity('')" ng-change="ChangeWarning($event);"><option value="">Select Organization</option>
+              <select class="form-control custom-select" name="organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="selected.organization_id" ng-required="lion_required" ng-disabled="!Editable" oninvalid="this.setCustomValidity('Please select an Organization in this list')" oninput="setCustomValidity('')" ng-change="ChangeWarning($event);"><option value="">Select Organization</option>
               </select>
             </div>
             <pre ng-show="debug">{{!selected.organization_id}}</pre>
@@ -68,11 +68,11 @@
             </div>
             <div ng-show="!isLion">
               <div ng-show="!isNew"  class="form-inline group-input-center">
-                <div ng-show="selected.name == '-'">
+                <div ng-if="selected.name == '-'">
                   <label class="meta_label" for="lion_name1">Lion: </label>
                   <a class="a_meta">{{!selected.name}}</a>
                 </div>
-                <div ng-show="selected.name != '-'">
+                <div ng-if="selected.name != '-'">
                   <label class="meta_label" for="lion_name2">Lion: </label>
                   <a ui-sref="lion({id: selected.lion_id})" target="_blank" name="lion_name2" data-animation="am-flip-x" placement="bottom-right" bs-tooltip="tooltip">{{!selected.lion_id}}-{{!selected.name}}</a>
                 </div>

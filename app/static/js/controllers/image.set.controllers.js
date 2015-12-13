@@ -16,7 +16,7 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
     });
     return label;
   }
-  $scope.Private = $scope.user.admin || $scope.user.organization_id == $scope.imageset.organization_id;
+
   var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left', 'EYE_DAMAGE_RIGHT': 'Right'};
   var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
   var ear_markings   = {'EAR_MARKING_BOTH': 'Both', 'EAR_MARKING_LEFT': 'Left', 'EAR_MARKING_RIGHT': 'Right'};
@@ -71,6 +71,7 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
   }
 
   var Set_Tags = function(){
+    $scope.Private = $scope.user.admin || $scope.user.organization_id == $scope.imageset.organization_id;
     if(!$scope.imageset.is_primary){
       if($scope.imageset.cvresults && $scope.imageset.req_status &&
         $scope.imageset.req_status != 'fail' && $scope.imageset.req_status != 'submitted')
@@ -108,6 +109,7 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
   $scope.update_imageset = function (data){
     _.merge($scope.imageset, $scope.imageset, data);
     $scope.imageset.organization = _.find(organizations, {'id': $scope.imageset.owner_organization_id}).name;
+    $scope.imageset.organization_id = $scope.imageset.owner_organization_id;
     Set_Tags();
   }
   $scope.goto_lion = function (id){

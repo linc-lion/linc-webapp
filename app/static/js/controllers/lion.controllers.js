@@ -15,7 +15,7 @@ angular.module('lion.guardians.lions.controllers', [])
     });
     return label;
   }
-  $scope.Private = $scope.user.admin || $scope.user.organization_id == $scope.lion.organization_id;
+
   var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left', 'EYE_DAMAGE_RIGHT': 'Right'};
   var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
   var ear_markings   = {'EAR_MARKING_BOTH': 'Both', 'EAR_MARKING_LEFT': 'Left', 'EAR_MARKING_RIGHT': 'Right'};
@@ -25,6 +25,7 @@ angular.module('lion.guardians.lions.controllers', [])
   var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right', 'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
   var Set_Tags = function(){
+    $scope.Private = $scope.user.admin || $scope.user.organization_id == $scope.lion.organization_id;
     var TAGS = [];
     try{
       TAGS = JSON.parse($scope.lion.tags);
