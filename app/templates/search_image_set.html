@@ -142,10 +142,11 @@
               <i ng-if="imageset.is_primary" class="icon icon-check"></i>
               <i ng-if="!imageset.is_primary" class="icon icon-cross"></i>
             </td>
-            <td ng-show="!imageset.private">
+            <td ng-if="!imageset.private">
               <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" cvresults-id="imageset.cvresults" cvrequest-id="imageset.cvrequest" type="search" ng-if="imageset.action == 'cvresults'" cv-result-erased="Change_results(change, imagesetId)" debug="debug" modal-is-open="is_modal_open"></cvresults>
               <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest.html" form-size="lg" imageset-id="imageset.id" type="search" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)" debug="debug" modal-is-open="is_modal_open"></cvrequest>
-              <span ng-if="imageset.action == 'cvpending'">CV Request<img src="/static/images/waiting.gif" disabled/> pending</span>
+              <!--<span ng-if="imageset.action == 'cvpending'">CV Request<img src="/static/images/waiting.gif" disabled/> pending</span>-->
+              <span ng-if="imageset.action == 'cvpending'"><i class="icon icon-clock"></i>CV Request pending</span>
             </td>
           </tr>
         </tbody>
