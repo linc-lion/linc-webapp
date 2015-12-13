@@ -426,7 +426,11 @@ h4.h4data > a{
 }
 
 .div-witdh-limited{
-  max-width: 400px !important;
+  max-width: 500px !important;
+  max-height: 20em !important;
+}
+.div-witdh-fixed{
+  width: 400px !important;
 }
 .tabs-sm{
   li{
