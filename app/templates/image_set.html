@@ -89,14 +89,9 @@
       <br>
       <cvresults ng-show="imageset && Private" use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" cvresults-id="imageset.cvresults" cvrequest-id="imageset.cvrequest" ng-if="imageset.action == 'cvresults'" cv-result-erased="Change_results(change, imagesetId)" debug="debug" modal-is-open="is_modal_open"></cvresults>
       <cvrequest ng-show="imageset && Private" use-ctrl="CVRequesCtrl" use-template-url="cvrequest.html" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)" debug="debug" modal-is-open="is_modal_open"></cvrequest>
-
-      <p ng-if="imageset.action == 'cvpending'">
-        <a class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ><i class="icon icon-clock" disabled></i> CV Request Pending</a>
-      </p>
       <p ng-if="imageset.action == 'cvpending'">
         <a class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ><img src="/static/images/waiting.gif" />CV Request Pending</a>
       </p>
-
       <p ng-show="imageset && Private"><a class="btn btn-lg btn-default btn-block" ng-click="Delete()"><i class="icon icon-trash"></i> DELETE IMAGE SET</a></p>
     </div>
   </div>
