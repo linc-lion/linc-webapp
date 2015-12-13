@@ -26,6 +26,7 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
   var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right', 'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
   var count = 0;
+  var poller_promise = undefined;
   var Poller = function () {
     PollerService.cvrequests_list().then(function(response){
       var cvrequests = response.data;
@@ -38,16 +39,19 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
         if($scope.imageset.cvresults && $scope.imageset.req_status != 'fail' &&
           $scope.imageset.req_status != 'submitted'){
             $scope.imageset.action = 'cvresults';
-            $scope.cancel_Poller();
+            cancel_Poller();
         }
       }
       count++;
       console.log('Req Count: ' + count + ' Still pendings');
+    }, function(error){
+      if(error.status != 403)
+        cancel_Poller();
     });
   };
 
-  $scope.start_Poller = function (timer){
-    if($scope.promisse == undefined){
+  var start_Poller = function (timer){
+    if(poller_promise == undefined){
       var delay_timer = 180000;
       var repeat_timer = 180000;
       if(!timer)
@@ -55,17 +59,17 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
       $timeout(function() {
         count = 0;
         $scope.$apply(function () {
-          $scope.promisse = $interval(Poller, repeat_timer);
+          poller_promise = $interval(Poller, repeat_timer);
           console.log("Result CV Req Poller started");
         });
       }, delay_timer);
     }
   }
 
-  $scope.cancel_Poller = function(){
-    if($scope.promisse != null){
-      $interval.cancel($scope.promisse);
-      $scope.promisse = undefined;
+  var cancel_Poller = function(){
+    if(poller_promise != null){
+      $interval.cancel(poller_promise);
+      poller_promise = undefined;
       console.log("Result CV Req Poller canceled");
     }
   }
@@ -78,7 +82,7 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
         $scope.imageset["action"] = 'cvresults';
       else if($scope.imageset.cvrequest){
         $scope.imageset["action"] = 'cvpending';
-        $scope.start_Poller(0);
+        start_Poller(0);
       }
       else
         $scope.imageset["action"] = 'cvrequest';
@@ -171,7 +175,7 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
     $scope.imageset.action = 'cvpending';
     $scope.imageset.cvrequest = requestObj.obj_id;
     console.log('Success CV Request');
-    $scope.start_Poller(1);
+    start_Poller(1);
   };
 
   $scope.Change_results = function (change, ImagesetId) {
@@ -251,6 +255,7 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
 
   var count = 0;
   var cvrequest_pendings = [];
+  var poller_promise = undefined;
   var Poller = function () {
     PollerService.cvrequests_list().then(function(response){
       var cvrequests = response.data;
@@ -279,31 +284,34 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
       count++;
       console.log('Count: ' + count + ' Still: ' + cvrequest_pendings.length) + 'pendings';
       if(!cvrequest_pendings.length){
-        $scope.cancel_Poller();
+        cancel_Poller();
       }
+    }, function(error){
+      if(error.status != 403)
+        cancel_Poller();
     });
   };
 
-  $scope.start_Poller = function (timer){
-    if($scope.promisse == undefined){
-      var delay_timer = 180000;
-      var repeat_timer = 180000;
+  var start_Poller = function (timer){
+    if(poller_promise == undefined){
+      var delay_timer = 3000;
+      var repeat_timer = 3000;
       if(!timer)
         delay_timer = 0;
       $timeout(function() {
         count = 0;
         $scope.$apply(function () {
-          $scope.promisse = $interval(Poller, repeat_timer);
+          poller_promise = $interval(Poller, repeat_timer);
           console.log("Results CV Request Poller started");
         });
       }, delay_timer);
     }
   }
 
-  $scope.cancel_Poller = function(){
-    if($scope.promisse){
-      $interval.cancel($scope.promisse);
-      $scope.promisse = undefined;
+  var cancel_Poller = function(){
+    if(poller_promise){
+      $interval.cancel(poller_promise);
+      poller_promise = undefined;
       console.log("Results CV Request Poller canceled");
     }
   }
@@ -347,7 +355,7 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
     return _.extend({}, element, elem);
   });
   if(cvrequest_pendings.length)
-    $scope.start_Poller(0);
+    start_Poller(0);
 
   $scope.organizations = imagesets_filters.organizations;
   $scope.genders = imagesets_filters.genders;
@@ -517,7 +525,7 @@ NotificationFactory, LincServices, PollerService, organizations, imageset) {
     $scope.imagesets[index].action = 'cvpending';
     $scope.imagesets[index].cvrequest = requestObj.obj_id;
     console.log('Success CV Request');
-    $scope.start_Poller(1);
+    start_Poller(1);
   };
   $scope.Change_results = function (change, ImagesetId) {
     var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
