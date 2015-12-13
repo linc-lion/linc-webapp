@@ -45,10 +45,14 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      if(error.status == 401 || error.status == 403)
+      if(error.status == 401 || error.status == 403){
+        console.log("imageset resolve error");
         deferred.resolve({});
-      else
+      }
+      else{
+        console.log("imageset reject error");
         deferred.reject(error);
+      }
     });
     return deferred.promise;
   };
@@ -67,10 +71,14 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      if(error.status == 401 || error.status == 403)
+      if(error.status == 401 || error.status == 403){
+        console.log("lions resolve error");
         deferred.resolve({});
-      else
+      }
+      else{
+        console.log("lions reject error");
         deferred.reject(error);
+      }
     });
     return deferred.promise;
   };
@@ -89,10 +97,14 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      if(error.status == 401 || error.status == 403)
+      if(error.status == 401 || error.status == 403){
+        console.log("organizations resolve error");
         deferred.resolve({});
-      else
+      }
+      else{
+        console.log("organizations reject error");
         deferred.reject(error);
+      }
     });
     return deferred.promise;
   };
@@ -112,10 +124,14 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      if(error.status == 401 || error.status == 403)
+      if(error.status == 401 || error.status == 403){
+        console.log("imageset resolve error");
         deferred.resolve({});
-      else
+      }
+      else{
+        console.log("imageset reject error");
         deferred.reject(error);
+      }
     });
     return deferred.promise;
   };
@@ -134,10 +150,14 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      if(error.status == 401 || error.status == 403)
+      if(error.status == 401 || error.status == 403){
+        console.log("image gallery resolve error");
         deferred.resolve({});
-      else
+      }
+      else{
+        console.log("image gallery reject error");
         deferred.reject(error);
+      }
     });
     return deferred.promise;
   };
@@ -156,10 +176,14 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      if(error.status == 401 || error.status == 403)
+      if(error.status == 401 || error.status == 403){
+        console.log("lion resolve error");
         deferred.resolve({});
-      else
+      }
+      else{
+        console.log("lion reject error");
         deferred.reject(error);
+      }
     });
     return deferred.promise;
   };
@@ -178,10 +202,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      if(error.status == 401 || error.status == 403)
+      if(error.status == 401 || error.status == 403){
+        console.log("locations resolve error");
         deferred.resolve({});
-      else
+      }else{
+        console.log("locations reject error");
         deferred.reject(error);
+      }
     });
     return deferred.promise;
   };
@@ -200,10 +227,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      if(error.status == 401 || error.status == 403)
+      if(error.status == 401 || error.status == 403){
+        console.log("conservationists resolve error");
         deferred.resolve({});
-      else
+      }else{
+        console.log("conservationists reject error");
         deferred.reject(error);
+      }
     });
     return deferred.promise;
   };
@@ -243,10 +273,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           duration: 5000   // milisecond
         });
       }
-      if(error.status == 401 || error.status == 403)
+      if(error.status == 401 || error.status == 403){
+        console.log("downloads resolve error");
         deferred.resolve({});
-      else
+      }else{
+        console.log("downloads reject error");
         deferred.reject(error.data);
+      }
     });
     //deferred.resolve({'filename': 'http://www.colorado.edu/conflict/peace/download/peace_essay.ZIP'});
     return deferred.promise;
