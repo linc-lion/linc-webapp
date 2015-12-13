@@ -36,20 +36,20 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
         if($scope.imageset.cvresults && $scope.imageset.req_status != 'fail' &&
           $scope.imageset.req_status != 'submitted'){
             $scope.imageset.action = 'cvresults';
-            $cope.$parent.cancel_Poller();
+            $scope.$parent.cancel_Poller();
         }
       }
       count++;
       console.log('Req Count: ' + count + ' Still pendings');
     }, function(error){
       if(error.status != 403)
-        $cope.$parent.cancel_Poller();
+        $scope.$parent.cancel_Poller();
     });
   };
 
   var start_Poller = function (timer){
     if($scope.$parent.poller_promisse)
-      $cope.$parent.cancel_Poller();
+      $scope.$parent.cancel_Poller();
 
     var delay_timer = 180000;
     var repeat_timer = 180000;
@@ -275,17 +275,17 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
       count++;
       console.log('Count: ' + count + ' Still: ' + cvrequest_pendings.length) + 'pendings';
       if(!cvrequest_pendings.length){
-        $cope.$parent.cancel_Poller();
+        $scope.$parent.cancel_Poller();
       }
     }, function(error){
       if(error.status != 403)
-        $cope.$parent.cancel_Poller();
+        $scope.$parent.cancel_Poller();
     });
   };
 
   var start_Poller = function (timer){
     if($scope.$parent.poller_promisse)
-      $cope.$parent.cancel_Poller();
+      $scope.$parent.cancel_Poller();
     var delay_timer = 3000;
     var repeat_timer = 3000;
     if(!timer)
