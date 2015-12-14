@@ -27,17 +27,11 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   };
   $scope.Default = {isPublic: true, ImageType: 'cv', isCover: ''};
 
-  // var xsrfcookie = $cookies.get('_xsrf');
-  // var uploader = $scope.uploader = new FileUploader({
-  //   url: '/images/upload',
-  //   headers: {'X-XSRFToken' : xsrfcookie},
-  //   config: {ignoreLoadingBar: true}
-  // });
   var uploader = $scope.uploader = new FileUploader({
-    url: '/images/upload'
+    url: '/images/upload',
+    removeAfterUpload: true
   });
 
-  //$scope.headers = { 'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie};
   // FILTERS
   uploader.filters.push({
     name: 'imageFilter',
@@ -46,7 +40,6 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
       return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
     }
   });
-  //uploader.headers = {'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie};
   // CALLBACKS
   uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
     console.info('onWhenAddingFileFailed', item, filter, options);
@@ -89,15 +82,13 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
   uploader.onProgressAll = function(progress) {
       console.info('onProgressAll', progress);
   };
-  $scope.SucessItems = [];
-  $scope.Duplicateds = [];
-  $scope.InvalidData = [];
-  $scope.ErrorItems = [];
+  $scope.SucessItems = [];  $scope.Duplicateds = [];
+  $scope.InvalidData = [];  $scope.ErrorItems = [];
   uploader.onSuccessItem = function(fileItem, response, status, headers) {
       console.info('onSuccessItem', fileItem, response, status, headers);
       var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
       $scope.SucessItems.push(photo);
-      fileItem.remove();
+      //fileItem.remove();
   };
   uploader.onErrorItem = function(fileItem, response, status, headers) {
       console.info('onErrorItem', fileItem, response, status, headers);

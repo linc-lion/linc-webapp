@@ -89,9 +89,6 @@
           <button type="button" class="btn btn-default btn-xs" ng-click="item.remove()" ng-show="!item.isSuccess">
             <span class="icon icon-trash"></span> Remove
           </button>
-          <!--<button type="button" class="btn btn-default btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading" ng-show="!item.isSuccess">
-            <span class="icon icon-circle-slash"></span> Cancel
-          </button>-->
           <!--<button type="button" class="btn btn-primary btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess" ng-show="!item.isSuccess">
             <span class="icon icon-cloud_upload"></span> Upload
           </button>-->
@@ -100,13 +97,12 @@
     </tbody>
   </table>
   <div>
-    Queue progress: {{! uploader.progress }} {{! ImageUploaded}}
+    <div>
+      <p>Queue progress: {{! uploader.progress}}</p>
+    </div>
     <div class="progress" style="">
       <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
     </div>
-    <!--<button type="button" class="btn btn-default btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
-      <span class="icon icon-circle-slash"></span> Cancel all
-    </button>-->
   </div>
 </div>
 <div class="modal-footer">
