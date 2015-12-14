@@ -51,7 +51,10 @@ angular.module('lion.guardians.metadata.directive', [])
             optionsSet: function () {
               return scope.optionsSet;
             },
-            organizations: function($q, LincServices) {
+            auth: ['AuthService', function(AuthService) {
+              return AuthService.chech_auth();
+            }],
+            organizations: ['$q', 'LincServices', function($q, LincServices) {
               var deferred = $q.defer();
               LincServices.Organizations().then(function(response){
                 if (response.length)
@@ -61,7 +64,7 @@ angular.module('lion.guardians.metadata.directive', [])
               });
               return deferred.promise;
               //return LincServices.Organizations();
-            }
+            }]
           }
         });
         modalScope.Object_Created = function (obj) {
@@ -98,7 +101,10 @@ angular.module('lion.guardians.metadata.directive', [])
             optionsSet: function () {
               return scope.optionsSet;
             },
-            organizations: function($q, LincServices) {
+            auth: ['AuthService', function(AuthService) {
+              return AuthService.chech_auth();
+            }],
+            organizations: ['$q', 'LincServices', function($q, LincServices) {
               var deferred = $q.defer();
               LincServices.Organizations().then(function(response){
                 if (response.length)
@@ -108,7 +114,7 @@ angular.module('lion.guardians.metadata.directive', [])
               });
               return deferred.promise;
               //return LincServices.Organizations();
-            }
+            }]
           }
         });
         modalInstance.result.then(function (result) {

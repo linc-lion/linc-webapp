@@ -6,6 +6,21 @@ from tornado.gen import engine,Task
 from handlers.base import BaseHandler
 from json import dumps,loads
 
+class CheckAuthHandler(BaseHandler):
+    @asynchronous
+    @engine
+    @authenticated
+    def get(self):
+        resource_url = '/auth/check'
+        headers = {'Linc-Api-AuthToken':self.current_user['token']}
+        response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
+        self.set_json_output()
+        self.set_status(response.code)
+        if response.code == 200:
+            self.finish(response.body)
+        else:
+            self.finish({'status':'error','message':'fail to get User Authentication'})
+
 class LoginHandler(BaseHandler):
     @asynchronous
     @engine

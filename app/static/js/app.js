@@ -221,6 +221,9 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             debug: debug
           },
           resolve: {
+            auth: ['AuthService', function(AuthService) {
+              return AuthService.chech_auth();
+            }],
             lions: ['LincServices', function(LincServices) {
               return LincServices.Lions();
             }],
@@ -240,6 +243,9 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             debug: debug
           },
           resolve: {
+            auth: ['AuthService', function(AuthService) {
+              return AuthService.chech_auth();
+            }],
             imagesets: ['LincServices', function(LincServices) {
               return LincServices.ImageSets();
             }],
@@ -259,6 +265,9 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             debug: debug
           },
           resolve: {
+            auth: ['AuthService', function(AuthService) {
+              return AuthService.chech_auth();
+            }],
             conservationists: ['LincServices', function(LincServices) {
               return LincServices.Conservationists();
             }]

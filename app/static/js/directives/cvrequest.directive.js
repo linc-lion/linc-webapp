@@ -41,12 +41,15 @@ angular.module('lion.guardians.cvrequest.directive', [])
             imagesetId: function () {
               return scope.imagesetId;
             },
-            lions: function(LincServices) {
+            auth: ['AuthService', function(AuthService) {
+              return AuthService.chech_auth();
+            }],
+            lions: ['LincServices', function(LincServices) {
               return LincServices.Lions();
-            },
-            lion_filters: function(LincDataFactory) {
+            }],
+            lion_filters: ['LincDataFactory', function(LincDataFactory) {
               return LincDataFactory.get_lions_cvreq_filters();
-            }
+            }]
           }
         });
         modalInstance.result.then(function (cvrequest) {
