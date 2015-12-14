@@ -188,6 +188,8 @@ angular.module('lion.guardians.lions.controllers', [])
     return _.extend({}, element, elem);
   });
 
+  console.log(lions.length);
+
   $scope.organizations = lion_filters.organizations;
   $scope.genders = lion_filters.genders;
   //$scope.isCollapsed = true;
