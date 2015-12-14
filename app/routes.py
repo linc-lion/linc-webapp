@@ -3,7 +3,7 @@
 
 from handlers.base import VersionHandler
 from handlers.error import ErrorHandler
-from handlers.auth import LogoutHandler,LoginHandler
+from handlers.auth import LogoutHandler,LoginHandler, CheckAuthHandler
 from handlers.main import MainHandler,LoginMainHandler,HomeHandler,SideMenuHandler,\
     LionMainHandler,SearchLionHandler,ImageSetMainHandler,SearchImageSetHandler,\
     ConservationistsHandler,ImageGalleryHandler,LocationHistoryHandler,\
@@ -70,7 +70,7 @@ url_patterns = [
     (r"/cvrequests/(\w+$)", CVRequestHandler),
     (r"/login", LoginHandler),
     (r"/logout", LogoutHandler),
-
+    (r"/auth/check", CheckAuthHandler),
     (r"/users/?$", UsersHandler),
     (r"/users/(.*)$", UsersHandler)
 ]

@@ -41,9 +41,12 @@ angular.module('lion.guardians.location.history.directive', [])
                 options: function () {
                   return scope.options;
                 },
-                history: function(LincServices) {
+                auth: ['AuthService', function(AuthService) {
+                  return AuthService.chech_auth();
+                }],
+                history: ['LincServices', function(LincServices) {
                   return LincServices.LocationHistory(scope.options.lion_id);
-                }
+                }]
               }
             });
             modalInstance.result.then(function (imagesetId) {
@@ -72,9 +75,12 @@ angular.module('lion.guardians.location.history.directive', [])
                 options: function () {
                   return scope.options;
                 },
-                history: function(LincServices) {
+                auth: ['AuthService', function(AuthService) {
+                  return AuthService.chech_auth();
+                }],
+                history: ['LincServices', function(LincServices) {
                   return scope.options.history;
-                }
+                }]
               }
             });
             modalInstance.result.then(function (imagesetId) {

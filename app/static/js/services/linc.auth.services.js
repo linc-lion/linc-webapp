@@ -64,5 +64,9 @@ angular.module('lion.guardians.auth.services', [])
     authService.user = val;
     $localStorage.user = val;
   };
+  authService.chech_auth = function(){
+    var req = { method: 'GET', url: 'auth/check', data: {} };
+    return $http(req);
+  }
   return authService;
 }]);

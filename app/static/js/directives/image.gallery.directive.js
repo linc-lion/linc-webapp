@@ -36,9 +36,12 @@ angular.module('lion.guardians.image.gallery.directive', [])
             optionsSet: function () {
               return scope.optionsSet;
             },
-            gallery: function(LincServices) {
+            auth: ['AuthService', function(AuthService) {
+              return AuthService.chech_auth();
+            }],
+            gallery: ['LincServices', function(LincServices) {
               return LincServices.getImageGallery(scope.optionsSet.id);
-            }
+            }]
           }
         });
         modalScope.UpdateGallery = function () {

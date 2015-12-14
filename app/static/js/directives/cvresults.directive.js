@@ -39,15 +39,18 @@ angular.module('lion.guardians.cvresults.directive', [])
           size: scope.formSize,
           scope: modalScope,
           resolve: {
+            auth: ['AuthService', function(AuthService) {
+              return AuthService.chech_auth();
+            }],
             imagesetId: function () {
               return scope.imagesetId;
             },
             cvrequestId: function () {
               return scope.cvrequestId;
             },
-            data_cvresults: function(LincServices) {
+            data_cvresults: ['LincServices', function(LincServices) {
               return LincServices.getCVResults(scope.cvresultsId);
-            }
+            }]
           }
         });
         modalInstance.result.then(function (result) {
