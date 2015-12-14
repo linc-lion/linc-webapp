@@ -286,8 +286,8 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   var start_Poller = function (timer){
     if($scope.$parent.poller_promisse)
       $scope.$parent.cancel_Poller();
-    var delay_timer = 3000;
-    var repeat_timer = 3000;
+    var delay_timer = 180000;
+    var repeat_timer = 180000;
     if(!timer)
       delay_timer = 0;
     $timeout(function() {
