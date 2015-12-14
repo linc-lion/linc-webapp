@@ -55,7 +55,7 @@
           <strong>{{! item.file.name }}</strong>
         </td>
         <td ng-show="!item.show_name" class="text-center">
-          <strong><a href data-animation="am-flip-x" placement="top-left" bs-tooltip="item.tooltip">{{! item.nickname}}</a></strong>
+          <strong><a class="upload-name" data-animation="am-flip-x" placement="top-left" bs-tooltip="item.tooltip">{{! item.nickname}}</a></strong>
         </td>
         <td class="text-center">
           <button type="button" class="btn btn-default" ng-model="item.ImageType" ng-init="item.ImageType = Default.ImageType" data-html="1" bs-options="itype.value as itype.label for itype in Types['Images']" bs-select ng-disabled="item.isSuccess">

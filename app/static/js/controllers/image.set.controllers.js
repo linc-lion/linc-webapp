@@ -333,7 +333,10 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     try{ TAGS = JSON.parse(element['tags']);
     }catch(e){ TAGS = element['tags'].split(","); }
     if(TAGS==null) TAGS = [];
-    elem['features'] = get_features(tag_labels, TAGS);
+
+    var tag_features = get_features(tag_labels, TAGS);
+    elem['features_tooltip'] = {'title': tag_features, 'checked': true};
+    elem['features'] = (tag_features.length > 0) ? true : false;
 
     return _.extend({}, element, elem);
   });

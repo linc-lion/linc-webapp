@@ -16,6 +16,8 @@ angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest
     "Ear Marking: Left, Right, or Both; Mounth Marking: Back, Front, Left and Right; \n" +
     "Tail Marking: Missing Tuft; Nose Color: Black, Patchy, Pink, or Spotted; Scars: Body Left/Right, Face and Tail";
 
+  $scope.title_tooltip = {'title': 'tips: ' + tool_title, 'checked': true};
+
   var get_features = function (tag_labels, TAGS){
     var label = "";
     TAGS.forEach(function (elem, i){
@@ -33,7 +35,11 @@ angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest
     try{ TAGS = JSON.parse(element['tags']);
     }catch(e){ TAGS = element['tags'].split(","); }
     if(TAGS==null) TAGS = [];
-    elem['features'] = get_features(tag_labels, TAGS);
+  
+    var tag_features = get_features(tag_labels, TAGS);
+    elem['features_tooltip'] = {'title': tag_features, 'checked': true};
+    elem['features'] = (tag_features.length > 0) ? true : false;
+
     return _.extend({}, element, elem);
   });
 

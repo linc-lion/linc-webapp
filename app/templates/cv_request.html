@@ -59,7 +59,7 @@
         </div>
         <div role="tab">
           <h4>
-            <a bs-collapse-toggle ng-click="change_features_is_collapsed()"><i class="pull-right icon icon-select-arrows"></i>Features</a>
+            <a bs-collapse-toggle ng-click="change_features_is_collapsed()" data-placement="top-center" data-animation="am-fade-and-scale" bs-tooltip="title_tooltip" ><i class="pull-right icon icon-select-arrows"></i>Features</a>
           </h4>
         </div>
         <div uib-collapse="isFeaturesCollapsed">
@@ -108,8 +108,8 @@
                   <span class="sortorder" ng-show="predicate === 'gender'" ng-class="{reverse:reverse}"></span>
                 </th>
                 <th class="text-center">
-                  <a href="" ng-click="order('tag_features')" ng-class="{'order_class': predicate === 'tag_features'}">Features</a>
-                  <span class="sortorder" ng-show="predicate === 'tag_features'" ng-class="{reverse:reverse}"></span>
+                  <a href="" ng-click="order('features')" ng-class="{'order_class': predicate === 'features'}">Features</a>
+                  <span class="sortorder" ng-show="predicate === 'features'" ng-class="{reverse:reverse}"></span>
                 </th>
                 <th class="text-center">
                   <a href="" ng-click="order('is_verified')" ng-class="{'order_class': predicate === 'is_verified'}">Verified</a>
@@ -142,9 +142,10 @@
                 <td class="text-center">
                   <a ui-sref="lion({id: lion.id})" target="_blank">{{!lion.gender}}</a>
                 </td>
-                <td class="text-center">
-                  <a ui-sref="lion({id: lion.id})" target="_blank">{{!lion.features}}</a>
+                <td ng-if="lion.features" class="text-center">
+                  <a ui-sref="lion({id: lion.id})" data-animation="am-flip-x" placement="top-center" bs-tooltip="lion.features_tooltip"><i class="icon icon-notification"></i></a>
                 </td>
+                <td ng-if="!lion.features" class="text-center"><td>
                 <td class="text-center">
                   <a ui-sref="lion({id: lion.id})" target="_blank">
                     <i ng-if="lion.is_verified" class="icon icon-check"></i>
