@@ -157,10 +157,10 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
             duration: 2000     // milisecond
           });
         }
-        _.forEach(response.success, function(cvrequest, i){
-          var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': cvrequest.id}));
+        _.forEach(response.success, function(item, i){
+          //var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': cvrequest.id}));
           var remove = _.remove($scope.$parent.cvrequests, function(cvrequest) {
-            return cvrequest.id == index;
+            return cvrequest.id == item.id;
           });
         });
         $scope.Selecteds = [];

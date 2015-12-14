@@ -155,10 +155,10 @@ angular.module('lion.guardians.admin.images.controller', [])
             duration: 2000     // milisecond
           });
         }
-        _.forEach(response.success, function(image, i){
-          var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': image.id}));
+        _.forEach(response.success, function(item, i){
+          //var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': image.id}));
           var remove = _.remove($scope.$parent.images, function(image) {
-            return image.id == index;
+            return image.id == item.id;
           });
         });
         $scope.Selecteds = [];
