@@ -62,7 +62,7 @@
       </div>
 
       <div ng-hide="isViewFilter || !showPrivated">
-        <h4>Image type</h4> {{!showPrivated}}
+        <h4>Image type</h4>
         <div class="radio" ng-init="Selected.Type='all'" ng-repeat="item in Selects">
           <label><input type="radio" ng-model="Selected.Type" ng-value="item.type" ng-click="Change_Type()" ng-disabled="!Selecteds.length">{{!item.label}}</label>
         </div>
