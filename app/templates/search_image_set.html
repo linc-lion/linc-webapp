@@ -136,7 +136,7 @@
             <td ng-if="imageset.features" class="text-center">
               <a ui-sref="imageset({id: imageset.id})" data-animation="am-flip-x" placement="top-center" bs-tooltip="imageset.features_tooltip"><i class="icon icon-notification"></i></a>
             </td>
-            <td ng-if="!imageset.features" class="text-center" ui-sref="imageset({id: imageset.id})" ><td>
+            <td ng-if="!imageset.features" class="text-center" ui-sref="imageset({id: imageset.id})">
             <td class="text-center" ui-sref="imageset({id: imageset.id})">
               <i ng-if="imageset.is_verified" class="icon icon-check"></i>
               <i ng-if="!imageset.is_verified" class="icon icon-cross"></i>
