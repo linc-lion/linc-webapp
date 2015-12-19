@@ -33,10 +33,14 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
       if(cvrequest){
         $scope.imageset.cvresults = cvrequest.cvres_obj_id;
         $scope.imageset.req_status = cvrequest.status;
-        if($scope.imageset.cvresults && $scope.imageset.req_status != 'fail' &&
+        /*if($scope.imageset.cvresults && $scope.imageset.req_status != 'fail' &&
           $scope.imageset.req_status != 'submitted'){
             $scope.imageset.action = 'cvresults';
             $scope.$parent.cancel_Poller();
+        }*/
+        if($scope.imageset.cvresults){
+          $scope.imageset.action = 'cvresults';
+          $scope.$parent.cancel_Poller();
         }
       }
       count++;
@@ -51,18 +55,14 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     if($scope.$parent.poller_promisse)
       $scope.$parent.cancel_Poller();
 
-    var delay_timer = 40000;
     var repeat_timer = 40000;
-    if(!timer)
-      delay_timer = 0;
     $timeout(function() {
       count = 0;
       $scope.$apply(function () {
         $scope.$parent.poller_promisse = $interval(Poller, repeat_timer);
         console.log("Result CV Req Poller started");
       });
-    }, delay_timer);
-
+    }, 0);
   }
 
   var Set_Tags = function(){
@@ -271,8 +271,12 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
           imageset.req_status = cvrequest.status;
           //if(count == 2)
           //  imageset.req_status = "success";
-          if(imageset.cvresults && imageset.req_status != 'fail' &&
+          /*if(imageset.cvresults && imageset.req_status != 'fail' &&
             imageset.req_status != 'submitted'){
+            imageset.action = 'cvresults';
+            resolved.push(pendings)
+          }*/
+          if(imageset.cvresults){
             imageset.action = 'cvresults';
             resolved.push(pendings)
           }
@@ -287,6 +291,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
         $scope.$parent.cancel_Poller();
       }
     }, function(error){
+      console.log('Poller Error: ' + error.status);
       if(error.status != 403)
         $scope.$parent.cancel_Poller();
     });
@@ -295,17 +300,15 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   var start_Poller = function (timer){
     if($scope.$parent.poller_promisse)
       $scope.$parent.cancel_Poller();
-    var delay_timer = 40000;
+
     var repeat_timer = 40000;
-    if(!timer)
-      delay_timer = 0;
     $timeout(function() {
       count = 0;
       $scope.$apply(function () {
         $scope.$parent.poller_promisse = $interval(Poller, repeat_timer);
         console.log("Results CV Request Poller started");
       });
-    }, delay_timer);
+    }, 0);
   }
 
   var get_features = function (tag_labels, TAGS){
@@ -529,6 +532,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     $scope.imagesets[index].action = 'cvpending';
     $scope.imagesets[index].cvrequest = requestObj.obj_id;
     console.log('Success CV Request');
+    cvrequest_pendings.push({'imageset': $scope.imagesets[index], 'id': index});
     start_Poller(1);
   };
   $scope.Change_results = function (change, ImagesetId) {
