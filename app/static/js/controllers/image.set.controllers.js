@@ -68,8 +68,17 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   var Set_Tags = function(){
     $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.imageset.organization_id);
     if(!$scope.imageset.is_primary){
-      if($scope.imageset.cvresults && $scope.imageset.req_status &&
+      /*if($scope.imageset.cvresults && $scope.imageset.req_status &&
         $scope.imageset.req_status != 'fail' && $scope.imageset.req_status != 'submitted')
+        $scope.imageset["action"] = 'cvresults';
+      else if($scope.imageset.cvrequest){
+        $scope.imageset["action"] = 'cvpending';
+        if($scope.canShow)
+          start_Poller(0);
+      }
+      else
+        $scope.imageset["action"] = 'cvrequest';*/
+      if($scope.imageset.cvresults)
         $scope.imageset["action"] = 'cvresults';
       else if($scope.imageset.cvrequest){
         $scope.imageset["action"] = 'cvpending';
@@ -312,8 +321,17 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
     var elem = {};
     if(!element.is_primary){
-      if(element.cvresults && element.req_status &&
+      /*if(element.cvresults && element.req_status &&
         element.req_status != 'fail' && element.req_status != 'submitted')
+        elem["action"] = 'cvresults';
+      else if(element.cvrequest){
+        elem["action"] = 'cvpending';
+        if(element.canShow)
+          cvrequest_pendings.push({'imageset': element, 'id': index});
+      }
+      else
+        elem["action"] = 'cvrequest';*/
+      if(element.cvresults)
         elem["action"] = 'cvresults';
       else if(element.cvrequest){
         elem["action"] = 'cvpending';
