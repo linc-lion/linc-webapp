@@ -51,8 +51,8 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     if($scope.$parent.poller_promisse)
       $scope.$parent.cancel_Poller();
 
-    var delay_timer = 180000;
-    var repeat_timer = 180000;
+    var delay_timer = 40000;
+    var repeat_timer = 40000;
     if(!timer)
       delay_timer = 0;
     $timeout(function() {
@@ -295,8 +295,8 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   var start_Poller = function (timer){
     if($scope.$parent.poller_promisse)
       $scope.$parent.cancel_Poller();
-    var delay_timer = 180000;
-    var repeat_timer = 180000;
+    var delay_timer = 40000;
+    var repeat_timer = 40000;
     if(!timer)
       delay_timer = 0;
     $timeout(function() {
@@ -329,7 +329,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
         if(element.canShow)
           cvrequest_pendings.push({'imageset': element, 'id': index});
       }
-      else
+      else kadmak@gmail.com
         elem["action"] = 'cvrequest';*/
       if(element.cvresults)
         elem["action"] = 'cvresults';
