@@ -55,6 +55,9 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     if($scope.$parent.poller_promisse)
       $scope.$parent.cancel_Poller();
 
+    if(!timer){
+      Poller();
+    }
     var repeat_timer = 40000;
     $timeout(function() {
       count = 0;
@@ -301,6 +304,9 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     if($scope.$parent.poller_promisse)
       $scope.$parent.cancel_Poller();
 
+    if(!timer){
+      Poller();
+    }
     var repeat_timer = 40000;
     $timeout(function() {
       count = 0;
