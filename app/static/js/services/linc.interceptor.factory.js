@@ -14,7 +14,8 @@ angular.module('lion.guardians.interceptor.factory', [])
           if (rejection.status === 401) {
             $injector.get('AuthService').setUser(null);
             $cookies.remove("userlogin");
-            $injector.get('$state').transitionTo('login');
+            $injector.get('$window').location.reload();
+            //$injector.get('$state').transitionTo('login');
             console.log("Response Error 401");
           }
           if (rejection.status === 403) {
