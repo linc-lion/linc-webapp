@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.cvresults.directive', [])
 
-.directive('cvresults', ['$uibModal', function($uibModal) {
+.directive('cvresults', ['$uibModal', '$interval', function($uibModal, $interval) {
   return {
     transclude: true,
     restrict: 'EA',
@@ -48,16 +48,35 @@ angular.module('lion.guardians.cvresults.directive', [])
             cvrequestId: function () {
               return scope.cvrequestId;
             },
+            cvresultsId: function () {
+              return scope.cvresultsId;
+            },
             data_cvresults: ['LincServices', function(LincServices) {
               return LincServices.getCVResults(scope.cvresultsId);
             }]
           }
         });
+        var poller_promisse = undefined;
+        modalScope.get_poller_promisse = function(){
+          return poller_promisse;
+        };
+        modalScope.set_poller_promisse = function(val){
+          poller_promisse = val;
+        };
+        modalScope.cancel_Poller = function () {
+          if(poller_promisse){
+            $interval.cancel(poller_promisse);
+            poller_promisse = undefined;
+            console.log("CV Results Poller canceled");
+          }
+        };
         modalInstance.result.then(function (result) {
+          modalScope.cancel_Poller();
           scope.modalIsOpen = false;
           scope.cvResultErased({change: result, imagesetId: scope.imagesetId});
           console.log('Modal ok' + result);
         }, function () {
+          modalScope.cancel_Poller();
           scope.modalIsOpen = false;
           console.log('Modal dismissed at: ' + new Date());
         });
