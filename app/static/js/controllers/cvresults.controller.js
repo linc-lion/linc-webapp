@@ -15,6 +15,7 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
       $scope.cvresults = response.cvresults;
       if(response.status == 'finished' || response.status == 'error'){
         console.log('Res Canceled - Status: ' + response.status);
+        $scope.title = 'CV Results (CV Request Id: '+ data_cvresults.req_id + ' - Status: ' + response.status + ')';
         $scope.cancel_Poller();
         //$scope.$parent.cancel_Poller();
       }
