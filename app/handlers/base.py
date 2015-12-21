@@ -51,14 +51,27 @@ class BaseHandler(RequestHandler):
             'headers' : h,
             'url' : url,
             'method' : method,
-            'request_timeout': 720}
+            'request_timeout': 720,
+            'validate_cert' : False}
         if method in ['POST','PUT']:
             params['body']=body
         request = HTTPRequest(**params)
         try:
             response = yield http_client.fetch(request)
-        except HTTPError as e:
-            print("Error: " + str(e.code) + str(e.response))
+        except HTTPError, e:
+            print 'HTTTP error returned... '
+            print "Code: ", e.code
+            print "Message: ", e.message
+            if e.response:
+                print 'URL: ', e.response.effective_url
+                print 'Reason: ', e.response.reason
+                print 'Body: ', e.response.body
+                response = e.response
+            else:
+                response = e
+        except Exception as e:
+            # Other errors are possible, such as IOError.
+            print("Other Errors: " + str(e))
             response = e
         callback(response)
 
