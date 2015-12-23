@@ -242,7 +242,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   $scope.imageset.date_stamp = local_date($scope.imageset.date_stamp);
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$stateParams', '$bsTooltip', 'NotificationFactory', 'LincServices', 'AuthService', 'PollerService', 'imagesets_filters', 'imagesets', function ($scope, $timeout, $interval, $stateParams, $bsTooltip, NotificationFactory, LincServices, AuthService, PollerService, imagesets_filters, imagesets) {
+.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$stateParams', '$bsTooltip', 'NotificationFactory', 'LincServices', 'AuthService', 'PollerService', 'imagesets_filters', 'default_filters', 'imagesets', function ($scope, $timeout, $interval, $stateParams, $bsTooltip, NotificationFactory, LincServices, AuthService, PollerService, imagesets_filters, default_filters, imagesets) {
 
   $scope.user = AuthService.user;
   var tag_labels    = {'EYE_DAMAGE_BOTH': 'Eye Damage Both', 'EYE_DAMAGE_LEFT': 'Eye Damage Left', 'EYE_DAMAGE_RIGHT': 'Eye Damage Right', 'TEETH_BROKEN_CANINE_LEFT': 'Broken Teeth Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Broken Teeth Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Broken Teeth Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Broken Teeth Incisor Right',
@@ -364,6 +364,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     var tag_features = get_features(tag_labels, TAGS);
     elem['features_tooltip'] = {'title': tag_features, 'checked': true};
     elem['features'] = (tag_features.length > 0) ? true : false;
+    elem['tag_features'] = tag_features;
 
     return _.extend({}, element, elem);
   });
@@ -394,7 +395,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   //$scope.name_or_id ='';
   $scope.name_or_id = imagesets_filters.name_or_id;
   // tags
-  $scope.tag_features = imagesets_filters.features;
+  $scope.tag_features = imagesets_filters.tag_features;
   // Order by
   //$scope.reverse = false;
   $scope.reverse = imagesets_filters.reverse;
@@ -551,7 +552,18 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   $scope.filters = $stateParams.filter ? $stateParams.filter : {};
 
   if(Object.keys($scope.filters).length){
-    $scope.name_or_id = $scope.filters.hasOwnProperty('name_or_id') ? $scope.filters.name_or_id : '';
+    console.log('Search Imagesets - has filter params');
+    $scope.name_or_id = $scope.filters.hasOwnProperty('name_or_id') ? $scope.filters.name_or_id : default_filters.name_or_id;
+    $scope.tag_features = $scope.filters.hasOwnProperty('tag_features') ? $scope.filters.tag_features : default_filters.tag_features;
+    $scope.organizations = $scope.filters.hasOwnProperty('organizations') ? $scope.filters.name_or_id : default_filters.organizations;
+    $scope.genders = $scope.filters.hasOwnProperty('genders') ? $scope.filters.genders : default_filters.genders;
+    $scope.LionAge = $scope.filters.hasOwnProperty('LionAge') ? $scope.filters.LionAge : default_filters.LionAge;
+
+    $scope.isAgeCollapsed = $scope.filters.hasOwnProperty('isAgeCollapsed') ? $scope.filters.isAgeCollapsed : default_filters.isAgeCollapsed;
+    $scope.isOrgCollapsed = $scope.filters.hasOwnProperty('isOrgCollapsed') ? $scope.filters.isOrgCollapsed : default_filters.isOrgCollapsed;
+    $scope.isNameIdCollapsed = $scope.filters.hasOwnProperty('isNameIdCollapsed') ? $scope.filters.isNameIdCollapsed : default_filters.isNameIdCollapsed;
+    $scope.isFeaturesCollapsed = $scope.filters.hasOwnProperty('isFeaturesCollapsed') ? $scope.filters.isFeaturesCollapsed : default_filters.isFeaturesCollapsed;
+    $scope.isGenderCollapsed = $scope.filters.hasOwnProperty('isGenderCollapsed') ? $scope.filters.isGenderCollapsed : default_filters.isGenderCollapsed;
   }
 
 }]);
