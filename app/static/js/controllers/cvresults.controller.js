@@ -105,4 +105,13 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
       console.log(error);
     });
   };
+
+  $scope.reverse = true;//lion_filters.reverse;
+  $scope.predicate = 'cv';//lion_filters.predicate;
+
+  $scope.order = function(predicate) {
+    $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+    $scope.predicate = predicate;
+  };
+
 }]);
