@@ -106,7 +106,7 @@
               <a href="" ng-click="order('gender')" ng-class="{'order_class': predicate === 'gender'}">Gender</a>
               <span class="sortorder" ng-show="predicate === 'gender'" ng-class="{reverse:reverse}"></span>
             </th>
-            <th class="text-center"><a ng-click="order('date_stamp')" ng-class="{'order_class': predicate === 'date_stamp'}">Date Stamp</a>
+            <th class="text-center"><a ng-click="order('date_stamp')" ng-class="{'order_class': predicate === 'date_stamp'}">Time Stamp</a>
               <span class="sortorder" ng-show="predicate === 'date_stamp'" ng-class="{reverse:reverse}"></span>
             </th>
             <th class="text-center">
@@ -137,7 +137,7 @@
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.organization}}</td>
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.gender}}</td>
             <td class="text-center" ui-sref="imageset({id: imageset.id})">
-              <div class="div-date_stamp">{{!imageset.date_stamp | date:'yyyy-MM-dd HH:mm:ss Z'}}</div>
+              <div class="div-date_stamp">{{!imageset.date_stamp | date:'yyyy-MM-dd'}}</div>
             </td>
             <td ng-if="imageset.features" class="text-center">
               <a ui-sref="imageset({id: imageset.id})" data-animation="am-flip-x" placement="top-center" bs-tooltip="imageset.features_tooltip"><i class="icon icon-notification"></i></a>
