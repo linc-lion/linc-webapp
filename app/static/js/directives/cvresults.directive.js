@@ -39,9 +39,6 @@ angular.module('lion.guardians.cvresults.directive', [])
           size: scope.formSize,
           scope: modalScope,
           resolve: {
-            auth: ['AuthService', function(AuthService) {
-              return AuthService.chech_auth();
-            }],
             imagesetId: function () {
               return scope.imagesetId;
             },
