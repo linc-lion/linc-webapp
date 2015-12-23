@@ -77,6 +77,9 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         debug: debug
       },
       resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.chech_auth();
+        }],
         organizations: ['LincApiServices', function(LincApiServices) {
           return LincApiServices.Organizations({'method': 'get'});
         }],
@@ -172,6 +175,9 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         debug: debug
       },
       resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.chech_auth();
+        }],
         organizations: ['LincServices', function(LincServices) {
           return LincServices.Organizations();
         }],
@@ -191,6 +197,9 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         debug: debug
       },
       resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.chech_auth();
+        }],
         organizations: ['LincServices', function(LincServices) {
           return LincServices.Organizations();
         }],
@@ -218,6 +227,9 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         }],
         lion_filters: ['LincDataFactory', function(LincDataFactory) {
           return LincDataFactory.get_lions_filters();
+        }],
+        default_filters: ['LincDataFactory', function(LincDataFactory) {
+          return LincDataFactory.get_defaults();
         }]
       }
     })
@@ -240,6 +252,9 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         }],
         imagesets_filters: ['LincDataFactory', function(LincDataFactory) {
           return LincDataFactory.get_imagesets_filters();
+        }],
+        default_filters: ['LincDataFactory', function(LincDataFactory) {
+          return LincDataFactory.get_defaults();
         }]
       }
     })
@@ -268,7 +283,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
       // Showing off how you could return a promise from templateProvider
       templateProvider: ['$timeout', function ($timeout) {
           return $timeout(function () {
-            return '<p class="lead">Lin-Lions</p><ul>' +
+            return '<p class="lead">Linc-Lions</p><ul>' +
                      '<li><a href="https://github.com/linc-lion/linc-webapp">Linc Lions</a></li>' +
                      '</ul>';
           }, 100);

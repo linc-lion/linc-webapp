@@ -35,10 +35,11 @@ angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest
     try{ TAGS = JSON.parse(element['tags']);
     }catch(e){ TAGS = element['tags'].split(","); }
     if(TAGS==null) TAGS = [];
-  
+
     var tag_features = get_features(tag_labels, TAGS);
     elem['features_tooltip'] = {'title': tag_features, 'checked': true};
     elem['features'] = (tag_features.length > 0) ? true : false;
+    elem['tag_features'] = tag_features;
 
     return _.extend({}, element, elem);
   });
@@ -62,7 +63,7 @@ angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest
   //$scope.name_or_id ='';
   $scope.name_or_id = lion_filters.name_or_id;
   // tags
-  $scope.tag_features = lion_filters.features;
+  $scope.tag_features = lion_filters.tag_features;
   // Order by
   //$scope.reverse = false;
   $scope.reverse = lion_filters.reverse;

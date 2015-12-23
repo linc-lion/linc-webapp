@@ -4,41 +4,52 @@ angular.module('lion.guardians.linc.data.factory', [])
   var initialized = false;
   var lions_filters = {
       'LionAge': {},
-      'name_or_id': '', 'features': '', 'reverse': false, 'predicate': 'id',
+      'name_or_id': '', 'tag_features': '', 'reverse': false, 'predicate': 'id',
       'PerPage': 0, 'currentPage': 0, 'isAgeCollapsed': true,
       'isOrgCollapsed': true, 'isNameIdCollapsed': false, 'isGenderCollapsed' : true,
       'isFeaturesCollapsed' : true, 'organization': [], 'genders': []
   };
   var imagesets_filters = {
       'LionAge': {},
-      'name_or_id': '', 'features': '', 'reverse': false, 'predicate': 'id',
+      'name_or_id': '', 'tag_features': '', 'reverse': false, 'predicate': 'id',
       'PerPage': 0, 'currentPage': 0, 'isAgeCollapsed': true,
       'isOrgCollapsed': true, 'isNameIdCollapsed': false, 'isGenderCollapsed' : true,
       'isFeaturesCollapsed' : true, 'organization': [], 'genders': []
   };
   var lions_cvreq_filters = {
       'LionAge': {},
-      'name_or_id': '', 'features': '', 'reverse': false, 'predicate': 'id',
+      'name_or_id': '', 'tag_features': '', 'reverse': false, 'predicate': 'id',
       'PerPage': 0, 'currentPage': 0, 'isAgeCollapsed': true,
       'isOrgCollapsed': true, 'isNameIdCollapsed': false, 'isGenderCollapsed' : true,
       'isFeaturesCollapsed' : true, 'organization': [], 'genders': []
   };
+  var default_organizations = [];
+  var default_genders = [];
+  var default_age = {};
   if(!initialized){
     LincServices.Organizations().then(function (organizations){
-      lions_filters.organizations =  _.map(organizations, function(element) {
+      default_organizations =  _.map(organizations, function(element) {
         return _.extend({}, element, {checked: true});
       });
-      imagesets_filters.organizations = angular.copy(lions_filters.organizations);
-      lions_cvreq_filters.organizations = angular.copy(lions_filters.organizations);
+      lions_filters.organizations = angular.copy(default_organizations);
+      imagesets_filters.organizations = angular.copy(default_organizations);
+      lions_cvreq_filters.organizations = angular.copy(default_organizations);
     });
-    lions_filters.genders = [{'name': 'male', 'label': 'Male', 'checked': true},{'name': 'female', 'label': 'Female', 'checked': true}, {'name': 'unknown', 'label': 'Unknown', 'checked': true}];
-    imagesets_filters.genders = [{'name': 'male', 'label': 'Male', 'checked': true},{'name': 'female', 'label': 'Female', 'checked': true}, {'name': 'unknown', 'label': 'Unknown', 'checked': true}];
-    lions_cvreq_filters.genders = [{'name': 'male', 'label': 'Male', 'checked': true},{'name': 'female', 'label': 'Female', 'checked': true}, {'name': 'unknown', 'label': 'Unknown', 'checked': true}];
-    lions_filters.LionAge = { 'min': 0, 'max': 30, 'options': {'ceil': 32, 'floor': 0 }};
-    imagesets_filters.LionAge = { 'min': 0, 'max': 30, 'options': {'ceil': 32, 'floor': 0 }};
-    lions_cvreq_filters.LionAge = { 'min': 0, 'max': 30,  'options': {'ceil': 32, 'floor': 0 }};
+    default_genders = [{'name': 'male', 'label': 'Male', 'checked': true},{'name': 'female', 'label': 'Female', 'checked': true}, {'name': 'unknown', 'label': 'Unknown', 'checked': true}];
+    lions_filters.genders = angular.copy(default_genders);
+    imagesets_filters.genders = angular.copy(default_genders);
+    lions_cvreq_filters.genders = angular.copy(default_genders);
+    default_age = { 'min': 0, 'max': 30, 'options': {'ceil': 32, 'floor': 0 }};
+    lions_filters.LionAge = angular.copy(default_age);
+    imagesets_filters.LionAge = angular.copy(default_age);
+    lions_cvreq_filters.LionAge = angular.copy(default_age);
   };
   return {
+    get_defaults (){
+      return ({"organizations": default_organizations, "genders": default_genders, "LionAge": default_age, "name_or_id": '', "tag_features" : '', 'isAgeCollapsed': true,
+      'isOrgCollapsed': true, 'isNameIdCollapsed': false, 'isGenderCollapsed' : true,
+      'isFeaturesCollapsed' : true,});
+    },
     get_lions_filters: function () {
       return (lions_filters);
     },
