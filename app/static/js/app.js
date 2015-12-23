@@ -227,6 +227,9 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         }],
         lion_filters: ['LincDataFactory', function(LincDataFactory) {
           return LincDataFactory.get_lions_filters();
+        }],
+        default_filters: ['LincDataFactory', function(LincDataFactory) {
+          return LincDataFactory.get_defaults();
         }]
       }
     })
@@ -249,6 +252,9 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         }],
         imagesets_filters: ['LincDataFactory', function(LincDataFactory) {
           return LincDataFactory.get_imagesets_filters();
+        }],
+        default_filters: ['LincDataFactory', function(LincDataFactory) {
+          return LincDataFactory.get_defaults();
         }]
       }
     })
