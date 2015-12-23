@@ -15,11 +15,31 @@ class CheckAuthHandler(BaseHandler):
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_json_output()
-        self.set_status(response.code)
-        if response.code == 200:
-            self.finish(response.body)
-        else:
-            self.finish({'status':'error','message':'fail to get User Authentication'})
+        if response.code != 200:
+            resource_url = '/auth/login'
+            username = self.current_user['username']
+            password = self.current_user['password']
+            body = {'username':username,
+                    'password':password}
+            url = self.settings['API_URL']+resource_url
+            response = yield Task(self.api,url=url,method='POST',body=self.json_encode(body))
+            if response and response.code == 200:
+                data = loads(response.body)
+                obj = {'username' : username,
+                       'orgname' : data['orgname'],
+                       'admin' : (data['role']=='admin'),
+                       'token' : data['token'],
+                       'id' : data['id'],
+                       'organization_id' : data['organization_id'],
+                       'password':password}
+                self.set_secure_cookie("userlogin",dumps(obj))
+                del obj['password']
+                self.setSuccess(200,'User has a new token login in API',obj)
+                return
+        elif response.code == 200:
+            self.setSuccess(200,'Token valid for the current user.')
+            return
+        self.dropError(401,'Fail to get User Authentication')
 
 class LoginHandler(BaseHandler):
     @asynchronous
@@ -41,9 +61,10 @@ class LoginHandler(BaseHandler):
                        'admin' : (data['role']=='admin'),
                        'token' : data['token'],
                        'id' : data['id'],
-                       'organization_id' : data['organization_id']
-                }
+                       'organization_id' : data['organization_id'],
+                       'password':password}
                 self.set_secure_cookie("userlogin",dumps(obj))
+                del obj['password']
                 # this will be acquired with the api
                 self.setSuccess(200,'You are now logged in the website.',obj)
             else:
