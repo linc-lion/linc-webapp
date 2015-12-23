@@ -120,7 +120,7 @@ angular.module('lion.guardians.controllers', ['lion.guardians.admin.controller',
     var pieces = features.match(/\S+/g);
 
     var filtered = _.filter(input, function(value){
-      var val = value.features.toLowerCase();
+      var val = value.tag_features.toLowerCase();
       // For each piece test contained in input
       var contain = true;
       pieces.forEach(function (piece, i){

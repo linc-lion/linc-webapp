@@ -71,7 +71,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           "date_stamp": (selected.date_stamp == null || selected.date_stamp == '') ? null : selected.date_stamp.toISOString().slice(0,10),
           "gender": selected.gender,
           "date_of_birth": (selected.date_of_birth == null || selected.date_of_birth == '') ? null: selected.date_of_birth.toISOString().slice(0,10),
-          "tags": TAGS,
+          "tags": TAGS == "null" ? null: TAGS ,
           "notes": selected.notes,
           'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
           'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
@@ -97,7 +97,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
           "gender": selected.gender,
           "date_of_birth": (selected.date_of_birth == null || selected.date_of_birth == '') ? null: selected.date_of_birth.toISOString().slice(0,10),
-          "tags": TAGS,
+          "tags": TAGS == "null" ? null : TAGS,
           "notes": selected.notes,
           "lion_id": null,
           "main_image_id": null,
@@ -148,6 +148,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           imageset_data['latitude'] = null;
         if(_.has(imageset_data, 'longitude') && imageset_data['longitude'] == '')
           imageset_data['longitude'] = null;
+        if(_.has(imageset_data, 'tags') && imageset_data['tags'] == 'null')
+          imageset_data['tags'] = null;
 
         if(Object.keys(lion_data).length || Object.keys(imageset_data).length)
           data = {"lion": lion_data, "imageset": imageset_data, 'imagesetId': original_data.primary_image_set_id};
@@ -178,6 +180,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           imageset_data['latitude'] = null;
         if(_.has(imageset_data, 'longitude') && imageset_data['longitude'] == '')
           imageset_data['longitude'] = null;
+        if(_.has(imageset_data, 'tags') && imageset_data['tags'] == 'null')
+          imageset_data['tags'] = null;
 
         if(Object.keys(imageset_data).length)
           data = imageset_data;
