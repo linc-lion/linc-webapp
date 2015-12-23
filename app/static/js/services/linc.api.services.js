@@ -1,16 +1,21 @@
 angular.module('lion.guardians.api.services', [])
 
-.factory('LincApiServices', ['$http', '$state', '$q', '$cookies', 'NotificationFactory', function($http, $state, $q, $cookies, NotificationFactory) {
+.factory('LincApiServices', ['$http', '$state', '$q', '$cookies', 'AuthService', 'NotificationFactory', function($http, $state, $q, $cookies, AuthService, NotificationFactory) {
 
   var debug = ($state.current.data == undefined) ? false : ($state.current.data.debug || false);
 
   var HTTP = function (metod, url, data, config, success, error) {
-    if(metod == 'GET'){ $http.get(url, config).then(success, error); }
-    else{
-      var xsrfcookie = $cookies.get('_xsrf');
-      var req = { method: metod, url: url, data: data,
-        headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: config};
-      $http(req).then(success, error); }
+    AuthService.chech_auth().then( function(resp){
+      if(metod == 'GET'){
+        $http.get(url, config).then(success, error);
+      }
+      else{
+        var xsrfcookie = $cookies.get('_xsrf');
+        var req = { method: metod, url: url, data: data,
+          headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: config};
+          $http(req).then(success, error);
+      }
+    },error);
   }
 
   var http_defer = function (id,data){
@@ -21,12 +26,16 @@ angular.module('lion.guardians.api.services', [])
                 data: data.data,
                 headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
                 config: {ignoreLoadingBar: true}};
-    $http(req).then(function(response){
-      var data = {'id': id, 'data': response.data};
-      deferred.resolve({'success': true, 'data': data});
-    }, function(response){
-      var data = {'id': id, 'data': response.data};
-      deferred.resolve({'success': false, 'data': data});
+    AuthService.chech_auth().then( function(resp){
+      $http(req).then(function(response){
+        var data = {'id': id, 'data': response.data};
+        deferred.resolve({'success': true, 'data': data});
+      }, function(response){
+        var data = {'id': id, 'data': response.data};
+        deferred.resolve({'success': false, 'data': data});
+      });
+    },function(error){
+      deferred.reject(error);
     });
     return deferred.promise;
   }

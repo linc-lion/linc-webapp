@@ -51,9 +51,6 @@ angular.module('lion.guardians.metadata.directive', [])
             optionsSet: function () {
               return scope.optionsSet;
             },
-            auth: ['AuthService', function(AuthService) {
-              return AuthService.chech_auth();
-            }],
             organizations: ['$q', 'LincServices', function($q, LincServices) {
               var deferred = $q.defer();
               LincServices.Organizations().then(function(response){
@@ -101,9 +98,6 @@ angular.module('lion.guardians.metadata.directive', [])
             optionsSet: function () {
               return scope.optionsSet;
             },
-            auth: ['AuthService', function(AuthService) {
-              return AuthService.chech_auth();
-            }],
             organizations: ['$q', 'LincServices', function($q, LincServices) {
               var deferred = $q.defer();
               LincServices.Organizations().then(function(response){

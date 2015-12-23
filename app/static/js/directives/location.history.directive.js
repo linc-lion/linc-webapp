@@ -41,9 +41,6 @@ angular.module('lion.guardians.location.history.directive', [])
                 options: function () {
                   return scope.options;
                 },
-                auth: ['AuthService', function(AuthService) {
-                  return AuthService.chech_auth();
-                }],
                 history: ['LincServices', function(LincServices) {
                   return LincServices.LocationHistory(scope.options.lion_id);
                 }]
@@ -75,9 +72,6 @@ angular.module('lion.guardians.location.history.directive', [])
                 options: function () {
                   return scope.options;
                 },
-                auth: ['AuthService', function(AuthService) {
-                  return AuthService.chech_auth();
-                }],
                 history: ['LincServices', function(LincServices) {
                   return scope.options.history;
                 }]

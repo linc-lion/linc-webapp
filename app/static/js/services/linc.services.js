@@ -1,6 +1,6 @@
 angular.module('lion.guardians.services', ['lion.guardians.api.services'])
 
-.factory('LincServices', ['$http', '$state', '$cacheFactory', '$q', '$cookies', 'NotificationFactory', function($http, $state, $cacheFactory, $q, $cookies, NotificationFactory) {
+.factory('LincServices', ['$http', '$state', '$cacheFactory', '$q', '$cookies', 'AuthService', 'NotificationFactory', function($http, $state, $cacheFactory, $q, $cookies, AuthService, NotificationFactory) {
 
   var debug = ($state.current.data == undefined) ? false : ($state.current.data.debug || false);
   // cache
@@ -14,13 +14,19 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
       deferred.resolve(responde);
     }
     else{*/
-      angular.merge(config, {cache: false});
-      $http.get(url, config).then(
-        function(response){
-          deferred.resolve(response.data);
-        }, function(response){
-          deferred.reject(response);
-        });
+      AuthService.chech_auth().then( function(resp){
+
+        angular.merge(config, {cache: false});
+        $http.get(url, config).then(
+          function(response){
+            deferred.resolve(response.data);
+          }, function(response){
+            deferred.reject(response);
+          });
+
+      },function(err){
+        deferred.reject(err);
+      });
     //}
     return deferred.promise;
   };
@@ -262,24 +268,30 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
       }
     };
 
-    $http(req).then(function (response){
-      deferred.resolve(response.data);
-    },
-    function (error) {
-      if(debug || (error.status != 401 && error.status != 403)){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Download Images',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      }
-      if(error.status == 401 || error.status == 403){
-        console.log("downloads resolve error");
-        deferred.resolve({});
-      }else{
-        console.log("downloads reject error");
-        deferred.reject(error.data);
-      }
+    AuthService.chech_auth().then( function(resp){
+
+      $http(req).then(function (response){
+        deferred.resolve(response.data);
+      },
+      function (error) {
+        if(debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Error", message: 'Unable to Download Images',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+        }
+        if(error.status == 401 || error.status == 403){
+          console.log("downloads resolve error");
+          deferred.resolve({});
+        }else{
+          console.log("downloads reject error");
+          deferred.reject(error.data);
+        }
+      });
+
+    },function(err){
+      deferred.reject(err);
     });
     //deferred.resolve({'filename': 'http://www.colorado.edu/conflict/peace/download/peace_essay.ZIP'});
     return deferred.promise;
@@ -293,18 +305,25 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
 
   // Http without cache
   var HTTP = function (method, url, data, config, success, error) {
-    if(method == 'GET'){
-      $http.get(url, config).then(success, error);
-    }
-    else{
-      var xsrfcookie = $cookies.get('_xsrf');
-      var req = {
-        method: method, url: url, data: data,
-        headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
-        config: config
-      };
-      $http(req).then(success, error);
-    }
+
+    AuthService.chech_auth().then( function(resp){
+
+      if(method == 'GET'){
+        $http.get(url, config).then(success, error);
+      }
+      else{
+        var xsrfcookie = $cookies.get('_xsrf');
+        var req = {
+          method: method, url: url, data: data,
+          headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
+          config: config
+        };
+        $http(req).then(success, error);
+      }
+
+    },function(err){
+      error(err);
+    });
   }
   // Post Imageset (CV Request)
   var RequestCV = function (imageset_id, data, success) {
@@ -330,66 +349,81 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     ClearAllCaches();
     return HTTP('POST', '/imagesets', data, {}, success, error);
   };
+
   // Put Lion (Update Lion)
   var PutLionImageset = function (lion_id, data, success, error){
-    var xsrfcookie = $cookies.get('_xsrf');
-    ClearAllCaches();
-    var promises = [];
-    // Imageset
-    if(Object.keys(data.imageset).length){
-      var data_imageset = data.imageset;
-      //angular.merge(data_imageset, cookies);
-      var req = { method: 'PUT', url: '/imagesets/' + data.imagesetId, data: data_imageset,
+
+    AuthService.chech_auth().then( function(resp){
+
+      var xsrfcookie = $cookies.get('_xsrf');
+      ClearAllCaches();
+      var promises = [];
+      // Imageset
+      if(Object.keys(data.imageset).length){
+        var data_imageset = data.imageset;
+        //angular.merge(data_imageset, cookies);
+        var req = { method: 'PUT', url: '/imagesets/' + data.imagesetId, data: data_imageset,
+                  headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: {ignoreLoadingBar: true}};
+        promises.push($http(req));
+      }
+      // Lion
+      if(Object.keys(data.lion).length){
+        var data_lion = data.lion;
+        //angular.merge(data_lion, cookies);
+        req = { method: 'PUT', url: '/lions/' + lion_id, data: data_lion,
                 headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: {ignoreLoadingBar: true}};
-      promises.push($http(req));
-    }
-    // Lion
-    if(Object.keys(data.lion).length){
-      var data_lion = data.lion;
-      //angular.merge(data_lion, cookies);
-      req = { method: 'PUT', url: '/lions/' + lion_id, data: data_lion,
-              headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: {ignoreLoadingBar: true}};
-      promises.push($http(req));
-    }
-    $q.all(promises).then(function (results) {
-      var dados = [];
-      results.forEach( function (result, index) {
-        dados.push(result.data.data);
+        promises.push($http(req));
+      }
+      $q.all(promises).then(function (results) {
+        var dados = [];
+        results.forEach( function (result, index) {
+          dados.push(result.data.data);
+        });
+        success(dados);
+      },
+      function (reason) {
+        error(reason);
       });
-      success(dados);
-    },
-    function (reason) {
-      error(reason);
+
+    },function(err){
+      error(err);
     });
   }
   // Post Lion - New Lion
   var PostLionImageset = function (data, success, error){
-    ClearAllCaches();
-    var xsrfcookie = $cookies.get('_xsrf');
-    var result_data;
-    // Imageset
-    var data_imageset = data.imageset;
-    //angular.merge(data_imageset, cookies);
-    var req = { method: 'POST', url: '/imagesets/', data: data_imageset,
-                headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: {ignoreLoadingBar: true}};
-    $http(req).then(function(response) {
-      // Lion
-      var data_lion = data.lion;
-      //result_data = response;
-      data_lion.primary_image_set_id = response.data.data.id;
-      //angular.merge(data_lion, cookies);
-      req = { method: 'POST', url: '/lions/', data: data_lion,
-              headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: {ignoreLoadingBar: true}};
+
+    AuthService.chech_auth().then( function(resp){
+
+      ClearAllCaches();
+      var xsrfcookie = $cookies.get('_xsrf');
+      var result_data;
+      // Imageset
+      var data_imageset = data.imageset;
+      //angular.merge(data_imageset, cookies);
+      var req = { method: 'POST', url: '/imagesets/', data: data_imageset,
+                  headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: {ignoreLoadingBar: true}};
       $http(req).then(function(response) {
-        result_data = response;
-        var lion = response.data.data;
-        var data = {'lion_id': lion.id}
-        PutImageSet(lion.primary_image_set_id, data, function(response){
-          var results = _.merge({}, response, result_data);
-          success(results);
+        // Lion
+        var data_lion = data.lion;
+        //result_data = response;
+        data_lion.primary_image_set_id = response.data.data.id;
+        //angular.merge(data_lion, cookies);
+        req = { method: 'POST', url: '/lions/', data: data_lion,
+                headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, config: {ignoreLoadingBar: true}};
+        $http(req).then(function(response) {
+          result_data = response;
+          var lion = response.data.data;
+          var data = {'lion_id': lion.id}
+          PutImageSet(lion.primary_image_set_id, data, function(response){
+            var results = _.merge({}, response, result_data);
+            success(results);
+          }, error);
         }, error);
       }, error);
-    }, error);
+
+    },function(err){
+      error(err);
+    });
   };
   // Put Lion (Update Lion)
   var PutImage = function (image_id, data, success){
@@ -411,34 +445,47 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   }
 
   var PutImages = function (items, success){
-    var xsrfcookie = $cookies.get('_xsrf');
-    var promises = items.map(function(item) {
-      var req = { method: 'PUT',
-                  url: '/images/' + item.image_id,
-                  data: item.data,
-                  headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
-                  config: {ignoreLoadingBar: true}};
-      return $http(req);
-    });
-    $q.all(promises).then(
-      function (results) {
-        var dados = [];
-        results.forEach( function (result, index) {
-          dados.push(result.data.data);
-        })
-        ClearAllCaches();
-        success(dados);
-      },
-      function(error){
-        if(debug || (error.status != 401 && error.status != 403)){
-          NotificationFactory.error({
-            title: "Error", message: "Unable to Update Images data",
-            position: 'right', // right, left, center
-            duration: 5000   // milisecond
-          });
+
+    AuthService.chech_auth().then( function(resp){
+
+      var xsrfcookie = $cookies.get('_xsrf');
+      var promises = items.map(function(item) {
+        var req = { method: 'PUT',
+                    url: '/images/' + item.image_id,
+                    data: item.data,
+                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
+                    config: {ignoreLoadingBar: true}};
+        return $http(req);
+      });
+      $q.all(promises).then(
+        function (results) {
+          var dados = [];
+          results.forEach( function (result, index) {
+            dados.push(result.data.data);
+          })
+          ClearAllCaches();
+          success(dados);
+        },
+        function(error){
+          if(debug || (error.status != 401 && error.status != 403)){
+            NotificationFactory.error({
+              title: "Error", message: "Unable to Update Images data",
+              position: 'right', // right, left, center
+              duration: 5000   // milisecond
+            });
+          }
         }
+      );
+
+    },function(err){
+      if(debug || (err.status != 401 && err.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: "Unable to Update Images data",
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
       }
-    );
+    });
   }
   // Delete CVRequest / CVResults
   var DeleteImage = function (image_id, success, error){
@@ -446,24 +493,31 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   };
 
   var DeleteImages = function (items, success, error){
-    var xsrfcookie = $cookies.get('_xsrf');
-    var promises = items.map(function(item) {
-      //var deferred = $q.defer();
-      //var data = item.data;
-      //angular.merge(data, cookies);
-      var req = { method: 'DELETE',
-                  url: '/images/' + item.id,
-                  data: {'_xsrf':xsrfcookie},
-                  headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
-                  config: {ignoreLoadingBar: true}};
-      return $http(req);
-    });
-    $q.all(promises).then(function (results) {
-      var result = {'message': 'success'};
-      success(result);
-    },
-    function (reason) {
-      error(reason);
+
+    AuthService.chech_auth().then( function(resp){
+
+      var xsrfcookie = $cookies.get('_xsrf');
+      var promises = items.map(function(item) {
+        //var deferred = $q.defer();
+        //var data = item.data;
+        //angular.merge(data, cookies);
+        var req = { method: 'DELETE',
+                    url: '/images/' + item.id,
+                    data: {'_xsrf':xsrfcookie},
+                    headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie},
+                    config: {ignoreLoadingBar: true}};
+        return $http(req);
+      });
+      $q.all(promises).then(function (results) {
+        var result = {'message': 'success'};
+        success(result);
+      },
+      function (reason) {
+        error(reason);
+      });
+
+    },function(err){
+      error(err);
     });
   };
 
@@ -506,36 +560,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     );
     return deferred.promise;
   };
-  /*// Post CVResults - Request CV Results
-  var PostCVResults = function (cvrequest_id, success){
-    var data = {"cvrequest_id":cvrequest_id};
-    return HTTP('POST', '/cvresults', data, {}, success,
-    function(error){
-      if(debug || (error.status != 401 && error.status != 403)){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Post CV Results',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      }
-      console.log(error);
-    });
-  };*/
-  // Put CVResults - Update Request CV Results
-  /*
-  var PutCVResults = function (cvrequest_id, success){
-    return HTTP('PUT', '/cvresults/' + cvrequest_id, {}, {}, success,
-    function(error){
-      if(debug || (error.status != 401 && error.status != 403)){
-        NotificationFactory.error({
-          title: "Error", message: 'Unable to Post CV Results',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      }
-      console.log(error);
-    });
-  };*/
+
   // Delete CVRequest / CVResults
   var DeleteCVRequest = function (cvrequest_id, success){
     return HTTP('DELETE', '/cvrequests/' + cvrequest_id, {}, {}, success,
@@ -608,9 +633,13 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     cvrequests_list : function(){
       var url = '/cvrequests/list';
       var deferred = $q.defer();
-      $http.get(url).then(function (response) {
-        deferred.resolve(response.data);
-      }, function(error){
+      AuthService.chech_auth().then( function(resp){
+        $http.get(url).then(function (response) {
+          deferred.resolve(response.data);
+        }, function(error){
+          deferred.reject(error);
+        });
+      },function(error){
         deferred.reject(error);
       });
       return deferred.promise;
