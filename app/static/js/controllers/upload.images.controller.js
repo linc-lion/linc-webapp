@@ -45,7 +45,6 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
     console.info('onWhenAddingFileFailed', item, filter, options);
   };
   uploader.onAfterAddingFile = function(fileItem) {
-
     if(fileItem.file.name.length>20){
       fileItem.nickname = (fileItem.file.name || "").substring(1, 10) + ' ... '  +  (fileItem.file.name || "").substring(fileItem.file.name.length-8, fileItem.file.name.length)
       fileItem.show_name = false;
@@ -59,8 +58,11 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
 
     console.info('onAfterAddingFile', fileItem);
   };
+  $scope.enable_Upload = false;
   uploader.onAfterAddingAll = function(addedFileItems) {
     console.info('onAfterAddingAll', addedFileItems);
+    if(this.getNotUploadedItems().length)
+      $scope.enable_Upload = true;
   };
   uploader.onBeforeUploadItem = function(item) {
     console.info('onBeforeUploadItem', item);
@@ -111,6 +113,8 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
         $scope.Update();
   };
   uploader.onCompleteAll = function() {
+    if(!uploader.getNotUploadedItems().length)
+      $scope.enable_Upload = false;
     console.info('onCompleteAll');
     var message = '';
     if($scope.SucessItems.length>0){
@@ -207,6 +211,17 @@ angular.module('lion.guardians.upload.images.controller', ['lion.guardians.uploa
         });
       }
     }
+  };
 
+  $scope.enable_Upload = false;
+  $scope.remove_item = function(item){
+    item.remove();
+    if(!uploader.getNotUploadedItems().length)
+      $scope.enable_Upload = false;
+  };
+  $scope.remove_all_items = function(item){
+    uploader.clearQueue();
+    if(!uploader.getNotUploadedItems().length)
+      $scope.enable_Upload = false;
   };
 }])
