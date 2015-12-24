@@ -72,7 +72,7 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
 
     $scope.cvresult = {
       'cvrequest_id': -1, 'match_probability': '',
-      'trashed': false, 'selected': true
+      /*'trashed': false, */'selected': true
     }
     modal = $uibModal.open({
         templateUrl: 'Edit_CVResult.tmpl.html',
@@ -172,8 +172,8 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
   var Submit_CVresult = function(){
     if($scope.CVResult_Mode == 'edit'){
       var data = {
-        'cvrequest_id': $scope.cvresult.cvrequest_id, 'match_probability': $scope.cvresult.match_probability,
-        'trashed': $scope.cvresult.trashed
+        'cvrequest_id': $scope.cvresult.cvrequest_id, 'match_probability': $scope.cvresult.match_probability/*,
+        'trashed': $scope.cvresult.trashed*/
       };
       $scope.LincApiServices.CVResults({'method': 'put', 'cvresult_id' : $scope.cvresult.id, 'data': data}).then(function(response){
         $scope.Notification.success({
@@ -196,8 +196,8 @@ angular.module('lion.guardians.admin.cvresults.controller', [])
     }
     if($scope.CVResult_Mode == 'add'){
       var data = {
-        'cvrequest_id': $scope.cvresult.cvrequest_id, 'match_probability': $scope.cvresult.match_probability,
-        'trashed': $scope.cvresult.trashed
+        'cvrequest_id': $scope.cvresult.cvrequest_id, 'match_probability': $scope.cvresult.match_probability/*,
+        'trashed': $scope.cvresult.trashed*/
       };
       $scope.LincApiServices.CVResults({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({

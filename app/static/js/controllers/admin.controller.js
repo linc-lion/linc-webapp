@@ -61,6 +61,87 @@ angular.module('lion.guardians.admin.controller', [ 'lion.guardians.admin.users.
   $scope.Trash_Label = function(element){
     return element.trashed? 'Trashed' : 'Active';
   }
+
+  $scope.ImagesDeleted = function(){
+    var deferred = $q.defer();
+    LincApiServices.ImageSets({'method': 'get', 'organizations': $scope.organizations, 'users': $scope.users, 'lions': $scope.lions, 'images': $scope.images}).then( function(response){
+      $scope.imagesets = response;
+      deferred.resolve(response);
+    }, function(error){
+      deferred.reject(error);
+    });
+    return deferred.promise;
+  };
+
+  $scope.CVRequestsDeleted = function(){
+    var deferred = $q.defer();
+    LincApiServices.CVResults({'method': 'get'}).then( function(response){
+      $scope.cvresults = response;
+      deferred.resolve(response);
+    }, function(error){
+      deferred.reject(error);
+    });
+    return deferred.promise;
+  };
+
+  $scope.OrganizationsDeleted = function(){
+    var deferred = $q.defer();
+    LincApiServices.Users({'method': 'get', 'organizations': $scope.organizations}).then(function(users){
+      $scope.users = users;
+      LincApiServices.Lions({'method': 'get', 'organizations': $scope.organizations}).then(function(lions){
+        $scope.lions = lions;
+        LincApiServices.ImageSets({'method': 'get', 'organizations': $scope.organizations, 'users': $scope.users, 'lions': $scope.lions, 'images': $scope.images}).then(function(imagesets){
+          $scope.imagesets = imagesets;
+          LincApiServices.CVRequests({'method': 'get', 'organizations': $scope.organizations}).then(function(cvrequests){
+            $scope.cvrequests = cvrequests;
+            deferred.resolve(cvrequests);
+          },function(cvrequests_error){
+            deferred.reject(cvrequests_error);
+          });
+        },function(imagesets_error){
+          deferred.reject(imagesets_error);
+        });
+      },function(lions_error){
+        deferred.reject(lions_error);
+      });
+    },function(users_error){
+      deferred.reject(users_error);
+    });
+    return deferred.promise;
+  };
+
+  $scope.LionsDeleted = function(){
+    var deferred = $q.defer();
+    LincApiServices.ImageSets({'method': 'get', 'organizations': $scope.organizations, 'users': $scope.users, 'lions': $scope.lions, 'images': $scope.images}).then(function(response){
+      $scope.imagesets = response;
+      deferred.resolve(response);
+    },function(error){
+      deferred.reject(error);
+    });
+    return deferred.promise;
+  };
+
+  $scope.ImageSetsDeleted = function(){
+    var deferred = $q.defer();
+    LincApiServices.Lions({'method': 'get', 'organizations': $scope.organizations}).then(function(lions){
+      $scope.lions = lions;
+      LincApiServices.Images({'method': 'get'}).then(function(images){
+        $scope.images = images;
+        LincApiServices.CVRequests({'method': 'get', 'organizations': $scope.organizations}).then(function(cvrequests){
+          $scope.cvrequests = cvrequests;
+          deferred.resolve(cvrequests);
+        },function(cvrequests_error){
+          deferred.reject(cvrequests_error);
+        });
+      },function(images_error){
+        deferred.reject(images_error);
+      });
+    },function(lions_error){
+      deferred.reject(lions_error);
+    });
+    return deferred.promise;
+  };
+
 }])
 
 .directive('nxEqualEx', function() {

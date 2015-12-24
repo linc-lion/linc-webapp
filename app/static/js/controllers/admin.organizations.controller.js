@@ -67,7 +67,7 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
   $scope.Add_Organization = function () {
     $scope.modalTitle = 'Add Organization';
     $scope.showValidationMessages = false;
-    $scope.organization = { 'name' : '', 'trashed': false, 'selected': true};
+    $scope.organization = { 'name' : '', /*'trashed': false,*/ 'selected': true};
     modal = $uibModal.open({
         templateUrl: 'Edit_Organization.tmpl.html',
         scope:$scope
@@ -142,12 +142,20 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
             duration: 2000     // milisecond
           });
         }
-        _.forEach(response.success, function(organization, i){
+        /*_.forEach(response.success, function(organization, i){
           var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': organization.id}));
           if(index>-1){
             $scope.Selecteds[index].trashed = true;
           }
+        });*/
+        _.forEach(response.success, function(item, i){
+          var remove = _.remove($scope.$parent.organizations, function(organization) {
+            return organization.id == item.id;
+          });
         });
+        $scope.Selecteds = [];
+        $scope.settings.organizations.Selecteds = $scope.Selecteds;
+        $scope.$parent.OrganizationsDeleted();
       });
     }, function () {
       $scope.Notification.info({
@@ -158,7 +166,7 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
     });
   }
 
-  $scope.Undo_Trash = function() {
+  /*$scope.Undo_Trash = function() {
     var organization_id = _.pluck(_.map($scope.Selecteds, function (organization){
       return {'id': organization.id};
     }), 'id');
@@ -197,12 +205,12 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
         duration: 5000   // milisecond
       });
     });
-  }
+  }*/
 
   var Submit_Organization = function(){
     if($scope.Org_Mode == 'edit'){
-      var data = {'name': $scope.organization.name,
-                'trashed': $scope.organization.trashed
+      var data = {'name': $scope.organization.name/*,
+                'trashed': $scope.organization.trashed*/
       };
       $scope.LincApiServices.Organizations({'method': 'put', 'organization_id' : $scope.organization.id, 'data': data}).then(function(response){
         $scope.Notification.success({
@@ -224,8 +232,8 @@ angular.module('lion.guardians.admin.organiaztions.controller', [])
       });
     }
     if($scope.Org_Mode == 'add'){
-      var data = {'name': $scope.organization.name,
-                'trashed': $scope.organization.trashed
+      var data = {'name': $scope.organization.name/*,
+                'trashed': $scope.organization.trashed*/
       };
       $scope.LincApiServices.Organizations({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({

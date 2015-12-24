@@ -72,7 +72,7 @@ angular.module('lion.guardians.admin.users.controller', [])
     $scope.organizations = angular.copy($scope.$parent.organizations);
 
     $scope.user = {
-      'email': '', 'organization_id': -1, 'password': '', 'confirmPassword': '', 'admin': false, 'trashed': false, 'selected': true
+      'email': '', 'organization_id': -1, 'password': '', 'confirmPassword': '', 'admin': false, /*'trashed': false,*/ 'selected': true
     }
     modal = $uibModal.open({
         templateUrl: 'Edit_User.tmpl.html',
@@ -151,12 +151,19 @@ angular.module('lion.guardians.admin.users.controller', [])
             duration: 2000     // milisecond
           });
         }
-        _.forEach(response.success, function(user, i){
+        /*_.forEach(response.success, function(user, i){
           var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': user.id}));
           if(index>-1){
             $scope.Selecteds[index].trashed = true;
           }
+        });*/
+        _.forEach(response.success, function(item, i){
+          var remove = _.remove($scope.$parent.users, function(user) {
+            return user.id == item.id;
+          });
         });
+        $scope.Selecteds = [];
+        $scope.settings.users.Selecteds = $scope.Selecteds;
       });
     }, function () {
       $scope.Notification.info({
@@ -167,7 +174,7 @@ angular.module('lion.guardians.admin.users.controller', [])
     });
   }
 
-  $scope.Undo_Trash = function() {
+  /*$scope.Undo_Trash = function() {
     var users_id = _.pluck(_.map($scope.Selecteds, function (user){
       return {'id': user.id};
     }), 'id');
@@ -206,7 +213,7 @@ angular.module('lion.guardians.admin.users.controller', [])
         duration: 5000   // milisecond
       });
     });
-  }
+  }*/
 
   var Submit_User = function(){
     if($scope.User_Mode == 'edit'){
@@ -240,8 +247,8 @@ angular.module('lion.guardians.admin.users.controller', [])
       var data = {'email': $scope.user.email,
           'organization_id': $scope.user.organization_id,
           'password': $scope.user.password,
-                    'admin': $scope.user.admin,
-                  'trashed': false
+                    'admin': $scope.user.admin/*,
+                  'trashed': false*/
       };
       $scope.LincApiServices.Users({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({

@@ -21,7 +21,7 @@
           <div class="col-sm-6 line-right">
             <div ng-show="optionsSet.type === 'imageset'" class="form-inline group-select"  ng-class="{'has-error': metadataForm.owner_organization_id.$dirty && metadataForm.owner_organization_id.$error.required }">
               <label class="meta_label" for="owner_organization_id">Organization:</label>
-              <select class="form-control custom-select" name="owner_organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="selected.owner_organization_id" ng-disabled="!Editable" oninvalid="this.setCustomValidity('Please select an Organization in this list')" oninput="setCustomValidity('')" ng-change="ChangeWarning($event);"><option value="">Select Organization</option>
+              <select class="form-control custom-select" name="owner_organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="selected.owner_organization_id" ng-disabled="!Editable" oninvalid="this.setCustomValidity('Please select an Organization in this list')" oninput="setCustomValidity('')" ng-change="ChangeWarning($event);" required><option value="">Select Organization</option>
               </select>
             </div>
             <pre ng-show="debug">{{!selected.owner_organization_id}}</pre>

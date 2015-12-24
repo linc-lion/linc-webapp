@@ -72,7 +72,7 @@ angular.module('lion.guardians.admin.lions.controller', [])
 
     $scope.lion = {
       'name': '', 'organization_id': -1, 'primary_image_set_id': '',
-      'trashed': false, 'selected': true
+      /*'trashed': false,*/ 'selected': true
     }
     modal = $uibModal.open({
         templateUrl: 'Edit_Lion.tmpl.html',
@@ -152,12 +152,20 @@ angular.module('lion.guardians.admin.lions.controller', [])
             duration: 2000     // milisecond
           });
         }
-        _.forEach(response.success, function(lion, i){
+        /*_.forEach(response.success, function(lion, i){
           var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': lion.id}));
           if(index>-1){
             $scope.Selecteds[index].trashed = true;
           }
+        });*/
+        _.forEach(response.success, function(item, i){
+          var remove = _.remove($scope.$parent.lions, function(lion) {
+            return lion.id == item.id;
+          });
         });
+        $scope.Selecteds = [];
+        $scope.settings.lions.Selecteds = $scope.Selecteds;
+        $scope.$parent.LionsDeleted();
       });
     }, function () {
       $scope.Notification.info({
@@ -168,7 +176,7 @@ angular.module('lion.guardians.admin.lions.controller', [])
     });
   }
 
-  $scope.Undo_Trash = function() {
+  /*$scope.Undo_Trash = function() {
     var lions_id = _.pluck(_.map($scope.Selecteds, function (lion){
       return {'id': lion.id};
     }), 'id');
@@ -207,14 +215,14 @@ angular.module('lion.guardians.admin.lions.controller', [])
         duration: 5000   // milisecond
       });
     });
-  }
+  }*/
 
   var Submit_Lion = function(){
     if($scope.Lion_Mode == 'edit'){
       var data = {'name': $scope.lion.name,
        'organization_id': $scope.lion.organization_id,
-  'primary_image_set_id': $scope.lion.primary_image_set_id,
-                'trashed': $scope.lion.trashed
+  'primary_image_set_id': $scope.lion.primary_image_set_id/*,
+                'trashed': $scope.lion.trashed*/
       };
       $scope.LincApiServices.Lions({'method': 'put', 'lion_id' : $scope.lion.id, 'data': data}).then(function(response){
         $scope.Notification.success({
@@ -242,8 +250,8 @@ angular.module('lion.guardians.admin.lions.controller', [])
     if($scope.Lion_Mode  == 'add'){
       var data = {'name': $scope.lion.name,
        'organization_id': $scope.lion.organization_id,
-  'primary_image_set_id': $scope.lion.primary_image_set_id,
-                'trashed': $scope.lion.trashed
+  'primary_image_set_id': $scope.lion.primary_image_set_id/*,
+                'trashed': $scope.lion.trashed*/
       };
       $scope.LincApiServices.Lions({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({

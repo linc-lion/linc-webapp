@@ -23,8 +23,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
   $scope.ChangeWarning = function ($event){
     if($scope.isNew) {
-      $event.stopPropagation();
-      $event.preventDefault();
+      //$event.stopPropagation();
+      //$event.preventDefault();
       return;
     }
     var org = _.find($scope.organizations, {'id': $scope.selected.organization_id});
