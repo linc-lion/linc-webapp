@@ -43,7 +43,7 @@ angular.module('lion.guardians.api.services', [])
   var Organizations = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/organizations?trashed=*';
+      var url = '/organizations';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
@@ -125,39 +125,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.reject(reason);
       });
     }
-    if(data_in.method=='undo_trash'){
-      var promises = data_in.organization_id.map(function(id) {
-        var data = {
-          'method': 'PUT',
-          'url': '/organizations/' + id,
-          'data': {'trashed': false}
-        };
-        return http_defer(id,data);
-      });
-      $q.all(promises).then(function (results) {
-        var success = [];
-        var error = [];
-        _.forEach(results, function (result, index){
-          if (result.success) {
-            success.push(result.data);
-          }
-          else{
-            error.push(result.data);
-          }
-        });
-        deferred.resolve({'success': success, 'error': error});
-      },
-      function (reason) {
-        deferred.reject(reason);
-      });
-    }
     return deferred.promise;
   };
 
   var Users = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/users?trashed=*';
+      var url = '/users';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
@@ -260,39 +234,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.reject(reason);
       });
     }
-    if(data_in.method=='undo_trash'){
-      var promises = data_in.users_id.map(function(id) {
-        var data = {
-          'method': 'PUT',
-          'url': '/users/' + id,
-          'data': {'trashed': false}
-        };
-        return http_defer(id,data);
-      });
-      $q.all(promises).then(function (results) {
-        var success = [];
-        var error = [];
-        _.forEach(results, function (result, index){
-          if (result.success) {
-            success.push(result.data);
-          }
-          else{
-            error.push(result.data);
-          }
-        });
-        deferred.resolve({'success': success, 'error': error});
-      },
-      function (reason) {
-        deferred.reject(reason);
-      });
-    }
     return deferred.promise;
   };
 
   var Lions = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/lions?api=true&trashed=*';
+      var url = '/lions?api=true';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
@@ -383,39 +331,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.reject(reason);
       });
     }
-    if(data_in.method=='undo_trash'){
-      var promises = data_in.lions_id.map(function(id) {
-        var data = {
-          'method': 'PUT',
-          'url': '/lions/' + id,
-          'data': {'trashed': false}
-        };
-        return http_defer(id,data);
-      });
-      $q.all(promises).then(function (results) {
-        var success = [];
-        var error = [];
-        _.forEach(results, function (result, index){
-          if (result.success) {
-            success.push(result.data);
-          }
-          else{
-            error.push(result.data);
-          }
-        });
-        deferred.resolve({'success': success, 'error': error});
-      },
-      function (reason) {
-        deferred.reject(reason);
-      });
-    }
     return deferred.promise;
   };
 
   var ImageSets = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/imagesets?trashed=*';
+      var url = '/imagesets';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
@@ -519,39 +441,13 @@ angular.module('lion.guardians.api.services', [])
         deferred.reject(reason);
       });
     }
-    if(data_in.method=='undo_trash'){
-      var promises = data_in.imagesets_id.map(function(id) {
-        var data = {
-          'method': 'PUT',
-          'url': '/imagesets/' + id,
-          'data': {'trashed': false}
-        }
-        return http_defer(id,data);
-      });
-      $q.all(promises).then(function (results) {
-        var success = [];
-        var error = [];
-        _.forEach(results, function (result, index){
-          if (result.success) {
-            success.push(result.data);
-          }
-          else{
-            error.push(result.data);
-          }
-        });
-        deferred.resolve({'success': success, 'error': error});
-      },
-      function (reason) {
-        deferred.reject(reason);
-      });
-    }
     return deferred.promise;
   };
 
   var Images = function (data_in) {
     var deferred = $q.defer();
     if(data_in.method=='get'){
-      var url = '/images?trashed=*';
+      var url = '/images';
       HTTP('GET', url, null, {},
       function (results){
         var data = results.data.data;
@@ -612,7 +508,7 @@ angular.module('lion.guardians.api.services', [])
       var promises = data_in.images_id.map(function(id) {
         var data = {
           'method': 'DELETE',
-          'url': '/images/' + id + '?purge=true',
+          'url': '/images/' + id,
           'data': {}
         };
         return http_defer(id,data);

@@ -78,8 +78,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
     $scope.imagesets = angular.copy($scope.$parent.imagesets);
 
     $scope.cvrequest = {
-      'requesting_organization_id': -1, 'image_set_id': -1, 'status': '', 'request_body': '',
-      /*'trashed': false,*/ 'selected': true
+      'requesting_organization_id': -1, 'image_set_id': -1, 'status': '', 'request_body': '', 'selected': true
     }
     modal = $uibModal.open({
         templateUrl: 'Edit_CVRequest.tmpl.html',
@@ -159,7 +158,6 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
           });
         }
         _.forEach(response.success, function(item, i){
-          //var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': cvrequest.id}));
           var remove = _.remove($scope.$parent.cvrequests, function(cvrequest) {
             return cvrequest.id == item.id;
           });
@@ -182,7 +180,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
       var data = {
           'requesting_organization_id': $scope.cvrequest.requesting_organization_id,
           'image_set_id': $scope.cvrequest.image_set_id, 'status': $scope.cvrequest.status,
-          'request_body': $scope.cvrequest.request_body/*, 'trashed': $scope.cvrequest.trashed*/
+          'request_body': $scope.cvrequest.request_body
       };
       $scope.LincApiServices.CVRequests({'method': 'put', 'cvrequest_id' : $scope.cvrequest.id, 'data': data}).then(function(response){
         $scope.Notification.success({
@@ -208,7 +206,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
       var data = {
           'requesting_organization_id': $scope.cvrequest.requesting_organization_id,
           'image_set_id': $scope.cvrequest.image_set_id, 'status': $scope.cvrequest.status,
-          'request_body': $scope.cvrequest.request_body/*, 'trashed': $scope.cvrequest.trashed*/
+          'request_body': $scope.cvrequest.request_body
       };
       $scope.LincApiServices.CVRequests({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({

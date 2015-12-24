@@ -58,9 +58,6 @@ angular.module('lion.guardians.admin.controller', [ 'lion.guardians.admin.users.
     }
     return deferred.promise;
   };
-  $scope.Trash_Label = function(element){
-    return element.trashed? 'Trashed' : 'Active';
-  }
 
   $scope.ImagesDeleted = function(){
     var deferred = $q.defer();
