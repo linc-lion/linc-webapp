@@ -71,8 +71,7 @@ angular.module('lion.guardians.admin.lions.controller', [])
     $scope.imagesets = angular.copy($scope.$parent.imagesets);
 
     $scope.lion = {
-      'name': '', 'organization_id': -1, 'primary_image_set_id': '',
-      /*'trashed': false,*/ 'selected': true
+      'name': '', 'organization_id': -1, 'primary_image_set_id': '', 'selected': true
     }
     modal = $uibModal.open({
         templateUrl: 'Edit_Lion.tmpl.html',
@@ -152,12 +151,6 @@ angular.module('lion.guardians.admin.lions.controller', [])
             duration: 2000     // milisecond
           });
         }
-        /*_.forEach(response.success, function(lion, i){
-          var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': lion.id}));
-          if(index>-1){
-            $scope.Selecteds[index].trashed = true;
-          }
-        });*/
         _.forEach(response.success, function(item, i){
           var remove = _.remove($scope.$parent.lions, function(lion) {
             return lion.id == item.id;
@@ -176,53 +169,11 @@ angular.module('lion.guardians.admin.lions.controller', [])
     });
   }
 
-  /*$scope.Undo_Trash = function() {
-    var lions_id = _.pluck(_.map($scope.Selecteds, function (lion){
-      return {'id': lion.id};
-    }), 'id');
-
-    $scope.LincApiServices.Lions({'method': 'undo_trash', 'lions_id': lions_id}).then(function(response){
-      if(response.error.length>0){
-        var data = _.pluck(_.map(response.error, function (lion){
-          return {'id': lion.id};
-        }), 'id');
-        var msg = (data.length>1) ? 'Unable to restore lions ' + data : 'Unable to restore lion ' + data;
-        $scope.Notification.error({
-          title: "Restore", message: msg,
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-      }
-      else if(response.success.length>0){
-        var msg = (response.success.length>1) ? 'Lions successfully restored' : 'Lion successfully restored';
-        $scope.Notification.success({
-          title: "Restore", message: msg,
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-      }
-      _.forEach(response.success, function(lion, i){
-        var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': lion.id}));
-        if(index>-1){
-          $scope.Selecteds[index].trashed = false;
-        }
-      });
-    },
-    function(error){
-      $scope.Notification.error({
-        title: "Fail", message: 'Fail to restore from Trash',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
-    });
-  }*/
-
   var Submit_Lion = function(){
     if($scope.Lion_Mode == 'edit'){
       var data = {'name': $scope.lion.name,
        'organization_id': $scope.lion.organization_id,
-  'primary_image_set_id': $scope.lion.primary_image_set_id/*,
-                'trashed': $scope.lion.trashed*/
+  'primary_image_set_id': $scope.lion.primary_image_set_id
       };
       $scope.LincApiServices.Lions({'method': 'put', 'lion_id' : $scope.lion.id, 'data': data}).then(function(response){
         $scope.Notification.success({
@@ -250,8 +201,7 @@ angular.module('lion.guardians.admin.lions.controller', [])
     if($scope.Lion_Mode  == 'add'){
       var data = {'name': $scope.lion.name,
        'organization_id': $scope.lion.organization_id,
-  'primary_image_set_id': $scope.lion.primary_image_set_id/*,
-                'trashed': $scope.lion.trashed*/
+  'primary_image_set_id': $scope.lion.primary_image_set_id
       };
       $scope.LincApiServices.Lions({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({

@@ -86,7 +86,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
     $scope.imageset = { 'lion_id': -1, 'main_image_id': -1, 'owner_organization_id': -1,
       'uploading_organization_id':-1, 'uploading_user_id': -1, 'latitude' : '', 'longitude' : '',
       'date_stamp': new Date().toJSON().slice(0,10), 'date_of_birth': new Date().toJSON().slice(0,10),
-      'gender': '', 'tags': [], 'notes': '', 'is_verified': false, /*'trashed': false,*/ 'selected': true
+      'gender': '', 'tags': [], 'notes': '', 'is_verified': false, 'selected': true
     };
     $scope.imageset.main_image = '';
     modal = $uibModal.open({
@@ -195,12 +195,6 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
             duration: 2000     // milisecond
           });
         }
-        /*_.forEach(response.success, function(imageset, i){
-          var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': imageset.id}));
-          if(index>-1){
-            $scope.Selecteds[index].trashed = true;
-          }
-        });*/
         _.forEach(response.success, function(item, i){
           var remove = _.remove($scope.$parent.imagesets, function(imageset) {
             return imageset.id == item.id;
@@ -218,47 +212,6 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
       });
     });
   }
-
-  /*$scope.Undo_Trash = function() {
-    var imagesets_id = _.pluck(_.map($scope.Selecteds, function (imageset){
-      return {'id': imageset.id};
-    }), 'id');
-
-    $scope.LincApiServices.ImageSets({'method': 'undo_trash', 'imagesets_id': imagesets_id}).then(function(response){
-      if(response.error.length>0){
-        var data = _.pluck(_.map(response.error, function (imageset){
-          return {'id': imageset.id};
-        }), 'id');
-        var msg = (data.length>1) ? 'Unable to restore imagesets ' + data : 'Unable to restore imageset ' + data;
-        $scope.Notification.error({
-          title: "Restore", message: msg,
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-      }
-      else if(response.success.length>0){
-        var msg = (response.success.length>1) ? 'Imagesets successfully restored' : 'Imageset successfully restored';
-        $scope.Notification.success({
-          title: "Restore", message: msg,
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-      }
-      _.forEach(response.success, function(imageset, i){
-        var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': imageset.id}));
-        if(index>-1){
-          $scope.Selecteds[index].trashed = false;
-        }
-      });
-    },
-    function(error){
-      $scope.Notification.error({
-        title: "Fail", message: 'Fail to restore from Trash',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
-    });
-  }*/
 
   var Submit_Imageset = function(){
     if($scope.ImageSet_Mode == 'edit'){
@@ -292,8 +245,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
                'date_stamp': $scope.imageset.date_stamp,
             'date_of_birth': $scope.imageset.date_of_birth,
                       'tags': TAGS,
-              'is_verified': $scope.imageset.is_verified/*,
-                  'trashed': $scope.imageset.trashed,*/
+              'is_verified': $scope.imageset.is_verified
       };
 
       $scope.LincApiServices.ImageSets({'method': 'put', 'imageset_id' : $scope.imageset.id, 'data': data}).then(function(response){
@@ -363,8 +315,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
                'date_stamp': $scope.imageset.date_stamp,
             'date_of_birth': $scope.imageset.date_of_birth,
                       'tags': TAGS,
-              'is_verified': $scope.imageset.is_verified/*,
-                  'trashed': $scope.imageset.trashed,*/
+              'is_verified': $scope.imageset.is_verified
       };
       $scope.LincApiServices.ImageSets({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({

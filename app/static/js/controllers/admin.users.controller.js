@@ -72,7 +72,7 @@ angular.module('lion.guardians.admin.users.controller', [])
     $scope.organizations = angular.copy($scope.$parent.organizations);
 
     $scope.user = {
-      'email': '', 'organization_id': -1, 'password': '', 'confirmPassword': '', 'admin': false, /*'trashed': false,*/ 'selected': true
+      'email': '', 'organization_id': -1, 'password': '', 'confirmPassword': '', 'admin': false, 'selected': true
     }
     modal = $uibModal.open({
         templateUrl: 'Edit_User.tmpl.html',
@@ -151,12 +151,6 @@ angular.module('lion.guardians.admin.users.controller', [])
             duration: 2000     // milisecond
           });
         }
-        /*_.forEach(response.success, function(user, i){
-          var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': user.id}));
-          if(index>-1){
-            $scope.Selecteds[index].trashed = true;
-          }
-        });*/
         _.forEach(response.success, function(item, i){
           var remove = _.remove($scope.$parent.users, function(user) {
             return user.id == item.id;
@@ -173,47 +167,6 @@ angular.module('lion.guardians.admin.users.controller', [])
       });
     });
   }
-
-  /*$scope.Undo_Trash = function() {
-    var users_id = _.pluck(_.map($scope.Selecteds, function (user){
-      return {'id': user.id};
-    }), 'id');
-
-    $scope.LincApiServices.Users({'method': 'undo_trash', 'users_id': users_id}).then(function(response){
-      if(response.error.length>0){
-        var data = _.pluck(_.map(response.error, function (user){
-          return {'id': user.id};
-        }), 'id');
-        var msg = (data.length>1) ? 'Unable to restore users ' + data : 'Unable to restore user ' + data;
-        $scope.Notification.error({
-          title: "Restore", message: msg,
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-      }
-      else if(response.success.length>0){
-        var msg = (response.success.length>1) ? 'Users successfully restored' : 'User successfully restored';
-        $scope.Notification.success({
-          title: "Restore", message: msg,
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-      }
-      _.forEach(response.success, function(user, i){
-        var index = _.indexOf($scope.Selecteds, _.find($scope.Selecteds, {'id': user.id}));
-        if(index>-1){
-          $scope.Selecteds[index].trashed = false;
-        }
-      });
-    },
-    function(error){
-      $scope.Notification.error({
-        title: "Fail", message: 'Fail to restore from Trash',
-        position: 'right', // right, left, center
-        duration: 5000   // milisecond
-      });
-    });
-  }*/
 
   var Submit_User = function(){
     if($scope.User_Mode == 'edit'){
@@ -247,8 +200,7 @@ angular.module('lion.guardians.admin.users.controller', [])
       var data = {'email': $scope.user.email,
           'organization_id': $scope.user.organization_id,
           'password': $scope.user.password,
-                    'admin': $scope.user.admin/*,
-                  'trashed': false*/
+                    'admin': $scope.user.admin
       };
       $scope.LincApiServices.Users({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({
