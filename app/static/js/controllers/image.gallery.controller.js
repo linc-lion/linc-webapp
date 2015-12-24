@@ -12,8 +12,11 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
 
   var titles = {}; titles['lions'] = 'Lions'; titles['imagesets'] = 'Image Sets';
 
+  // carousel image
   $scope.image_view_url = "";
   $scope.image_view = false;
+  // download image
+  $scope.download_view = false;
   $scope.isViewFilter = true;
   $scope.ShowIsCover = true;
   $scope.Selecteds = [];
@@ -88,12 +91,17 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
       return {'id': photo.id};
     }), 'id');
 
+    $scope.download_view = true;
+    $uibModalInstance.freeze(true);
     LincServices.Download(data).then(function(res_data){
       var blob = res_data.blob;
       var fileName = (res_data.fileName || "").substring(res_data.fileName.lastIndexOf('/')+1) || 'images.zip';
       saveAs(blob, fileName);
+      $scope.download_view = false;
+      $uibModalInstance.freeze(false);
     });
   };
+
   $scope.Close = function(){
     console.log("Close UploadImages");
     $uibModalInstance.close("close");
@@ -488,6 +496,5 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
       }, true);
     }
   };
-});
-
+})
 ;
