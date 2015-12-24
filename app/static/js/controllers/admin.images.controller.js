@@ -76,7 +76,7 @@ angular.module('lion.guardians.admin.images.controller', [])
 
     $scope.image = {
       'url': '', 'image_type': 'cv', 'image_set_id': '',
-      'is_public': true, 'trashed': false, 'selected': true
+      'is_public': true/*, 'trashed': false*/, 'selected': true
     };
     modal = $uibModal.open({
         templateUrl: 'Edit_Image.tmpl.html',
@@ -163,6 +163,7 @@ angular.module('lion.guardians.admin.images.controller', [])
         });
         $scope.Selecteds = [];
         $scope.settings.images.Selecteds = $scope.Selecteds;
+        $scope.$parent.ImagesDeleted();
       });
     }, function () {
       $scope.Notification.info({
@@ -175,7 +176,7 @@ angular.module('lion.guardians.admin.images.controller', [])
 
   $scope.image = {
     'url': '', 'image_type': 'cv', 'image_set_id': '',
-    'is_public': true, 'trashed': false, 'selected': true
+    'is_public': true/*, 'trashed': false*/, 'selected': true
   };
 
   var Submit_Image = function(){
@@ -183,8 +184,8 @@ angular.module('lion.guardians.admin.images.controller', [])
       var data = { 'url': $scope.image.url,
             'image_type': $scope.image.image_type,
           'image_set_id': $scope.image.image_set_id,
-             'is_public': $scope.image.is_public,
-               'trashed': $scope.image.trashed
+             'is_public': $scope.image.is_public/*,
+               'trashed': $scope.image.trashed*/
       };
       $scope.LincApiServices.Images({'method': 'put', 'image_id' : $scope.image.id, 'data': data}).then(function(response){
         $scope.Notification.success({
@@ -209,8 +210,8 @@ angular.module('lion.guardians.admin.images.controller', [])
       var data = { 'url': $scope.image.url,
             'image_type': $scope.image.image_type,
           'image_set_id': $scope.image.image_set_id,
-             'is_public': $scope.image.is_public,
-               'trashed': $scope.image.trashed
+             'is_public': $scope.image.is_public/*,
+               'trashed': $scope.image.trashed*/
       };
       $scope.LincApiServices.Images({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({

@@ -6,6 +6,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
 .controller('AdminCVRequestsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
   $scope.CVReq_Status = [{'status': 'submitted', 'label': 'Submitted'},
+                         {'status': 'pending', 'label': 'Pending'},
                          {'status': 'created', 'label': 'Created'},
                          {'status': 'fail', 'label': 'Fail'},
                          {'status': 'finished', 'label': 'Finished'}];
@@ -78,7 +79,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
 
     $scope.cvrequest = {
       'requesting_organization_id': -1, 'image_set_id': -1, 'status': '', 'request_body': '',
-      'trashed': false, 'selected': true
+      /*'trashed': false,*/ 'selected': true
     }
     modal = $uibModal.open({
         templateUrl: 'Edit_CVRequest.tmpl.html',
@@ -165,6 +166,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
         });
         $scope.Selecteds = [];
         $scope.settings.cvrequests.Selecteds = $scope.Selecteds;
+        $scope.$parent.CVRequestsDeleted();
       });
     }, function () {
       $scope.Notification.info({
@@ -180,7 +182,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
       var data = {
           'requesting_organization_id': $scope.cvrequest.requesting_organization_id,
           'image_set_id': $scope.cvrequest.image_set_id, 'status': $scope.cvrequest.status,
-          'request_body': $scope.cvrequest.request_body, 'trashed': $scope.cvrequest.trashed
+          'request_body': $scope.cvrequest.request_body/*, 'trashed': $scope.cvrequest.trashed*/
       };
       $scope.LincApiServices.CVRequests({'method': 'put', 'cvrequest_id' : $scope.cvrequest.id, 'data': data}).then(function(response){
         $scope.Notification.success({
@@ -206,7 +208,7 @@ angular.module('lion.guardians.admin.cvrequests.controller', [])
       var data = {
           'requesting_organization_id': $scope.cvrequest.requesting_organization_id,
           'image_set_id': $scope.cvrequest.image_set_id, 'status': $scope.cvrequest.status,
-          'request_body': $scope.cvrequest.request_body, 'trashed': $scope.cvrequest.trashed
+          'request_body': $scope.cvrequest.request_body/*, 'trashed': $scope.cvrequest.trashed*/
       };
       $scope.LincApiServices.CVRequests({'method': 'post', 'data': data}).then(function(response){
         $scope.Notification.success({

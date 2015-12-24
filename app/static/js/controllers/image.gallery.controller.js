@@ -225,7 +225,9 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     if(shiftKey && lastSelIndex>=0){
       var first = Math.min(lastSelIndex, index);
       var second = Math.max(lastSelIndex, index);
-      for(var i = first; i < second; i++){
+      console.log('first: ' + first);
+      console.log('second: ' + second);
+      for(var i = first; i <= second; i++){
         var image = $scope.paginated_gallery[i];
         image.select = photo.select;
         if(photo.select){
