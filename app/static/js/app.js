@@ -289,4 +289,46 @@ app.config(['$compileProvider', function ($compileProvider) {
 app.config(['$httpProvider', function ($httpProvider) {
   $httpProvider.useApplyAsync(true);
 }])
+
+
+app.config(['$provide', function($provide) {
+
+  $provide.decorator('$uibModal', [ '$delegate', function($delegate) {
+    var open = $delegate.open;
+
+    // decorate newly created modalInstance with some custom methods
+    $delegate.open = function() {
+      var modalInstance = open.apply(this, arguments);
+
+      modalInstance.freeze = function(freeze) {
+        modalInstance._freezed = freeze;
+      };
+
+      // return true when the modal instance is freezed and
+      // dismiss reason is 'backdrop click' or 'escape key press'
+      modalInstance.freezed = function(reason) {
+        if (!modalInstance._freezed) { return false; }
+        return _.contains(['backdrop click', 'escape key press'], reason);
+      };
+
+      return modalInstance;
+    };
+
+    return $delegate;
+  }]);
+
+  $provide.decorator('$uibModalStack', [ '$delegate', function($delegate) {
+    var dismiss = $delegate.dismiss;
+
+    // do nothing when the modal is freezed
+    // otherwise fallback to the old behaviour
+    $delegate.dismiss = function(modalInstance, reason) {
+      if (modalInstance.freezed(reason)) { return; }
+      dismiss.apply(this, arguments);
+    };
+
+    return $delegate;
+  }]);
+
+}])
 ;

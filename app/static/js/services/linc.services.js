@@ -270,7 +270,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
 
     AuthService.chech_auth().then( function(resp){
 
-      $http(req).then(function (response){
+      $http(req, {ignoreLoadingBar: true}).then(function (response){
         deferred.resolve(response.data);
       },
       function (error) {

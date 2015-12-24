@@ -1,7 +1,7 @@
+<div id="download_view" ng-show="download_view" class="downloading-view">
+  <h3>Pease wait. Downloading file</h3>
+</div>
 <div id="image_view" ng-show="image_view" class="image-view">
-  <!--<button type="button" class="close" ng-click="hide_image_view()">&times;</button>-->
-  <!--<img ng-src="{{!image_view_url || '//:0' }}" class="img-responsive center-block" ng-click="hide_image_view()" scale-image>-->
-
   <uib-carousel interval="carousel_interval" no-wrap="noWrapSlides">
     <uib-slide ng-repeat="(index, photo) in paginated_gallery = (filtered_gallery = (gallery | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" active="photo.active">
       <img ng-src="{{!photo.medium || '//:0' }}" class="img-responsive center-block" ng-click="hide_image_view()" >
