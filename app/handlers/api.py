@@ -182,12 +182,8 @@ class LionsHandler(BaseHandler):
             resource_url += '/' + lion_id
             if api:
                 resource_url += '?api=true'
-        elif api and self.trashed:
-            resource_url += '?api=true&trashed=' + str(self.trashed)
         elif api:
             resource_url += '?api=true'
-        elif self.trashed:
-            resource_url += '?trashed=' + str(self.trashed)
         print(resource_url)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
@@ -240,10 +236,7 @@ class LionsHandler(BaseHandler):
     @coroutine
     @authenticated
     def delete(self, lion_id=None):
-        purge = self.get_argument('purge','')
         resource_url = '/lions/' + lion_id
-        if purge:
-            resource_url += '?purge=' + str(purge)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                     method='DELETE',body=self.json_encode({"message":"delete lion"}),headers=headers)
@@ -260,9 +253,7 @@ class ImageSetsHandler(BaseHandler):
     @authenticated
     def get(self, imageset_id='', param=None):
         resource_url = '/imagesets'
-        if self.trashed:
-            resource_url += '?trashed=' + str(self.trashed)
-        elif imageset_id:
+        if imageset_id:
             resource_url += '/' + imageset_id
         print(resource_url)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -317,10 +308,7 @@ class ImageSetsHandler(BaseHandler):
     @coroutine
     @authenticated
     def delete(self, imageset_id=None):
-        purge = self.get_argument('purge','')
         resource_url = '/imagesets/' + imageset_id
-        if purge:
-            resource_url += '?purge=' + str(purge)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                    method='DELETE',body=self.json_encode({"message":"delete imageset"}),headers=headers)
@@ -337,9 +325,7 @@ class OrganizationsHandler(BaseHandler):
     @authenticated
     def get(self, organization_id=''):
         resource_url = '/organizations'
-        if self.trashed:
-            resource_url += '?trashed=' + str(self.trashed)
-        elif organization_id:
+        if organization_id:
             resource_url += '/' + organization_id
         print(resource_url)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -394,10 +380,7 @@ class OrganizationsHandler(BaseHandler):
     @coroutine
     @authenticated
     def delete(self, organization_id=None):
-        purge = self.get_argument('purge','')
         resource_url = '/organizations/' + organization_id
-        if purge:
-            resource_url += '?purge=' + str(purge)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                    method='DELETE',body=self.json_encode({"message":"delete organization"}),headers=headers)
@@ -414,8 +397,6 @@ class UsersHandler(BaseHandler):
     @authenticated
     def get(self, user_id=''):
         resource_url = '/users/' + user_id
-        if self.trashed:
-            resource_url += '?trashed=' + str(self.trashed)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_json_output()
@@ -469,10 +450,7 @@ class UsersHandler(BaseHandler):
     @authenticated
     @allowedRole('admin')
     def delete(self, user_id=None):
-        purge = self.get_argument('purge','')
         resource_url = '/users/' + user_id
-        if purge:
-            resource_url += '?purge=' + str(purge)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                     method='DELETE',body=self.json_encode({"message":"delete user"}),headers=headers)
@@ -521,14 +499,6 @@ class ImagesHandler(BaseHandler):
             else:
                 self.dropError(500,'fail to get urls to download the images')
                 return
-        elif self.trashed:
-            resource_url = '/images?trashed=' + str(self.trashed)
-            response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
-            self.set_status(response.code)
-            if response.code == 200:
-                self.finish(response.body)
-            else:
-                self.finish({'status':'error','message':'fail to get Images GET'})
         else:
             resource_url = '/images/' + image_id
             response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
@@ -566,10 +536,7 @@ class ImagesHandler(BaseHandler):
     @coroutine
     @authenticated
     def delete(self, image_id=None):
-        purge = self.get_argument('purge','')
         resource_url = '/images/' + image_id
-        if purge:
-            resource_url += '?purge=' + str(purge)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                     method='DELETE',body=self.json_encode({"message":"delete image"}),headers=headers)
