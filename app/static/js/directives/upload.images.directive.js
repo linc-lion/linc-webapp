@@ -9,9 +9,9 @@ angular.module('lion.guardians.upload.images.directive', [])
     template: function(element, attrs) {
       switch (attrs.type) {
         case 'new':
-          return '<button type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="!disabledBtn && showNew()"><i class="icon icon-camera"></i>Create & Add Images</button>';
+          return '<button type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="btnSubmit(metadataForm) && showNew()"><i class="icon icon-camera"> </i>Create & Add Images</button>';
         default:
-          return '<button class="btn btn-primary btn-block" ng-click="ShowOpen()" ng-disabled="disabledBtn">Upload images</button>';
+          return '<button class="btn btn-primary btn-block" ng-click="ShowOpen()">Upload images</button>';
       }
     },
     scope: {
@@ -21,7 +21,7 @@ angular.module('lion.guardians.upload.images.directive', [])
       imagesetId: '=',
       saveMetadataAction:'&',
       closeAction:'&',
-      disabledBtn: '=',
+      btnSubmit: '&',
       imageUpdated:'&',
       debug: '='
     },
@@ -40,9 +40,6 @@ angular.module('lion.guardians.upload.images.directive', [])
             resolve: {
               options: function () {
                 return ({'isNew': attrs.type == 'new', 'imagesetId': result.imagesetId});
-              },
-              disabledBtn: function (){
-                return scope.disabledBtn;
               }
             }
           });

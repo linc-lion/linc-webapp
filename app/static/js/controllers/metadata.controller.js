@@ -21,6 +21,17 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
    $uibModalInstance.dismiss('cancel');
   };
 
+  $scope.submitted = false;
+  $scope.interacted = function(field) {
+    return $scope.submitted && field.$dirty;
+  };
+  $scope.submit = function(form) {
+    $scope.submitted = true;
+    if(form.latitude.$error.limlatlng || form.longitude.$error.limlatlng)
+      return false;
+    return true;
+  };
+
   $scope.ChangeWarning = function ($event){
     if($scope.isNew) {
       //$event.stopPropagation();
@@ -63,6 +74,10 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
     var TAGS = JSON.stringify(concat.value());
     if(!concat.value().length) TAGS = "null";
 
+    if(typeof selected.latitude === 'string')
+      selected.latitude = selected.latitude.replace(",",".");
+    if(typeof selected.longitude === 'string')
+      selected.longitude = selected.longitude.replace(",",".");
 
     var data = {};
     if(optionsSet.edit === 'new'){
@@ -485,5 +500,6 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   $scope.Calc_Age = function(){
     $scope.lion_age = getAge($scope.selected.date_of_birth);
   }
+}])
 
-}]);
+;

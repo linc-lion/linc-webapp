@@ -203,8 +203,10 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.isNameIdCollapsed = lion_filters.isNameIdCollapsed;
   $scope.isFeaturesCollapsed = lion_filters.isFeaturesCollapsed;
   $scope.isGenderCollapsed = lion_filters.isGenderCollapsed;
+  $scope.isLocationCollapsed = lion_filters.isLocationCollapsed;
   // Filters  scopes
   $scope.LionAge = lion_filters.LionAge;
+
   $scope.refreshSlider = function () {
     $timeout(function () {
         $scope.$broadcast('rzSliderForceRender');
@@ -220,6 +222,8 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.name_or_id = lion_filters.name_or_id;
   // tags
   $scope.tag_features = lion_filters.tag_features;
+  // Location {Lat Lang Radius}
+  $scope.location = lion_filters.location;
   // Order by
   //$scope.reverse = false;
   $scope.reverse = lion_filters.reverse;
@@ -284,26 +288,36 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.change_age = function(){
     $scope.setPage(0);
   }
-  $scope.change_age_colapsed = function(){
-    $scope.isAgeCollapsed = !$scope.isAgeCollapsed
+  $scope.change_location = function(){
+    //lion_filters.latlngradius = $scope.latlngradius;
+    $scope.setPage(0);
+  }
+  // Click collapse
+  $scope.collapse_age = function(){
+    $scope.isAgeCollapsed = !$scope.isAgeCollapsed;
     lion_filters.isAgeCollapsed = $scope.isAgeCollapsed;
   }
-  $scope.change_org_colapsed = function(){
-    $scope.isOrgCollapsed = !$scope.isOrgCollapsed
+  $scope.collapse_organization = function(){
+    $scope.isOrgCollapsed = !$scope.isOrgCollapsed;
     lion_filters.isOrgCollapsed = $scope.isOrgCollapsed;
   }
-  $scope.change_name_id_colapsed = function(){
-    $scope.isNameIdCollapsed = !$scope.isNameIdCollapsed
+  $scope.collapse_name_id = function(){
+    $scope.isNameIdCollapsed = !$scope.isNameIdCollapsed;
     lion_filters.isNameIdCollapsed = $scope.isNameIdCollapsed;
   }
-  $scope.change_features_is_collapsed = function(){
-    $scope.isFeaturesCollapsed = !$scope.isFeaturesCollapsed
+  $scope.collapse_features = function(){
+    $scope.isFeaturesCollapsed = !$scope.isFeaturesCollapsed;
     lion_filters.isFeaturesCollapsed = $scope.isFeaturesCollapsed;
   }
-  $scope.change_gender_colapsed = function(){
-    $scope.isGenderCollapsed = !$scope.isGenderCollapsed
+  $scope.collapse_gender = function(){
+    $scope.isGenderCollapsed = !$scope.isGenderCollapsed;
     lion_filters.isGenderCollapsed = $scope.isGenderCollapsed;
   }
+  $scope.collapse_location = function(){
+    $scope.isLocationCollapsed = !$scope.isLocationCollapsed;
+    lion_filters.isLocationCollapsed = $scope.isLocationCollapsed;
+  }
+
   $scope.setPage = function(n) {
     $scope.currentPage = n;
     lion_filters.currentPage = $scope.currentPage;
@@ -358,7 +372,6 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.changeItensPerPage();
   //$scope.currentPage = 0;
   $scope.currentPage = lion_filters.currentPage;
-
 
   $scope.filters = $stateParams.filter ? $stateParams.filter : {};
 

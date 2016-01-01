@@ -628,7 +628,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   return dataFactory;
 }])
 
-.factory('PollerService', ['$q', '$http', function($q, $http){
+.factory('PollerService', ['$q', '$http', 'AuthService', function($q, $http, AuthService){
   return {
     cvrequests_list : function(){
       var url = '/cvrequests/list';

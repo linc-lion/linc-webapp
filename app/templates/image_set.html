@@ -96,6 +96,6 @@
         </p>
       </div>
 
-      <p ng-if="imageset && canShow"><a class="btn btn-lg btn-default btn-block" ng-click="Delete()"><i class="icon icon-trash"></i> DELETE IMAGE SET</a></p>
+      <p ng-if="imageset && canShow"><a class="btn btn-lg btn-default btn-block" ng-disabled="!canDelete" ng-click="Delete()" data-placement="auto top" data-trigger="hover" data-animation="am-fade-and-scale" data-html=true bs-tooltip="title_tooltip"><i class="icon icon-trash"></i> DELETE IMAGE SET</a></p>
     </div>
   </div>

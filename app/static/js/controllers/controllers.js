@@ -175,4 +175,71 @@ angular.module('lion.guardians.controllers', ['lion.guardians.admin.controller',
     }
   };
 })
+
+.filter('LatLngFilter', function(){
+  var check_dist = function (lat1, lon1, lat2, lon2, radius){
+    var R = 6371; // m (change this constant to get miles)
+    var dLat = (lat2-lat1) * Math.PI / 180;
+    var dLon = (lon2-lon1) * Math.PI / 180;
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180 ) * Math.cos(lat2 * Math.PI / 180 ) *
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c; // km
+    //var dist = Math.round(d*1000*100)/100;
+    return (d <= radius);
+  };
+
+  return function(input, location) {
+
+    if(location.latitude == undefined || location.longitude == undefined || location.radius == undefined)
+      return input;
+    if(!location.latitude.length || !location.longitude.length || !location.radius.length)
+      return input;
+    var lat = Number(location.latitude);
+    //if(isNaN(lat)) return input;
+    var lng = Number(location.longitude);
+    //if(isNaN(lng)) return input;
+    var radius = Number(location.radius);
+    //if(isNaN(radius)) return input;
+
+    var filtered = _.filter(input, function(value){
+      if(!value.latitude) return false;
+      if(!value.longitude) return false;
+      return check_dist(lat, lng, value.latitude, value.longitude, radius);
+    });
+    return filtered;
+  };
+
+})
+
+.directive('limlatlng', function() {
+  return {
+    require: 'ngModel',
+    link: function(scope, elem, attr, ctrl) {
+      var el = elem;
+      var limit = parseInt(attr.limlatlng,10);
+
+      var toModel = function (val) {
+        return val.replace(/,/g, '.') ;
+      };
+      ctrl.$parsers.unshift(toModel);
+
+      ctrl.$validators.limlatlng = function(modelValue, viewValue) {
+        if (ctrl.$isEmpty(modelValue)) return true;
+
+        if(typeof modelValue === 'number' || modelValue instanceof Number)  return true;
+
+        var val = modelValue.replace(/,/g, '.') ;
+        var num = parseFloat(val);
+        if(isNaN(num) || (num && (num.toString() != val)))
+          return true;
+        else if(Math.abs(num) > limit)
+          return false;
+        else
+          return true;
+      };
+    }
+  };
+})
 ;

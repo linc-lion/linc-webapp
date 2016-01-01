@@ -39,19 +39,45 @@
               <input type="text" class="form-control meta_input" ng-model="selected.date_stamp" data-date-format="yyyy-MM-dd" data-date-type="date" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date" bs-datepicker placement="bottom-left">
             </div>
             <pre ng-show="debug">{{!selected.date_stamp}}</pre>
-
             <hr class="style-line">
+
             <div class="form-group group-input">
               <div class="form-inline">
-                <div class="form-group control" ng-class="{'has-error': metadataForm.latitude.$dirty && metadataForm.latitude.$error.required }">
+                <div class="form-group control" ng-class="{'has-error': metadataForm.latitude.$dirty && (metadataForm.latitude.$error.pattern || metadataForm.latitude.$error.limlatlng)}">
                   <label class="meta_label" for="latitude">Latitude: </label>
-                  <input class="form-control meta_input" type="text" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="selected.latitude" step="any" name="latitude" min="-90" max="90" oninvalid="this.setCustomValidity('Please enter a valid latitude number')" oninput="setCustomValidity('')">
+                  <input class="form-control meta_input" type="text" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="selected.latitude" name="latitude" oninvalid="this.setCustomValidity('Please enter a valid latitude number')" oninput="setCustomValidity('')" limlatlng="90">
+                  <span class="icon icon-cross" ng-click="submitted=false;" ng-show="metadataForm.latitude.$error.limlatlng && submitted"></span>
+                  <div class="error-messages" ng-messages="metadataForm.latitude.$error" ng-if="submitted">
+                    <div ng-message="limlatlng">
+                      <div class="row">
+                        <div class="col-sm-2">
+                          <i class="icon icon-error icon-notification"></i>
+                        </div>
+                        <div class="col-sm-10 error-msg-col">
+                          choose a latitude value between -90 and 90.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="form-inline">
-                <div class="form-group control" ng-class="{'has-error': metadataForm.longitude.$dirty && metadataForm.longitude.$error.required }">
+                <div class="form-group control" ng-class="{'has-error': metadataForm.longitude.$dirty && (metadataForm.longitude.$error.pattern || metadataForm.longitude.$error.limlatlng)}">
                   <label class="meta_label" for="longitude">Longitude: </label>
-                  <input class="form-control meta_input" type="text" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="selected.longitude" step="any" name="longitude" min="-180" max="180" oninvalid="this.setCustomValidity('Please enter a valid longitude number')" oninput="setCustomValidity('')">
+                  <input class="form-control meta_input" type="text" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="selected.longitude" name="longitude" oninvalid="this.setCustomValidity('Please enter a valid longitude number')" oninput="setCustomValidity('')" limlatlng="180">
+                  <span class="icon icon-cross" ng-click="submitted=false;" ng-show="!metadataForm.latitude.$error.limlatlng && metadataForm.longitude.$error.limlatlng && submitted"></span>
+                  <div class="error-messages" ng-messages="metadataForm.longitude.$error" ng-if="!metadataForm.latitude.$error.limlatlng && submitted">
+                    <div ng-message="limlatlng">
+                      <div class="row">
+                        <div class="col-sm-2">
+                          <i class="icon icon-error icon-notification"></i>
+                        </div>
+                        <div class="col-sm-10 error-msg-col">
+                          choose a longitude value between -180 and 180.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -162,11 +188,11 @@
   <div class="modal-footer">
     <!--<button type="button" class="btn btn-default" ng-click="Cancel()">Close</button>-->
 
-    <button ng-disabled="!metadataForm.modified" ng-show="!isNew" type="button" class="btn btn-primary" ng-click="SaveMetadata()">Save</button>
+    <button ng-disabled="!metadataForm.modified" ng-show="!isNew" type="submit" class="btn btn-primary" ng-click="submit(metadataForm) && metadataForm.$valid && SaveMetadata()">Save</button>
 
-    <button ng-show="isNew" type="submit" class="btn btn-primary" ng-click="metadataForm.$valid && CreateClose()">Create</button>
+    <button ng-show="isNew" type="submit" class="btn btn-primary" ng-click="submit(metadataForm) &&  metadataForm.$valid && CreateClose()">Create</button>
 
-    <upload-images disabled-btn="!metadataForm.$valid" ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new" save-metadata-action="CreateUpload()" close-action="Close()" debug="debug"></upload-images>
+    <upload-images btn-submit="submit(metadataForm)" ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new" save-metadata-action="CreateUpload()" close-action="Close()" debug="debug"></upload-images>
 
     <br>
   </div>

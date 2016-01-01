@@ -7,17 +7,17 @@
       <div class="tablist" data-allow-multiple="true" role="tablist" aria-multiselectable="true" bs-collapse>
         <div role="tab">
           <h4>
-            <a bs-collapse-toggle ng-click="change_name_id_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Name or ID</a>
+            <a bs-collapse-toggle ng-click="collapse_name_id()"><i class="pull-right icon icon-select-arrows"></i> Name or ID</a>
           </h4>
         </div>
         <div uib-collapse="isNameIdCollapsed">
           <div class="panel-body">
-            <input ng-change="change_name_or_id()" type="text" class="form-control" ng-model="name_or_id">
+            <input ng-change="change_name_or_id()" type="text" class="form-control input-sm" ng-model="name_or_id">
           </div>
         </div>
         <div role="tab">
           <h4 >
-            <a bs-collapse-toggle ng-click="change_org_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Organization</a>
+            <a bs-collapse-toggle ng-click="collapse_organization()"><i class="pull-right icon icon-select-arrows"></i> Organization</a>
           </h4>
         </div>
         <div uib-collapse="isOrgCollapsed">
@@ -29,7 +29,7 @@
         </div>
         <div role="tab">
           <h4 >
-            <a bs-collapse-toggle ng-click="refreshSlider();change_age_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Age</a>
+            <a bs-collapse-toggle ng-click="refreshSlider(); collapse_age()"><i class="pull-right icon icon-select-arrows"></i> Age</a>
           </h4>
         </div>
         <div uib-collapse="isAgeCollapsed">
@@ -46,7 +46,7 @@
         </div>
         <div role="tab">
           <h4 >
-            <a bs-collapse-toggle ng-click="change_gender_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Gender</a>
+            <a bs-collapse-toggle ng-click="collapse_gender()"><i class="pull-right icon icon-select-arrows"></i> Gender</a>
           </h4>
         </div>
         <div uib-collapse="isGenderCollapsed">
@@ -56,14 +56,93 @@
             </label>
           </div>
         </div>
-        <div role="tab">
+        <div role="tab" data-placement="auto top" data-trigger="hover" data-animation="am-fade-and-scale" bs-tooltip="title_tooltip">
           <h4>
-            <a bs-collapse-toggle ng-click="change_features_is_collapsed()" data-placement="top-center" data-animation="am-fade-and-scale" bs-tooltip="title_tooltip" ><i class="pull-right icon icon-select-arrows"></i>Features</a>
+            <a bs-collapse-toggle ng-click="collapse_features()"><i class="pull-right icon icon-select-arrows"></i>Features</a>
           </h4>
         </div>
         <div uib-collapse="isFeaturesCollapsed">
           <div class="panel-body">
-            <input ng-change="change_features()" type="text" class="form-control" ng-model="tag_features">
+            <input ng-change="change_features()" type="text" class="form-control input-sm" ng-model="tag_features">
+          </div>
+        </div>
+        <div role="tab">
+          <h4>
+            <a bs-collapse-toggle ng-click="collapse_location()"><i class="pull-right icon icon-select-arrows"></i>Location</a>
+          </h4>
+        </div>
+        <div uib-collapse="isLocationCollapsed">
+          <div class="panel-body">
+            <form name="form">
+              <div class="form-group control" ng-class="{'has-error': form.latitude.$dirty && form.latitude.$error.pattern}">
+                <label class="location_label" for="latitude">Latitude: </label>
+                <input ng-change="change_location()" class="form-control input-sm" type="text" name="latitude" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="location.latitude" limlatlng="90">
+                <div class="error-messages search" ng-messages="form.latitude.$error" ng-if="form.latitude.$error.limlatlng || form.latitude.$error.pattern">
+                  <div ng-message="limlatlng">
+                    <div class="row">
+                      <div class="col-sm-2">
+                        <i class="icon icon-error icon-notification"></i>
+                      </div>
+                      <div class="col-sm-10 error-msg-col">
+                        choose a latitude value between -90 and 90.
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-message="pattern">
+                    <div class="row">
+                      <div class="col-sm-2">
+                        <i class="icon icon-error icon-notification"></i>
+                      </div>
+                      <div class="col-sm-10 error-msg-col" ng-if="form.latitude.$error.pattern">
+                         this is not a valid number.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group control" ng-class="{'has-error': form.longitude.$dirty && form.longitude.$error.pattern}">
+                <label class="location_label" for="longitude">Longitude: </label>
+                <input ng-change="change_location()" class="form-control input-sm" type="text" name="longitude" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="location.longitude" limlatlng="180">
+                <div class="error-messages search" ng-messages="form.longitude.$error" ng-if="form.longitude.$error.limlatlng || form.longitude.$error.pattern">
+                  <div ng-message="limlatlng">
+                    <div class="row">
+                      <div class="col-sm-2">
+                        <i class="icon icon-error icon-notification"></i>
+                      </div>
+                      <div class="col-sm-10 error-msg-col">
+                        choose a longitude value between -180 and 180.
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-message="pattern">
+                    <div class="row">
+                      <div class="col-sm-2">
+                        <i class="icon icon-error icon-notification"></i>
+                      </div>
+                      <div class="col-sm-10 error-msg-col" ng-if="form.longitude.$error.pattern">
+                         this is not a valid number.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group control" ng-class="{'has-error': form.radius.$dirty && form.radius.$error.pattern}">
+                <label class="location_label" for="radius">Radius: </label>
+                <input ng-change="change_location()" class="form-control input-sm" type="text" name="radius" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="location.radius">
+                <div class="error-messages search" ng-messages="form.radius.$error" ng-if="form.radius.$error.pattern">
+                  <div ng-message="pattern">
+                    <div class="row">
+                      <div class="col-sm-2">
+                        <i class="icon icon-error icon-notification"></i>
+                      </div>
+                      <div class="col-sm-10 error-msg-col" ng-if="form.radius.$error.pattern">
+                         this is not a valid number.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -128,7 +207,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="link" ng-repeat="imageset in paginated_image_set = (filtered_image_sets = (imagesets | orderBy:predicate:reverse | nameid_filter:name_or_id:'lion_id' | age_filter:LionAge | organization_filter:organizations | features_filter:tag_features | gender_filter:genders ) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)">
+          <tr class="link" ng-repeat="imageset in paginated_image_set = (filtered_image_sets = (imagesets | orderBy:predicate:reverse | nameid_filter:name_or_id:'lion_id' | age_filter:LionAge | organization_filter:organizations | features_filter:tag_features | gender_filter:genders | LatLngFilter:location) | offset:currentPage*itemsPerPage | limitTo: itemsPerPage)">
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.id}}</td>
             <td class="text-center" ui-sref="imageset({id: imageset.id})" ng-right-click="show_photo(imageset.image)"><img ng-src="{{!imageset.thumbnail}}" width="40" height="40"></td>
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.name}}</td>
@@ -164,7 +243,7 @@
         <ul class="pagination pagination-lg">
           <li ng-class="prevPageDisabled()"><a href ng-click="firstPage()">««</a></li>
           <li ng-class="prevPageDisabled()"><a href ng-click="prevPage()">«</a></li>
-          <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)"><a href="#">{{! n+1}}</a></li>
+          <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)"><a >{{! n+1}}</a></li>
           <li ng-class="nextPageDisabled()"><a href ng-click="nextPage()">»</a></li>
           <li ng-class="nextPageDisabled()"><a href ng-click="lastPage()">»»</a></li>
         </ul>
