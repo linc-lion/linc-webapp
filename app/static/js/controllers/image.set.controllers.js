@@ -2,7 +2,7 @@
 
 angular.module('lion.guardians.image.set.controllers', [])
 
-.controller('ImageSetCtrl', ['$scope', '$rootScope', '$state', '$timeout', '$uibModal', '$interval', 'NotificationFactory', 'LincServices', 'AuthService', 'PollerService', 'organizations', 'imageset', function ($scope, $rootScope, $state, $timeout, $uibModal, $interval,
+.controller('ImageSetCtrl', ['$scope', '$rootScope', '$state', '$timeout', '$uibModal', '$bsTooltip', '$interval', 'NotificationFactory', 'LincServices', 'AuthService', 'PollerService', 'organizations', 'imageset', function ($scope, $rootScope, $state, $timeout, $uibModal, $bsTooltip, $interval,
 NotificationFactory, LincServices, AuthService, PollerService, organizations, imageset) {
 
   $scope.is_modal_open = false;
@@ -70,17 +70,13 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
 
   var Set_Tags = function(){
     $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.imageset.organization_id);
+    $scope.canDelete = $scope.canShow && !$scope.imageset.is_primary;
+    $scope.title_tooltip = {'title': ''};
+    if($scope.canShow && !$scope.canDelete){
+      $scope.title_tooltip = {'title': 'This is primary image set <br> of the lion ' + $scope.imageset.lion_id +
+      '- ' + $scope.imageset.name + '.<br>Delete the lion ' + $scope.imageset.name + '<br>to delete this image set.', 'checked': true};
+    }
     if(!$scope.imageset.is_primary){
-      /*if($scope.imageset.cvresults && $scope.imageset.req_status &&
-        $scope.imageset.req_status != 'fail' && $scope.imageset.req_status != 'submitted')
-        $scope.imageset["action"] = 'cvresults';
-      else if($scope.imageset.cvrequest){
-        $scope.imageset["action"] = 'cvpending';
-        if($scope.canShow)
-          start_Poller(0);
-      }
-      else
-        $scope.imageset["action"] = 'cvrequest';*/
       if($scope.imageset.cvresults)
         $scope.imageset["action"] = 'cvresults';
       else if($scope.imageset.cvrequest){
@@ -330,16 +326,6 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
     var elem = {};
     if(!element.is_primary){
-      /*if(element.cvresults && element.req_status &&
-        element.req_status != 'fail' && element.req_status != 'submitted')
-        elem["action"] = 'cvresults';
-      else if(element.cvrequest){
-        elem["action"] = 'cvpending';
-        if(element.canShow)
-          cvrequest_pendings.push({'imageset': element, 'id': index});
-      }
-      else kadmak@gmail.com
-        elem["action"] = 'cvrequest';*/
       if(element.cvresults)
         elem["action"] = 'cvresults';
       else if(element.cvrequest){
@@ -379,6 +365,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   $scope.isNameIdCollapsed = imagesets_filters.isNameIdCollapsed;
   $scope.isFeaturesCollapsed = imagesets_filters.isFeaturesCollapsed;
   $scope.isGenderCollapsed = imagesets_filters.isGenderCollapsed;
+  $scope.isLocationCollapsed = imagesets_filters.isLocationCollapsed;
   // Filters  scopes
   $scope.LionAge = imagesets_filters.LionAge;
   $scope.refreshSlider = function () {
@@ -396,6 +383,8 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   $scope.name_or_id = imagesets_filters.name_or_id;
   // tags
   $scope.tag_features = imagesets_filters.tag_features;
+  // Location {Lat Lang Radius}
+  $scope.location = imagesets_filters.location;
   // Order by
   //$scope.reverse = false;
   $scope.reverse = imagesets_filters.reverse;
@@ -459,25 +448,33 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   $scope.change_age = function(){
     $scope.setPage(0);
   }
-  $scope.change_age_colapsed = function(){
-    $scope.isAgeCollapsed = !$scope.isAgeCollapsed
+  $scope.change_location = function(){
+    $scope.setPage(0);
+  }
+  // Click Collapse
+  $scope.collapse_age = function(){
+    $scope.isAgeCollapsed = !$scope.isAgeCollapsed;
     imagesets_filters.isAgeCollapsed = $scope.isAgeCollapsed;
   }
-  $scope.change_org_colapsed = function(){
-    $scope.isOrgCollapsed = !$scope.isOrgCollapsed
+  $scope.collapse_organization = function(){
+    $scope.isOrgCollapsed = !$scope.isOrgCollapsed;
     imagesets_filters.isOrgCollapsed = $scope.isOrgCollapsed;
   }
-  $scope.change_name_id_colapsed = function(){
-    $scope.isNameIdCollapsed = !$scope.isNameIdCollapsed
+  $scope.collapse_name_id = function(){
+    $scope.isNameIdCollapsed = !$scope.isNameIdCollapsed;
     imagesets_filters.isNameIdCollapsed = $scope.isNameIdCollapsed;
   }
-  $scope.change_features_is_collapsed = function(){
-    $scope.isFeaturesCollapsed = !$scope.isFeaturesCollapsed
+  $scope.collapse_features = function(){
+    $scope.isFeaturesCollapsed = !$scope.isFeaturesCollapsed;
     imagesets_filters.isFeaturesCollapsed = $scope.isFeaturesCollapsed;
   }
-  $scope.change_gender_colapsed = function(){
-    $scope.isGenderCollapsed = !$scope.isGenderCollapsed
+  $scope.collapse_gender = function(){
+    $scope.isGenderCollapsed = !$scope.isGenderCollapsed;
     imagesets_filters.isGenderCollapsed = $scope.isGenderCollapsed;
+  }
+  $scope.collapse_location = function(){
+    $scope.isLocationCollapsed = !$scope.isLocationCollapsed;
+    imagesets_filters.isLocationCollapsed = $scope.isLocationCollapsed;
   }
   $scope.setPage = function(n) {
     $scope.currentPage = n;

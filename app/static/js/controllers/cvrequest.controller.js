@@ -47,13 +47,15 @@ angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest
   $scope.organizations = lion_filters.organizations;
   $scope.genders = lion_filters.genders;
   //$scope.isCollapsed = true;
-  $scope.isAgeCollapsed = lion_filters.isAgeCollapsed;
-  $scope.isOrgCollapsed = lion_filters.isOrgCollapsed;
-  $scope.isNameIdCollapsed = lion_filters.isNameIdCollapsed;
-  $scope.isFeaturesCollapsed = lion_filters.isFeaturesCollapsed;
-  $scope.isGenderCollapsed = lion_filters.isGenderCollapsed;
+  $scope.isCVAgeCollapsed = lion_filters.isAgeCollapsed;
+  $scope.isCVOrgCollapsed = lion_filters.isOrgCollapsed;
+  $scope.isCVNameIdCollapsed = lion_filters.isNameIdCollapsed;
+  $scope.isCVFeaturesCollapsed = lion_filters.isFeaturesCollapsed;
+  $scope.isCVGenderCollapsed = lion_filters.isGenderCollapsed;
+  $scope.isCVLocationCollapsed = lion_filters.isLocationCollapsed;
   // Filters  scopes
   $scope.LionAge = lion_filters.LionAge;
+
   $scope.refreshSlider = function () {
     $timeout(function () {
         $scope.$broadcast('rzSliderForceRender');
@@ -64,6 +66,8 @@ angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest
   $scope.name_or_id = lion_filters.name_or_id;
   // tags
   $scope.tag_features = lion_filters.tag_features;
+  // Location {Lat Lang Radius}
+  $scope.cv_location = lion_filters.location;
   // Order by
   //$scope.reverse = false;
   $scope.reverse = lion_filters.reverse;
@@ -76,38 +80,45 @@ angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest
     lion_filters.predicate = $scope.predicate;
     lion_filters.reverse = $scope.reverse;
   };
-
   // Change Name_or_Id input
-  $scope.change_name_or_id = function(){
+  $scope.change_cv_name_or_id = function(){
     lion_filters.name_or_id = $scope.name_or_id;
   }
-  $scope.change_organizations = function(){
+  $scope.change_cv_organizations = function(){
   }
-  $scope.change_features = function(){
+  $scope.change_cv_features = function(){
   }
-  $scope.change_gender = function(){
+  $scope.change_cv_gender = function(){
   }
-  $scope.change_age_colapsed = function(){
-    $scope.isAgeCollapsed = !$scope.isAgeCollapsed
-    lion_filters.isAgeCollapsed = $scope.isAgeCollapsed;
+  $scope.change_cv_age = function(){
   }
-  $scope.change_org_colapsed = function(){
-    $scope.isOrgCollapsed = !$scope.isOrgCollapsed
-    lion_filters.isOrgCollapsed = $scope.isOrgCollapsed;
+  $scope.change_cv_location = function(){
   }
-  $scope.change_name_id_colapsed = function(){
-    $scope.isNameIdCollapsed = !$scope.isNameIdCollapsed
-    lion_filters.isNameIdCollapsed = $scope.isNameIdCollapsed;
+  // Click Collapse
+  $scope.collapse_cv_age = function(){
+    $scope.isCVAgeCollapsed = !$scope.isCVAgeCollapsed
+    lion_filters.isAgeCollapsed = $scope.isCVAgeCollapsed;
   }
-  $scope.change_features_is_collapsed = function(){
-    $scope.isFeaturesCollapsed = !$scope.isFeaturesCollapsed
-    lion_filters.isFeaturesCollapsed = $scope.isFeaturesCollapsed;
+  $scope.collapse_cv_organization = function(){
+    $scope.isCVOrgCollapsed = !$scope.isCVOrgCollapsed
+    lion_filters.isOrgCollapsed = $scope.isCVOrgCollapsed;
   }
-  $scope.change_gender_colapsed = function(){
-    $scope.isGenderCollapsed = !$scope.isGenderCollapsed
-    lion_filters.isGenderCollapsed = $scope.isGenderCollapsed;
+  $scope.collapse_cv_name_id = function(){
+    $scope.isCVNameIdCollapsed = !$scope.isCVNameIdCollapsed
+    lion_filters.isNameIdCollapsed = $scope.isCVNameIdCollapsed;
   }
-
+  $scope.collapse_cv_features = function(){
+    $scope.isCVFeaturesCollapsed = !$scope.isCVFeaturesCollapsed
+    lion_filters.isFeaturesCollapsed = $scope.isCVFeaturesCollapsed;
+  }
+  $scope.collapse_cv_gender = function(){
+    $scope.isCVGenderCollapsed = !$scope.isCVGenderCollapsed
+    lion_filters.isGenderCollapsed = $scope.isCVGenderCollapsed;
+  }
+  $scope.collapse_cv_location = function(){
+    $scope.isCVLocationCollapsed = !$scope.isCVLocationCollapsed;
+    lion_filters.isLocationCollapsed = $scope.isCVLocationCollapsed;
+  }
   $scope.viewer_label = function(){
     var label = "0 lions found";
     if($scope.filtered_lions != undefined && $scope.filtered_lions.length){

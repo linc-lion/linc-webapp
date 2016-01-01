@@ -4,24 +4,24 @@ angular.module('lion.guardians.linc.data.factory', [])
   var initialized = false;
   var lions_filters = {
       'LionAge': {},
-      'name_or_id': '', 'tag_features': '', 'reverse': false, 'predicate': 'id',
+      'name_or_id': '', 'tag_features': '', 'location': {'latitude':'','longitude': '', 'radius': ''}, 'reverse': false, 'predicate': 'id',
       'PerPage': 0, 'currentPage': 0, 'isAgeCollapsed': true,
       'isOrgCollapsed': true, 'isNameIdCollapsed': false, 'isGenderCollapsed' : true,
-      'isFeaturesCollapsed' : true, 'organization': [], 'genders': []
+      'isFeaturesCollapsed' : true, 'isLocationCollapsed': true, 'organization': [], 'genders': []
   };
   var imagesets_filters = {
       'LionAge': {},
-      'name_or_id': '', 'tag_features': '', 'reverse': false, 'predicate': 'id',
+      'name_or_id': '', 'tag_features': '', 'location': {'latitude':'','longitude': '', 'radius': ''}, 'reverse': false, 'predicate': 'id',
       'PerPage': 0, 'currentPage': 0, 'isAgeCollapsed': true,
       'isOrgCollapsed': true, 'isNameIdCollapsed': false, 'isGenderCollapsed' : true,
-      'isFeaturesCollapsed' : true, 'organization': [], 'genders': []
+      'isFeaturesCollapsed' : true, 'isLocationCollapsed': true, 'organization': [], 'genders': []
   };
   var lions_cvreq_filters = {
       'LionAge': {},
-      'name_or_id': '', 'tag_features': '', 'reverse': false, 'predicate': 'id',
+      'name_or_id': '', 'tag_features': '', 'location': {'latitude':'','longitude': '', 'radius': ''}, 'reverse': false, 'predicate': 'id',
       'PerPage': 0, 'currentPage': 0, 'isAgeCollapsed': true,
       'isOrgCollapsed': true, 'isNameIdCollapsed': false, 'isGenderCollapsed' : true,
-      'isFeaturesCollapsed' : true, 'organization': [], 'genders': []
+      'isFeaturesCollapsed' : true, 'isLocationCollapsed': true, 'organization': [], 'genders': []
   };
   var default_organizations = [];
   var default_genders = [];
@@ -46,9 +46,9 @@ angular.module('lion.guardians.linc.data.factory', [])
   };
   return {
     get_defaults (){
-      return ({"organizations": default_organizations, "genders": default_genders, "LionAge": default_age, "name_or_id": '', "tag_features" : '', 'isAgeCollapsed': true,
+      return ({"organizations": default_organizations, "genders": default_genders, "LionAge": default_age, "name_or_id": '', "tag_features" : '', 'location': {}, 'isAgeCollapsed': true,
       'isOrgCollapsed': true, 'isNameIdCollapsed': false, 'isGenderCollapsed' : true,
-      'isFeaturesCollapsed' : true,});
+      'isFeaturesCollapsed' : true, 'isLocationCollapsed': true});
     },
     get_lions_filters: function () {
       return (lions_filters);

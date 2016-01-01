@@ -9,62 +9,142 @@
       <div class="tablist" data-allow-multiple="true" role="tablist" aria-multiselectable="true" bs-collapse>
         <div role="tab">
           <h4>
-            <a bs-collapse-toggle ng-click="change_name_id_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Name or ID</a>
+            <a bs-collapse-toggle ng-click="collapse_cv_name_id()"><i class="pull-right icon icon-select-arrows"></i> Name or ID</a>
           </h4>
         </div>
-        <div uib-collapse="isNameIdCollapsed">
+        <div uib-collapse="isCVNameIdCollapsed">
           <div class="panel-body">
-            <input ng-change="change_name_or_id()" type="text" class="form-control" ng-model="name_or_id">
+            <input ng-change="change_cv_name_or_id()" type="text" class="form-control" ng-model="cv_name_or_id">
           </div>
         </div>
         <div role="tab">
           <h4 >
-            <a bs-collapse-toggle ng-click="change_org_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Organization</a>
+            <a bs-collapse-toggle ng-click="collapse_cv_organization()"><i class="pull-right icon icon-select-arrows"></i> Organization</a>
           </h4>
         </div>
-        <div uib-collapse="isOrgCollapsed">
+        <div uib-collapse="isCVOrgCollapsed">
           <div class="panel-body">
             <label ng-repeat="organization in organizations">
-              <input ng-click="change_organizations()" type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">{{! organization.name}}
+              <input ng-click="change_cv_organizations()" type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">{{! organization.name}}
             </label>
           </div>
         </div>
         <div role="tab">
           <h4 >
-            <a bs-collapse-toggle ng-click="refreshSlider();change_age_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Age</a>
+            <a bs-collapse-toggle ng-click="refreshSlider(); collapse_cv_age()"><i class="pull-right icon icon-select-arrows"></i> Age</a>
           </h4>
         </div>
-        <div uib-collapse="isAgeCollapsed">
+        <div uib-collapse="isCVAgeCollapsed">
           <div class="panel-body">
             <rzslider
               rz-slider-model="LionAge.min"
               rz-slider-high="LionAge.max"
               rz-slider-options="LionAge.options"
               rz-slider-step="1"
+              rz-slider-on-change="change_cv_age()"
               rz-slider-tpl-url="rzSliderTpl.html">
             </rzslider>
           </div>
         </div>
         <div role="tab">
           <h4 >
-            <a bs-collapse-toggle ng-click="change_gender_colapsed()"><i class="pull-right icon icon-select-arrows"></i> Gender</a>
+            <a bs-collapse-toggle ng-click="collapse_cv_gender()"><i class="pull-right icon icon-select-arrows"></i> Gender</a>
           </h4>
         </div>
-        <div uib-collapse="isGenderCollapsed">
+        <div uib-collapse="isCVGenderCollapsed">
           <div class="panel-body">
             <label ng-repeat="gender in genders">
-              <input ng-click="change_gender()" type="checkbox"  ng-model="gender.checked" ng-checked="gender.checked">{{! gender.label}}
+              <input ng-click="change_cv_gender()" type="checkbox"  ng-model="gender.checked" ng-checked="gender.checked">{{! gender.label}}
             </label>
+          </div>
+        </div>
+        <div role="tab" data-placement="auto top" data-trigger="hover" data-animation="am-fade-and-scale" bs-tooltip="title_tooltip">
+          <h4>
+            <a bs-collapse-toggle ng-click="collapse_cv_features()"><i class="pull-right icon icon-select-arrows"></i>Features</a>
+          </h4>
+        </div>
+        <div uib-collapse="isCVFeaturesCollapsed">
+          <div class="panel-body">
+            <input ng-change="change_cv_features()" type="text" class="form-control" ng-model="tag_features">
           </div>
         </div>
         <div role="tab">
           <h4>
-            <a bs-collapse-toggle ng-click="change_features_is_collapsed()" data-placement="top-center" data-animation="am-fade-and-scale" bs-tooltip="title_tooltip" ><i class="pull-right icon icon-select-arrows"></i>Features</a>
+            <a bs-collapse-toggle ng-click="collapse_cv_location()"><i class="pull-right icon icon-select-arrows"></i>Location</a>
           </h4>
         </div>
-        <div uib-collapse="isFeaturesCollapsed">
+        <div uib-collapse="isCVLocationCollapsed">
           <div class="panel-body">
-            <input ng-change="change_features()" type="text" class="form-control" ng-model="tag_features">
+            <form name="form1">
+              <div class="form-group control" ng-class="{'has-error': form1.latitude.$dirty && form1.latitude.$error.pattern}">
+                <label class="location_label" for="latitude">Latitude: </label>
+                <input ng-change="change_cv_location()" class="form-control input-sm" type="text" name="latitude" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="cv_location.latitude" limlatlng="90">
+                <div class="error-messages cv-search" ng-messages="form1.latitude.$error" ng-if="form1.latitude.$error.limlatlng || form1.latitude.$error.pattern">
+                  <div ng-message="limlatlng">
+                    <div class="row">
+                      <div class="col-sm-2 error-icon-col">
+                        <i class="icon icon-error icon-notification"></i>
+                      </div>
+                      <div class="col-sm-10 error-msg-col">
+                        choose a latitude value between -90 and 90.
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-message="pattern">
+                    <div class="row">
+                      <div class="col-sm-2 error-icon-col">
+                        <i class="icon icon-error icon-notification"></i>
+                      </div>
+                      <div class="col-sm-10 error-msg-col" ng-if="form1.latitude.$error.pattern">
+                         this is not a valid number.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group control" ng-class="{'has-error': form1.longitude.$dirty && form1.longitude.$error.pattern}">
+                <label class="location_label" for="longitude">Longitude: </label>
+                <input ng-change="change_cv_location()" class="form-control input-sm" type="text" name="longitude" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="cv_location.longitude" limlatlng="180">
+                <div class="error-messages cv-search" ng-messages="form1.longitude.$error" ng-if="form1.longitude.$error.limlatlng || form1.longitude.$error.pattern">
+                  <div ng-message="limlatlng">
+                    <div class="row">
+                      <div class="col-sm-2 error-icon-col">
+                        <i class="icon icon-error icon-notification"></i>
+                      </div>
+                      <div class="col-sm-10 error-msg-col">
+                        choose a longitude value between -180 and 180.
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-message="pattern">
+                    <div class="row">
+                      <div class="col-sm-2 error-icon-col">
+                        <i class="icon icon-error icon-notification"></i>
+                      </div>
+                      <div class="col-sm-10 error-msg-col" ng-if="form1.longitude.$error.pattern">
+                         this is not a valid number.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group control" ng-class="{'has-error': form1.radius.$dirty && form1.radius.$error.pattern}">
+                <label class="location_label" for="radius">Radius: </label>
+                <input ng-change="change_cv_location()" class="form-control input-sm" type="text" name="radius" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="cv_location.radius">
+                <div class="error-messages cv-search" ng-messages="form1.radius.$error" ng-if="form1.radius.$error.pattern">
+                  <div ng-message="pattern">
+                    <div class="row">
+                      <div class="col-sm-2 error-icon-col">
+                        <i class="icon icon-error icon-notification"></i>
+                      </div>
+                      <div class="col-sm-10 error-msg-col" ng-if="form1.radius.$error.pattern">
+                         this is not a valid number.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -118,7 +198,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="link" ng-repeat="lion in filtered_lions = (lions | orderBy:predicate:reverse | nameid_filter:name_or_id:'primary_image_set_id' | age_filter:LionAge | organization_filter:organizations | features_filter:tag_features | gender_filter:genders )">
+              <tr class="link" ng-repeat="lion in filtered_lions = (lions | orderBy:predicate:reverse | nameid_filter:name_or_id:'primary_image_set_id' | age_filter:LionAge | organization_filter:organizations | features_filter:tag_features | gender_filter:genders | LatLngFilter:cv_location)">
                 <td class="text-center">
                   <a ui-sref="lion({id: lion.id})" target="_blank">{{!lion.id}}</a>
                 </td>
