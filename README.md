@@ -2,7 +2,7 @@
 LINC-webapp is a website that allows Lion Guardians to identify lions in Africa.
 
 # License
-"""
+
 LINC is an open source shared database and facial recognition
 system that allows for collaboration in wildlife monitoring.
 Copyright (C) 2016  Wildlifeguardians
@@ -21,4 +21,3 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org
-"""
