@@ -198,7 +198,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="link" ng-repeat="lion in filtered_lions = (lions | orderBy:predicate:reverse | nameid_filter:name_or_id:'primary_image_set_id' | age_filter:LionAge | organization_filter:organizations | features_filter:tag_features | gender_filter:genders | LatLngFilter:cv_location)">
+              <tr class="link" ng-repeat="lion in filtered_lions = (lions | orderBy:predicate:reverse | nameid_filter:cv_name_or_id:'primary_image_set_id' | age_filter:LionAge | organization_filter:organizations | features_filter:tag_features | gender_filter:genders | LatLngFilter:cv_location)">
                 <td class="text-center">
                   <a ui-sref="lion({id: lion.id})" target="_blank">{{!lion.id}}</a>
                 </td>
