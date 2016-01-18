@@ -114,4 +114,4 @@ class BaseHandler(RequestHandler):
 
 class VersionHandler(BaseHandler):
     def get(self):
-        self.success(message=self.settings['version'])
+        self.setSuccess(message=self.settings['version'])
