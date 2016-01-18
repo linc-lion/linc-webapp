@@ -96,13 +96,12 @@ appdir = os.path.dirname(os.path.realpath(__file__))
 # config settings
 config = {}
 config['debug'] = options.debug
-config['cookie_secret'] = '0edc26b95b225fa8416c32cd1bebf785b38ab6e242649794aac1aabf44716232'
-#sha256(str(uid)).hexdigest()
+config['cookie_secret'] = sha256(str(uid)).hexdigest()
 config['xsrf_cookies'] = True
 config['app_path'] = appdir
 config['default_handler_class'] = ErrorHandler
 config['default_handler_args'] = dict(status_code=404)
-config['version'] = 'LINC webapp version 0.1'
+config['version'] = 'LINC webapp version v1.0.0-20160117'
 config['static_path'] = os.path.join(appdir, "static")
 config['template_path'] = os.path.join(appdir, "templates")
 config['autoescape'] = None
@@ -111,18 +110,11 @@ config['login_url'] = '/#/login'
 config['scheduler'] = TornadoScheduler()
 config['scheduler'].start()
 
-# # Setting URL
-# ENV = os.environ.get("ENVIRONMENT","local")
-# if ENV == 'heroku':
-#     appurl = 'http://linc-webapp.venidera.net'
-#     #newrelic.agent.initialize('newrelic.ini','staging')
-# else:
-#     #newrelic.agent.initialize(os.path.dirname(appdir)+'/newrelic.ini','staging')
-#     appurl = "http://" + str(getHostIp()) + ":" + str(options.port)
+# Setting URL
 appurl = "https://linc-website.herokuapp.com/"
 config['url'] = appurl
 
-# Settings for access to linc-api
+# Setting linc-api URL
 config['API_URL'] = 'https://linc-api.herokuapp.com'
+# for development purpose
 #config['API_URL'] = 'http://192.168.100.10:5000'
-#Deploy test url 'https://linc-api.herokuapp.com'
