@@ -28,7 +28,8 @@ angular.module('lion.guardians.login.controller', [])
 
   var user = AuthService.user;
   $scope.checkLogged = function(){
-    if (user && user.logged){
+    if(AuthService.chech_auth().then( function(resp){
+    //if (user && user.logged){
       $scope.dataLoading = true;
       $timeout(function() {
         $scope.dataLoading = false;
