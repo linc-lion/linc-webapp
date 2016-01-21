@@ -33,8 +33,6 @@ from sys import executable as pythonbin
 from tornado.options import define, options
 from handlers.error import ErrorHandler
 from apscheduler.schedulers.tornado import TornadoScheduler
-from hashlib import sha256
-from uuid import uuid1 as uid
 
 # make filepaths relative to settings.
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -96,7 +94,7 @@ appdir = os.path.dirname(os.path.realpath(__file__))
 # config settings
 config = {}
 config['debug'] = options.debug
-config['cookie_secret'] = sha256(str(uid)).hexdigest()
+config['cookie_secret'] = os.environ.get('COOKIE_SECRET','c84b706bc36363217b2cdf0e615e41c186c5e0cfc6869a078e7243e9affc8e87')
 config['xsrf_cookies'] = True
 config['app_path'] = appdir
 config['default_handler_class'] = ErrorHandler
