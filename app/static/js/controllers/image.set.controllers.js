@@ -229,31 +229,19 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     $rootScope.remove_history('imageset', $scope.imageset.id);
   };
 
-  var local_date = function(data){
-    function isValidDate(d) {
-      if ( Object.prototype.toString.call(d) !== "[object Date]" )
-        return false;
-      return !isNaN(d.getTime());
-    }
+  var date_format = function(data){
     if(data == null || data =="" || data =="-"){
-      return null;
+      return "-";
     }
-    if((typeof data === 'date' || data instanceof Date) && isValidDate(data)){
+    if(data.length>10){
+      return data.substring(0, 10);
+    }
+    else {
       return data;
     }
-    else{
-      if(typeof data === 'string' || data instanceof String){
-        var val = data;
-        if(data.length>10){
-          val = data.substring(0, 10) + 'T' + data.substring(11, data.length) + 'Z';
-        }
-        return new Date(Date.parse(val));
-      }
-      else return null;
-    }
   }
-  $scope.imageset.date_of_birth = local_date($scope.imageset.date_of_birth);
-  $scope.imageset.date_stamp = local_date($scope.imageset.date_stamp);
+  
+  $scope.imageset.date_of_birth = date_format($scope.imageset.date_of_birth);
 }])
 
 .controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$stateParams', '$bsTooltip', 'NotificationFactory', 'LincServices', 'AuthService', 'PollerService', 'imagesets_filters', 'default_filters', 'imagesets', function ($scope, $timeout, $interval, $stateParams, $bsTooltip, NotificationFactory, LincServices, AuthService, PollerService, imagesets_filters, default_filters, imagesets) {
