@@ -90,6 +90,9 @@ class LionsListHandler(BaseHandler):
     @authenticated
     def get(self):
         resource_url = '/lions/list'
+        org_id = self.get_argument('org_id',None)
+        if org_id:
+            resource_url += '?org_id='+str(org_id)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_json_output()
@@ -203,13 +206,7 @@ class LionsHandler(BaseHandler):
                 resource_url += '?api=true'
         elif api:
             resource_url += '?api=true'
-        org_id = self.get_argument('org_id',None)
-        if org_id:
-            if '?' in resource_url:
-                resource_url += '&org_id='+str(org_id)
-            else:
-                resource_url += '?org_id='+str(org_id)
-        print(resource_url)
+        logging.info(resource_url)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_json_output()
