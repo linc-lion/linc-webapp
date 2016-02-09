@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# LINC is an open source shared database and facial recognition 
+# LINC is an open source shared database and facial recognition
 # system that allows for collaboration in wildlife monitoring.
 # Copyright (C) 2016  Wildlifeguardians
 #
@@ -203,6 +203,12 @@ class LionsHandler(BaseHandler):
                 resource_url += '?api=true'
         elif api:
             resource_url += '?api=true'
+        org_id = self.get_argument('org_id',None)
+        if org_id:
+            if '?' in resource_url:
+                resource_url += '&org_id='+str(org_id)
+            else:
+                resource_url += '?org_id='+str(org_id)
         print(resource_url)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
