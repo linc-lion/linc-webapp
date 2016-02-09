@@ -63,7 +63,6 @@ url_patterns = [
     # Handlers for API comunication
     (r"/imagesets/list", ImageSetsListHandler),
     (r"/imagesets/(\w+)/(cvrequest)$", ImageSetsListHandler),
-    (r"/lions/list", LionsListHandler),
     (r"/organizations/list", OrganizationsListHandler),
 
     (r"/images/list", ImagesListHandler),
@@ -73,6 +72,7 @@ url_patterns = [
     (r"/images/(.*)$", ImagesHandler),
 
     (r"/lions/?$", LionsHandler),
+    (r"/lions/list", LionsListHandler),
     (r"/lions/(.*)$", LionsHandler),
     (r"/lions/(\w+)/(locations)$", LionsHandler),
     (r"/imagesets/?$", ImageSetsHandler),
