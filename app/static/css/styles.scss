@@ -111,10 +111,13 @@ label{font-weight: normal; cursor:pointer}
     width:100%;
   }
   &.btn-select, &.select_btn{
-     min-width: 120px;
+    min-width: 120px;
     font-family: inherit;
     color:inherit;
     text-align: left;
+    &.select_btn_1{
+      text-align: center !important;
+    }
     &:focus, &:active{
       border-color:inherit !important;
     }
@@ -423,7 +426,7 @@ hr.style-line { margin-bottom: 10px !important; margin-top: 10px !important; mar
 .form-control-inline1 {@extend .form-control-inline; width: 50%;     margin-left: 20px;}
 
 .meta_label { padding-right: 10px;}
-
+.div_lion_name { height: 34px; padding-top: 5px;}
 
 .meta_input{ text-align: center; width: 120px !important;}
 .a_meta{text-align: center; width: 120px !important; color:blue !important;}
@@ -431,6 +434,8 @@ hr.style-line { margin-bottom: 10px !important; margin-top: 10px !important; mar
 .group-input { text-align: right; margin-bottom:10px;}
 .group-input-center { text-align: center; margin-bottom:10px;}
 .upload-name {color: #333;}
+
+.lion-ui-select {display:inline-block; vertical-align:middle; min-width:150px !important;}
 
 .notify-icon, .pnotify-icon span { display: block; float: left; margin-right: .2em; }
 .notify-title { display: block; margin-bottom: .4em; margin-top: 0;}

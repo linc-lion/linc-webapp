@@ -206,6 +206,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     var data = {'lion_id': null};
     LincServices.Associate(id, data, function(){
       $scope.imageset.lion_id = null;
+      $scope.imageset.name = '-';
       LincServices.ClearAllCaches();
       NotificationFactory.success({
         title: "Dissociate", message:'Lion was dissociated',
@@ -240,7 +241,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
       return data;
     }
   }
-  
+
   $scope.imageset.date_of_birth = date_format($scope.imageset.date_of_birth);
 }])
 

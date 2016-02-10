@@ -81,9 +81,12 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     return deferred.promise;
   };
   // Get All Lions List
-  var GetAllLions = function () {
+  var GetAllLions = function (org) {
     var deferred = $q.defer();
     var url = databases['lions'].url + '/list';
+    if(org !== undefined)
+      url = url + '?org_id=' + org;
+
     HTTPCachedGet(url, {}).then(function (results) {
       deferred.resolve(results.data);
     },
