@@ -35,6 +35,26 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
   $scope.title = titles[optionsSet.type];
   $scope.content = 'Form';
   $scope.Editable = ($scope.user.admin || (optionsSet.edit === 'edit' && optionsSet.data && $scope.user.organization_id === optionsSet.data.organization_id));
+
+  // Associate
+  $scope.select_new_lion = {'show': false, 'label': 'Associate'};
+  $scope.new_lion = {'selected': undefined};
+  $scope.set_select = function(val){
+    var org = $scope.user.organization_id;
+    $scope.ListLions = [];
+    $scope.select_new_lion.label = 'Wait. Loading...'
+    LincServices.Lions(org).then(function(lions){
+      console.log("loaded");
+      _.forEach(lions, function(lion, index) {
+        if(lion.organization_id === $scope.user.organization_id){
+          var label = lion.id + ' - ' + lion.name;
+          $scope.ListLions.push({'index': index, 'id': lion.id, 'name': lion.name, 'label': label});
+        }
+      });
+      $scope.select_new_lion.show = val;
+    });
+  }
+
   $scope.Cancel = function () {
    $uibModalInstance.dismiss('cancel');
   };
@@ -90,7 +110,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       concat = _(concat).concat([selected.nose_color]);
     concat = _(concat).concat(selected.scars);
     var TAGS = JSON.stringify(concat.value());
-    if(!concat.value().length) TAGS = "null";
+    //if(!concat.value().length) TAGS = null;
 
     if(typeof selected.latitude === 'string')
       selected.latitude = selected.latitude.replace(",",".");
@@ -188,7 +208,6 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           data = {"lion": lion_data, "imageset": imageset_data, 'imagesetId': original_data.primary_image_set_id};
       }
       else{
-        //Selected Dates
         var sel_data = {
           "owner_organization_id": selected.owner_organization_id,
           "date_stamp": date_stamp,
@@ -198,6 +217,9 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           "date_of_birth": date_of_birth,
           "tags": TAGS, 'notes': selected.notes
         };
+        sel_data.lion_id = $scope.new_lion.selected != undefined ? $scope.new_lion.selected.id : null;
+        sel_data.name = $scope.new_lion.selected != undefined ? $scope.new_lion.selected.name : '-';
+
         var imageset_data = _.reduce(sel_data, function(result, n, key) {
           if (sel_data[key] != original_data[key]) {
               result[key] = sel_data[key];
@@ -445,21 +467,21 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
     var ear_marks = _.includes(TAGS,'EAR_MARKING_BOTH')? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] :  _.intersection(TAGS,['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'])
 
-    optionsSet.data.date_of_birth = local_date(optionsSet.data.date_of_birth);
-    optionsSet.data.date_stamp = local_date(optionsSet.data.date_stamp);
+    var date_of_birth = local_date(optionsSet.data.date_of_birth);
+    var date_stamp = local_date(optionsSet.data.date_stamp);
 
-    optionsSet.data.latitude = (optionsSet.data.latitude == null) ? '' : optionsSet.data.latitude;
-    optionsSet.data.longitude = (optionsSet.data.longitude == null) ? '' : optionsSet.data.longitude;
-    //optionsSet.data.name = optionsSet.data.name == '-' ? '': optionsSet.data.name;
+    var latitude = (optionsSet.data.latitude == null) ? '' : optionsSet.data.latitude;
+    var longitude = (optionsSet.data.longitude == null) ? '' : optionsSet.data.longitude;
+
     $scope.selected = {
       "name": optionsSet.data.name,
       "id": optionsSet.data.id,
-      "date_stamp": optionsSet.data.date_stamp,
+      "date_stamp": date_stamp,
       "owner_organization_id": optionsSet.data.organization_id,
       "organization_id": optionsSet.data.organization_id,
-      "date_of_birth": optionsSet.data.date_of_birth,
-      "latitude": optionsSet.data.latitude,
-      "longitude": optionsSet.data.longitude,
+      "date_of_birth": date_of_birth,
+      "latitude": latitude,
+      "longitude": longitude,
       "gender": optionsSet.data.gender,
       "eye_damage": eyes_dams,
       "broken_teeth": _.intersection(TAGS,['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT','TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']),

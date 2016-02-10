@@ -111,14 +111,27 @@ For more information or to contact visit linclion.org or email tech@linclion.org
               </div>
             </div>
             <div ng-show="!isLion">
-              <div ng-show="!isNew"  class="form-inline group-input-center">
-                <div ng-if="selected.name == '-'">
-                  <label class="meta_label" for="lion_name1">Lion: </label>
-                  <a class="a_meta">{{!selected.name}}</a>
-                </div>
-                <div ng-if="selected.name != '-'">
+              <div ng-show="!isNew">
+                <div ng-if="selected.lion_id !== null" class="form-inline group-input-center">
                   <label class="meta_label" for="lion_name2">Lion: </label>
                   <a ui-sref="lion({id: selected.lion_id})" target="_blank" name="lion_name2" data-animation="am-flip-x" placement="bottom-right" bs-tooltip="tooltip">{{!selected.lion_id}}-{{!selected.name}}</a>
+                </div>
+                <div ng-if="selected.lion_id === null">
+                  <div ng-if="select_new_lion.show" class="form-group group-input">
+                    <label class="meta_label" for="lion_name">Lion:</label>
+                    <ui-select class="lion-ui-select" ng-model="new_lion.selected" theme="bootstrap">
+                      <ui-select-match placeholder="Select a Lion...">
+                        <span ng-bind="$select.selected.label"></span>
+                      </ui-select-match>
+                      <ui-select-choices repeat="item in (ListLions | filter: $select.search) track by item.index">
+                        <span ng-bind="item.label"></span>
+                      </ui-select-choices>
+                    </ui-select>
+                  </div>
+                  <div ng-if="!select_new_lion.show" class="form-group group-select">
+                    <label class="meta_label" for="lion_name1" >Lion: - </label>
+                    <button class="btn btn-default btn-sm select_btn select_btn_1" ng-click="set_select(true)"> {{!select_new_lion.label}} </button>
+                  </div>
                 </div>
               </div>
               <pre ng-show="debug">{{!selected.name}}</pre>
