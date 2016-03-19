@@ -201,25 +201,16 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   }
 
   // carousel image
-  //$scope.image_view_url = "";
-
-  $scope.carousel_interval = 500000;
-  $scope.noWrapSlides = false;
-  $scope.no_transition = false;
   $scope.image_view = false;
-  $scope.carousel = {active: -1};
-  //var carousel_idx = 0;
+  $scope.carousel = {active: -1, interval: 500000, noWrapSlides: false, no_transition : false};
   $scope.show_image_view = function(photo, index){
-    //$scope.no_transition = true;
     $scope.carousel.active = index;
     $scope.image_view = true;
-    //$scope.no_transition = false;
   }
   $scope.hide_image_view = function(){
     $scope.image_view = false;
     $scope.carousel.active = -1;
   }
-
 
   // Change tab
   $scope.Change_Tab = function(tab){
