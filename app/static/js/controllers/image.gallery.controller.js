@@ -30,9 +30,6 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
 
   var titles = {}; titles['lions'] = 'Lions'; titles['imagesets'] = 'Image Sets';
 
-  // carousel image
-  $scope.image_view_url = "";
-  $scope.image_view = false;
   // download image
   $scope.download_view = false;
   $scope.isViewFilter = true;
@@ -203,17 +200,26 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     win.focus();
   }
 
-  //var carousel_idx = 0;
-  $scope.show_image_view = function(photo, index){
-    photo.active = true;
-    $scope.image_view = true;
-  }
-  $scope.hide_image_view = function(){
-    $scope.image_view = false;
-  }
+  // carousel image
+  //$scope.image_view_url = "";
 
   $scope.carousel_interval = 500000;
   $scope.noWrapSlides = false;
+  $scope.no_transition = false;
+  $scope.image_view = false;
+  $scope.carousel = {active: -1};
+  //var carousel_idx = 0;
+  $scope.show_image_view = function(photo, index){
+    //$scope.no_transition = true;
+    $scope.carousel.active = index;
+    $scope.image_view = true;
+    //$scope.no_transition = false;
+  }
+  $scope.hide_image_view = function(){
+    $scope.image_view = false;
+    $scope.carousel.active = -1;
+  }
+
 
   // Change tab
   $scope.Change_Tab = function(tab){
