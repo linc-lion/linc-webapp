@@ -373,9 +373,10 @@ angular.module('lion.guardians.lions.controllers', [])
     }
     return label;
   }
+  var cur_per_page = lion_filters.currentPage;
   $scope.changeItensPerPage();
   //$scope.currentPage = 0;
-  $scope.currentPage = lion_filters.currentPage;
+  $scope.currentPage = cur_per_page;
 
   $scope.filters = $stateParams.filter ? $stateParams.filter : {};
 
