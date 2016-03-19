@@ -534,9 +534,11 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     }
     return label;
   }
-  $scope.changeItensPerPage();
+
   // Pagination scopes
-  $scope.currentPage = imagesets_filters.currentPage;
+  var cur_per_page = imagesets_filters.currentPage;
+  $scope.changeItensPerPage();
+  $scope.currentPage = cur_per_page;
 
   $scope.CVReqSuccess = function (imageset_Id, requestObj) {
     var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: imageset_Id}));
