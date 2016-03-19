@@ -20,8 +20,8 @@ For more information or to contact visit linclion.org or email tech@linclion.org
   <h3>Pease wait. Downloading file</h3>
 </div>
 <div id="image_view" ng-show="image_view" class="image-view">
-  <uib-carousel interval="carousel_interval" no-wrap="noWrapSlides">
-    <uib-slide ng-repeat="(index, photo) in paginated_gallery = (filtered_gallery = (gallery | TypeFilter:FilterSel.Type | CoverFilter:FilterSel.isCover | PropertiesFilter:Properties) | limitTo:itemsPerPage)" active="photo.active" index="$index">
+  <uib-carousel active="carousel.active" no-transition="no_transition" interval="carousel_interval" no-wrap="noWrapSlides">
+    <uib-slide ng-repeat="(index, photo) in paginated_gallery" index="index">
       <img ng-src="{{!photo.medium || '//:0' }}" class="img-responsive center-block" ng-click="hide_image_view()" >
       <div class="carousel-caption">
         <i class="icon icon-star" ng-if="photo.cover">&nbsp;</i>
