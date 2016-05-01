@@ -50,7 +50,7 @@ angular.module('lion.guardians.upload.images.directive', [])
           modalScope.debug = scope.debug;
           var modalInstance = $uibModal.open({
             animation: true,
-            backdrop: true,
+            backdrop  : 'static',
             templateUrl: scope.useTemplateUrl,
             controller:  scope.useCtrl,
             size: scope.formSize,
@@ -75,7 +75,7 @@ angular.module('lion.guardians.upload.images.directive', [])
         modalScope.debug = scope.debug;
         var modalInstance = $uibModal.open({
           animation: true,
-          backdrop: true,
+          backdrop  : 'static',
           templateUrl: scope.useTemplateUrl,
           controller:  scope.useCtrl,
           controllerAs: 'scope',
