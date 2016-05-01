@@ -45,7 +45,7 @@ angular.module('lion.guardians.image.gallery.directive', [])
         modalScope.debug = scope.debug;
         var modalInstance = $uibModal.open({
           animation: true,
-          backdrop: true,
+          backdrop  : 'static',
           templateUrl: scope.useTemplateUrl,
           controller:  scope.useCtrl,
           size: scope.formSize,
