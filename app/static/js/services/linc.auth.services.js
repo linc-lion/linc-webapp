@@ -86,5 +86,9 @@ angular.module('lion.guardians.auth.services', [])
     var req = { method: 'GET', url: 'auth/check', data: {} };
     return $http(req);
   }
+  authService.login_chech_auth = function(){
+    var req = { method: 'GET', url: 'auth/check', data: {}, ignore401: true };
+    return $http(req);
+  }
   return authService;
 }]);
