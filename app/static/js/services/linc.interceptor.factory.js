@@ -30,11 +30,17 @@ angular.module('lion.guardians.interceptor.factory', [])
       },
       'responseError': function (rejection) {
           if (rejection.status === 401) {
-            $injector.get('AuthService').setUser(null);
-            $cookies.remove("userlogin");
-            $injector.get('$window').location.reload();
-            //$injector.get('$state').transitionTo('login');
-            console.log("Response Error 401");
+            if((rejection.config.ignore401 == undefined) ||
+               (rejection.config.ignore401 != undefined && !rejection.config.ignore401)){
+              $injector.get('AuthService').setUser(null);
+              $cookies.remove("userlogin");
+              $injector.get('$window').location.reload();
+              //$injector.get('$state').transitionTo('login');
+              console.log("Response Error 401");
+            }
+            else {
+              console.log("Response Error 401 - Ignore 401");
+            }
           }
           if (rejection.status === 403) {
             /*

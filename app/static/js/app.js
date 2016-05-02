@@ -289,7 +289,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
       }]
     });
 
-  $urlRouterProvider.otherwise('login');
+  $urlRouterProvider.otherwise('home');
   //$locationProvider.html5Mode(true);
 }]);
 
