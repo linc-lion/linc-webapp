@@ -42,7 +42,10 @@ path = lambda *a: os.path.join(ROOT, *a)
 old_sys_path = list(sys.path)
 
 # add local packages directories to Python's site-packages path
+site.addsitedir(ROOT)
 site.addsitedir(path('handlers'))  # Request handlers
+site.addsitedir(ROOT+'/models')
+site.addsitedir(ROOT+'/handlers')
 
 # add local dependencies
 if os.path.exists(path('lib')):
@@ -110,6 +113,7 @@ config['scheduler'].start()
 
 # Setting URL
 appurl = "https://linc-website.herokuapp.com/"
+#appurl = 'http://localhost:5080'
 config['url'] = appurl
 
 # Setting linc-api URL
