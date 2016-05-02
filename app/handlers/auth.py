@@ -20,7 +20,8 @@
 #
 # For more information or to contact visit linclion.org or email tech@linclion.org
 
-from tornado.web import asynchronous,authenticated
+from tornado.web import asynchronous
+from lib.authentication import web_authenticated
 from tornado.gen import engine,Task
 from handlers.base import BaseHandler
 from json import dumps,loads
@@ -28,7 +29,7 @@ from json import dumps,loads
 class CheckAuthHandler(BaseHandler):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def get(self):
         resource_url = '/auth/check'
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -94,7 +95,7 @@ class LoginHandler(BaseHandler):
 class LogoutHandler(BaseHandler):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def post(self):
         print(self.current_user)
         resource_url = '/auth/logout'

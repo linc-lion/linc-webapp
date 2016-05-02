@@ -20,7 +20,8 @@
 #
 # For more information or to contact visit linclion.org or email tech@linclion.org
 
-from tornado.web import asynchronous,authenticated
+from tornado.web import asynchronous
+from lib.authentication import web_authenticated
 from tornado.gen import engine,coroutine,Task
 from handlers.base import BaseHandler
 import hmac, hashlib
@@ -40,7 +41,7 @@ from tornadoist import ProcessMixin
 class ImageSetsListHandler(BaseHandler):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def get(self):
         resource_url = '/imagesets/list'
         url = self.settings['API_URL']+resource_url
@@ -55,7 +56,7 @@ class ImageSetsListHandler(BaseHandler):
 
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def post(self, imageset_id=None, cvrequest=None):
         resource_url = '/imagesets/' + imageset_id + '/cvrequest'
         body = self.json_encode(self.input_data)
@@ -72,7 +73,7 @@ class ImageSetsListHandler(BaseHandler):
 class ImagesListHandler(BaseHandler):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def get(self):
         resource_url = '/images/list'
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -87,7 +88,7 @@ class ImagesListHandler(BaseHandler):
 class LionsListHandler(BaseHandler):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def get(self):
         resource_url = '/lions/list'
         org_id = self.get_argument('org_id',None)
@@ -105,7 +106,7 @@ class LionsListHandler(BaseHandler):
 class OrganizationsListHandler(BaseHandler):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def get(self):
         resource_url = '/organizations/list'
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -120,7 +121,7 @@ class OrganizationsListHandler(BaseHandler):
 class CVResultsHandler(BaseHandler):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def get(self, res_id='', xlist=None):
         resource_url = '/cvresults/' + res_id;
         if xlist:
@@ -138,7 +139,7 @@ class CVResultsHandler(BaseHandler):
 
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def post(self):
         resource_url = '/cvresults'
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -152,7 +153,7 @@ class CVResultsHandler(BaseHandler):
 
     @asynchronous
     @coroutine
-    @authenticated
+    @web_authenticated
     def put(self, res_id=None):
         resource_url = '/cvresults/' + res_id
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -167,7 +168,7 @@ class CVResultsHandler(BaseHandler):
 class CVRequestHandler(BaseHandler):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def get(self, req_id=''):
         resource_url = '/cvrequests/' + req_id
         print(resource_url)
@@ -182,7 +183,7 @@ class CVRequestHandler(BaseHandler):
 
     @asynchronous
     @coroutine
-    @authenticated
+    @web_authenticated
     def delete(self, req_id=None):
         resource_url = '/cvrequests/' + req_id
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -196,7 +197,7 @@ class CVRequestHandler(BaseHandler):
 class LionsHandler(BaseHandler):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def get(self, lion_id='', locations=None):
         resource_url = '/lions'
         api=self.get_argument('api', '')
@@ -218,7 +219,7 @@ class LionsHandler(BaseHandler):
 
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def post(self):
         resource_url = '/lions'
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -232,7 +233,7 @@ class LionsHandler(BaseHandler):
 
     @asynchronous
     @coroutine
-    @authenticated
+    @web_authenticated
     def put(self, lion_id=None):
         self.set_json_output()
         if lion_id:
@@ -256,7 +257,7 @@ class LionsHandler(BaseHandler):
 
     @asynchronous
     @coroutine
-    @authenticated
+    @web_authenticated
     def delete(self, lion_id=None):
         resource_url = '/lions/' + lion_id
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -272,7 +273,7 @@ class LionsHandler(BaseHandler):
 class ImageSetsHandler(BaseHandler):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def get(self, imageset_id='', param=None):
         resource_url = '/imagesets'
         if imageset_id:
@@ -289,7 +290,7 @@ class ImageSetsHandler(BaseHandler):
 
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def post(self):
         resource_url = '/imagesets'
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -304,7 +305,7 @@ class ImageSetsHandler(BaseHandler):
 
     @asynchronous
     @coroutine
-    @authenticated
+    @web_authenticated
     def put(self, imageset_id=None):
         self.set_json_output()
         if imageset_id:
@@ -328,7 +329,7 @@ class ImageSetsHandler(BaseHandler):
 
     @asynchronous
     @coroutine
-    @authenticated
+    @web_authenticated
     def delete(self, imageset_id=None):
         resource_url = '/imagesets/' + imageset_id
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -344,7 +345,7 @@ class ImageSetsHandler(BaseHandler):
 class OrganizationsHandler(BaseHandler):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def get(self, organization_id=''):
         resource_url = '/organizations'
         if organization_id:
@@ -361,7 +362,7 @@ class OrganizationsHandler(BaseHandler):
 
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     @allowedRole('admin')
     def post(self):
         resource_url = '/organizations'
@@ -377,7 +378,7 @@ class OrganizationsHandler(BaseHandler):
 
     @asynchronous
     @coroutine
-    @authenticated
+    @web_authenticated
     @allowedRole('admin')
     def put(self, organization_id=None):
         self.set_json_output()
@@ -400,7 +401,7 @@ class OrganizationsHandler(BaseHandler):
 
     @asynchronous
     @coroutine
-    @authenticated
+    @web_authenticated
     def delete(self, organization_id=None):
         resource_url = '/organizations/' + organization_id
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -416,7 +417,7 @@ class OrganizationsHandler(BaseHandler):
 class UsersHandler(BaseHandler):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def get(self, user_id=''):
         resource_url = '/users/' + user_id
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -430,7 +431,7 @@ class UsersHandler(BaseHandler):
 
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     @allowedRole('admin')
     def post(self):
         resource_url = '/users'
@@ -446,7 +447,7 @@ class UsersHandler(BaseHandler):
 
     @asynchronous
     @coroutine
-    @authenticated
+    @web_authenticated
     @allowedRole('admin')
     def put(self, user_id=None):
         self.set_json_output()
@@ -469,7 +470,7 @@ class UsersHandler(BaseHandler):
 
     @asynchronous
     @coroutine
-    @authenticated
+    @web_authenticated
     @allowedRole('admin')
     def delete(self, user_id=None):
         resource_url = '/users/' + user_id
@@ -486,7 +487,7 @@ class UsersHandler(BaseHandler):
 class ImagesHandler(BaseHandler):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def get(self, image_id=''):
         self.set_json_output()
         download = self.get_argument('download','')
@@ -532,7 +533,7 @@ class ImagesHandler(BaseHandler):
 
     @asynchronous
     @coroutine
-    @authenticated
+    @web_authenticated
     def put(self, image_id=None):
         self.set_json_output()
         if image_id:
@@ -556,7 +557,7 @@ class ImagesHandler(BaseHandler):
 
     @asynchronous
     @coroutine
-    @authenticated
+    @web_authenticated
     def delete(self, image_id=None):
         resource_url = '/images/' + image_id
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
@@ -571,7 +572,7 @@ class ImagesHandler(BaseHandler):
 class ImagesUploadHandler(BaseHandler, ProcessMixin):
     @asynchronous
     @engine
-    @authenticated
+    @web_authenticated
     def post(self):
         if self.request.files:
             fileinfo = self.request.files['file'][0]
