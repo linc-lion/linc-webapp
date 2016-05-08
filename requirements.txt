@@ -2,7 +2,3 @@ pycurl==7.19.5.1
 tornado==4.2
 APScheduler
 tornadoist
-pyopenssl
-ndg-httpsclient
-pyasn1
-urllib3
