@@ -31,7 +31,9 @@ from base64 import b64encode as convertImage
 from json import loads,dumps
 import logging
 from uuid import uuid4 as uid
-import urllib
+import urllib3
+import urllib3.contrib.pyopenssl
+urllib3.contrib.pyopenssl.inject_into_urllib3()
 from zipfile import ZipFile
 from shutil import rmtree
 from datetime import datetime,timedelta
@@ -496,13 +498,17 @@ class ImagesHandler(BaseHandler):
             resource_url = '/images?download=' + download
             response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
             if response and response.code == 200:
+                http = urllib3.PoolManager()
                 respdata = loads(response.body)
                 links = respdata['data']
                 folder = self.settings['static_path']+'/'+str(uid())
                 mkdir(folder)
                 for link in links:
                     print('Downloading: '+link)
-                    urllib.urlretrieve(link,folder+'/'+link.split('/')[-1])
+                    #urllib.urlretrieve(link,folder+'/'+link.split('/')[-1])
+                    r = http.request('GET',link)
+                    with open(folder+'/'+link.split('/')[-1],'wb') as f:
+                        f.write(r.data)
                 curpath = dirname(realpath(curdir))
                 chdir(folder)
                 print('Creating zip file: '+folder+'.zip')
