@@ -5,5 +5,4 @@ tornadoist
 pyopenssl
 ndg-httpsclient
 pyasn1
-certifi
 urllib3
