@@ -28,7 +28,7 @@ angular.module('lion.guardians.login.controller', [])
 
   var user = AuthService.user;
   $scope.checkLogged = function(){
-    AuthService.chech_auth().then( function(resp){
+    AuthService.login_chech_auth().then(function(resp){
       $state.go("home");
     });
   }
