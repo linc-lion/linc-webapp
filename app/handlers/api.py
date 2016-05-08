@@ -31,14 +31,12 @@ from base64 import b64encode as convertImage
 from json import loads,dumps
 import logging
 from uuid import uuid4 as uid
-import urllib3
-import urllib3.contrib.pyopenssl
-urllib3.contrib.pyopenssl.inject_into_urllib3()
 from zipfile import ZipFile
 from shutil import rmtree
 from datetime import datetime,timedelta
 from utils.rolecheck import allowedRole
 from tornadoist import ProcessMixin
+import pycurl
 
 class ImageSetsListHandler(BaseHandler):
     @asynchronous
@@ -498,7 +496,6 @@ class ImagesHandler(BaseHandler):
             resource_url = '/images?download=' + download
             response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
             if response and response.code == 200:
-                http = urllib3.PoolManager()
                 respdata = loads(response.body)
                 links = respdata['data']
                 folder = self.settings['static_path']+'/'+str(uid())
@@ -506,9 +503,16 @@ class ImagesHandler(BaseHandler):
                 for link in links:
                     print('Downloading: '+link)
                     #urllib.urlretrieve(link,folder+'/'+link.split('/')[-1])
-                    r = http.request('GET',link)
-                    with open(folder+'/'+link.split('/')[-1],'wb') as f:
-                        f.write(r.data)
+                    #r = http.request('GET',link)
+                    #with open(folder+'/'+link.split('/')[-1],'wb') as f:
+                    #    f.write(r.data)
+                    with open(folder+'/'+link.split('/')[-1], 'wb') as f:
+                        c = pycurl.Curl()
+                        c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 6.1; it; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)')
+                        c.setopt(c.URL,link)
+                        c.setopt(c.WRITEDATA, f)
+                        c.perform()
+                        c.close()
                 curpath = dirname(realpath(curdir))
                 chdir(folder)
                 print('Creating zip file: '+folder+'.zip')
