@@ -24,7 +24,7 @@ angular.module('lion.guardians.interceptor.factory', [])
   return {
       'response': function (response) {
           if (response.status === 401) {
-              console.log("Response 401");
+              //console.log("Response 401");
           }
           return response || $q.when(response);
       },
@@ -36,10 +36,10 @@ angular.module('lion.guardians.interceptor.factory', [])
               $cookies.remove("userlogin");
               $injector.get('$window').location.reload();
               //$injector.get('$state').transitionTo('login');
-              console.log("Response Error 401");
+              //console.log("Response Error 401");
             }
             else {
-              console.log("Response Error 401 - Ignore 401");
+              //console.log("Response Error 401 - Ignore 401");
             }
           }
           if (rejection.status === 403) {
