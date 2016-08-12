@@ -158,7 +158,6 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
             duration: 2000     // milisecond
           });
           Adjust_Gallery($scope.delete_items);
-          LincServices.ClearImageGalleryCache(optionsSet.id);
           $scope.UpdateGallery();
         },
         function(error){
@@ -418,7 +417,6 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   };
 
   $scope.UpdateImages = function () {
-    LincServices.ClearImageGalleryCache($scope.imagesetId);
     LincServices.getImageGallery($scope.imagesetId).then(function (data) {
       gallery = data;
       $scope.gallery = gallery.images;

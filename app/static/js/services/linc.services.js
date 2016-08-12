@@ -18,34 +18,20 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 angular.module('lion.guardians.services', ['lion.guardians.api.services'])
 
-.factory('LincServices', ['$http', '$state', '$cacheFactory', '$q', '$cookies', 'AuthService', 'NotificationFactory', function($http, $state, $cacheFactory, $q, $cookies, AuthService, NotificationFactory) {
+.factory('LincServices', ['$http', '$state', '$q', '$cookies', 'AuthService', 'NotificationFactory', function($http, $state, $q, $cookies, AuthService, NotificationFactory) {
 
   var debug = ($state.current.data == undefined) ? false : ($state.current.data.debug || false);
-  // cache
-  var $httpcache = $cacheFactory.get('$http');
-  // default get
-  var HTTPCachedGet = function (url, config){
-    var cache = $httpcache.get(url);
+  var HTTPGet = function (url, config){
     var deferred = $q.defer();
-    /*if(cache && cache.length>1){
-      var responde = JSON.parse(cache[1]);
-      deferred.resolve(responde);
-    }
-    else{*/
-      AuthService.chech_auth().then( function(resp){
-
-        angular.merge(config, {cache: false});
-        $http.get(url, config).then(
-          function(response){
-            deferred.resolve(response.data);
-          }, function(response){
-            deferred.reject(response);
-          });
-
-      },function(err){
-        deferred.reject(err);
+    AuthService.chech_auth().then( function(resp){
+      $http.get(url, config).then( function(response){
+        deferred.resolve(response.data);
+      }, function(response){
+        deferred.reject(response);
       });
-    //}
+    },function(err){
+      deferred.reject(err);
+    });
     return deferred.promise;
   };
 
@@ -58,7 +44,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   var GetAllImageSets = function () {
     var deferred = $q.defer();
     var url = databases['imagesets'].url + '/list';
-    HTTPCachedGet(url, {}).then(function (results) {
+    HTTPGet(url, {}).then(function (results) {
       deferred.resolve(results.data);
     },
     function (error) {
@@ -87,7 +73,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     if(org !== undefined)
       url = url + '?org_id=' + org;
 
-    HTTPCachedGet(url, {}).then(function (results) {
+    HTTPGet(url, {}).then(function (results) {
       deferred.resolve(results.data);
     },
     function (error) {
@@ -113,7 +99,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   var GetAllOrganizations = function () {
     var deferred = $q.defer();
     var url = databases['organizations'].url + '/list';
-    HTTPCachedGet(url, {}).then(function (results) {
+    HTTPGet(url, {}).then(function (results) {
       deferred.resolve(results.data);
     },
     function (error) {
@@ -140,7 +126,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   var GetImageSet= function (id) {
     var deferred = $q.defer();
     var url = databases['imagesets'].url + '/' + id + '/profile';
-    HTTPCachedGet(url, {}).then(function (results) {
+    HTTPGet(url, {}).then(function (results) {
       deferred.resolve(results.data);
     },
     function (error) {
@@ -166,7 +152,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   var GetImageGallery = function (id) {
     var deferred = $q.defer();
     var url = databases['imagesets'].url + '/' + id + '/gallery';
-    HTTPCachedGet(url,{ignoreLoadingBar: true}).then(function (results) {
+    HTTPGet(url,{ignoreLoadingBar: true}).then(function (results) {
         deferred.resolve(results.data);
     },
     function (error) {
@@ -192,7 +178,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   var GetLion = function (id) {
     var deferred = $q.defer();
     var url = databases['lions'].url + '/' + id + '/profile';
-    HTTPCachedGet(url, {}).then(function (results) {
+    HTTPGet(url, {}).then(function (results) {
        deferred.resolve(results.data);
     },
     function (error) {
@@ -218,7 +204,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   var GetLocations = function (id) {
     var deferred = $q.defer();
     var url = databases['lions'].url + '/' + id + '/locations';
-    HTTPCachedGet(url,{ignoreLoadingBar: true}).then(function (results) {
+    HTTPGet(url,{ignoreLoadingBar: true}).then(function (results) {
         deferred.resolve(results.data);
     },
     function (error) {
@@ -243,7 +229,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   var Conservationists = function () {
     var deferred = $q.defer();
     var url = '/users/conservationists';
-    HTTPCachedGet(url, {}).then(function (results) {
+    HTTPGet(url, {}).then(function (results) {
        deferred.resolve(results.data);
     },
     function (error) {
@@ -290,7 +276,6 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     };
 
     AuthService.chech_auth().then( function(resp){
-
       $http(req, {ignoreLoadingBar: true}).then(function (response){
         deferred.resolve(response.data);
       },
@@ -317,18 +302,9 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
     //deferred.resolve({'filename': 'http://www.colorado.edu/conflict/peace/download/peace_essay.ZIP'});
     return deferred.promise;
   };
-  // Clean Caches
-  var ClearAllCaches = function (fn) { $httpcache.removeAll(); };
-  var ClearAllImagesetsCaches = function () { $httpcache.remove('/imagesets/list'); };
-  var ClearImageGalleryCache = function (id) { $httpcache.remove('/imagesets/' + id + '/gallery'); };
-  var ClearImagesetProfileCache = function (id) { $httpcache.remove('/imagesets/' + id + 'profile'); };
-  var ClearLionProfileCache = function (id) { $httpcache.remove('/lions/' + id + 'profile'); };
 
-  // Http without cache
   var HTTP = function (method, url, data, config, success, error) {
-
     AuthService.chech_auth().then( function(resp){
-
       if(method == 'GET'){
         $http.get(url, config).then(success, error);
       }
@@ -362,22 +338,17 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   };
   // Put ImageSet (Update Imageset)
   var PutImageSet = function (imageset_id, data, success, error){
-    ClearAllCaches();
     return HTTP('PUT', '/imagesets/' + imageset_id, data, {}, success, error);
   }
   // Post ImageSet - New Imageset
   var PostImageset = function (data, success, error){
-    ClearAllCaches();
     return HTTP('POST', '/imagesets', data, {}, success, error);
   };
 
   // Put Lion (Update Lion)
   var PutLionImageset = function (lion_id, data, success, error){
-
     AuthService.chech_auth().then( function(resp){
-
       var xsrfcookie = $cookies.get('_xsrf');
-      ClearAllCaches();
       var promises = [];
       // Imageset
       if(Object.keys(data.imageset).length){
@@ -412,10 +383,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   }
   // Post Lion - New Lion
   var PostLionImageset = function (data, success, error){
-
     AuthService.chech_auth().then( function(resp){
-
-      ClearAllCaches();
       var xsrfcookie = $cookies.get('_xsrf');
       var result_data;
       // Imageset
@@ -450,7 +418,6 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   var PutImage = function (image_id, data, success){
     return HTTP('PUT', '/images/' + image_id, data, {},
       function (result) {
-        ClearAllCaches();
         success(result.data.data);
       },
       function(error){
@@ -466,9 +433,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   }
 
   var PutImages = function (items, success){
-
     AuthService.chech_auth().then( function(resp){
-
       var xsrfcookie = $cookies.get('_xsrf');
       var promises = items.map(function(item) {
         var req = { method: 'PUT',
@@ -484,7 +449,6 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
           results.forEach( function (result, index) {
             dados.push(result.data.data);
           })
-          ClearAllCaches();
           success(dados);
         },
         function(error){
@@ -514,9 +478,7 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   };
 
   var DeleteImages = function (items, success, error){
-
     AuthService.chech_auth().then( function(resp){
-
       var xsrfcookie = $cookies.get('_xsrf');
       var promises = items.map(function(item) {
         //var deferred = $q.defer();
@@ -610,11 +572,6 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   dataFactory.LocationHistory = GetLocations;
   // Conservationists
   dataFactory.Conservationists = Conservationists;
-  // Clean Caches
-  dataFactory.ClearAllCaches = ClearAllCaches;
-  dataFactory.ClearAllImagesetsCaches = ClearAllImagesetsCaches;
-  dataFactory.ClearImagesetProfileCache = ClearImagesetProfileCache;
-  dataFactory.ClearImageGalleryCache = ClearImageGalleryCache
   // CV Request (Post Imageset w/ /request)
   dataFactory.requestCV = RequestCV;
   // Update Imageset
@@ -637,10 +594,6 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
 
   // Get List of CV Results
   dataFactory.getCVResults = GetCVResults;
-  // Post CV Results - Request Results
-//dataFactory.postCVResults = PostCVResults;
-  // Update Request CV Results
-//dataFactory.putCVResults = PutCVResults;
   // Delete CV Results and CV Request
   dataFactory.deleteCVRequest = DeleteCVRequest;
 
