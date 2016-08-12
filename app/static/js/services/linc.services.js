@@ -618,10 +618,11 @@ angular.module('lion.guardians.services', ['lion.guardians.api.services'])
   // CV Request (Post Imageset w/ /request)
   dataFactory.requestCV = RequestCV;
   // Update Imageset
+  dataFactory.Verify = PutImageSet;
   dataFactory.Associate = PutImageSet;
   dataFactory.SaveImageset = PutImageSet;
   dataFactory.CreateImageset = PostImageset;
-  dataFactory.SetMaiImagenId = PutImageSet;
+  dataFactory.SetMainImagenId = PutImageSet;
   // Images
   dataFactory.UpdateImages = PutImages;
   dataFactory.UpdateImage = PutImage;

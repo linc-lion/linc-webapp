@@ -61,7 +61,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
 
             <div class="form-group group-input">
               <div class="form-inline">
-                <div class="form-group control" ng-class="{'has-error': metadataForm.latitude.$dirty && (metadataForm.latitude.$error.pattern || metadataForm.latitude.$error.limlatlng)}">
+                <div class="form-group control div-width-100" ng-class="{'has-error': metadataForm.latitude.$dirty && (metadataForm.latitude.$error.pattern || metadataForm.latitude.$error.limlatlng)}">
                   <label class="meta_label" for="latitude">Latitude: </label>
                   <input class="form-control meta_input" type="text" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="selected.latitude" name="latitude" oninvalid="this.setCustomValidity('Please enter a valid latitude number')" oninput="setCustomValidity('')" limlatlng="90">
                   <span class="icon icon-cross" ng-click="submitted=false;" ng-show="metadataForm.latitude.$error.limlatlng && submitted"></span>
@@ -80,7 +80,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
                 </div>
               </div>
               <div class="form-inline">
-                <div class="form-group control" ng-class="{'has-error': metadataForm.longitude.$dirty && (metadataForm.longitude.$error.pattern || metadataForm.longitude.$error.limlatlng)}">
+                <div class="form-group control div-width-100" ng-class="{'has-error': metadataForm.longitude.$dirty && (metadataForm.longitude.$error.pattern || metadataForm.longitude.$error.limlatlng)}">
                   <label class="meta_label" for="longitude">Longitude: </label>
                   <input class="form-control meta_input" type="text" pattern="^[+-]?[0-9]+([\.|,][0-9]{1,20})?" ng-model="selected.longitude" name="longitude" oninvalid="this.setCustomValidity('Please enter a valid longitude number')" oninput="setCustomValidity('')" limlatlng="180">
                   <span class="icon icon-cross" ng-click="submitted=false;" ng-show="!metadataForm.latitude.$error.limlatlng && metadataForm.longitude.$error.limlatlng && submitted"></span>

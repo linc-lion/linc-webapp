@@ -42,6 +42,10 @@ For more information or to contact visit linclion.org or email tech@linclion.org
       <h4 class="h4data">{{!imageset.organization}}</h4>
     </div>
     <div class="meta-info">
+      <h4 class="h4inline">Is Verified:</h4>
+      <h4 class="h4data">{{!imageset.is_verified}}</h4>
+    </div>
+    <div class="meta-info">
       <h4 class="h4inline">Date Stamp:</h4>
       <h4 class="h4data">{{!imageset.date_stamp}}</h4>
     </div>
@@ -99,18 +103,23 @@ For more information or to contact visit linclion.org or email tech@linclion.org
     <h4 class="h4inline">Notes:</h4>
     <h4 class="h4data">{{!imageset.notes}}</h4>
   </div>
-  <div class="col-sm-3 line-left">
+  <div class="col-sm-3 line-left padding-top-12">
     <image-gallery ng-show="imageset" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="gallery_options" debug="debug" modal-is-open="is_modal_open" gallery-updated="Reload_Page()" show-privated="canShow"></image-gallery>
     <location-history ng-show="imageset" use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" type="imageset" options="location_options" location-goto="location_goto(imageset_Id)" debug="debug" modal-is-open="is_modal_open"></location-history>
     <metadata ng-if="imageset && canShow" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options" update-action="update_imageset(data)" debug="debug" modal-is-open="is_modal_open"></metadata>
     <div ng-if="imageset && canShow">
-      <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" cvresults-id="imageset.cvresults" cvrequest-id="imageset.cvrequest" ng-if="imageset.action == 'cvresults'" cv-result-erased="Change_results(change, imagesetId)" debug="debug" modal-is-open="is_modal_open"></cvresults>
+      <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset="imageset" cvresults-id="imageset.cvresults" cvrequest-id="imageset.cvrequest" ng-if="imageset.action == 'cvresults'" cv-result-erased="CVResultsErased(imagesetId)" imageset-updated="UpdateImageset(data, imagesetId)" debug="debug" modal-is-open="is_modal_open"></cvresults>
       <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest.html" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)" debug="debug" modal-is-open="is_modal_open"></cvrequest>
       <p ng-if="imageset.action == 'cvpending'">
         <!--<a class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ><img src="/static/images/waiting.gif" />CV Request Pending</a>-->
-        <a class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ><i class="icon icon-clock"></i>CV Request Pending</a>
+        <a class="btn btn-lg btn-default btn-block bnt-minwidth-180" data-animation="am-fade-and-slide-top" ><i class="icon icon-clock"></i>CV Request Pending</a>
       </p>
     </div>
-    <p ng-if="imageset && canShow"><a class="btn btn-lg btn-default btn-block" ng-disabled="!canDelete" ng-click="canDelete && Delete()" data-placement="auto top" data-trigger="hover" data-animation="am-fade-and-scale" data-html=true bs-tooltip="title_tooltip"><i class="icon icon-trash"></i> DELETE IMAGE SET</a></p>
+    <p ng-if="imageset && NeedVerify">
+      <a class="btn btn-lg btn-default btn-block bnt-minwidth-180" ng-disabled="imageset.is_verified" ng-click="Verify_Imageset()" data-placement="auto top" data-trigger="hover" data-animation="am-fade-and-scale" data-html=true bs-tooltip="title_tooltip"><i class="icon icon-flash"></i> Verify</a>
+    </p>
+    <p ng-if="imageset && canShow">
+      <a class="btn btn-lg btn-default btn-block bnt-minwidth-180" ng-disabled="!canDelete" ng-click="canDelete && Delete()" data-placement="auto top" data-trigger="hover" data-animation="am-fade-and-scale" data-html=true bs-tooltip="title_tooltip"><i class="icon icon-trash"></i> DELETE IMAGE SET</a>
+    </p>
   </div>
 </div>

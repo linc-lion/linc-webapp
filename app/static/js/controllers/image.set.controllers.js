@@ -89,6 +89,10 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   var Set_Tags = function(){
     $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.imageset.organization_id);
     $scope.canDelete = $scope.canShow && !$scope.imageset.is_primary;
+    $scope.NeedVerify = ((!$scope.imageset.is_primary && !$scope.imageset.is_verified && $scope.imageset.lion_id != null) &&
+    (($scope.imageset.organization_id != $scope.user.organization_id) || $scope.user.admin));
+
+    ($scope.user.admin || (($scope.imageset.organization_id != $scope.imageset.organization_id) && !imageset.is_verified))
     $scope.title_tooltip = {'title': ''};
     if($scope.canShow && !$scope.canDelete){
       $scope.title_tooltip = {'title': 'This is primary image set <br> of the lion ' + $scope.imageset.lion_id +
@@ -196,17 +200,18 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     start_Poller(1);
   };
 
-  $scope.Change_results = function (change, ImagesetId) {
+  $scope.CVResultsErased = function (ImagesetId) {
     $scope.imageset["action"] = 'cvrequest';
     LincServices.ClearAllImagesetsCaches();
     LincServices.ClearImagesetProfileCache(ImagesetId);
   }
 
   $scope.Dissociate = function (id){
-    var data = {'lion_id': null};
+    var data = {'lion_id': null, 'is_verified': false};
     LincServices.Associate(id, data, function(){
       $scope.imageset.lion_id = null;
       $scope.imageset.name = '-';
+      $scope.imageset.is_verified = false;
       LincServices.ClearAllCaches();
       NotificationFactory.success({
         title: "Dissociate", message:'Lion was dissociated',
@@ -241,6 +246,37 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
       return data;
     }
   }
+  $scope.UpdateImageset = function(data, ImagesetId){
+    var change = {'name': data.name, 'lion_id': data.lion_id, 'is_verified': false};
+    if((data.lion_id != null) && (data.organization != null) && (data.organization == $scope.imageset.organization)){
+      change['is_verified'] = true;
+    }
+    _.merge($scope.imageset, $scope.imageset, change);
+  }
+
+  // Set Imageset Verified
+  $scope.Verify_Imageset = function () {
+    var data = {"is_verified":true};
+    LincServices.Verify($scope.imageset.id, data, function(result){
+      $scope.imageset.is_verified = true;
+      LincServices.ClearAllCaches();
+      NotificationFactory.success({
+        title: "Image Set", message:'Image Set has been marked as verified',
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
+    },
+    function(error){
+      if($scope.debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Fail to verify Image Set',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
+      console.log(error);
+    });
+  };
 
   $scope.imageset.date_of_birth = date_format($scope.imageset.date_of_birth);
 }])
@@ -331,6 +367,10 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
 
   $scope.imagesets = _.map(imagesets, function(element, index) {
     element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
+
+    element.NeedVerify = ((!element.is_primary && !element.is_verified && element.lion_id != null) &&
+    ((element.organization_id != $scope.user.organization_id) || $scope.user.admin));
+
     var elem = {};
     if(!element.is_primary){
       if(element.cvresults)
@@ -548,11 +588,43 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     cvrequest_pendings.push({'imageset': $scope.imagesets[index], 'id': index});
     start_Poller(1);
   };
-  $scope.Change_results = function (change, ImagesetId) {
+  $scope.CVResultsErased = function (ImagesetId) {
     var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
     $scope.imagesets[index]["action"] = 'cvrequest';
-    LincServices.ClearAllImagesetsCaches();
-    LincServices.ClearImagesetProfileCache(ImagesetId);
+    LincServices.ClearAllCaches();
+  }
+
+  $scope.Verify_Imageset = function (ImagesetId) {
+    var data = {"is_verified":true};
+    LincServices.Verify(ImagesetId, data, function(){
+      var id = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
+      $scope.imagesets[id].is_verified = true;
+      LincServices.ClearAllCaches();
+      NotificationFactory.success({
+        title: "Image Set", message:'Image Set has been marked as verified',
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
+    },
+    function(error){
+      if($scope.debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Fail to verify Image Set',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
+      console.log(error);
+    });
+  };
+  $scope.UpdateImageset = function(data, ImagesetId){
+    var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
+    var imageset = $scope.imagesets[index];
+    var change = {'name': data.name, 'lion_id': data.lion_id, 'is_verified': false};
+    if((data.lion_id != null) && (data.organization != null) && (data.organization == imageset.organization)){
+      change['is_verified'] = true;
+    }
+    _.merge(imageset, imageset, change);
   }
 
   $scope.filters = $stateParams.filter ? $stateParams.filter : {};

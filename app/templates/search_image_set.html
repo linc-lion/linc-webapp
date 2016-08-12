@@ -218,10 +218,14 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <a href="" ng-click="order('is_primary')" ng-class="{'order_class': predicate === 'is_primary'}">Primary</a>
             <span class="sortorder" ng-show="predicate === 'is_primary'" ng-class="{reverse:reverse}"></span>
           </th>
-          <th>
+          <th colspan="2" class="text-center">
             <a href="" ng-click="order('action')" ng-class="{'order_class': predicate === 'action'}">Actions</a>
             <span class="sortorder" ng-show="predicate === 'action'" ng-class="{reverse:reverse}"></span>
           </th>
+          <!-- <th>
+            <a href="" ng-click="order('action')" ng-class="{'order_class': predicate === 'action'}">Actions</a>
+            <span class="sortorder" ng-show="predicate === 'action'" ng-class="{reverse:reverse}"></span>
+          </th> -->
         </tr>
       </thead>
       <tbody>
@@ -249,10 +253,15 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <i ng-if="!imageset.is_primary" class="icon icon-cross"></i>
           </td>
           <td ng-if="imageset.canShow">
-            <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset-id="imageset.id" cvresults-id="imageset.cvresults" cvrequest-id="imageset.cvrequest" type="search" ng-if="imageset.action == 'cvresults'" cv-result-erased="Change_results(change, imagesetId)" debug="debug" modal-is-open="is_modal_open"></cvresults>
+            <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset="imageset" cvresults-id="imageset.cvresults" cvrequest-id="imageset.cvrequest" type="search" ng-if="imageset.action == 'cvresults'" cv-result-erased="CVResultsErased(imagesetId)" imageset-updated="UpdateImageset(data, imagesetId)" debug="debug" modal-is-open="is_modal_open"></cvresults>
             <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest.html" form-size="lg" imageset-id="imageset.id" type="search" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)" debug="debug" modal-is-open="is_modal_open"></cvrequest>
             <!--<span ng-if="imageset.action == 'cvpending'">CV Request<img ng-src="/static/images/waiting.gif" disabled/> pending</span>-->
             <span ng-if="imageset.action == 'cvpending'"><i class="icon icon-clock"></i> CV Request pending</span>
+          </td>
+          <td ng-if="imageset.NeedVerify">
+            <button class="btn btn-primary btn-sm" data-animation="am-fade-and-slide-top" ng-click="Verify_Imageset(imageset.id)" ng-if="!imageset.is_verified">
+              <i class="icon icon-flash"></i>Verify
+            </button>
           </td>
         </tr>
       </tbody>

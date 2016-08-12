@@ -27,15 +27,15 @@ angular.module('lion.guardians.metadata.directive', [])
     template: function(element, attrs) {
       switch (attrs.type) { //view selection. Put type='edit' or type=''
         case 'add_image_set':
-          return '<p><a class="btn btn-lg btn-default" ng-click="showNew()"><i class="icon icon-circle-with-plus"></i> ADD NEW IMAGE SET</a></p>';
+          return '<p><a class="btn btn-lg btn-default btn-home" ng-click="showNew()"><i class="icon icon-circle-with-plus"></i> ADD NEW IMAGE SET</a></p>';
         case 'add_lion':
-          return '<p><a class="btn btn-lg btn-default" ng-click="showNew()"><i class="icon icon-circle-with-plus"></i> ADD NEW LION</a></p>';
+          return '<p><a class="btn btn-lg btn-default btn-home" ng-click="showNew()"><i class="icon icon-circle-with-plus"></i> ADD NEW LION</a></p>';
         case 'side_lion':
           return '<a ng-click="showNew();">Add new Lion</a>';
         case 'side_image_set':
           return '<a ng-click="showNew();">Add new Image Set</a>';
         default:
-          return '<p><a class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ng-click="showEdit()"><i class="icon icon-pencil"></i> EDIT METADATA</a></p>';
+          return '<p><a class="btn btn-lg btn-default btn-block bnt-minwidth-180" data-animation="am-fade-and-slide-top" ng-click="showEdit()"><i class="icon icon-pencil"></i> EDIT METADATA</a></p>';
       }
     },
     scope: {
