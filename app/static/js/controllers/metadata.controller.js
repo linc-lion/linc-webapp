@@ -133,8 +133,8 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
           "uploading_user_id": selected.uploading_user_id,
           "uploading_organization_id": selected.organization_id,
           "owner_organization_id": selected.organization_id,
-          "is_primary": null,
-          "is_verified": false
+          "is_primary": true,
+          "is_verified": true
         }
         var lion_data = {
           "name": selected.name,

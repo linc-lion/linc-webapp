@@ -62,7 +62,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     _.map($scope.Selecteds, function (photo){
       photo.select = false;
     });
-    $scope.itemsPerPage = Math.max(9, $scope.itemsPerPage);
+    $scope.itemsPerPage = Math.max(100, $scope.itemsPerPage);
     $scope.FilterSel.Type = 'all';
     $scope.FilterSel.isCover = false;
     $scope.Properties[0].checked = true;
@@ -191,7 +191,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
       });
       removed.push(remove);
     });
-    $scope.itemsPerPage = Math.min(9, $scope.gallery.length);
+    $scope.itemsPerPage = Math.min(100, $scope.gallery.length);
     Reset_Filters();
   };
   // Click in Photo - Show Big Image
@@ -223,15 +223,15 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
   }
   // Pagination
   // Calc initial Itens per Page
-  $scope.itemsPerPage = Math.min(9, $scope.gallery.length);
+  $scope.itemsPerPage = Math.min(100, $scope.gallery.length);
   // Recalc Itens per page on click properties or image types
   $scope.calc_itemspage = function (){
-    $scope.itemsPerPage = Math.min(9, $scope.filtered_gallery.length);
+    $scope.itemsPerPage = Math.min(100, $scope.filtered_gallery.length);
   }
   // Increase Page Numbers on click
   $scope.increase_pages= function (){
     var diff = $scope.filtered_gallery.length - $scope.itemsPerPage;
-    $scope.itemsPerPage += Math.min(9, diff);
+    $scope.itemsPerPage += Math.min(100, diff);
   }
   // Click on the images check mark
   var lastSelIndex = -1;
@@ -333,7 +333,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
     if($scope.Selecteds.length){
       var image = $scope.Selecteds[0];
       var data = {"main_image_id": $scope.Selected.isCover ? image.id : null};
-      LincServices.SetMaiImagenId($scope.imagesetId, data, function(result){
+      LincServices.SetMainImagenId($scope.imagesetId, data, function(result){
         _.forEach($scope.paginated_gallery, function(photo, index) {
           if(image == photo){
             photo.cover = (data.main_image_id == null) ? false : true;
@@ -370,7 +370,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
 
           if(!$scope.Selected.isPublic && photo.cover){
             var data = {"main_image_id": null};
-            LincServices.SetMaiImagenId($scope.imagesetId, data, function(result){
+            LincServices.SetMainImagenId($scope.imagesetId, data, function(result){
               photo.cover = false;
             });
           }
@@ -423,7 +423,7 @@ angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image
       gallery = data;
       $scope.gallery = gallery.images;
       $scope.imagesetId = optionsSet.id;
-      $scope.itemsPerPage = Math.min(9, $scope.gallery.length);
+      $scope.itemsPerPage = Math.min(100, $scope.gallery.length);
       console.log('updated: ' + $scope.ImagesChanged);
     });
     $scope.UpdateGallery();

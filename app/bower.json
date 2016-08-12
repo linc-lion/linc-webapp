@@ -36,7 +36,7 @@
     "angularUtils-pagination": "angular-utils-pagination#~0.9.1",
     "angular-notify": "~2.5.0",
     "angular-cookies": "~1.4.7",
-    "angular-messages": "~1.4.8",
+    "angular-messages": "~1.4.7",
     "ui-select": "angular-ui-select#~0.14.2"
   }
 }

@@ -20,7 +20,7 @@
 
 angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults.directive'])
 
-.controller('CVResultsCtrl', ['$scope', '$state', '$timeout', '$interval', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'imagesetId', 'cvrequestId', 'cvresultsId', 'data_cvresults', function ($scope, $state, $timeout, $interval, $uibModalInstance, LincServices, NotificationFactory, imagesetId, cvrequestId, cvresultsId, data_cvresults) {
+.controller('CVResultsCtrl', ['$scope', '$state', '$timeout', '$interval', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'imageset', 'cvrequestId', 'cvresultsId', 'data_cvresults', function ($scope, $state, $timeout, $interval, $uibModalInstance, LincServices, NotificationFactory, imageset, cvrequestId, cvresultsId, data_cvresults) {
 
   $scope.title = 'CV Results (CV Request Id: '+ data_cvresults.req_id + ' - Status: ' + data_cvresults.status + ')';
   $scope.content = 'Form';
@@ -64,12 +64,16 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
   }
 
   $scope.Close = function () {
-    $uibModalInstance.dismiss("close");
+    $uibModalInstance.close();
   };
   $scope.ClearResults= function () {
     LincServices.deleteCVRequest(cvrequestId, function(){
-      console.log("Results cleared");
-      $uibModalInstance.close(true);
+      var data = {'lion_id': null, 'is_verified': false};
+      LincServices.Associate(imageset.id, data, function(result){
+        $scope.Updated({'lion_id': null, 'name': '-'});
+        $scope.EraseResults();
+        $uibModalInstance.close();
+      });
     });
   };
   $scope.Associate = function (id){
@@ -78,9 +82,13 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
     });
     var index = _.indexOf($scope.cvresults, _.find($scope.cvresults, {id: id}));
     var data = {'lion_id': id};
-    LincServices.Associate(imagesetId, data, function(){
+    if(imageset.organization === $scope.cvresults[index].organization){
+      data['is_verified'] = true;
+    }
+    LincServices.Associate(imageset.id, data, function(result){
       $scope.cvresults[index].associated = true;
       LincServices.ClearAllCaches();
+      $scope.Updated({'lion_id': id, 'name' : $scope.cvresults[index].name, 'organization' : $scope.cvresults[index].organization});
       NotificationFactory.success({
         title: "Associate", message:'Lion (id: ' + id + ') was associated',
         position: "right", // right, left, center
@@ -101,11 +109,12 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
 
   $scope.Dissociate = function (id){
     var index = _.indexOf($scope.cvresults, _.find($scope.cvresults, {id: id}));
-    var data = {'lion_id': null};
-    LincServices.Associate(imagesetId, data, function(){
+    var data = {'lion_id': null, 'is_verified': false};
+    LincServices.Associate(imageset.id, data, function(result){
       $scope.cvresults[index].associated = false;
       LincServices.ClearAllImagesetsCaches();
-      LincServices.ClearImagesetProfileCache(imagesetId);
+      LincServices.ClearImagesetProfileCache(imageset.id);
+      $scope.Updated({'lion_id': null, 'name': '-'});
       NotificationFactory.success({
         title: "Dissociate", message:'Lion (id: ' + id + ') was dissociated',
         position: "right", // right, left, center

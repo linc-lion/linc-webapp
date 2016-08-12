@@ -24,7 +24,7 @@ angular.module('lion.guardians.image.gallery.directive', [])
   return {
     transclude: true,
     restrict: 'EA',
-    template: '<p><a class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-camera"></i> IMAGE GALLERY</a></p>',
+    template: '<p><a class="btn btn-lg btn-default btn-block bnt-minwidth-180" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-camera"></i> IMAGE GALLERY</a></p>',
     scope: {
       useTemplateUrl: '@',
       useCtrl: '@',

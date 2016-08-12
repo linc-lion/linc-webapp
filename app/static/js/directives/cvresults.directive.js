@@ -27,21 +27,22 @@ angular.module('lion.guardians.cvresults.directive', [])
     template: function(element, attrs) {
       switch (attrs.type) { //view selection. Put type='new' or type='search'
         case 'search':
-          return '<button class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-flash"></i>CV Results</button>';
+          return '<button class="btn btn-primary btn-sm" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-flash"></i>CV Results</button>';
         default:
-          return '<p><a class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-flash"></i> VIEW CV RESULTS</a></p>';
+          return '<p><a class="btn btn-lg btn-default btn-block bnt-minwidth-180" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-flash"></i> VIEW CV RESULTS</a></p>';
       }
     },
     scope: {
       useTemplateUrl: '@',
       useCtrl: '@',
       formSize: '@',
-      imagesetId: '=',
+      imageset: '=',
       cvresultsId: '=',
       cvrequestId: '=',
       cvResultErased: '&',
       debug: '=',
-      modalIsOpen: '='
+      modalIsOpen: '=',
+      imagesetUpdated:'&',
     },
     link: function(scope, element, attrs) {
       scope.show = function(){
@@ -49,6 +50,8 @@ angular.module('lion.guardians.cvresults.directive', [])
         scope.modalIsOpen = true;
         var modalScope = scope.$new();
         modalScope.debug = scope.debug;
+        modalScope.ResultsErased = false;
+        modalScope.Associated_Data = null;
         var modalInstance = $uibModal.open({
           animation: true,
           backdrop  : 'static',
@@ -57,8 +60,8 @@ angular.module('lion.guardians.cvresults.directive', [])
           size: scope.formSize,
           scope: modalScope,
           resolve: {
-            imagesetId: function () {
-              return scope.imagesetId;
+            imageset: function () {
+              return scope.imageset;
             },
             cvrequestId: function () {
               return scope.cvrequestId;
@@ -85,11 +88,20 @@ angular.module('lion.guardians.cvresults.directive', [])
             console.log("CV Results Poller canceled");
           }
         };
-        modalInstance.result.then(function (result) {
+        modalScope.Updated = function (data) {
+          modalScope.Associated_Data = data;
+        };
+        modalScope.EraseResults = function () {
+          modalScope.ResultsErased = true;
+        };
+        modalInstance.result.then(function () {
           modalScope.cancel_Poller();
           scope.modalIsOpen = false;
-          scope.cvResultErased({change: result, imagesetId: scope.imagesetId});
-          console.log('Modal ok' + result);
+          if(modalScope.ResultsErased)
+            scope.cvResultErased({'imagesetId': scope.imageset.id});
+          if(modalScope.Associated_Data != null)
+            scope.imagesetUpdated({'data': modalScope.Associated_Data, 'imagesetId': scope.imageset.id});
+          console.log('Modal ok');
         }, function () {
           modalScope.cancel_Poller();
           scope.modalIsOpen = false;
