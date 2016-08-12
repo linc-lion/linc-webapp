@@ -43,7 +43,8 @@ For more information or to contact visit linclion.org or email tech@linclion.org
     </div>
     <div class="meta-info">
       <h4 class="h4inline">Is Verified:</h4>
-      <h4 class="h4data">{{!imageset.is_verified}}</h4>
+      <h4 ng-hide="!imageset.is_verified" class="h4data">Yes</h4>
+      <h4 ng-hide="imageset.is_verified" class="h4data">No</h4>
     </div>
     <div class="meta-info">
       <h4 class="h4inline">Date Stamp:</h4>

@@ -45,6 +45,11 @@ angular.module('lion.guardians.cvrequest.controller', ['lion.guardians.cvrequest
     return label;
   }
 
+  $scope.show_photo = function(url){
+    var win = window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=100, left=100, width=600, height=600");
+    win.focus();
+  }
+
   $scope.lions = _.map(lions, function(element, index) {
     var elem = {};
     var TAGS = [];

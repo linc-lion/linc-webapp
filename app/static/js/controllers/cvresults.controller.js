@@ -28,6 +28,12 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
   $scope.cvresults = data_cvresults.cvresults;
 
   var count = 0;
+
+  $scope.show_photo = function(url){
+    var win = window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=100, left=100, width=600, height=600");
+    win.focus();
+  }
+
   var Poller = function () {
     LincServices.getCVResults(cvresultsId).then(function(response){
       $scope.cvresults = response.cvresults;

@@ -570,11 +570,6 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     return label;
   }
 
-  // Pagination scopes
-  var cur_per_page = imagesets_filters.currentPage;
-  $scope.changeItensPerPage();
-  $scope.currentPage = cur_per_page;
-
   $scope.CVReqSuccess = function (imageset_Id, requestObj) {
     var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: imageset_Id}));
     $scope.imagesets[index].action = 'cvpending';
@@ -635,6 +630,13 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     $scope.isNameIdCollapsed = $scope.filters.hasOwnProperty('isNameIdCollapsed') ? $scope.filters.isNameIdCollapsed : default_filters.isNameIdCollapsed;
     $scope.isFeaturesCollapsed = $scope.filters.hasOwnProperty('isFeaturesCollapsed') ? $scope.filters.isFeaturesCollapsed : default_filters.isFeaturesCollapsed;
     $scope.isGenderCollapsed = $scope.filters.hasOwnProperty('isGenderCollapsed') ? $scope.filters.isGenderCollapsed : default_filters.isGenderCollapsed;
+    $scope.changeItensPerPage();
+  }
+  else{
+      // Pagination scopes
+    var cur_per_page = imagesets_filters.currentPage;
+    $scope.changeItensPerPage();
+    $scope.currentPage = cur_per_page;
   }
 
 }]);
