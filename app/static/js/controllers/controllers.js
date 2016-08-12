@@ -121,6 +121,10 @@ angular.module('lion.guardians.controllers', ['lion.guardians.admin.controller',
             return;
           }
         }
+        if(piece.length==1 && piece[0]==="*"){
+          contain = true;
+          return;
+        }
       });
       return contain; //(contain || (value.id === id));
     });
