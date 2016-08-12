@@ -87,7 +87,6 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
     }
     LincServices.Associate(imageset.id, data, function(result){
       $scope.cvresults[index].associated = true;
-      LincServices.ClearAllCaches();
       $scope.Updated({'lion_id': id, 'name' : $scope.cvresults[index].name, 'organization' : $scope.cvresults[index].organization});
       NotificationFactory.success({
         title: "Associate", message:'Lion (id: ' + id + ') was associated',
@@ -112,8 +111,6 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
     var data = {'lion_id': null, 'is_verified': false};
     LincServices.Associate(imageset.id, data, function(result){
       $scope.cvresults[index].associated = false;
-      LincServices.ClearAllImagesetsCaches();
-      LincServices.ClearImagesetProfileCache(imageset.id);
       $scope.Updated({'lion_id': null, 'name': '-'});
       NotificationFactory.success({
         title: "Dissociate", message:'Lion (id: ' + id + ') was dissociated',

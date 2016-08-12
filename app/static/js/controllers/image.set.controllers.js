@@ -169,7 +169,6 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        LincServices.ClearAllCaches();
         $rootScope.remove_history('imageset', $scope.imageset.id);
         $state.go("searchimageset");
       },
@@ -202,8 +201,6 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
 
   $scope.CVResultsErased = function (ImagesetId) {
     $scope.imageset["action"] = 'cvrequest';
-    LincServices.ClearAllImagesetsCaches();
-    LincServices.ClearImagesetProfileCache(ImagesetId);
   }
 
   $scope.Dissociate = function (id){
@@ -212,7 +209,6 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
       $scope.imageset.lion_id = null;
       $scope.imageset.name = '-';
       $scope.imageset.is_verified = false;
-      LincServices.ClearAllCaches();
       NotificationFactory.success({
         title: "Dissociate", message:'Lion was dissociated',
         position: "right", // right, left, center
@@ -259,7 +255,6 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     var data = {"is_verified":true};
     LincServices.Verify($scope.imageset.id, data, function(result){
       $scope.imageset.is_verified = true;
-      LincServices.ClearAllCaches();
       NotificationFactory.success({
         title: "Image Set", message:'Image Set has been marked as verified',
         position: "right", // right, left, center
@@ -591,7 +586,6 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   $scope.CVResultsErased = function (ImagesetId) {
     var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
     $scope.imagesets[index]["action"] = 'cvrequest';
-    LincServices.ClearAllCaches();
   }
 
   $scope.Verify_Imageset = function (ImagesetId) {
@@ -599,7 +593,6 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     LincServices.Verify(ImagesetId, data, function(){
       var id = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
       $scope.imagesets[id].is_verified = true;
-      LincServices.ClearAllCaches();
       NotificationFactory.success({
         title: "Image Set", message:'Image Set has been marked as verified',
         position: "right", // right, left, center

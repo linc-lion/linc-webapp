@@ -96,7 +96,6 @@ angular.module('lion.guardians.lions.controllers', [])
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
-        LincServices.ClearAllCaches();
         $rootScope.remove_history('lion', $scope.lion.id);
         $state.go("searchlion");
       },
@@ -123,7 +122,6 @@ angular.module('lion.guardians.lions.controllers', [])
     var data = {'lion_id': null};
     LincServices.Associate(id, data, function(){
       $scope.lion.primary_image_set_id = null;
-      LincServices.ClearAllCaches();
       NotificationFactory.success({
         title: "Dissociate", message:'Lion was dissociated',
         position: "right", // right, left, center
