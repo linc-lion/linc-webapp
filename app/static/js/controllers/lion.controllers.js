@@ -20,7 +20,7 @@
 
 angular.module('lion.guardians.lions.controllers', [])
 
-.controller('LionCtrl', ['$scope', '$rootScope', '$state', '$uibModal', 'NotificationFactory', 'LincServices', 'AuthService', 'organizations', 'lion', function ($scope, $rootScope, $state, $uibModal, NotificationFactory, LincServices, AuthService, organizations, lion) {
+.controller('LionCtrl', ['$scope', '$rootScope', '$state', '$uibModal', '$bsTooltip', 'NotificationFactory', 'LincServices', 'AuthService', 'organizations', 'lion', function ($scope, $rootScope, $state, $uibModal, $bsTooltip, NotificationFactory, LincServices, AuthService, organizations, lion) {
 
   $scope.is_modal_open = false;
   $scope.lion = lion;
@@ -33,6 +33,7 @@ angular.module('lion.guardians.lions.controllers', [])
     });
     return label;
   }
+  $scope.tooltip_need_verifiy = {'title': 'There are Image sets pending of verification', 'checked': true};
 
   var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left', 'EYE_DAMAGE_RIGHT': 'Right'};
   var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
@@ -44,6 +45,10 @@ angular.module('lion.guardians.lions.controllers', [])
 
   var Set_Tags = function(){
     $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.lion.organization_id);
+
+    //$scope.ShowIsVerified =
+    //(($scope.lion.organization_id === $scope.user.organization_id) || $scope.user.admin) ? $scope.lion.is_verified : true;
+
     var TAGS = [];
     try{
       TAGS = JSON.parse($scope.lion.tags);
@@ -156,8 +161,9 @@ angular.module('lion.guardians.lions.controllers', [])
   $scope.lion.date_of_birth = date_format($scope.lion.date_of_birth);
 }])
 
-.controller('SearchLionCtrl', ['$scope', '$timeout', '$stateParams', '$bsTooltip', 'lions', 'lion_filters', 'default_filters', function ($scope, $timeout, $stateParams, $bsTooltip, lions, lion_filters, default_filters) {
+.controller('SearchLionCtrl', ['$scope', '$timeout', '$stateParams', '$bsTooltip', 'AuthService', 'lions', 'lion_filters', 'default_filters', function ($scope, $timeout, $stateParams, $bsTooltip, AuthService, lions, lion_filters, default_filters) {
 
+  $scope.user = AuthService.user;
   var tag_labels    = {'EYE_DAMAGE_BOTH': 'Eye Damage Both', 'EYE_DAMAGE_LEFT': 'Eye Damage Left', 'EYE_DAMAGE_RIGHT': 'Eye Damage Right', 'TEETH_BROKEN_CANINE_LEFT': 'Broken Teeth Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Broken Teeth Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Broken Teeth Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Broken Teeth Incisor Right',
   'EAR_MARKING_BOTH': 'Ear Marking Both', 'EAR_MARKING_LEFT': 'Ear Marking Left', 'EAR_MARKING_RIGHT': 'Ear Marking Right',
   'MOUTH_MARKING_BACK': 'Mounth Marking Back', 'MOUTH_MARKING_FRONT': 'Mounth Marking Front', 'MOUTH_MARKING_LEFT': 'Mounth Marking Left', 'MOUTH_MARKING_RIGHT': 'Mounth Marking Right', 'TAIL_MARKING_MISSING_TUFT': 'Tail Marking Missing Tuft', 'NOSE_COLOUR_BLACK': 'Nose Color Black', 'NOSE_COLOUR_PATCHY': 'Nose Color Patchy', 'NOSE_COLOUR_PINK': 'Nose Color Pink',
@@ -179,6 +185,9 @@ angular.module('lion.guardians.lions.controllers', [])
   }
 
   $scope.lions = _.map(lions, function(element, index) {
+
+    element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
+
     var elem = {};
     var TAGS = [];
     if(!element.gender) element.gender = 'unknown';
@@ -191,7 +200,7 @@ angular.module('lion.guardians.lions.controllers', [])
     elem['features_tooltip'] = {'title': tag_features, 'checked': true};
     elem['features'] = (tag_features.length > 0) ? true : false;
     elem['tag_features'] = tag_features;
-
+    elem['need_verifiy_tooltip'] = {'title': 'There are Image sets pending of verification', 'checked': true};
     return _.extend({}, element, elem);
   });
 
