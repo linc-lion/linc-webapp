@@ -232,9 +232,9 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <a data-animation="am-flip-x" placement="top-center" bs-tooltip="lion.features_tooltip"><i class="icon icon-notification"></i></a>
           </td>
           <td ng-if="!lion.features" class="text-center"></td>
-          <td class="text-center">
+          <td class="text-center" ng-show="lion.canShow">
             <i ng-if="lion.is_verified" class="icon icon-check"></i>
-            <i ng-if="!lion.is_verified" class="icon icon-cross"></i>
+            <i ng-if="!lion.is_verified" class="icon icon-cross" bs-tooltip="lion.need_verifiy_tooltip"></i>
           </td>
         </tr>
       </tbody>
