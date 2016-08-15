@@ -380,10 +380,7 @@ angular.module('lion.guardians.lions.controllers', [])
     }
     return label;
   }
-  var cur_per_page = lion_filters.currentPage;
-  $scope.changeItensPerPage();
-  //$scope.currentPage = 0;
-  $scope.currentPage = cur_per_page;
+
 
   $scope.filters = $stateParams.filter ? $stateParams.filter : {};
 
@@ -397,6 +394,11 @@ angular.module('lion.guardians.lions.controllers', [])
     $scope.isNameIdCollapsed = $scope.filters.hasOwnProperty('isNameIdCollapsed') ? $scope.filters.isNameIdCollapsed : default_filters.isNameIdCollapsed;
     $scope.isFeaturesCollapsed = $scope.filters.hasOwnProperty('isFeaturesCollapsed') ? $scope.filters.isFeaturesCollapsed : default_filters.isFeaturesCollapsed;
     $scope.isGenderCollapsed = $scope.filters.hasOwnProperty('isGenderCollapsed') ? $scope.filters.isGenderCollapsed : default_filters.isGenderCollapsed;
+  }
+  else{
+    var cur_per_page = lion_filters.currentPage;
+    $scope.changeItensPerPage();
+    $scope.currentPage = cur_per_page;
   }
 
 }]);
