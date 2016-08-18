@@ -29,7 +29,7 @@ angular.module('lion.guardians.cvresults.directive', [])
         case 'search':
           return '<button class="btn btn-primary btn-sm" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-flash"></i>CV Results</button>';
         default:
-          return '<p><a class="btn btn-lg btn-default btn-block bnt-minwidth-180" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-flash"></i> VIEW CV RESULTS</a></p>';
+          return '<p><a class="btn btn-lg btn-default btn-block btn-minwidth-180" data-animation="am-fade-and-slide-top" ng-click="show()"><i class="icon icon-flash"></i> VIEW CV RESULTS</a></p>';
       }
     },
     scope: {

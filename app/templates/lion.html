@@ -38,7 +38,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
       <h4 class="h4inline">Organization:</h4>
       <h4 class="h4data">{{!lion.organization}}</h4>
     </div>
-    <div class="meta-info" ng-show="canShow">
+    <div class="meta-info">
       <h4 class="h4inline">Verified:</h4>
       <h4 ng-hide="!lion.is_verified" class="h4data">Yes</h4>
       <h4 ng-hide="lion.is_verified" class="h4data" bs-tooltip="tooltip_need_verifiy">No</h4>
@@ -105,10 +105,10 @@ For more information or to contact visit linclion.org or email tech@linclion.org
     <image-gallery ng-show="lion" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="gallery_options" debug="debug" modal-is-open="is_modal_open" gallery-updated="Reload_Page()" show-privated="canShow"></image-gallery>
     <location-history ng-show="lion" use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" type="lion" options="location_options" location-goto="location_goto(imageset_Id)" debug="debug" modal-is-open="is_modal_open"></location-history>
     <metadata ng-if="lion && canShow" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options" update-action="update_lion(data)" debug="debug" modal-is-open="is_modal_open"></metadata>
-    <p ng-click="goto_search_imageset()"><a class="btn btn-lg btn-default btn-block bnt-minwidth-180">
+    <p ng-click="goto_search_imageset()"><a class="btn btn-lg btn-default btn-block btn-minwidth-180">
       <i class="icon icon-images"></i> LION IMAGE SETS</a>
     </p>
-    <p ng-if="lion && canShow"><a ng-click="Delete()" class="btn btn-lg btn-default btn-block bnt-minwidth-180">
+    <p ng-if="lion && canShow"><a ng-click="Delete()" class="btn btn-lg btn-default btn-block btn-minwidth-180">
       <i class="icon icon-trash"></i> DELETE LION</a>
     </p>
   </div>

@@ -98,6 +98,11 @@ class UploadImagesHandler(BaseHandler):
     def get(self):
         self.render('upload_images.html')
 
+class VerifyImageSetHandler(BaseHandler):
+    @web_authenticated
+    def get(self):
+        self.render('verify_imageset.tpl.html')
+
 class PageAdminHandler(BaseHandler):
     @web_authenticated
     @allowedRole('admin')

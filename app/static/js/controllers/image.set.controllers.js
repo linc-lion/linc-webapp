@@ -88,11 +88,10 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
 
   var Set_Tags = function(){
     $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.imageset.organization_id);
-    $scope.canDelete = $scope.canShow && !$scope.imageset.is_primary;
-    $scope.NeedVerify = ((!$scope.imageset.is_primary && !$scope.imageset.is_verified && $scope.imageset.lion_id != null) &&
-    (($scope.imageset.organization_id != $scope.user.organization_id) || $scope.user.admin));
+    $scope.canDelete = ($scope.canShow && !$scope.imageset.is_primary);
+    $scope.canDisassociate = (!$scope.imageset.is_primary && $scope.imageset.lion_id && ($scope.user.organization_id == $scope.imageset.organization_id));
+    $scope.NeedVerify = (!$scope.imageset.is_primary && $scope.imageset.lion_id && ($scope.user.organization_id == $scope.imageset.lions_org_id) && ($scope.user.organization_id != $scope.imageset.organization_id));
 
-    ($scope.user.admin || (($scope.imageset.organization_id != $scope.imageset.organization_id) && !imageset.is_verified))
     $scope.title_tooltip = {'title': ''};
     if($scope.canShow && !$scope.canDelete){
       $scope.title_tooltip = {'title': 'This is primary image set <br> of the lion ' + $scope.imageset.lion_id +
@@ -203,14 +202,16 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     $scope.imageset["action"] = 'cvrequest';
   }
 
-  $scope.Dissociate = function (id){
+  $scope.Disassociate = function (id){
     var data = {'lion_id': null, 'is_verified': false};
     LincServices.Associate(id, data, function(){
       $scope.imageset.lion_id = null;
       $scope.imageset.name = '-';
+      $scope.imageset.lions_org_id = null;
       $scope.imageset.is_verified = false;
+      Set_Tags();
       NotificationFactory.success({
-        title: "Dissociate", message:'Lion was dissociated',
+        title: "Disassociate", message:'Lion was disassociated',
         position: "right", // right, left, center
         duration: 2000     // milisecond
       });
@@ -218,7 +219,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     function(error){
       if($scope.debug || (error.status != 401 && error.status != 403)){
         NotificationFactory.error({
-          title: "Error", message: 'Unable to Dissociate the Lion',
+          title: "Error", message: 'Unable to Disassociate the Lion',
           position: 'right', // right, left, center
           duration: 5000   // milisecond
         });
@@ -248,13 +249,40 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
       change['is_verified'] = true;
     }
     _.merge($scope.imageset, $scope.imageset, change);
+    Set_Tags();
   }
 
+  var modal = null;
+  $scope.Verify = function (imageset) {
+    $scope.modalTitle = 'Verify Associated Image Set';
+    $scope.imgset = imageset;
+    modal = $uibModal.open({
+        templateUrl: 'verifyimageset.html',
+        scope:$scope
+    });
+    modal.result.then(function (result) {
+    },
+    function (){
+    });
+  };
+
+  $scope.ModalCancel = function(){
+    modal.dismiss();
+  }
   // Set Imageset Verified
-  $scope.Verify_Imageset = function () {
-    var data = {"is_verified":true};
-    LincServices.Verify($scope.imageset.id, data, function(result){
+  $scope.ModalOk = function (opt) {
+    modal.close();
+    if(opt)
+      $scope.Verify_Imageset($scope.imgset.id);
+    else
+      $scope.Disassociate($scope.imgset.id);
+  };
+
+  $scope.Verify_Imageset = function (id) {
+    var data = {"is_verified": true};
+    LincServices.Verify(id, data, function(result){
       $scope.imageset.is_verified = true;
+      Set_Tags();
       NotificationFactory.success({
         title: "Image Set", message:'Image Set has been marked as verified',
         position: "right", // right, left, center
@@ -276,7 +304,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   $scope.imageset.date_of_birth = date_format($scope.imageset.date_of_birth);
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$stateParams', '$bsTooltip', 'NotificationFactory', 'LincServices', 'AuthService', 'PollerService', 'imagesets_filters', 'default_filters', 'imagesets', function ($scope, $timeout, $interval, $stateParams, $bsTooltip, NotificationFactory, LincServices, AuthService, PollerService, imagesets_filters, default_filters, imagesets) {
+.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$uibModal', '$stateParams', '$bsTooltip', 'NotificationFactory', 'LincServices', 'AuthService', 'PollerService', 'imagesets_filters', 'default_filters', 'imagesets', function ($scope, $timeout, $interval, $uibModal, $stateParams, $bsTooltip, NotificationFactory, LincServices, AuthService, PollerService, imagesets_filters, default_filters, imagesets) {
 
   $scope.user = AuthService.user;
   var tag_labels    = {'EYE_DAMAGE_BOTH': 'Eye Damage Both', 'EYE_DAMAGE_LEFT': 'Eye Damage Left', 'EYE_DAMAGE_RIGHT': 'Eye Damage Right', 'TEETH_BROKEN_CANINE_LEFT': 'Broken Teeth Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Broken Teeth Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Broken Teeth Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Broken Teeth Incisor Right',
@@ -363,8 +391,9 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   $scope.imagesets = _.map(imagesets, function(element, index) {
     element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
 
-    element.NeedVerify = ((!element.is_primary && !element.is_verified && element.lion_id != null) &&
-    ((element.organization_id != $scope.user.organization_id) || $scope.user.admin));
+    element.NeedVerify = (!element.is_primary && element.lion_id &&
+      ($scope.user.organization_id == element.lions_org_id) &&
+      ($scope.user.organization_id != element.organization_id));
 
     var elem = {};
     if(!element.is_primary){
@@ -583,8 +612,33 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     $scope.imagesets[index]["action"] = 'cvrequest';
   }
 
+  var modal = null;
+  $scope.Verify = function (imageset) {
+    $scope.imgset = imageset;
+    $scope.modalTitle = 'Verify Associated Image Set';
+    modal = $uibModal.open({
+        templateUrl: 'verifyimageset.html',
+        scope:$scope
+    });
+    modal.result.then(function (result) {
+    },
+    function (){
+    });
+  };
+
+  $scope.ModalCancel = function(){
+    modal.dismiss();
+  }
+  // Set Imageset Verified
+  $scope.ModalOk = function (opt) {
+    modal.close();
+    if(opt)
+      $scope.Verify_Imageset($scope.imgset.id);
+    else
+      $scope.Disassociate($scope.imgset.id);
+  };
   $scope.Verify_Imageset = function (ImagesetId) {
-    var data = {"is_verified":true};
+    var data = {"is_verified": true};
     LincServices.Verify(ImagesetId, data, function(){
       var id = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
       $scope.imagesets[id].is_verified = true;
@@ -605,6 +659,34 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
       console.log(error);
     });
   };
+
+  $scope.Disassociate = function (ImagesetId){
+    var data = {'lion_id': null, 'is_verified': false};
+    LincServices.Associate(ImagesetId, data, function(){
+      var id = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
+      $scope.imagesets[id].lion_id = null;
+      $scope.imagesets[id].name = '-';
+      $scope.imagesets[id].lions_org_id = null;
+      $scope.imagesets[id].is_verified = false;
+      $scope.imagesets[id].NeedVerify = false;
+      NotificationFactory.success({
+        title: "Disassociate", message:'Lion was disassociated',
+        position: "right", // right, left, center
+        duration: 2000     // milisecond
+      });
+    },
+    function(error){
+      if($scope.debug || (error.status != 401 && error.status != 403)){
+        NotificationFactory.error({
+          title: "Error", message: 'Unable to Disassociate the Lion',
+          position: 'right', // right, left, center
+          duration: 5000   // milisecond
+        });
+      }
+      console.log(error);
+    });
+  };
+
   $scope.UpdateImageset = function(data, ImagesetId){
     var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
     var imageset = $scope.imagesets[index];

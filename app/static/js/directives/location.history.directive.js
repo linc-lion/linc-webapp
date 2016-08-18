@@ -27,9 +27,9 @@ angular.module('lion.guardians.location.history.directive', [])
         template: function(element, attrs) {
           switch (attrs.type) {
             case 'lion':
-              return '<p><a class="btn btn-lg btn-default btn-block bnt-minwidth-180" data-animation="am-fade-and-slide-top" ng-click="Lion_show()"><i class="icon icon-location-pin"></i> POSITION ON MAP</a></p>';
+              return '<p><a class="btn btn-lg btn-default btn-block btn-minwidth-180" data-animation="am-fade-and-slide-top" ng-click="Lion_show()"><i class="icon icon-location-pin"></i> POSITION ON MAP</a></p>';
               default:
-                return '<p><a class="btn btn-lg btn-default btn-block bnt-minwidth-180" data-animation="am-fade-and-slide-top" ng-click="Imageset_show()"><i class="icon icon-location-pin"></i> POSITION ON MAP</a></p>';
+                return '<p><a class="btn btn-lg btn-default btn-block btn-minwidth-180" data-animation="am-fade-and-slide-top" ng-click="Imageset_show()"><i class="icon icon-location-pin"></i> POSITION ON MAP</a></p>';
           }
         },
         scope: {
