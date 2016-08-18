@@ -35,7 +35,7 @@ angular.module('lion.guardians.metadata.directive', [])
         case 'side_image_set':
           return '<a ng-click="showNew();">Add new Image Set</a>';
         default:
-          return '<p><a class="btn btn-lg btn-default btn-block bnt-minwidth-180" data-animation="am-fade-and-slide-top" ng-click="showEdit()"><i class="icon icon-pencil"></i> EDIT METADATA</a></p>';
+          return '<p><a class="btn btn-lg btn-default btn-block btn-minwidth-180" data-animation="am-fade-and-slide-top" ng-click="showEdit()"><i class="icon icon-pencil"></i> EDIT METADATA</a></p>';
       }
     },
     scope: {

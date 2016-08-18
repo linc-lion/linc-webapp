@@ -123,12 +123,12 @@ angular.module('lion.guardians.lions.controllers', [])
       $scope.modalInstance.dismiss();
     }
   };
-  $scope.Dissociate = function (id){
+  $scope.Disassociate = function (id){
     var data = {'lion_id': null};
     LincServices.Associate(id, data, function(){
       $scope.lion.primary_image_set_id = null;
       NotificationFactory.success({
-        title: "Dissociate", message:'Lion was dissociated',
+        title: "Disassociate", message:'Lion was disassociated',
         position: "right", // right, left, center
         duration: 2000     // milisecond
       });
@@ -136,7 +136,7 @@ angular.module('lion.guardians.lions.controllers', [])
     function(error){
       if($scope.debug || (error.status != 401 && error.status != 403)){
         NotificationFactory.error({
-          title: "Error", message: 'Unable to Dissociate the Lion',
+          title: "Error", message: 'Unable to Disassociate the Lion',
           position: 'right', // right, left, center
           duration: 5000   // milisecond
         });

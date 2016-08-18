@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
-<button type="button" class="btn-help pull-right btn btn-icon" data-placement="left" title="" data-content="Search image sets to view summaries of name, age, organization, and CV status. Select a search result row to view an image set's primary image, to create a lion from an image set, dissociate a lion from an image set, or run or view a CV." data-trigger="focus" bs-popover><i class="icon icon-help-with-circle"></i></button>
+<button type="button" class="btn-help pull-right btn btn-icon" data-placement="left" title="" data-content="Search image sets to view summaries of name, age, organization, and CV status. Select a search result row to view an image set's primary image, to create a lion from an image set, disassociate a lion from an image set, or run or view a CV." data-trigger="focus" bs-popover><i class="icon icon-help-with-circle"></i></button>
 
 <h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a> Search Image Set</h1>
 <div class="row">
@@ -259,8 +259,13 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <span ng-if="imageset.action == 'cvpending'"><i class="icon icon-clock"></i> CV Request pending</span>
           </td>
           <td ng-if="imageset.NeedVerify">
-            <button class="btn btn-primary btn-sm" data-animation="am-fade-and-slide-top" ng-click="Verify_Imageset(imageset.id)" ng-if="!imageset.is_verified">
+            <button ng-if="!imageset.is_verified" class="btn btn-primary btn-sm" data-animation="am-fade-and-slide-top" ng-click="Verify(imageset)">
               <i class="icon icon-flash"></i>Verify
+            </button>
+          </td>
+          <td ng-if="imageset.NeedVerify">
+            <button ng-if="imageset.is_verified" class="btn btn-primary btn-sm" data-animation="am-fade-and-slide-top" ng-click="Disassociate(imageset.id)">
+              <i class="icon icon-flash"></i>Disassociate
             </button>
           </td>
         </tr>

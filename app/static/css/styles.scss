@@ -167,8 +167,11 @@ label{font-weight: normal; cursor:pointer}
   &.btn-home{
     width: 180px;
   }
-  &.bnt-minwidth-180{
+  &.btn-minwidth-180{
     min-width: 180px;
+  }
+  &.btn-minwidth-100{
+    min-width: 100px;
   }
   &.btn-img-gallery{
     margin: 6px 0px 6px 0px;

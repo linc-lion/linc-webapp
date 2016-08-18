@@ -88,7 +88,7 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
     });
     var index = _.indexOf($scope.cvresults, _.find($scope.cvresults, {id: id}));
     var data = {'lion_id': id};
-    if(imageset.organization === $scope.cvresults[index].organization){
+    if(imageset.organization_id === $scope.cvresults[index].organization_id){
       data['is_verified'] = true;
     }
     LincServices.Associate(imageset.id, data, function(result){
@@ -112,14 +112,14 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
     });
   };
 
-  $scope.Dissociate = function (id){
+  $scope.Disassociate = function (id){
     var index = _.indexOf($scope.cvresults, _.find($scope.cvresults, {id: id}));
     var data = {'lion_id': null, 'is_verified': false};
     LincServices.Associate(imageset.id, data, function(result){
       $scope.cvresults[index].associated = false;
       $scope.Updated({'lion_id': null, 'name': '-'});
       NotificationFactory.success({
-        title: "Dissociate", message:'Lion (id: ' + id + ') was dissociated',
+        title: "Disassociate", message:'Lion (id: ' + id + ') was disassociated',
         position: "right", // right, left, center
         duration: 2000     // milisecond
       });
@@ -127,7 +127,7 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
     function(error){
       if($scope.debug || (error.status != 401 && error.status != 403)){
         NotificationFactory.error({
-          title: "Error", message: 'Unable to Dissociate the Lion (id: ' + id + ')',
+          title: "Error", message: 'Unable to Disassociate the Lion (id: ' + id + ')',
           position: 'right', // right, left, center
           duration: 5000   // milisecond
         });
