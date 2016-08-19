@@ -244,10 +244,8 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     }
   }
   $scope.UpdateImageset = function(data, ImagesetId){
-    var change = {'name': data.name, 'lion_id': data.lion_id, 'is_verified': false};
-    if((data.lion_id != null) && (data.organization != null) && (data.organization == $scope.imageset.organization)){
-      change['is_verified'] = true;
-    }
+    var change = {'name': data.name, 'lion_id': data.lion_id,
+    'is_verified': data.is_verified, 'lions_org_id': data.lions_org_id};
     _.merge($scope.imageset, $scope.imageset, change);
     Set_Tags();
   }
@@ -642,6 +640,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     LincServices.Verify(ImagesetId, data, function(){
       var id = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
       $scope.imagesets[id].is_verified = true;
+      Set_Tags($scope.imagesets[id]);
       NotificationFactory.success({
         title: "Image Set", message:'Image Set has been marked as verified',
         position: "right", // right, left, center
@@ -668,7 +667,8 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
       $scope.imagesets[id].name = '-';
       $scope.imagesets[id].lions_org_id = null;
       $scope.imagesets[id].is_verified = false;
-      $scope.imagesets[id].NeedVerify = false;
+      //$scope.imagesets[id].NeedVerify = false;
+      Set_Tags($scope.imagesets[id]);
       NotificationFactory.success({
         title: "Disassociate", message:'Lion was disassociated',
         position: "right", // right, left, center
@@ -690,11 +690,10 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   $scope.UpdateImageset = function(data, ImagesetId){
     var index = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
     var imageset = $scope.imagesets[index];
-    var change = {'name': data.name, 'lion_id': data.lion_id, 'is_verified': false};
-    if((data.lion_id != null) && (data.organization != null) && (data.organization == imageset.organization)){
-      change['is_verified'] = true;
-    }
+    var change = {'name': data.name, 'lion_id': data.lion_id,
+    'is_verified': data.is_verified, 'lions_org_id': data.lions_org_id};
     _.merge(imageset, imageset, change);
+    Set_Tags(imageset);
   }
 
   $scope.filters = $stateParams.filter ? $stateParams.filter : {};
@@ -720,5 +719,12 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     $scope.changeItensPerPage();
     $scope.currentPage = cur_per_page;
   }
+
+  var Set_Tags = function(element){
+    element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
+    element.NeedVerify = (!element.is_primary && element.lion_id &&
+      ($scope.user.organization_id == element.lions_org_id) &&
+      ($scope.user.organization_id != element.organization_id));
+  };
 
 }]);
