@@ -76,7 +76,7 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
     LincServices.deleteCVRequest(cvrequestId, function(){
       var data = {'lion_id': null, 'is_verified': false};
       LincServices.Associate(imageset.id, data, function(result){
-        $scope.Updated({'lion_id': null, 'name': '-'});
+        $scope.Updated({'lion_id': null, 'name': '-', 'lions_org_id': ''});
         $scope.EraseResults();
         $uibModalInstance.close();
       });
@@ -93,7 +93,9 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
     }
     LincServices.Associate(imageset.id, data, function(result){
       $scope.cvresults[index].associated = true;
-      $scope.Updated({'lion_id': id, 'name' : $scope.cvresults[index].name, 'organization' : $scope.cvresults[index].organization});
+      $scope.Updated({'lion_id': id, 'name' : $scope.cvresults[index].name,
+        'is_verified': result.data.data.is_verified,
+        'lions_org_id': $scope.cvresults[index].organization_id, 'organization' : $scope.cvresults[index].organization});
       NotificationFactory.success({
         title: "Associate", message:'Lion (id: ' + id + ') was associated',
         position: "right", // right, left, center
@@ -117,7 +119,7 @@ angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults
     var data = {'lion_id': null, 'is_verified': false};
     LincServices.Associate(imageset.id, data, function(result){
       $scope.cvresults[index].associated = false;
-      $scope.Updated({'lion_id': null, 'name': '-'});
+      $scope.Updated({'lion_id': null, 'name': '-', 'is_verified': false, 'lions_org_id': ''});
       NotificationFactory.success({
         title: "Disassociate", message:'Lion (id: ' + id + ') was disassociated',
         position: "right", // right, left, center
