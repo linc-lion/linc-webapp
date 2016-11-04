@@ -44,6 +44,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/app", "1"]
     vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/linc-webapp", "1"]
     vb.customize ["modifyvm", :id, "--memory", "512"]
+    vb.name = "linc-webapp"
   end
 
   # Provision without puppet or cheff, using shell scripts

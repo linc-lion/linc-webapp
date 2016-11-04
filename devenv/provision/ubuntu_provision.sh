@@ -39,6 +39,7 @@ PROGRAMA_LABEL_NAME=LINC-WEBAPP
 # Timezone definition
 msg "Setting timezone: EST"
 sudo timedatectl set-timezone EST > /dev/null
+sudo dpkg-reconfigure locales
 
 # Update Packages Database
 msg "Update packages database"
