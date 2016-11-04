@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.directive'])
+angular.module('linc.metadata.controller', ['linc.metadata.directive'])
 
 .controller('MetadataCtrl', ['$scope', '$window', 'AuthService', '$uibModal', '$uibModalInstance', '$bsTooltip', 'LincServices', 'NotificationFactory', 'optionsSet', '$state', '$q',  'organizations', function ($scope, $window, AuthService, $uibModal, $uibModalInstance, $bsTooltip, LincServices, NotificationFactory, optionsSet, $state, $q, organizations) {
 
@@ -103,7 +103,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
 
     var concat = _([]).concat(eyes_dams);
     concat = _(concat).concat(ear_marks);
-    concat = _(concat).concat(selected.markings['mount']);
+    concat = _(concat).concat(selected.markings['mouth']);
     concat = _(concat).concat(selected.markings['tail']);
     concat = _(concat).concat(selected.broken_teeth);
     if(selected.nose_color != undefined)
@@ -426,7 +426,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
                 {value: 'EAR_MARKING_LEFT',  label: 'Left'},
                 {value: 'EAR_MARKING_RIGHT', label: 'Right'}
                ]},
-    {value: 'mount', label: 'Mouth', allText: 'All Mouth Markings',
+    {value: 'mouth', label: 'Mouth', allText: 'All Mouth Markings',
         items: [ {value: 'MOUTH_MARKING_BACK',  label: 'Back'},
                  {value: 'MOUTH_MARKING_FRONT', label: 'Front'},
                  {value: 'MOUTH_MARKING_LEFT',  label: 'Left'},
@@ -487,7 +487,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
       "broken_teeth": _.intersection(TAGS,['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT','TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']),
       "nose_color": (_.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']))[0],
       "scars": _.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE', 'SCARS_TAIL']),
-      "markings":{'ear': ear_marks,'mount': _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']),'tail': _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT'])},
+      "markings":{'ear': ear_marks,'mouth': _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']),'tail': _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT'])},
       "notes": optionsSet.data.notes
     }
     if(!$scope.isLion)
@@ -508,7 +508,7 @@ angular.module('lion.guardians.metadata.controller', ['lion.guardians.metadata.d
                         "date_of_birth": null,
                         "date_stamp": new Date(),
                         "latitude":"", "longitude": "", "gender": "",
-                        "markings": {'ear': [],'mount': [],'tail': []},
+                        "markings": {'ear': [],'mouth': [],'tail': []},
                         "broken_teeth": [], "eye_damage": [],
                         "nose_color": undefined, "scars": [], "notes": ""
     };

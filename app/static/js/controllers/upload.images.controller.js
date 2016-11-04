@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.upload.images.controller', ['lion.guardians.upload.images.directive', 'lion.guardians.thumbnail.directive'])
+angular.module('linc.upload.images.controller', ['linc.upload.images.directive', 'linc.thumbnail.directive'])
 
 .controller('UploadImagesCtrl', ['$scope', '$window', '$cookies', '$uibModalInstance', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($scope, $window, $cookies, $uibModalInstance, $bsTooltip, FileUploader, NotificationFactory, options) {
 

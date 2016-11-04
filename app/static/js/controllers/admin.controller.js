@@ -18,13 +18,13 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.admin.controller', [ 'lion.guardians.admin.users.controller',
-                                                    'lion.guardians.admin.organiaztions.controller',
-                                                    'lion.guardians.admin.lions.controller',
-                                                    'lion.guardians.admin.imagesets.controller',
-                                                    'lion.guardians.admin.images.controller',
-                                                    'lion.guardians.admin.cvrequests.controller',
-                                                    'lion.guardians.admin.cvresults.controller'])
+angular.module('linc.admin.controller', [ 'linc.admin.users.controller',
+                                          'linc.admin.organizations.controller',
+                                          'linc.admin.lions.controller',
+                                          'linc.admin.imagesets.controller',
+                                          'linc.admin.images.controller',
+                                          'linc.admin.cvrequests.controller',
+                                          'linc.admin.cvresults.controller'])
 
 .controller('AdminCtrl', ['$scope', '$state', '$q', '$uibModal', 'LincApiServices', 'NotificationFactory', 'organizations', 'users', 'lions', 'imagesets', 'images', 'cvrequests', 'cvresults', 'settings', function ($scope, $state, $q, $uibModal, LincApiServices, NotificationFactory, organizations, users, lions, imagesets, images, cvrequests, cvresults, settings) {
 

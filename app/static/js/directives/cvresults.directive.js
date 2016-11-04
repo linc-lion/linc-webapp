@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.cvresults.directive', [])
+angular.module('linc.cvresults.directive', [])
 
 .directive('cvresults', ['$uibModal', '$interval', function($uibModal, $interval) {
   return {

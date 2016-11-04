@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.cvresults.controller', ['lion.guardians.cvresults.directive'])
+angular.module('linc.cvresults.controller', ['linc.cvresults.directive'])
 
 .controller('CVResultsCtrl', ['$scope', '$state', '$timeout', '$interval', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'imageset', 'cvrequestId', 'cvresultsId', 'data_cvresults', function ($scope, $state, $timeout, $interval, $uibModalInstance, LincServices, NotificationFactory, imageset, cvrequestId, cvresultsId, data_cvresults) {
 

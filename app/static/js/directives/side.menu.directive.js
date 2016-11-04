@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.side.menu.directive', [])
+angular.module('linc.side.menu.directive', [])
 
 .directive('sidemenu', ['$aside', function($aside) {
   return {

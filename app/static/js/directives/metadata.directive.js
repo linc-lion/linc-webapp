@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.metadata.directive', [])
+angular.module('linc.metadata.directive', [])
 
 .directive('metadata', ['$uibModal', function($uibModal) {
   return {

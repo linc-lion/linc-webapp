@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.admin.images.controller', [])
+angular.module('linc.admin.images.controller', [])
 
 .controller('AdminImagesCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 

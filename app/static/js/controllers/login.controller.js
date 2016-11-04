@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.login.controller', [])
+angular.module('linc.login.controller', [])
 // Login
 .controller('LoginCtrl', ['$scope', '$state', '$timeout', 'AuthService', 'NotificationFactory', function ($scope, $state, $timeout, AuthService, NotificationFactory) {
 

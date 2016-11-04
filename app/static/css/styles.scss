@@ -18,6 +18,11 @@
 //
 // For more information or to contact visit linclion.org or email tech@linclion.org
 
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
 @import url(icomoon/style.css);
 @import url(https://fonts.googleapis.com/css?family=Homenaje);
 
@@ -65,6 +70,17 @@ label{font-weight: normal; cursor:pointer}
   .icon{
     font-size:30px;
     color: $orange ;
+  }
+  .goto-sign-in{
+    padding-top: 15px;
+    a {
+      color: #fff;
+      font-size: 16px;
+      background-color: $orange;
+      border-color: #903204;
+      border-radius: 4px;
+      padding: 8px;
+    }
   }
 }
 
@@ -263,6 +279,65 @@ label{font-weight: normal; cursor:pointer}
       opacity:.8;
       padding: 5px 10px;
     }
+    .carousel{
+      height: 100%;
+      .carousel-inner, .carousel-pagination{
+        height: 100%;
+        .div-image{
+          height: 90%;
+          .carousel-img{
+            height: 100%;
+            //width: 150%;
+          }
+        }
+        .carousel-caption{
+          position: relative;
+          right: 0;
+          left: 0;
+          opacity: 1;
+          background-color: rgb(0, 0, 0);
+          padding: 12px 3px 3px 3px;
+          height: 10%;
+          bottom: 0px;
+          line-height: 1;
+          .photo-caption{
+            display: inline-block;
+            vertical-align: middle;
+            margin-bottom: 5px;
+            margin-right: 20px;
+            .icon-globe{
+              padding-left: 10px;
+              font-size: 24px;
+              margin-top: 2px;
+              vertical-align: middle;
+            }
+            .icon-star{
+              padding-left: 10px;
+              padding-right: 10px;
+              font-size: 24px;
+              margin-top: 2px;
+              vertical-align: middle;
+            }
+            p{
+              padding-top: 6px;
+              color: #fff;
+            }
+          }
+          .photo-controller{
+            display: inline-block;
+            margin-right: 12px;
+            margin-left: 6px;
+            border-left-style: dashed;
+            border-left-width: thin;
+            border-left-color: $orange;
+            padding-left: 20px;
+          }
+        }
+      }
+      .carousel-indicators{
+        li { visibility: hidden; }
+      }
+    }
 }
 
 .downloading-view{
@@ -289,6 +364,35 @@ label{font-weight: normal; cursor:pointer}
     position: fixed;
     bottom: 45%;
     width: 100%;
+  }
+}
+
+.zoom-view{
+  background: rgba(0,0,0,.8);
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height: 100%;
+  text-align: center;
+  z-index: 5;
+  overflow: hidden;
+  .pan-zoom-frame{
+    width: 100%; 
+    height: 100%;
+  }
+  .panzoom-control{
+    z-index: 10;
+  }
+  .zoom-close{
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
+    button{
+      opacity: 0.6;
+      color: ghostwhite;
+    }
   }
 }
 /// PAGES
@@ -394,6 +498,19 @@ rzslider{
   border-top-right-radius: 0;
 }
 
+.form-signin .success-forgot-notification{
+  ul.messages{
+    border: 1px solid #2dbe60;
+    border-radius: 5px;
+    color: #099045;
+    background-color: #d9f9e4;
+    padding: 13px 16px 13px 16px;
+    list-style: none;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+}
 .map-container map{
   display: block;
   width: 100%;
@@ -499,7 +616,8 @@ hr.style-line { margin-bottom: 10px !important; margin-top: 10px !important; mar
 .Left-Panel::-webkit-scrollbar, .Right-Panel::-webkit-scrollbar, .Scroll-Panel::-webkit-scrollbar { display: none; }
 .large-Modal .modal-dialog .modal-content{ max-height: 700px !important;}
 .modal-content {overflow-y: auto;}
-
+.modal-header-image{display: inline-block; padding: 6px;}
+.modal-title-image{display: inline-block; vertical-align: middle;}
 .meta-info{
   margin-bottom: 10px
 }
@@ -574,24 +692,24 @@ h4.h4data > a{
 }
 
 
-.carousel-caption{
-  //padding: 12px 0 40px;
-  .icon-globe{
-    padding-left: 10px;
-    font-size: 24px;
-    margin-top: 2px;
-  }
-  .icon-star{
-    padding-left: 10px;
-    padding-right: 10px;
-    font-size: 24px;
-    margin-top: 2px;
-  }
-  p{
-    padding-top: 12px;
-    color: #fff;
-  }
-}
+// .carousel-caption{
+//   //padding: 12px 0 40px;
+//   .icon-globe{
+//     padding-left: 10px;
+//     font-size: 24px;
+//     margin-top: 2px;
+//   }
+//   .icon-star{
+//     padding-left: 10px;
+//     padding-right: 10px;
+//     font-size: 24px;
+//     margin-top: 2px;
+//   }
+//   p{
+//     padding-top: 12px;
+//     color: #fff;
+//   }
+// }
 i.icon-border{
   border-style: solid;
   border-width: 1px;
@@ -675,10 +793,209 @@ i.icon-border.active{background: #999 !important;}
   max-height: 500px;
   padding-right: 0px;
 }
+.tooltip-image{
+  opacity: 1 !important;
+  .tooltip-inner{
+    background-color: #fff;
+    color: $orange;
+    border-style: solid;
+    border-color: #f1975b;
+    border-width: thin;
+    top: 5px;
+    position: relative;
+  }
+  .tooltip-arrow {
+    top: 0;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 0 10px 10px !important;
+    border-bottom-color: #f1975b !important;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+  }
+  .tooltip-arrow.custom-arrow{
+    top: 1px;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 0 10px 10px !important;
+    border-bottom-color: #fff !important;
+    z-index: 2;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+  }
+}
 
+.gallery-order{
+  label{
+    display: inline-block;
+  }
+  .ui-select-container{
+    display: inline-block;
+    width: 100px;
+    margin-left: 10px;
+    ul.ui-select-choices{
+      min-width: 100px;
+    }
+  }
 
+}
+.gallery-filter{
+  margin-bottom: 10px;
+  .radio, .checkbox{
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+}
+.gallery-edit{
+  margin-bottom: 10px;
+  .radio, .checkbox{
+    margin-top: 3px;
+    margin-bottom: 3px;
+  }
+}
 
 #main{
   top: 50px;
   position: relative;
+}
+
+.confidence-number{
+  font-size: 18px;
+  padding: 3px 6px;
+  border-radius: 5px;
+  border-bottom-style: groove;
+}
+
+.display-none{display: none;}
+.text-align-left{text-align: left;}
+.custom-padding{padding-left: 15px; padding-top: 20px;}
+.break-line{word-wrap: break-word;}
+.position-absolute{position: absolute;}
+.margin-bottom-0{margin-bottom: 0;}
+
+.forgotPasswordContainer{
+  text-align: center;
+  margin-top: 10px;
+}
+
+.forgot-title{
+  font-size: 30px;
+}
+.wrapper#container-forgot {
+  margin-bottom: 20px;
+  background-color: #fff;
+  .callout-box{
+    background-color: #f5f5f5;
+    border: 1px solid #e4e4e4;
+    border-radius: 5px;
+    padding: 6px;
+    min-width: 100px;
+    input {
+      color: #3b3b3b;
+      width: 100%;
+      border: 1px solid #cacaca;
+      border-radius: 4px;
+      line-height: 1.46153846;
+      padding: .5rem 1rem;
+    }
+    button{
+      font-size: 16px;
+    }
+  }
+}
+
+.tooltip-password .tooltip-inner{
+  border-color: #e0d4d4;
+  background-color: white;
+  color: #333;
+  border-style: solid;
+  border-color: #b7b2b2;
+  border-width: 1px;
+}
+.tooltip-password{
+  .tooltip-inner{
+    margin-top: 3px;
+    min-height: 39px;
+    i.icon.icon-info{
+      font-size: 18px;
+      margin: 0px 6px 6px 0px;
+      background-color: #ffd350;
+      border-radius: 3px;
+      padding: 3px;
+      background-color: #ffaa50;
+      border-radius: 3px;
+      padding: 3px;
+      position: relative;
+      top: 6px;
+      color: white;
+    }
+  }
+  .tooltip-arrow {
+    top: 0;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 0 10px 10px !important;
+    border-bottom-color: #333;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+  }
+  .tooltip-arrow.custom-arrow{
+    top: 1px;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 0 10px 10px !important;
+    border-bottom-color: white;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+  }
+}
+
+.div-dead-icon{
+  display: inline;
+  font-size: 26px;
+  .dead-icon{
+    position: relative;
+    top: 2px;
+    background-image: url(/static/icons/tombstone-icon-4463.png);
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    padding: 10px 0px 0px 26px;
+    margin: 0px 6px;
+    font-size: 14px;
+  }
+}
+
+.ui-select-class{
+  a{
+    margin-right: -9px !important;
+    margin-top: -9px !important;
+  }
+}
+
+.margin-left-80{
+  margin-left: 80%;
+}
+.loading-passwd{
+  padding: 6px;
+}
+
+.adm-btn{
+  button{
+    line-height: 1.2;
+    padding: 2px 12px 2px 12px;
+    span{
+      display: block;
+      font-size: 12px;
+    }
+  }
 }

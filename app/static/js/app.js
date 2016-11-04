@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // For more information or to contact visit linclion.org or email tech@linclion.org
-var app = angular.module('lion.guardians', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'ngMap', 'mgcrea.ngStrap', 'angularFileUpload', 'cgNotify', 'ngCookies', 'angular-loading-bar', 'ngInputModified', 'ngMessages', 'ui.select', 'lion.guardians.controllers', 'lion.guardians.interceptor.factory', 'lion.guardians.services', 'lion.guardians.auth.services']);
+var app = angular.module('linc', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 'ngMap', 'mgcrea.ngStrap', 'angularFileUpload', 'cgNotify', 'ngCookies', 'angular-loading-bar', 'ngInputModified', 'ngMessages', 'ui.select', 'linc.controllers', 'linc.interceptor.factory', 'linc.services', 'linc.auth.services']);
 
 'use strict';
 
