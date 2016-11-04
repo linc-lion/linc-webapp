@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.upload.images.directive', [])
+angular.module('linc.upload.images.directive', [])
 
 .directive('uploadImages', ['$uibModal', function($uibModal) {
   return {

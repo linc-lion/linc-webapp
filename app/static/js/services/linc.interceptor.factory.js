@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.interceptor.factory', [])
+angular.module('linc.interceptor.factory', [])
 
 .factory('httpInterceptor', ['$q', '$injector', '$cookies', function($q, $injector, $cookies){
   return {

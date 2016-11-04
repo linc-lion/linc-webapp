@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.location.history.controller', ['lion.guardians.location.history.directive'])
+angular.module('linc.location.history.controller', ['linc.location.history.directive'])
 
 .controller('LocationHistoryCtrl', ['$scope', '$state', '$timeout', '$uibModal', '$q', '$uibModalInstance', 'LincServices', 'options', 'history', function ($scope, $state, $timeout, $uibModal, $q, $uibModalInstance, LincServices, options, history) {
   $scope.title = 'Location History';

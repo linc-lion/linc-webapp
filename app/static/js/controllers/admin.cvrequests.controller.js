@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.admin.cvrequests.controller', [])
+angular.module('linc.admin.cvrequests.controller', [])
 
 .controller('AdminCVRequestsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 

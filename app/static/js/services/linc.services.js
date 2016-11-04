@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // For more information or to contact visit linclion.org or email tech@linclion.org
-angular.module('lion.guardians.services', ['lion.guardians.api.services'])
+angular.module('linc.services', ['linc.api.services'])
 
 .factory('LincServices', ['$http', '$state', '$q', '$cookies', 'AuthService', 'NotificationFactory', function($http, $state, $q, $cookies, AuthService, NotificationFactory) {
 

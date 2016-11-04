@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.side.menu.controller', ['lion.guardians.side.menu.directive'])
+angular.module('linc.side.menu.controller', ['linc.side.menu.directive'])
 
 .controller('SideMenuCtrl', ['$scope', '$state', 'AuthService', 'NotificationFactory', function ($scope, $state, AuthService, NotificationFactory) {
 

@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.thumbnail.directive', [])
+angular.module('linc.thumbnail.directive', [])
 
 .directive('ngThumb', ['$window', function($window) {
   var helper = {

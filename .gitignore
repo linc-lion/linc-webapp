@@ -63,3 +63,6 @@ target/
 .vagrant
 
 .DS_Store
+
+#temporary files
+tmp/*

@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // For more information or to contact visit linclion.org or email tech@linclion.org
-angular.module('lion.guardians.auth.services', [])
+angular.module('linc.auth.services', [])
 
 .factory('AuthService', ['$http', '$localStorage', '$cookies', function ($http, $localStorage, $cookies) {
   var authService = {'user': $localStorage.user};

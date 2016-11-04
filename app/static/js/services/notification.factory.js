@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.notification.factory', [])
+angular.module('linc.notification.factory', [])
 
 .factory('NotificationFactory', function(notify) {
 

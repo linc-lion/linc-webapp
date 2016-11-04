@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.image.gallery.controller', ['lion.guardians.image.gallery.directive'])
+angular.module('linc.image.gallery.controller', ['linc.image.gallery.directive'])
 
 .controller('ImageGalleryCtrl', ['$scope', '$timeout', '$sce', '$window', '$uibModal', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', 'gallery', function($scope, $timeout, $sce, $window, $uibModal, $uibModalInstance, LincServices, NotificationFactory, optionsSet, gallery) {
 

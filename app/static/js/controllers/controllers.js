@@ -18,21 +18,21 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.controllers', ['lion.guardians.admin.controller',
-                                              'lion.guardians.home.controller',
-                                              'lion.guardians.login.controller',
-                                              'lion.guardians.side.menu.controller',
-                                              'lion.guardians.lions.controllers',
-                                              'lion.guardians.image.set.controllers',
-                                              'lion.guardians.conservationists.controller',
-                                              'lion.guardians.image.gallery.controller',
-                                              'lion.guardians.metadata.controller',
-                                              'lion.guardians.location.history.controller',
-                                              'lion.guardians.cvresults.controller',
-                                              'lion.guardians.cvrequest.controller',
-                                              'lion.guardians.upload.images.controller',
-                                              'lion.guardians.notification.factory',
-                                              'lion.guardians.linc.data.factory' ])
+angular.module('linc.controllers', ['linc.admin.controller',
+                                    'linc.home.controller',
+                                    'linc.login.controller',
+                                    'linc.side.menu.controller',
+                                    'linc.lions.controllers',
+                                    'linc.image.set.controllers',
+                                    'linc.conservationists.controller',
+                                    'linc.image.gallery.controller',
+                                    'linc.metadata.controller',
+                                    'linc.location.history.controller',
+                                    'linc.cvresults.controller',
+                                    'linc.cvrequest.controller',
+                                    'linc.upload.images.controller',
+                                    'linc.notification.factory',
+                                    'linc.data.factory' ])
 
 .controller('BodyCtrl', ['$scope', '$state', '$interval', 'AuthService', function ($scope, $state, $interval, AuthService){
 

@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.conservationists.controller', [])
+angular.module('linc.conservationists.controller', [])
 
 .controller('ConservationistsCtrl', ['$scope', 'conservationists', function ($scope, conservationists) {
   $scope.orgs = conservationists;

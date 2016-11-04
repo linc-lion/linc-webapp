@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.home.controller', [])
+angular.module('linc.home.controller', [])
 // Home
 .controller('HomeCtrl', ['$scope', '$state', function ($scope, $state) {
 

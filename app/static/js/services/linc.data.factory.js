@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // For more information or to contact visit linclion.org or email tech@linclion.org
-angular.module('lion.guardians.linc.data.factory', [])
+angular.module('linc.data.factory', [])
 
 .factory('LincDataFactory', [ 'LincServices',function(LincServices) {
   var initialized = false;

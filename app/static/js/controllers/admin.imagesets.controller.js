@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.admin.imagesets.controller', [])
+angular.module('linc.admin.imagesets.controller', [])
 
 .controller('AdminImageSetsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
@@ -27,7 +27,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
   $scope.genders = [{value: 'male', label: 'Male'}, {value: 'female',label: 'Female'}, {value: null,label: 'Unknown'}];
 
   $scope.tags = { 'ear_markings': [{'value': 'EAR_MARKING_LEFT',  'label': 'Left'},{'value': 'EAR_MARKING_RIGHT', 'label': 'Right'}],
-                  'mount_markings': [{'value': 'MOUTH_MARKING_BACK',  'label': 'Back'},{'value': 'MOUTH_MARKING_FRONT', 'label': 'Front'},{'value': 'MOUTH_MARKING_LEFT',  'label': 'Left'},{'value': 'MOUTH_MARKING_RIGHT', 'label': 'Right'}],
+                  'mouth_markings': [{'value': 'MOUTH_MARKING_BACK',  'label': 'Back'},{'value': 'MOUTH_MARKING_FRONT', 'label': 'Front'},{'value': 'MOUTH_MARKING_LEFT',  'label': 'Left'},{'value': 'MOUTH_MARKING_RIGHT', 'label': 'Right'}],
                   'tail_markings': [{'value': 'TAIL_MARKING_MISSING_TUFT', 'label': 'Missing Tuft'}],
                   'eye_damages': [{'value': 'EYE_DAMAGE_LEFT',  'label': 'Left'},{'value': 'EYE_DAMAGE_RIGHT', 'label': 'Right'}],
                   'nose_color': [{'value': undefined, 'label': 'None'},{'value': 'NOSE_COLOUR_BLACK', 'label': 'Black'},{'value': 'NOSE_COLOUR_PATCHY', 'label': 'Patchy'},{'value': 'NOSE_COLOUR_PINK', 'label': 'Pink'},{'value': 'NOSE_COLOUR_SPOTTED', 'label': 'Spotted'}],
@@ -154,7 +154,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
 
       $scope.imageset.eyes_damages = _.includes(TAGS,'EYE_DAMAGE_BOTH')? ['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT'] :  _.intersection(TAGS,['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']);
       $scope.imageset.ear_markings = _.includes(TAGS,'EAR_MARKING_BOTH')? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] :  _.intersection(TAGS,['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']);
-      $scope.imageset.mount_markings = _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']);
+      $scope.imageset.mouth_markings = _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']);
       $scope.imageset.tail_markings = _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT']);
       $scope.imageset.broken_teeth = _.intersection(TAGS,['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT','TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']);
       $scope.imageset.nose_color = (_.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']))[0];
@@ -239,7 +239,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
 
       var concat = _([]).concat(eyes_dams);
       concat = _(concat).concat(ear_marks);
-      concat = _(concat).concat($scope.imageset.mount_markings);
+      concat = _(concat).concat($scope.imageset.mouth_markings);
       concat = _(concat).concat($scope.imageset.tail_markings);
       concat = _(concat).concat($scope.imageset.broken_teeth);
       if($scope.imageset.nose_color != undefined)
@@ -309,7 +309,7 @@ angular.module('lion.guardians.admin.imagesets.controller', [])
 
       var concat = _([]).concat(eyes_dams);
       concat = _(concat).concat(ear_marks);
-      concat = _(concat).concat($scope.imageset.mount_markings);
+      concat = _(concat).concat($scope.imageset.mouth_markings);
       concat = _(concat).concat($scope.imageset.tail_markings);
       concat = _(concat).concat($scope.imageset.broken_teeth);
       if($scope.imageset.nose_color != undefined)

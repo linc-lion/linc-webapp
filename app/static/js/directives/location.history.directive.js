@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('lion.guardians.location.history.directive', [])
+angular.module('linc.location.history.directive', [])
 
 .directive('locationHistory', ['$uibModal', function($uibModal) {
     return {
