@@ -168,6 +168,25 @@ For more information or to contact visit linclion.org or email tech@linclion.org
           </div>
           <pre ng-show="debug">{{!selected.notes}}</pre>
         </div>
+<!--tmp-->
+        <div>
+          <div class="checkbox">
+            <label class="checkbox-inline">
+              <input type="checkbox" class="form-input" ng-model="selected.isPrivate.gps">GPS Points is Private
+            </label>
+          </div>
+          <div class="checkbox">
+            <label class="checkbox-inline">
+              <input type="checkbox" class="form-input" ng-model="selected.isPrivate.map">Map Location is Private
+            </label>
+          </div>
+          <div class="checkbox">
+            <label class="checkbox-inline">
+              <input type="checkbox" ng-disabled="!isLion" class="form-input" ng-model="selected.isDead">Dead Lion
+            </label>
+          </div>
+        </div>
+<!--tmp-->
       </div>
       <div class="col-sm-4">
         <div class="form-group group-select" ng-repeat="marking in markings">
@@ -198,7 +217,8 @@ For more information or to contact visit linclion.org or email tech@linclion.org
 
         <hr class="style-line">
         <div class="form-group group-select">
-          <label for="id_eye_damage">Eye Damage: </label>
+<!--tmp-->
+          <label for="id_eye_damage">Eye Damage / Pigmentation: </label>
           <button type="button" id="id_eye_damage" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.eye_damage" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Eye Damage" bs-options="damage.value as damage.label for damage in eye_damage" placement="bottom-right" bs-select>
             Action <span class="caret"></span>
           </button>

@@ -35,6 +35,10 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     return label;
   }
 
+  //tmp
+  $scope.imageset.is_private = {map: true, gps: true};
+  $scope.imageset.is_dead = true;
+
   var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left', 'EYE_DAMAGE_RIGHT': 'Right'};
   var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
   var ear_markings   = {'EAR_MARKING_BOTH': 'Both', 'EAR_MARKING_LEFT': 'Left', 'EAR_MARKING_RIGHT': 'Right'};
@@ -400,6 +404,12 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
 
   $scope.imagesets = _.map(imagesets, function(element, index) {
     element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
+
+    //tmp
+    var gps = (Math.random() > 0.5) ? true : false;
+    element['is_private'] = {gps: gps, map: gps};
+    element['canLocate'] = (!element.is_private.gps || element.canShow);
+    element['is_dead'] = (Math.random() > 0.5) ? true : false;
 
     element.NeedVerify = (!element.is_primary && element.lion_id &&
       ($scope.user.organization_id == element.lions_org_id) &&

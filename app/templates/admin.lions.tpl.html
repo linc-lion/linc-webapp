@@ -92,6 +92,11 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <th class="text-center"><a ng-click="order('name')" ng-class="{'order_class': predicate === 'email'}">Name</a>
           <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span>
         </th>
+<!--tmp-->
+        <th class="text-center"><a ng-click="order('is_dead')" ng-class="{'order_class': predicate === 'is_dead'}">Dead</a>
+          <span class="sortorder" ng-show="predicate === 'is_dead'" ng-class="{reverse:reverse}"></span>
+        </th>
+<!--tmp-->
         <th class="text-center"><a ng-click="order('organization')" ng-class="{'order_class': predicate === 'organization'}">Organization</a>
           <span class="sortorder" ng-show="predicate === 'organization'" ng-class="{reverse:reverse}"></span>
         </th>
@@ -113,6 +118,12 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <td class="text-center"><input type="checkbox" ng-disabled="Lion_Mode != ''" ng-model="lion.selected" ng-click="Select_Lion($event, lion, 'checkbox-click');$event.stopPropagation();"></td>
         <td class="text-center">{{!lion.id}}</td>
         <td class="text-center">{{!lion.name}}</td>
+<!--tmp-->
+        <td class="text-center">
+          <i ng-if="lion.is_dead" class="search-icon-dead"></i>
+          <!-- <i ng-if="!lion.is_dead" class="icon icon-cross"></i> -->
+        </td>
+<!--tmp-->
         <td class="text-center">{{!lion.organization}}</td>
         <td class="text-center">{{!lion.primary_image_set_id}}</td>
         <td class="text-center">{{!lion.created_at}}</td>

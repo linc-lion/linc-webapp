@@ -135,6 +135,10 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
           "owner_organization_id": selected.organization_id,
           "is_primary": true,
           "is_verified": true
+          //tmp
+          //"is_Dead"
+          //"isPrivate": selected.isPrivate,
+          //"isDead" : selected.isDead;
         }
         var lion_data = {
           "name": selected.name,
@@ -488,7 +492,10 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       "nose_color": (_.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']))[0],
       "scars": _.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE', 'SCARS_TAIL']),
       "markings":{'ear': ear_marks,'mouth': _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']),'tail': _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT'])},
-      "notes": optionsSet.data.notes
+      "notes": optionsSet.data.notes,
+      //tmp
+      //"isPrivate" :{'map': optionsSet.data.isPrivate.map, 'gps' : optionsSet.data.isPrivate.gps},
+      //"isDead" : optionsSet.data.isDead;
     }
     if(!$scope.isLion)
       $scope.selected.lion_id = optionsSet.data.lion_id;
@@ -510,7 +517,10 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
                         "latitude":"", "longitude": "", "gender": "",
                         "markings": {'ear': [],'mouth': [],'tail': []},
                         "broken_teeth": [], "eye_damage": [],
-                        "nose_color": undefined, "scars": [], "notes": ""
+                        "nose_color": undefined, "scars": [], "notes": "",
+                        //tmp
+                        //"isPrivate" :{'map': false, 'gps' : false},
+                        //"isDead" : false;
     };
   }
   // Calc Age Function
