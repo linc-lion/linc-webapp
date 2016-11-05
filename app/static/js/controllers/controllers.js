@@ -34,31 +34,90 @@ angular.module('linc.controllers', ['linc.admin.controller',
                                     'linc.notification.factory',
                                     'linc.data.factory' ])
 
-.controller('BodyCtrl', ['$scope', '$state', '$interval', 'AuthService', function ($scope, $state, $interval, AuthService){
+.controller('BodyCtrl', ['$scope', '$state', '$interval', '$timeout', '$uibModal', 'AuthService', 
+  function ($scope, $state, $interval, $timeout, $uibModal, AuthService){
 
-  $scope.bodyClasses = 'default';
-  $scope.debug = false;
-  // this'll be called on every state change in the app
-  $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
-    $scope.cancel_Poller();
-    if (toState.data != undefined && angular.isDefined(toState.data.bodyClasses)) {
-      $scope.bodyClasses = toState.data.bodyClasses;
-      $scope.debug = $state.current.data.debug;
-      return;
-    }
     $scope.bodyClasses = 'default';
-  });
-  $scope.Auth = AuthService;
-  $scope.poller_promisse = undefined;
-  $scope.cancel_Poller = function(){
-    if($scope.poller_promisse){
-      $interval.cancel($scope.poller_promisse);
-      $scope.poller_promisse = undefined;
-      console.log("Results CV Request Poller canceled");
+    $scope.debug = false;
+    // this'll be called on every state change in the app
+    $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+      $scope.cancel_Poller();
+      if (toState.data != undefined && angular.isDefined(toState.data.bodyClasses)) {
+        $scope.bodyClasses = toState.data.bodyClasses;
+        $scope.debug = $state.current.data.debug;
+        return;
+      }
+      $scope.bodyClasses = 'default';
+    });
+    $scope.Auth = AuthService;
+    $scope.poller_promisse = undefined;
+    $scope.cancel_Poller = function(){
+      if($scope.poller_promisse){
+        $interval.cancel($scope.poller_promisse);
+        $scope.poller_promisse = undefined;
+        console.log("Results CV Request Poller canceled");
+      }
+    }
+
+    $scope.changePWD = function(user){
+      var modalScope = $scope.$new();
+      modalScope.dataSending = false;
+      modalScope.tooltip = {title: '<span><i class="icon icon-info"></i>passwords must match</span>', checked: false};
+      modalScope.modalTitle = 'Change your password?';
+      modalScope.showValidationMessages = false;
+      modalScope.user = {
+        'email': user.name, 
+        'id': user.id, 
+        'password': {
+          'password':'',
+          'confirm': ''
+        }
+      };
+      var modalInstance = $uibModal.open({
+        templateUrl: 'ChangePwd.tmpl.html',
+        scope: modalScope,
+        size: '350px'
+      });
+      modalInstance.result.then(function (result) {
+        modalScope.dataSending = false;
+      }, function(error){
+        modalScope.dataSending = false;
+      });
+      modalScope.changePassword = function (valid){
+        if(valid){
+          modalScope.dataSending = true;
+          var data = {
+            'method': 'put', 
+            'user_id' : modalScope.user.id, 
+            'data': {'password': modalScope.user.email.password}
+          };
+          $scope.LincApiServices.Users(data).then(function(response){
+            $scope.Notification.success({
+              title: 'Change Password', message: 'Password of '+ $scope.sel_user.email +' successfully updated',
+              position: "right", // right, left, center
+              duration: 2000     // milisecond
+            });
+            modalInstance.close();
+          },
+          function(error){
+            $scope.Notification.error({
+              title: "Fail", message: 'Fail to change User Password',
+              position: 'right', // right, left, center
+              duration: 5000   // milisecond
+            });
+            modalInstance.dismiss();
+          });
+        }
+        else {
+          modalScope.showValidationMessages = true;
+        }
+      }
+      modalScope.cancel = function(){
+        modalInstance.dismiss();
+      }
     }
   }
-
-}])
+])
 
 .filter('offset', function() {
   return function(input, start) {
