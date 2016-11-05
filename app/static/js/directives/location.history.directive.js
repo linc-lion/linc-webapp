@@ -91,7 +91,12 @@ angular.module('linc.location.history.directive', [])
                   return scope.options;
                 },
                 history: ['LincServices', function(LincServices) {
-                  return scope.options.history;
+                  if(scope.options.is_primary){
+                    return LincServices.LocationHistory(scope.options.lion_id);
+                  }
+                  else{
+                    return scope.options.history;
+                  }
                 }]
               }
             });
