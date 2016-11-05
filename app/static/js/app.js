@@ -18,7 +18,8 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 var app = angular.module('linc', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngSanitize', 'rzModule', 'ui.router', 
   'ngMap', 'mgcrea.ngStrap', 'angularFileUpload', 'cgNotify', 'ngCookies', 'angular-loading-bar', 'ngInputModified', 
-  'ngMessages', 'ui.select', 'panzoom', 'panzoomwidget', 'linc.controllers', 'linc.interceptor.factory', 'linc.services', 'linc.auth.services']);
+  'ngMessages', 'ui.select', 'panzoom', 'panzoomwidget', 'linc.controllers', 'linc.directive', 'linc.services', 
+  'linc.interceptor.factory', 'linc.auth.services']);
 
 'use strict';
 
