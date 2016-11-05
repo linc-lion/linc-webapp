@@ -279,7 +279,22 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         }]
       }
     })
-    // About //
+    .state("viewimages", {
+      url: "/viewimages?{images:ObjParam}",
+      controller: 'ViewImagesCtrl',
+      templateUrl: 'view.images.html',
+      data: {
+        bodyClasses: 'viewimages',
+        authorized: 'logged',
+        debug: debug
+      },
+      resolve: {
+        conservationists: ['LincServices', function(LincServices) {
+          return LincServices.Conservationists();
+        }]
+      }
+    })
+    // About
     .state('about', {
       url: '/about',
       // Showing off how you could return a promise from templateProvider

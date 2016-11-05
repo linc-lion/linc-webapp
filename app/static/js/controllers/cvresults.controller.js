@@ -24,14 +24,33 @@ angular.module('linc.cvresults.controller', ['linc.cvresults.directive'])
 
   $scope.title = 'CV Results (CV Request Id: '+ data_cvresults.req_id + ' - Status: ' + data_cvresults.status + ')';
   $scope.content = 'Form';
-
+  $scope.imageset = imageset;
   $scope.cvresults = data_cvresults.cvresults;
+  $scope.cvresults = _.map(data_cvresults.cvresults, function(element, index) {
+    var elem = {};
+    var number = Math.random();
+    var style = {'background-color': 'green'};
+    if(number < .45)
+      style = {'background-color': 'red'};
+    else if(number < .70)
+      style = {'background-color': 'yellow', 'color': 'black'};
+    
+    var conf = {'number': number, 'style': style};
+    elem['confidence'] = conf;
+    return _.extend({}, element, elem);
+  });
 
   var count = 0;
 
-  $scope.show_photo = function(url){
-    var win = window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=100, left=100, width=600, height=600");
-    win.focus();
+  $scope.show_photo = function(object){
+    if(angular.isObject(object)){
+      var url = $state.href("viewimages", {'images':{'imageset': imageset, 'lion': object}},  {absolute: true});
+      window.open(url,"_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=100, left=100, width=1200");
+    }
+    else if (angular.isString(object)){
+      var win = window.open(object, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=100, left=100, width=600, height=600");
+      win.focus();    
+    }
   }
 
   var Poller = function () {
@@ -41,7 +60,6 @@ angular.module('linc.cvresults.controller', ['linc.cvresults.directive'])
         console.log('Res Canceled - Status: ' + response.status);
         $scope.title = 'CV Results (CV Request Id: '+ data_cvresults.req_id + ' - Status: ' + response.status + ')';
         $scope.cancel_Poller();
-        //$scope.$parent.cancel_Poller();
       }
       count++;
       console.log('Res Count: ' + count);

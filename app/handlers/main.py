@@ -150,3 +150,8 @@ class PageAdminCVResultsHandler(BaseHandler):
     @allowedRole('admin')
     def get(self):
         self.render('admin.cvresults.tpl.html')
+
+class ViewImagesHandler(BaseHandler):
+    @web_authenticated
+    def get(self):
+        self.render('view.images.html')
