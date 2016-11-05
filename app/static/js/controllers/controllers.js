@@ -85,14 +85,6 @@ angular.module('linc.controllers', ['linc.admin.controller',
       return input;
 
     var name = name_str.toLowerCase();
-  /*  var special = '';
-    if(special_str.length){
-      var idx = name.indexOf('!');
-      if(idx != -1){
-        special = name.substring(idx+1, name.length-1);
-        name = name.substring(0,idx-1);
-      }
-    }*/
 
     // split by space
     var name_pieces = name.match(/\S+/g);
@@ -235,33 +227,4 @@ angular.module('linc.controllers', ['linc.admin.controller',
 
 })
 
-.directive('limlatlng', function() {
-  return {
-    require: 'ngModel',
-    link: function(scope, elem, attr, ctrl) {
-      var el = elem;
-      var limit = parseInt(attr.limlatlng,10);
-
-      var toModel = function (val) {
-        return val.replace(/,/g, '.') ;
-      };
-      ctrl.$parsers.unshift(toModel);
-
-      ctrl.$validators.limlatlng = function(modelValue, viewValue) {
-        if (ctrl.$isEmpty(modelValue)) return true;
-
-        if(typeof modelValue === 'number' || modelValue instanceof Number)  return true;
-
-        var val = modelValue.replace(/,/g, '.') ;
-        var num = parseFloat(val);
-        if(isNaN(num) || (num && (num.toString() != val)))
-          return true;
-        else if(Math.abs(num) > limit)
-          return false;
-        else
-          return true;
-      };
-    }
-  };
-})
 ;

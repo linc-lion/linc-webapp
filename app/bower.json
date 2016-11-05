@@ -37,6 +37,6 @@
     "angular-notify": "~2.5.0",
     "angular-cookies": "~1.4.7",
     "angular-messages": "~1.4.7",
-    "ui-select": "angular-ui-select#~0.14.2"
+    "angular-ui-select": "^0.19.6"
   }
 }

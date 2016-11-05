@@ -469,47 +469,4 @@ angular.module('linc.image.gallery.controller', ['linc.image.gallery.directive']
   };
 })
 
-.directive('ngRightClick', function($parse) {
-    return function(scope, element, attrs) {
-        var fn = $parse(attrs.ngRightClick);
-        element.bind('contextmenu', function(event) {
-            scope.$apply(function() {
-                event.preventDefault();
-                fn(scope, {$event:event});
-            });
-        });
-    };
-})
-
-.directive('scaleImage', function () {
-  return {
-    restrict: 'A',
-    link: function (scope, elm, attrs) {
-      var parent = elm.parent().parent().parent().parent();
-      scope.$watch(function () {
-        return {
-            maxWidth: parent.prop('offsetHeight'),
-            maxHeight: parent.prop('offsetWidth') - 100,
-            Width: elm[0].naturalWidth,
-            Height: elm[0].naturalHeight
-        };
-      }, function (size) {
-        var tRatio = size.Width / size.maxWidth;
-        var tProportionalHeight =  size.Height / tRatio;
-
-        var tRatio = size.Height / size.maxHeight
-        var tProportionalWidth = size.Width / tRatio;
-
-        if (tProportionalHeight > size.maxHeight){
-          elm.css('height', size.maxHeight + 'px');
-          elm.css('width', tProportionalWidth + 'px');
-        }
-        else{
-          elm.css('width', size.maxWidth + 'px');
-          elm.css('height', tProportionalHeight + 'px');
-        }
-      }, true);
-    }
-  };
-})
 ;
