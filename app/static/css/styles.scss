@@ -765,11 +765,11 @@ i.icon-border.active{background: #999 !important;}
 }
 .error-messages.ng-active:after {
   position: absolute;
-	content: '';
-	left: 22px;
-	top: -10px;
-	border: 5px solid;
-	border-color: transparent transparent #fff;
+  content: '';
+  left: 22px;
+  top: -10px;
+  border: 5px solid;
+  border-color: transparent transparent #fff;
 }
 .error-messages.ng-active:before {
   position:absolute;
@@ -973,6 +973,17 @@ i.icon-border.active{background: #999 !important;}
     margin: 0px 6px;
     font-size: 14px;
   }
+}
+
+.search-icon-dead{
+  position: relative;
+  top: 2px;
+  background-image: url(/static/icons/dead-tombstone.png);
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  padding: 0px 0px 0px 16px;
+  margin: 0px 6px;
+  font-size: 16px;
 }
 
 .ui-select-class{

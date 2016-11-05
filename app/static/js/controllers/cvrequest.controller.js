@@ -20,7 +20,7 @@
 
 angular.module('linc.cvrequest.controller', ['linc.cvrequest.directive'])
 
-.controller('CVRequesCtrl', ['$scope', '$window', '$timeout', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'imagesetId', 'lions', 'lion_filters', function ($scope, $window, $timeout, $uibModalInstance, LincServices, NotificationFactory, imagesetId, lions, lion_filters) {
+.controller('CVRequesCtrl', ['$scope', '$window', '$timeout', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'imagesetId', 'lions', 'lion_filters', 'AuthService', function ($scope, $window, $timeout, $uibModalInstance, LincServices, NotificationFactory, imagesetId, lions, lion_filters, AuthService) {
 
   $scope.title = 'CV Search';
   $scope.content = 'Search';
@@ -49,8 +49,17 @@ angular.module('linc.cvrequest.controller', ['linc.cvrequest.directive'])
     var win = window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=100, left=100, width=600, height=600");
     win.focus();
   }
-
+  $scope.user = AuthService.user;
   $scope.lions = _.map(lions, function(element, index) {
+
+    element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
+
+    //tmp
+    var gps = (Math.random() > 0.5) ? true : false;
+    element['is_private'] = {gps: gps, map: gps};
+    element['canLocate'] = (!element.is_private.gps || element.canShow);
+    element['is_dead'] = (Math.random() > 0.5) ? true : false;
+
     var elem = {};
     var TAGS = [];
     if(!element.gender) element.gender = 'unknown';

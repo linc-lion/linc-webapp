@@ -33,6 +33,10 @@ angular.module('linc.lions.controllers', [])
     });
     return label;
   }
+  //tmp
+  $scope.lion.is_private = {map: true, gps: true};
+  $scope.lion.is_dead = true;
+
   $scope.tooltip_need_verifiy = {'title': 'There are Image sets pending of verification', 'checked': true};
 
   var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left', 'EYE_DAMAGE_RIGHT': 'Right'};
@@ -188,6 +192,12 @@ angular.module('linc.lions.controllers', [])
 
     element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
 
+    //tmp
+    var gps = (Math.random() > 0.5) ? true : false;
+    element['is_private'] = {gps: gps, map: gps};
+    element['canLocate'] = (!element.is_private.gps || element.canShow);
+    element['is_dead'] = (Math.random() > 0.5) ? true : false;
+    
     var elem = {};
     var TAGS = [];
     if(!element.gender) element.gender = 'unknown';
