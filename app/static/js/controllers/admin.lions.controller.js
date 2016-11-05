@@ -38,14 +38,12 @@ angular.module('linc.admin.lions.controller', [])
     }
     check_selects();
   }
-  $scope.Select_Lion1 = function ($event, lion){
-    if($scope.Lion_Mode != '') return;
-    lion.selected = !lion.selected;
-    $scope.Select_Lion($event, lion);
-  }
 
   var lastSelId = -1;
-  $scope.Select_Lion = function ($event, lion){
+  $scope.Select_Lion = function ($event, lion, type){
+    if(type == 'line-click'){
+      lion.selected = !lion.selected;
+    }
     var shiftKey = $event.shiftKey;
     if(shiftKey && lastSelId>=0){
       var index0 = _.findIndex($scope.ordered_lions, {'id': lastSelId});
@@ -79,70 +77,155 @@ angular.module('linc.admin.lions.controller', [])
     check_selects();
   }
 
-  var modal = null;
   $scope.Add_Lion = function () {
-    $scope.modalTitle = 'Add Lion';
-    $scope.showValidationMessages = false;
+    $scope.Lion_Mode = 'add';
+    $scope.check_all(false);
 
-    $scope.organizations = angular.copy($scope.$parent.organizations);
-    $scope.imagesets = angular.copy($scope.$parent.imagesets);
+    var modalScope = $scope.$new();
+    modalScope.modalTitle = 'Add Lion';
 
-    $scope.lion = {
-      'name': '', 'organization_id': -1, 'primary_image_set_id': '', 'selected': true
+    modalScope.dataSending = false;
+    modalScope.showValidationMessages = false;
+
+    modalScope.organizations = angular.copy($scope.$parent.organizations);
+    modalScope.imagesets = angular.copy($scope.$parent.imagesets);
+    modalScope.lion = {
+      'name': '', 
+      'organization_id': undefined, 
+      'primary_image_set_id': '', 
+      'selected': true
     }
-    modal = $uibModal.open({
+
+    var modalInstance = $uibModal.open({
         templateUrl: 'Edit_Lion.tmpl.html',
-        scope:$scope
+        scope: modalScope
     });
-    modal.result.then(function (result) {
-      console.log("Add");
+
+    modalInstance.result.then(function (result) {
+      $scope.Lion_Mode = '';
+      modalScope.dataSending = false;
     }, function (){
       $scope.Lion_Mode = '';
-      console.log("add dismiss");
+      modalScope.dataSending = false;
     });
 
-    $scope.check_all(false);
-    $scope.Lion_Mode = 'add';
+    modalScope.submit = function (valid){
+      if(valid){
+        var data = {
+          'name': modalScope.lion.name,
+          'organization_id': modalScope.lion.organization_id,
+          'primary_image_set_id': modalScope.lion.primary_image_set_id
+        };
+        modalScope.dataSending = true;
+        $scope.LincApiServices.Lions({'method': 'post', 'data': data}).then(function(response){
+          $scope.Notification.success({
+            title: 'Lion Info', 
+            message: 'New Lion successfully created',
+            position: "right",
+            duration: 2000 
+          });
+          var lion = response.data;
+          lion.created_at = (lion.created_at || "").substring(0,19);
+          lion.updated_at = (lion.updated_at || "").substring(0,19);
+          var org = _.find($scope.$parent.organizations, {'id': lion.organization_id});
+          lion.organization = (org == undefined)? '' : org.name;
+          lion.selected = true;
+          $scope.$parent.lions.push(lion);
+          $scope.Selecteds.push(lion);
+          modalInstance.close();
+        },
+        function(error){
+          $scope.Notification.error({
+            title: "Fail", 
+            message: 'Fail to create new Lion',
+            position: 'right',
+            duration: 5000
+          });
+          modalInstance.dismiss();
+        });
+      }
+      else {
+        modalScope.showValidationMessages = true;
+      }
+    };
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
+    };
   };
 
   $scope.Edit_Lion = function() {
-    $scope.modalTitle = 'Edit Lion';
-    $scope.showValidationMessages = false;
-
-    $scope.organizations = angular.copy($scope.$parent.organizations);
-    $scope.imagesets = angular.copy($scope.$parent.imagesets);
-
     if($scope.Selecteds.length == 1){
       $scope.Lion_Mode = 'edit';
-      $scope.lion = angular.copy($scope.Selecteds[0]);
-      modal = $uibModal.open({
+
+      var modalScope = $scope.$new();
+      modalScope.modalTitle = 'Edit Lion';
+
+      modalScope.dataSending = false;
+      modalScope.showValidationMessages = false;
+
+      modalScope.organizations = angular.copy($scope.$parent.organizations);
+      modalScope.imagesets = angular.copy($scope.$parent.imagesets);
+      modalScope.lion = angular.copy($scope.Selecteds[0]);
+
+      var modalInstance = $uibModal.open({
           templateUrl: 'Edit_Lion.tmpl.html',
-          scope:$scope
+          scope: modalScope
       });
-      modal.result.then(function (result) {
-        console.log("Edited");
+
+      modalInstance.result.then(function (result) {
+        $scope.Lion_Mode = '';
+        modalScope.dataSending = false;
       }, function (){
         $scope.Lion_Mode = '';
-        console.log("edit dismiss");
+        modalScope.dataSending = false;
       });
-    }
-  }
 
-  $scope.Cancel_Edit_Lion = function(){
-    modal.dismiss();
-    $scope.Lion_Mode = '';
-  }
-
-  $scope.Submit = function (valid){
-    if(valid){
-      modal.close();
-      Submit_Lion();
+      modalScope.submit = function (valid){
+        if(valid){
+          var data = {
+            'name': modalScope.lion.name,
+            'organization_id': modalScope.lion.organization_id,
+            'primary_image_set_id': modalScope.lion.primary_image_set_id
+          };
+          modalScope.dataSending = true;
+          $scope.LincApiServices.Lions({'method': 'put', 'lion_id' : modalScope.lion.id, 'data': data}).then(function(response){
+            $scope.Notification.success({
+              title: 'Lion Info', 
+              message: 'Lion data successfully updated',
+              position: "right",
+              duration: 2000 
+            });
+            var lion = $scope.Selecteds[0];
+            _.merge(lion, lion, response.data);
+            lion.created_at = (lion.created_at || "").substring(0,19);
+            lion.updated_at = (lion.updated_at || "").substring(0,19);
+            var org = _.find($scope.$parent.organizations, {'id': lion.organization_id});
+            lion.organization = (org == undefined)? '' : org.name;
+            $scope.$parent.LionsUpdated();
+            modalInstance.close();
+          },
+          function(error){
+            $scope.Notification.error({
+              title: "Fail", 
+              message: 'Fail to change Lion data',
+              position: 'right',
+              duration: 5000 
+            });
+            modalInstance.dismiss();
+          });
+        }
+        else {
+          modalScope.showValidationMessages = true;
+        }
+      };
+      modalScope.cancel = function(){
+        modalInstance.dismiss();
+      };
     }
-    else {$scope.showValidationMessages = true;}
   }
 
   $scope.Delete_Lion = function() {
-    $scope.Delete('Lions')
+    $scope.DialogDelete('Lions')
     .then(function (result) {
       var lions_id = _.pluck(_.map($scope.Selecteds, function (lion){
         return {'id': lion.id};
@@ -155,17 +238,19 @@ angular.module('linc.admin.lions.controller', [])
           }), 'id');
           var msg = (data.length>1) ? 'Unable to delete lions ' + data : 'Unable to delete lion ' + data;
           $scope.Notification.error({
-            title: "Delete", message: msg,
-            position: "right", // right, left, center
-            duration: 2000     // milisecond
+            title: "Delete", 
+            message: msg,
+            position: "right",
+            duration: 2000 
           });
         }
         else if(response.success.length>0){
           var msg = (response.success.length>1) ? 'Lions successfully deleted' : 'Lion successfully deleted';
           $scope.Notification.success({
-            title: "Delete", message: msg,
-            position: "right", // right, left, center
-            duration: 2000     // milisecond
+            title: "Delete", 
+            message: msg,
+            position: "right",
+            duration: 2000 
           });
         }
         _.forEach(response.success, function(item, i){
@@ -175,75 +260,16 @@ angular.module('linc.admin.lions.controller', [])
         });
         $scope.Selecteds = [];
         $scope.settings.lions.Selecteds = $scope.Selecteds;
-        $scope.$parent.LionsDeleted();
+        $scope.$parent.LionsUpdated();
       });
     }, function () {
       $scope.Notification.info({
-        title: "Cancel", message: 'Delete canceled',
-        position: 'right', // right, left, center
-        duration: 2000   // milisecond
+        title: "Cancel", 
+        message: 'Delete canceled',
+        position: 'right',
+        duration: 2000 
       });
     });
-  }
-
-  var Submit_Lion = function(){
-    if($scope.Lion_Mode == 'edit'){
-      var data = {'name': $scope.lion.name,
-       'organization_id': $scope.lion.organization_id,
-  'primary_image_set_id': $scope.lion.primary_image_set_id
-      };
-      $scope.LincApiServices.Lions({'method': 'put', 'lion_id' : $scope.lion.id, 'data': data}).then(function(response){
-        $scope.Notification.success({
-          title: 'Lion Info', message: 'Lion data successfully updated',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-
-        var lion = $scope.Selecteds[0];
-        _.merge(lion, lion, response.data);
-        lion.created_at = (lion.created_at || "").substring(0,19);
-        lion.updated_at = (lion.updated_at || "").substring(0,19);
-
-        var org = _.find($scope.$parent.organizations, {'id': lion.organization_id});
-        lion.organization = (org == undefined)? '' : org.name;
-      },
-      function(error){
-        $scope.Notification.error({
-          title: "Fail", message: 'Fail to change Lion data',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      });
-    }
-    if($scope.Lion_Mode  == 'add'){
-      var data = {'name': $scope.lion.name,
-       'organization_id': $scope.lion.organization_id,
-  'primary_image_set_id': $scope.lion.primary_image_set_id
-      };
-      $scope.LincApiServices.Lions({'method': 'post', 'data': data}).then(function(response){
-        $scope.Notification.success({
-          title: 'Lion Info', message: 'New Lion successfully created',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        var lion = response.data;
-        lion.created_at = (lion.created_at || "").substring(0,19);
-        lion.updated_at = (lion.updated_at || "").substring(0,19);
-        var org = _.find($scope.$parent.organizations, {'id': lion.organization_id});
-        lion.organization = (org == undefined)? '' : org.name;
-        lion.selected = true;
-        $scope.$parent.lions.push(lion);
-        $scope.Selecteds.push(lion);
-      },
-      function(error){
-        $scope.Notification.error({
-          title: "Fail", message: 'Fail to create new Lion',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      });
-    }
-    $scope.Lion_Mode = '';
   }
 
   var check_selects = function (){

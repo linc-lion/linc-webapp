@@ -170,7 +170,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     $scope.ErrorMessage = 'Unable to delete this Image Set.';
     $scope.modalContent = 'Form';
     $scope.modalInstance = $uibModal.open({
-        templateUrl: 'Delete.tmpl.html',
+        templateUrl: 'Dialog.Delete.tmpl.html',
         scope:$scope
     });
     $scope.modalInstance.result.then(function (result) {

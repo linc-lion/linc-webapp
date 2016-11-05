@@ -39,14 +39,11 @@ angular.module('linc.admin.cvresults.controller', [])
     check_selects();
   }
 
-  $scope.Select_CVresult1 = function ($event, cvresult){
-    if($scope.CVResult_Mode != '') return;
-    cvresult.selected = !cvresult.selected;
-    $scope.Select_CVresult($event, cvresult);
-  }
-
   var lastSelId = -1;
-  $scope.Select_CVresult = function ($event, cvresult){
+  $scope.Select_CVresult = function ($event, cvresult, type){
+   if(type == 'line-click'){
+      cvresult.selected = !cvresult.selected;
+    }
     var shiftKey = $event.shiftKey;
     if(shiftKey && lastSelId>=0){
       var index0 = _.findIndex($scope.ordered_cvresults, {'id': lastSelId});
@@ -80,68 +77,142 @@ angular.module('linc.admin.cvresults.controller', [])
     check_selects();
   }
 
-  var modal = null;
   $scope.Add_CVResult = function () {
-    $scope.modalTitle = 'Add CV Result';
-    $scope.showValidationMessages = false;
+    $scope.CVResult_Mode = 'add';
+    $scope.check_all(false);
 
-    $scope.cvrequests = angular.copy($scope.$parent.cvrequests);
+    var modalScope = $scope.$new();
+    modalScope.modalTitle = 'Add CV Result';
 
-    $scope.cvresult = {
-      'cvrequest_id': -1, 'match_probability': '', 'selected': true
+    modalScope.showValidationMessages = false;
+    modalScope.dataSending = false;
+
+    modalScope.cvrequests = angular.copy($scope.$parent.cvrequests);
+    modalScope.cvresult = {
+      'cvrequest_id': undefined, 
+      'match_probability': '', 
+      'selected': true
     }
-    modal = $uibModal.open({
+
+    var modalInstance = $uibModal.open({
         templateUrl: 'Edit_CVResult.tmpl.html',
-        scope:$scope
+        scope: modalScope
     });
-    modal.result.then(function (result) {
-      console.log("Add");
+
+    modalInstance.result.then(function (result) {
+      $scope.CVResult_Mode = '';
+      modalScope.dataSending = false;
     }, function (){
       $scope.CVResult_Mode = '';
-      console.log("add dismiss");
+      modalScope.dataSending = false;
     });
 
-    $scope.check_all(false);
-    $scope.CVResult_Mode = 'add';
+    modalScope.submit = function(valid){
+      if(valid){
+        var data = {
+          'cvrequest_id': modalScope.cvresult.cvrequest_id, 
+          'match_probability': modalScope.cvresult.match_probability
+        };
+        modalScope.dataSending = true;
+        $scope.LincApiServices.CVResults({'method': 'post', 'data': data}).then(function(response){
+          $scope.Notification.success({
+            title: 'CV Result Info', message: 'New CV Result successfully created',
+            position: "right", 
+            duration: 2000 
+          });
+          var cvresult = response.data;
+          cvresult.created_at = (cvresult.created_at || "").substring(0,19);
+          cvresult.updated_at = (cvresult.updated_at || "").substring(0,19);
+          cvresult.selected = true;
+          $scope.$parent.cvresults.push(cvresult);
+          $scope.Selecteds.push(cvresult);
+          modalInstance.close();
+        },
+        function(error){
+          $scope.Notification.error({
+            title: "Fail", message: 'Fail to create new CV Result ',
+            position: 'right', 
+            duration: 5000 
+          });
+          modalInstance.dismiss();
+        });
+      }
+      else {
+        modalScope.showValidationMessages = true;
+      }
+    };
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
+    };
   };
 
   $scope.Edit_CVResult = function() {
-    $scope.modalTitle = 'Edit CV Result';
-    $scope.showValidationMessages = false;
-
-    $scope.cvrequests = angular.copy($scope.$parent.cvrequests);
-
     if($scope.Selecteds.length == 1){
       $scope.CVResult_Mode = 'edit';
-      $scope.cvresult = angular.copy($scope.Selecteds[0]);
-      modal = $uibModal.open({
+
+      var modalScope = $scope.$new();
+      modalScope.modalTitle = 'Edit CV Result';
+
+      modalScope.dataSending = false;
+      modalScope.showValidationMessages = false;
+
+      modalScope.cvrequests = angular.copy($scope.$parent.cvrequests);
+      modalScope.cvresult = angular.copy($scope.Selecteds[0]);
+      
+      var modalInstance = $uibModal.open({
           templateUrl: 'Edit_CVResult.tmpl.html',
-          scope:$scope
+          scope: modalScope
       });
-      modal.result.then(function (result) {
-        console.log("Edited");
+
+      modalInstance.result.then(function (result) {
+        $scope.CVResult_Mode = '';
+        modalScope.dataSending = false;
       }, function (){
         $scope.CVResult_Mode = '';
-        console.log("edit dismiss");
+        modalScope.dataSending = false;
       });
+      
+      modalScope.submit = function (valid){
+        if(valid){
+          var data = {
+            'cvrequest_id': modalScope.cvresult.cvrequest_id, 
+            'match_probability': modalScope.cvresult.match_probability
+          };
+          modalScope.dataSending = true;
+          $scope.LincApiServices.CVResults({'method': 'put', 'cvresult_id' : modalScope.cvresult.id, 'data': data}).then(function(response){
+            $scope.Notification.success({
+              title: 'CV Result Info', 
+              message: 'CV Result data successfully updated',
+              position: "right", 
+              duration: 2000     
+            });
+            var cvresult = $scope.Selecteds[0];
+            _.merge(cvresult, cvresult, response.data);
+            cvresult.created_at = (cvresult.created_at || "").substring(0,19);
+            cvresult.updated_at = (cvresult.updated_at || "").substring(0,19);
+            modalInstance.close();
+          },
+          function(error){
+            $scope.Notification.error({
+              title: "Fail", message: 'Fail to change CV Result data',
+              position: 'right', // right, left, center
+              duration: 5000   // milisecond
+            });
+            modalInstance.dismiss();
+          });
+        }
+        else {
+          modalScope.showValidationMessages = true;
+        }
+      };
+      modalScope.cancel = function(){
+        modalInstance.dismiss();
+      };
     }
-  }
-
-  $scope.Cancel_Edit_CVResult = function(){
-    modal.dismiss();
-    $scope.CVResult_Mode = '';
-  }
-
-  $scope.Submit = function (valid){
-    if(valid){
-      modal.close();
-      Submit_CVresult();
-    }
-    else {$scope.showValidationMessages = true;}
   }
 
   $scope.Delete_CVResult = function() {
-    $scope.Delete('CV Results')
+    $scope.DialogDelete('CV Results')
     .then(function (result) {
       var cvresults_id = _.pluck(_.map($scope.Selecteds, function (cvresult){
         return {'id': cvresult.id};
@@ -183,58 +254,6 @@ angular.module('linc.admin.cvresults.controller', [])
         duration: 2000   // milisecond
       });
     });
-  }
-
-  var Submit_CVresult = function(){
-    if($scope.CVResult_Mode == 'edit'){
-      var data = {
-        'cvrequest_id': $scope.cvresult.cvrequest_id, 'match_probability': $scope.cvresult.match_probability
-      };
-      $scope.LincApiServices.CVResults({'method': 'put', 'cvresult_id' : $scope.cvresult.id, 'data': data}).then(function(response){
-        $scope.Notification.success({
-          title: 'CV Result Info', message: 'CV Result data successfully updated',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        var cvresult = $scope.Selecteds[0];
-        _.merge(cvresult, cvresult, response.data);
-        cvresult.created_at = (cvresult.created_at || "").substring(0,19);
-        cvresult.updated_at = (cvresult.updated_at || "").substring(0,19);
-      },
-      function(error){
-        $scope.Notification.error({
-          title: "Fail", message: 'Fail to change CV Result data',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      });
-    }
-    if($scope.CVResult_Mode == 'add'){
-      var data = {
-        'cvrequest_id': $scope.cvresult.cvrequest_id, 'match_probability': $scope.cvresult.match_probability
-      };
-      $scope.LincApiServices.CVResults({'method': 'post', 'data': data}).then(function(response){
-        $scope.Notification.success({
-          title: 'CV Result Info', message: 'New CV Result successfully created',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        var cvresult = response.data;
-        cvresult.created_at = (cvresult.created_at || "").substring(0,19);
-        cvresult.updated_at = (cvresult.updated_at || "").substring(0,19);
-        cvresult.selected = true;
-        $scope.$parent.cvresults.push(cvresult);
-        $scope.Selecteds.push(cvresult);
-      },
-      function(error){
-        $scope.Notification.error({
-          title: "Fail", message: 'Fail to create new CV Result ',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      });
-    }
-    $scope.CVResult_Mode = '';
   }
 
   var check_selects = function (){

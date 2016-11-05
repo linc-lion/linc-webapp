@@ -45,14 +45,11 @@ angular.module('linc.admin.cvrequests.controller', [])
     check_selects();
   }
 
-  $scope.Select_CVRequest1 = function ($event, cvrequest){
-    if($scope.CVRequest_Mode != '') return;
-    cvrequest.selected = !cvrequest.selected;
-    $scope.Select_CVRequest($event, cvrequest);
-  }
-
   var lastSelId = -1;
-  $scope.Select_CVRequest = function ($event, cvrequest){
+  $scope.Select_CVRequest = function ($event, cvrequest, type){
+    if(type == 'line-click'){
+      cvrequest.selected = !cvrequest.selected;
+    }
     var shiftKey = $event.shiftKey;
     if(shiftKey && lastSelId>=0){
       var index0 = _.findIndex($scope.ordered_cvrequests, {'id': lastSelId});
@@ -86,69 +83,157 @@ angular.module('linc.admin.cvrequests.controller', [])
     check_selects();
   }
 
-  var modal = null;
   $scope.Add_CVRequest = function () {
-    $scope.modalTitle = 'Add CV Request';
-    $scope.showValidationMessages = false;
+    $scope.CVRequest_Mode = 'add';
+    $scope.check_all(false);
 
-    $scope.organizations = angular.copy($scope.$parent.organizations);
-    $scope.imagesets = angular.copy($scope.$parent.imagesets);
+    var modalScope = $scope.$new();
+    modalScope.modalTitle = 'Add CV Request';
 
-    $scope.cvrequest = {
-      'requesting_organization_id': -1, 'image_set_id': -1, 'status': '', 'request_body': '', 'selected': true
+    modalScope.showValidationMessages = false;
+    modalScope.dataSending = false;
+
+    modalScope.edit = {'server_uuid': false, 'request_body': false};
+
+    modalScope.organizations = angular.copy($scope.$parent.organizations);
+    modalScope.imagesets = angular.copy($scope.$parent.imagesets);
+
+    modalScope.cvrequest = {
+      'requesting_organization_id': undefined, 
+      'image_set_id': undefined,
+      'server_uuid': '',
+      'status': '', 
+      'request_body': '', 
+      'selected': true
     }
-    modal = $uibModal.open({
+
+    var modalInstance  = $uibModal.open({
         templateUrl: 'Edit_CVRequest.tmpl.html',
-        scope:$scope
+        scope:modalScope
     });
-    modal.result.then(function (result) {
-      console.log("Add");
+
+    modalInstance.result.then(function (result) {
+      $scope.CVRequest_Mode = '';
+      modalScope.dataSending = false;
     }, function (){
       $scope.CVRequest_Mode = '';
-      console.log("add dismiss");
+      modalScope.dataSending = false;
     });
 
-    $scope.check_all(false);
-    $scope.CVRequest_Mode = 'add';
+    modalScope.submit = function(valid){
+      if(valid){
+        var data = {
+          'requesting_organization_id': modalScope.cvrequest.requesting_organization_id,
+          'image_set_id': modalScope.cvrequest.image_set_id, 
+          'status': modalScope.cvrequest.status,
+          'request_body': modalScope.cvrequest.request_body
+        };
+        modalScope.dataSending = true;
+        $scope.LincApiServices.CVRequests({'method': 'post', 'data': data}).then(function(response){
+          $scope.Notification.success({
+            title: 'CV Request Info', message: 'New CV Request successfully created',
+            position: "right", // right, left, center
+            duration: 2000     // milisecond
+          });
+          var cvrequest = response.data;
+          cvrequest.created_at = (cvrequest.created_at || "").substring(0,19);
+          cvrequest.updated_at = (cvrequest.updated_at || "").substring(0,19);
+          cvrequest.selected = true;
+          $scope.$parent.cvrequests.push(cvrequest);
+          $scope.Selecteds.push(cvrequest);
+          modalInstance.close();
+        },
+        function(error){
+          $scope.Notification.error({
+            title: "Fail", message: 'Fail to create new CV Request ',
+            position: 'right', // right, left, center
+            duration: 5000   // milisecond
+          });
+          modalInstance.dismiss();
+        });
+      }
+      else {
+        modalScope.showValidationMessages = true;
+      }
+    };
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
+    };
   };
 
   $scope.Edit_CVRequest = function() {
-    $scope.modalTitle = 'Edit CV Request';
-    $scope.showValidationMessages = false;
-
-    $scope.organizations = angular.copy($scope.$parent.organizations);
-    $scope.imagesets = angular.copy($scope.$parent.imagesets);
-
     if($scope.Selecteds.length == 1){
       $scope.CVRequest_Mode = 'edit';
-      $scope.cvrequest = angular.copy($scope.Selecteds[0]);
-      modal = $uibModal.open({
+
+      var modalScope = $scope.$new();
+      modalScope.modalTitle = 'Edit CV Request';
+
+      modalScope.showValidationMessages = false;
+      modalScope.dataSending = false;
+
+      modalScope.edit = {'server_uuid': false, 'request_body': false};
+
+      modalScope.organizations = angular.copy($scope.$parent.organizations);
+      modalScope.imagesets = angular.copy($scope.$parent.imagesets);
+      modalScope.cvrequest = angular.copy($scope.Selecteds[0]);
+
+      var modalInstance = $uibModal.open({
           templateUrl: 'Edit_CVRequest.tmpl.html',
-          scope:$scope
+          scope: modalScope
       });
-      modal.result.then(function (result) {
-        console.log("Edited");
+
+      modalInstance.result.then(function (result) {
+        $scope.CVRequest_Mode = '';
+        modalScope.dataSending = false;
       }, function (){
         $scope.CVRequest_Mode = '';
-        console.log("edit dismiss");
+        modalScope.dataSending = false;
       });
-    }
-  }
-  $scope.Cancel_Edit_CVRequest = function(){
-    modal.dismiss();
-    $scope.CVRequest_Mode = '';
-  }
+      
+      modalScope.submit = function (valid){
+        if(valid){
+          var data = {
+            'requesting_organization_id': modalScope.cvrequest.requesting_organization_id,
+            'image_set_id': modalScope.cvrequest.image_set_id, 
+            'status': modalScope.cvrequest.status,
+            'request_body': modalScope.cvrequest.request_body
+          };
+          modalScope.dataSending = true;
+          $scope.LincApiServices.CVRequests({'method': 'put', 'cvrequest_id' : $scope.cvrequest.id, 'data': data}).then(function(response){
+            $scope.Notification.success({
+              title: 'CV Request Info', 
+              message: 'CV Request data successfully updated',
+              position: "right", 
+              duration: 2000     
+            });
 
-  $scope.Submit = function (valid){
-    if(valid){
-      modal.close();
-      Submit_CVRequest();
+            var cvrequest = $scope.Selecteds[0];
+            _.merge(cvrequest, cvrequest, response.data);
+            cvrequest.created_at = (cvrequest.created_at || "").substring(0,19);
+            cvrequest.updated_at = (cvrequest.updated_at || "").substring(0,19);
+            modalInstance.close();
+          },
+          function(error){
+            $scope.Notification.error({
+              title: "Fail", message: 'Fail to change CV Request data',
+              position: 'right', // right, left, center
+              duration: 5000   // milisecond
+            });
+            modalInstance.dismiss();
+          });
+        }
+        else {
+          modalScope.showValidationMessages = true;
+        }
+      };
+      modalScope.cancel = function(){
+        modalInstance.dismiss();
+      };
     }
-    else {$scope.showValidationMessages = true;}
   }
 
   $scope.Delete_CVRequest = function() {
-    $scope.Delete('CV Request')
+    $scope.DialogDelete('CV Request')
     .then(function (result) {
       var cvrequests_id = _.pluck(_.map($scope.Selecteds, function (cvrequest){
         return {'id': cvrequest.id};
@@ -190,63 +275,6 @@ angular.module('linc.admin.cvrequests.controller', [])
         duration: 2000   // milisecond
       });
     });
-  }
-
-  var Submit_CVRequest = function(){
-    if($scope.CVRequest_Mode == 'edit'){
-      var data = {
-          'requesting_organization_id': $scope.cvrequest.requesting_organization_id,
-          'image_set_id': $scope.cvrequest.image_set_id, 'status': $scope.cvrequest.status,
-          'request_body': $scope.cvrequest.request_body
-      };
-      $scope.LincApiServices.CVRequests({'method': 'put', 'cvrequest_id' : $scope.cvrequest.id, 'data': data}).then(function(response){
-        $scope.Notification.success({
-          title: 'CV Request Info', message: 'CV Request data successfully updated',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-
-        var cvrequest = $scope.Selecteds[0];
-        _.merge(cvrequest, cvrequest, response.data);
-        cvrequest.created_at = (cvrequest.created_at || "").substring(0,19);
-        cvrequest.updated_at = (cvrequest.updated_at || "").substring(0,19);
-      },
-      function(error){
-        $scope.Notification.error({
-          title: "Fail", message: 'Fail to change CV Request data',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      });
-    }
-    if($scope.CVRequest_Mode == 'add'){
-      var data = {
-          'requesting_organization_id': $scope.cvrequest.requesting_organization_id,
-          'image_set_id': $scope.cvrequest.image_set_id, 'status': $scope.cvrequest.status,
-          'request_body': $scope.cvrequest.request_body
-      };
-      $scope.LincApiServices.CVRequests({'method': 'post', 'data': data}).then(function(response){
-        $scope.Notification.success({
-          title: 'CV Request Info', message: 'New CV Request successfully created',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        var cvrequest = response.data;
-        cvrequest.created_at = (cvrequest.created_at || "").substring(0,19);
-        cvrequest.updated_at = (cvrequest.updated_at || "").substring(0,19);
-        cvrequest.selected = true;
-        $scope.$parent.cvrequests.push(cvrequest);
-        $scope.Selecteds.push(cvrequest);
-      },
-      function(error){
-        $scope.Notification.error({
-          title: "Fail", message: 'Fail to create new CV Request ',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      });
-    }
-    $scope.CVRequest_Mode = '';
   }
 
   var check_selects = function (){

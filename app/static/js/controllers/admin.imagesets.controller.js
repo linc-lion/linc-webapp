@@ -50,14 +50,11 @@ angular.module('linc.admin.imagesets.controller', [])
     check_selects();
   }
 
-  $scope.Select_Imageset1 = function ($event, imageset){
-    if($scope.ImageSet_Mode != '') return;
-    imageset.selected = !imageset.selected;
-    $scope.Select_Imageset($event, imageset);
-  }
-
   var lastSelId = -1;
-  $scope.Select_Imageset = function ($event, imageset){
+  $scope.Select_Imageset = function ($event, imageset, type){
+    if(type == 'line-click'){
+      imageset.selected = !imageset.selected;
+    }
     var shiftKey = $event.shiftKey;
     if(shiftKey && lastSelId>=0){
       var index0 = _.findIndex($scope.ordered_imagesets, {'id': lastSelId});
@@ -91,102 +88,291 @@ angular.module('linc.admin.imagesets.controller', [])
     check_selects();
   }
 
-  var modal = null;
   $scope.Add_ImageSet = function () {
-    $scope.modalTitle = 'Add ImageSet';
-    $scope.showValidationMessages = false;
+    $scope.ImageSet_Mode = 'add';
+    $scope.check_all(false);
 
-    $scope.organizations = angular.copy($scope.$parent.organizations);
-    $scope.lions = angular.copy($scope.$parent.lions);
-    $scope.images = angular.copy($scope.$parent.images);
+    var modalScope = $scope.$new();
+    modalScope.modalTitle = 'Add ImageSet';
 
-    $scope.imageset = { 'lion_id': -1, 'main_image_id': -1, 'owner_organization_id': -1,
-      'uploading_organization_id':-1, 'uploading_user_id': -1, 'latitude' : '', 'longitude' : '',
-      'date_stamp': new Date().toJSON().slice(0,10), 'date_of_birth': new Date().toJSON().slice(0,10),
-      'gender': '', 'tags': [], 'notes': '', 'is_verified': false, 'selected': true
+    modalScope.dataSending = false;
+    modalScope.showValidationMessages = false;
+
+    modalScope.organizations = angular.copy($scope.$parent.organizations);
+    modalScope.lions = angular.copy($scope.$parent.lions);
+    modalScope.images = angular.copy($scope.$parent.images);
+
+    modalScope.imageset = { 
+      'lion_id': undefined, 
+      'main_image_id': undefined, 
+      'owner_organization_id': undefined,
+      'uploading_organization_id': undefined, 
+      'uploading_user_id': undefined, 
+      'latitude' : '', 'longitude' : '',
+      'date_stamp': new Date().toJSON().slice(0,10), 
+      'date_of_birth': new Date().toJSON().slice(0,10),
+      'gender': '', 
+      'tags': [], 
+      'notes': '', 
+      'is_verified': false, 
+      'selected': true
     };
-    $scope.imageset.main_image = '';
-    modal = $uibModal.open({
+    modalScope.imageset.main_image = '';
+    modalScope.imageset.lion_id = undefined;
+
+    var modalInstance = $uibModal.open({
         templateUrl: 'Edit_ImageSet.tmpl.html',
-        scope:$scope
+        scope: modalScope,
+        size: 'lg'
     });
-    modal.result.then(function (result) {
-      console.log("Add");
+
+    modalInstance.result.then(function (result) {
+      $scope.ImageSet_Mode = '';
+      modalScope.dataSending = false;
     }, function (){
       $scope.ImageSet_Mode = '';
-      console.log("add dismiss");
+      modalScope.dataSending = false;
     });
 
-    $scope.check_all(false);
-    $scope.ImageSet_Mode = 'add';
+    modalScope.onSelected = function (item, model){
+      modalScope.imageset.main_image = (item && item.url) ? item.url : '';
+      modalScope.imageset.main_image_id = ((item && item.id) ? item.id : undefined);
+      console.log('main_image_id: ' + modalScope.imageset.main_image_id);
+    };
+
+    modalScope.submit = function (valid){
+      if(valid){
+        var eyes_dams = _.includes(modalScope.imageset.eye_damages, "EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT") ? ["EYE_DAMAGE_BOTH"] : modalScope.imageset.eye_damages;
+        var ear_marks = _.includes(modalScope.imageset.ear_markings, "EAR_MARKING_LEFT", "EAR_MARKING_RIGHT") ? ["EAR_MARKING_BOTH"] : modalScope.imageset.ear_markings;
+
+        var concat = _([]).concat(eyes_dams);
+        concat = _(concat).concat(ear_marks);
+        concat = _(concat).concat(modalScope.imageset.mouth_markings);
+        concat = _(concat).concat(modalScope.imageset.tail_markings);
+        concat = _(concat).concat(modalScope.imageset.broken_teeth);
+        if(modalScope.imageset.nose_color != undefined)
+          concat = _(concat).concat([modalScope.imageset.nose_color]);
+        concat = _(concat).concat(modalScope.imageset.scars);
+        var TAGS = JSON.stringify(concat.value());
+        if(!concat.value().length) TAGS = "null";
+
+        var latitude = isNaN(parseFloat(modalScope.imageset.latitude)) ? null : parseFloat(modalScope.imageset.latitude);
+        var longitude = isNaN(parseFloat(modalScope.imageset.longitude)) ? null : parseFloat(modalScope.imageset.longitude);
+
+        var data = {
+          'lion_id': modalScope.imageset.lion_id,
+          'main_image_id': modalScope.imageset.main_image_id,
+          'gender': modalScope.imageset.gender,
+          'notes': modalScope.imageset.notes,
+          'owner_organization_id': modalScope.imageset.owner_organization_id,
+          'uploading_user_id': modalScope.imageset.uploading_user_id,
+          'latitude': latitude,
+          'longitude': longitude,
+          'date_stamp': modalScope.imageset.date_stamp,
+          'date_of_birth': modalScope.imageset.date_of_birth,
+          'tags': TAGS,
+          'is_verified': modalScope.imageset.is_verified
+        };
+        modalScope.dataSending = true;
+        $scope.LincApiServices.ImageSets({'method': 'post', 'data': data}).then(function(response){
+          $scope.Notification.success({
+            title: 'Image Set Info', 
+            message: 'New Image Set successfully created',
+            position: "right",
+            duration: 2000
+          });
+          var imageset = response.data;
+          imageset.created_at = (imageset.created_at || "").substring(0,19);
+          imageset.updated_at = (imageset.updated_at || "").substring(0,19);
+
+          if(imageset.date_of_birth)
+            imageset.date_of_birth = (imageset.date_of_birth || "").substring(0,10);
+          var id = imageset.lion_id;
+          var lion = _.find($scope.$parent.lions, {'id': id});
+          imageset.lion_name = (lion == undefined)? '-' : lion.name;
+          id = imageset.owner_organization_id;
+          var owner_organization = _.find($scope.$parent.organizations, {'id': id});
+          imageset.owner_organization = (owner_organization == undefined)? '-' : owner_organization.name;
+          id = imageset.uploading_organization_id;
+          var uploading_organization = _.find($scope.$parent.organizations, {'id': id});
+          imageset.uploading_organization = (uploading_organization == undefined)? '-' : uploading_organization.name;
+          id = imageset.uploading_user_id;
+          var uploading_user = _.find($scope.$parent.users, {'id': id});
+          imageset.uploading_user = (uploading_user == undefined)? '-' : uploading_user.email;
+          id = imageset.main_image_id;
+          var main_image = _.find($scope.$parent.images, {'id': id});
+          imageset.main_image = (main_image == undefined)? '' : main_image.url;
+          imageset.selected = true;
+
+          $scope.$parent.imageset.push(imageset);
+          $scope.Selecteds.push(imageset);
+          modalInstance.close();
+        },
+        function(error){
+          $scope.Notification.error({
+            title: "Fail", 
+            message: 'Fail to create new Image Set',
+            position: 'right', 
+            duration: 5000
+          });
+          modalInstance.dismiss();
+        });
+      }
+      else {
+        modalScope.showValidationMessages = true;
+      }
+    };
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
+    };
   };
 
-  $scope.change_url = function(){
-    $scope.imageset.main_image = '';
-
-    if($scope.imageset.main_image_id){
-      var main_image = _.find($scope.images, {'id': $scope.imageset.main_image_id});
-      $scope.imageset.main_image = (main_image == undefined)? '' : main_image.url;
-    }
-  };
   $scope.Edit_ImageSet = function(){
-    $scope.modalTitle = 'Edit ImageSet';
-    $scope.showValidationMessages = false;
-
-    $scope.organizations = angular.copy($scope.$parent.organizations);
-    $scope.lions = angular.copy($scope.$parent.lions);
-    $scope.images = angular.copy($scope.$parent.images);
-
     if($scope.Selecteds.length == 1){
       $scope.ImageSet_Mode = 'edit';
-      $scope.imageset = angular.copy($scope.Selecteds[0]);
-      $scope.imageset.main_image = '';
-      if($scope.imageset.main_image_id){
-        var main_image = _.find($scope.images, {'id': $scope.imageset.main_image_id});
-        $scope.imageset.main_image = (main_image == undefined)? '' : main_image.url;
+      
+      var modalScope = $scope.$new();
+      modalScope.modalTitle = 'Edit ImageSet';
+
+      modalScope.dataSending = false;
+      modalScope.showValidationMessages = false;
+
+      modalScope.organizations = angular.copy($scope.$parent.organizations);
+      modalScope.lions = angular.copy($scope.$parent.lions);
+      modalScope.images = angular.copy($scope.$parent.images);
+
+      modalScope.imageset = angular.copy($scope.Selecteds[0]);
+      modalScope.imageset.main_image = '';
+
+      if(modalScope.imageset.main_image_id){
+        var main_image = _.find(modalScope.images, {'id': modalScope.imageset.main_image_id});
+        modalScope.imageset.main_image = (main_image == undefined)? '' : main_image.url;
+        modalScope.imageset.image = main_image;
       }
       var TAGS = [];
       try{
-        TAGS = JSON.parse($scope.imageset.tags);
+        TAGS = JSON.parse(modalScope.imageset.tags);
       }catch(e){
-        TAGS = $scope.imageset.tags.split(",");
+        TAGS = modalScope.imageset.tags.split(",");
       }
 
-      $scope.imageset.eyes_damages = _.includes(TAGS,'EYE_DAMAGE_BOTH')? ['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT'] :  _.intersection(TAGS,['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']);
-      $scope.imageset.ear_markings = _.includes(TAGS,'EAR_MARKING_BOTH')? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] :  _.intersection(TAGS,['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']);
-      $scope.imageset.mouth_markings = _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']);
-      $scope.imageset.tail_markings = _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT']);
-      $scope.imageset.broken_teeth = _.intersection(TAGS,['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT','TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']);
-      $scope.imageset.nose_color = (_.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']))[0];
-      $scope.imageset.scars = _.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE', 'SCARS_TAIL']);
-      modal = $uibModal.open({
+      modalScope.imageset.eyes_damages = _.includes(TAGS,'EYE_DAMAGE_BOTH')? ['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT'] :  _.intersection(TAGS,['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']);
+      modalScope.imageset.ear_markings = _.includes(TAGS,'EAR_MARKING_BOTH')? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] :  _.intersection(TAGS,['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']);
+      modalScope.imageset.mouth_markings = _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']);
+      modalScope.imageset.tail_markings = _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT']);
+      modalScope.imageset.broken_teeth = _.intersection(TAGS,['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT','TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']);
+      modalScope.imageset.nose_color = (_.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']))[0];
+      modalScope.imageset.scars = _.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE', 'SCARS_TAIL']);
+
+      var modalInstance = $uibModal.open({
           templateUrl: 'Edit_ImageSet.tmpl.html',
-          scope:$scope
+          scope: modalScope,
+          size: 'lg'
       });
-      modal.result.then(function (result) {
-        modal
+
+      modalInstance.result.then(function (result) {
+        $scope.ImageSet_Mode = '';
+        modalScope.dataSending = false;
       }, function (){
         $scope.ImageSet_Mode = '';
-        console.log("edit dismiss");
+        modalScope.dataSending = false;
       });
-    };
-  }
 
-  $scope.Cancel_Edit_ImageSet = function(){
-    modal.dismiss();
-    $scope.ImageSet_Mode = '';
-  }
+      modalScope.onSelected = function (item, model){
+        modalScope.imageset.main_image = (item && item.url) ? item.url : '';
+        modalScope.imageset.main_image_id = ((item && item.id) ? item.id : null);
+        console.log('main_image_id: ' + modalScope.imageset.main_image_id);
+      };
+      
+      modalScope.submit = function(valid){
+        if(valid){
+          var eyes_dams = _.includes(modalScope.imageset.eye_damages, "EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT") ? ["EYE_DAMAGE_BOTH"] : modalScope.imageset.eye_damages;
+          var ear_marks = _.includes(modalScope.imageset.ear_markings, "EAR_MARKING_LEFT", "EAR_MARKING_RIGHT") ? ["EAR_MARKING_BOTH"] : modalScope.imageset.ear_markings;
 
-  $scope.Submit = function (valid){
-    if(valid){
-      modal.close();
-      Submit_Imageset();
+          var concat = _([]).concat(eyes_dams);
+          concat = _(concat).concat(ear_marks);
+          concat = _(concat).concat(modalScope.imageset.mouth_markings);
+          concat = _(concat).concat(modalScope.imageset.tail_markings);
+          concat = _(concat).concat(modalScope.imageset.broken_teeth);
+          if(modalScope.imageset.nose_color != undefined)
+            concat = _(concat).concat([modalScope.imageset.nose_color]);
+          concat = _(concat).concat(modalScope.imageset.scars);
+          var TAGS = JSON.stringify(concat.value());
+          if(!concat.value().length) TAGS = "null";
+
+          var latitude = isNaN(parseFloat(modalScope.imageset.latitude)) ? null : parseFloat(modalScope.imageset.latitude);
+          var longitude = isNaN(parseFloat(modalScope.imageset.longitude)) ? null : parseFloat(modalScope.imageset.longitude);
+
+          var data = {
+            'lion_id': modalScope.imageset.lion_id,
+            'main_image_id': modalScope.imageset.main_image_id,
+            'gender': modalScope.imageset.gender,
+            'notes': modalScope.imageset.notes,
+            'owner_organization_id': modalScope.imageset.owner_organization_id,
+            'uploading_user_id': modalScope.imageset.uploading_user_id,
+            'latitude': latitude,
+            'longitude': longitude,
+            'date_stamp': modalScope.imageset.date_stamp,
+            'date_of_birth': modalScope.imageset.date_of_birth,
+            'tags': TAGS,
+            'is_verified': modalScope.imageset.is_verified
+          };
+          modalScope.dataSending = true;
+          $scope.LincApiServices.ImageSets({'method': 'put', 'imageset_id' : modalScope.imageset.id, 'data': data}).then(function(response){
+            $scope.Notification.success({
+              title: 'Image Set Info', 
+              message: 'Image Set data successfully updated',
+              position: "right",
+              duration: 2000 
+            });
+
+            var imageset = $scope.Selecteds[0];
+            _.merge(imageset, imageset, response.data);
+            imageset.created_at = (imageset.created_at || "").substring(0,19);
+            imageset.updated_at = (imageset.updated_at || "").substring(0,19);
+
+            if(imageset.date_of_birth)
+              imageset.date_of_birth = (imageset.date_of_birth || "").substring(0,10);
+            var id = imageset.lion_id;
+            var lion = _.find($scope.$parent.lions, {'id': id});
+            imageset.lion_name = (lion == undefined)? '-' : lion.name;
+            id = imageset.owner_organization_id;
+            var owner_organization = _.find($scope.$parent.organizations, {'id': id});
+            imageset.owner_organization = (owner_organization == undefined)? '-' : owner_organization.name;
+            id = imageset.uploading_organization_id;
+            var uploading_organization = _.find($scope.$parent.organizations, {'id': id});
+            imageset.uploading_organization = (uploading_organization == undefined)? '-' : uploading_organization.name;
+            id = imageset.uploading_user_id;
+            var uploading_user = _.find($scope.$parent.users, {'id': id});
+            imageset.uploading_user = (uploading_user == undefined)? '-' : uploading_user.email;
+            id = imageset.main_image_id;
+            var main_image = _.find($scope.$parent.images, {'id': id});
+            imageset.main_image = (main_image == undefined)? '' : main_image.url;
+            $scope.$parent.ImageSetsUpdated();
+            modalInstance.close();
+          },
+          function(error){
+            $scope.Notification.error({
+              title: "Fail", 
+              message: 'Fail to change Image Set data',
+              position: 'right', 
+              duration: 5000 
+            });
+            modalInstance.dismiss();
+          });
+        }
+        else {
+          modalScope.showValidationMessages = true;
+        }
+      }
+      modalScope.cancel = function(){
+        modalInstance.dismiss();
+      };
     }
-    else {$scope.showValidationMessages = true;}
   }
 
   $scope.Delete_ImageSet = function() {
-    $scope.Delete('Image Sets')
+    $scope.DialogDelete('Image Sets')
     .then(function (result) {
       var imagesets_id = _.pluck(_.map($scope.Selecteds, function (imageset){
         return {'id': imageset.id};
@@ -199,17 +385,19 @@ angular.module('linc.admin.imagesets.controller', [])
           }), 'id');
           var msg = (data.length>1) ? 'Unable to delete imagesets ' + data : 'Unable to delete imageset ' + data;
           $scope.Notification.error({
-            title: "Delete", message: msg,
-            position: "right", // right, left, center
-            duration: 2000     // milisecond
+            title: "Delete", 
+            message: msg,
+            position: "right", 
+            duration: 2000 
           });
         }
         else if(response.success.length>0){
           var msg = (response.success.length>1) ? 'Imagesets successfully deleted' : 'Imageset successfully deleted';
           $scope.Notification.success({
-            title: "Delete", message: msg,
-            position: "right", // right, left, center
-            duration: 2000     // milisecond
+            title: "Delete", 
+            message: msg,
+            position: "right",
+            duration: 2000 
           });
         }
         _.forEach(response.success, function(item, i){
@@ -219,162 +407,16 @@ angular.module('linc.admin.imagesets.controller', [])
         });
         $scope.Selecteds = [];
         $scope.settings.imagesets.Selecteds = $scope.Selecteds;
-        $scope.$parent.ImageSetsDeleted();
+        $scope.$parent.ImageSetsUpdated();
       });
     }, function () {
       $scope.Notification.info({
-        title: "Cancel", message: 'Delete canceled',
-        position: 'right', // right, left, center
-        duration: 2000   // milisecond
+        title: "Cancel", 
+        message: 'Delete canceled',
+        position: 'right', 
+        duration: 2000 
       });
     });
-  }
-
-  var Submit_Imageset = function(){
-    if($scope.ImageSet_Mode == 'edit'){
-      var imageset = $scope.Selecteds[0];
-
-      var eyes_dams = _.includes($scope.imageset.eye_damages, "EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT") ? ["EYE_DAMAGE_BOTH"] : $scope.imageset.eye_damages;
-      var ear_marks = _.includes($scope.imageset.ear_markings, "EAR_MARKING_LEFT", "EAR_MARKING_RIGHT") ? ["EAR_MARKING_BOTH"] : $scope.imageset.ear_markings;
-
-      var concat = _([]).concat(eyes_dams);
-      concat = _(concat).concat(ear_marks);
-      concat = _(concat).concat($scope.imageset.mouth_markings);
-      concat = _(concat).concat($scope.imageset.tail_markings);
-      concat = _(concat).concat($scope.imageset.broken_teeth);
-      if($scope.imageset.nose_color != undefined)
-        concat = _(concat).concat([$scope.imageset.nose_color]);
-      concat = _(concat).concat($scope.imageset.scars);
-      var TAGS = JSON.stringify(concat.value());
-      if(!concat.value().length) TAGS = "null";
-
-      var latitude = isNaN(parseFloat($scope.imageset.latitude)) ? null : parseFloat($scope.imageset.latitude);
-      var longitude = isNaN(parseFloat($scope.imageset.longitude)) ? null : parseFloat($scope.imageset.longitude);
-
-      var data = {'lion_id': $scope.imageset.lion_id,
-            'main_image_id': $scope.imageset.main_image_id,
-                   'gender': $scope.imageset.gender,
-                    'notes': $scope.imageset.notes,
-    'owner_organization_id': $scope.imageset.owner_organization_id,
-        'uploading_user_id': $scope.imageset.uploading_user_id,
-                 'latitude': latitude,
-                'longitude': longitude,
-               'date_stamp': $scope.imageset.date_stamp,
-            'date_of_birth': $scope.imageset.date_of_birth,
-                      'tags': TAGS,
-              'is_verified': $scope.imageset.is_verified
-      };
-
-      $scope.LincApiServices.ImageSets({'method': 'put', 'imageset_id' : $scope.imageset.id, 'data': data}).then(function(response){
-        $scope.Notification.success({
-          title: 'Image Set Info', message: 'Image Set data successfully updated',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-
-        var imageset = $scope.Selecteds[0];
-        _.merge(imageset, imageset, response.data);
-        imageset.created_at = (imageset.created_at || "").substring(0,19);
-        imageset.updated_at = (imageset.updated_at || "").substring(0,19);
-
-        if(imageset.date_of_birth)
-          imageset.date_of_birth = (imageset.date_of_birth || "").substring(0,10);
-        var id = imageset.lion_id;
-        var lion = _.find($scope.$parent.lions, {'id': id});
-        imageset.lion_name = (lion == undefined)? '-' : lion.name;
-        id = imageset.owner_organization_id;
-        var owner_organization = _.find($scope.$parent.organizations, {'id': id});
-        imageset.owner_organization = (owner_organization == undefined)? '-' : owner_organization.name;
-        id = imageset.uploading_organization_id;
-        var uploading_organization = _.find($scope.$parent.organizations, {'id': id});
-        imageset.uploading_organization = (uploading_organization == undefined)? '-' : uploading_organization.name;
-        id = imageset.uploading_user_id;
-        var uploading_user = _.find($scope.$parent.users, {'id': id});
-        imageset.uploading_user = (uploading_user == undefined)? '-' : uploading_user.email;
-        id = imageset.main_image_id;
-        var main_image = _.find($scope.$parent.images, {'id': id});
-        imageset.main_image = (main_image == undefined)? '' : main_image.url;
-      },
-      function(error){
-        $scope.Notification.error({
-          title: "Fail", message: 'Fail to change Image Set data',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      });
-    }
-    if($scope.ImageSet_Mode == 'add'){
-      var eyes_dams = _.includes($scope.imageset.eye_damages, "EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT") ? ["EYE_DAMAGE_BOTH"] : $scope.imageset.eye_damages;
-      var ear_marks = _.includes($scope.imageset.ear_markings, "EAR_MARKING_LEFT", "EAR_MARKING_RIGHT") ? ["EAR_MARKING_BOTH"] : $scope.imageset.ear_markings;
-
-      var concat = _([]).concat(eyes_dams);
-      concat = _(concat).concat(ear_marks);
-      concat = _(concat).concat($scope.imageset.mouth_markings);
-      concat = _(concat).concat($scope.imageset.tail_markings);
-      concat = _(concat).concat($scope.imageset.broken_teeth);
-      if($scope.imageset.nose_color != undefined)
-        concat = _(concat).concat([$scope.imageset.nose_color]);
-      concat = _(concat).concat($scope.imageset.scars);
-      var TAGS = JSON.stringify(concat.value());
-      if(!concat.value().length) TAGS = "null";
-
-      var latitude = isNaN(parseFloat($scope.imageset.latitude)) ? null : parseFloat($scope.imageset.latitude);
-      var longitude = isNaN(parseFloat($scope.imageset.longitude)) ? null : parseFloat($scope.imageset.longitude);
-
-      var data = {'lion_id': $scope.imageset.lion_id,
-            'main_image_id': $scope.imageset.main_image_id,
-                   'gender': $scope.imageset.gender,
-                    'notes': $scope.imageset.notes,
-    'owner_organization_id': $scope.imageset.owner_organization_id,
-        'uploading_user_id': $scope.imageset.uploading_user_id,
-                 'latitude': latitude,
-                'longitude': longitude,
-               'date_stamp': $scope.imageset.date_stamp,
-            'date_of_birth': $scope.imageset.date_of_birth,
-                      'tags': TAGS,
-              'is_verified': $scope.imageset.is_verified
-      };
-      $scope.LincApiServices.ImageSets({'method': 'post', 'data': data}).then(function(response){
-        $scope.Notification.success({
-          title: 'Image Set Info', message: 'New Image Set successfully created',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        var imageset = response.data;
-        imageset.created_at = (imageset.created_at || "").substring(0,19);
-        imageset.updated_at = (imageset.updated_at || "").substring(0,19);
-
-        if(imageset.date_of_birth)
-          imageset.date_of_birth = (imageset.date_of_birth || "").substring(0,10);
-        var id = imageset.lion_id;
-        var lion = _.find($scope.$parent.lions, {'id': id});
-        imageset.lion_name = (lion == undefined)? '-' : lion.name;
-        id = imageset.owner_organization_id;
-        var owner_organization = _.find($scope.$parent.organizations, {'id': id});
-        imageset.owner_organization = (owner_organization == undefined)? '-' : owner_organization.name;
-        id = imageset.uploading_organization_id;
-        var uploading_organization = _.find($scope.$parent.organizations, {'id': id});
-        imageset.uploading_organization = (uploading_organization == undefined)? '-' : uploading_organization.name;
-        id = imageset.uploading_user_id;
-        var uploading_user = _.find($scope.$parent.users, {'id': id});
-        imageset.uploading_user = (uploading_user == undefined)? '-' : uploading_user.email;
-        id = imageset.main_image_id;
-        var main_image = _.find($scope.$parent.images, {'id': id});
-        imageset.main_image = (main_image == undefined)? '' : main_image.url;
-
-        imageset.selected = true;
-        $scope.imageset.push(imageset);
-        $scope.Selecteds.push(imageset);
-      },
-      function(error){
-        $scope.Notification.error({
-          title: "Fail", message: 'Fail to create new Image Set',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      });
-    }
-    $scope.ImageSet_Mode = '';
   }
 
   var check_selects = function (){
@@ -415,6 +457,23 @@ angular.module('linc.admin.imagesets.controller', [])
   $scope.settings.imagesets.Selecteds = $scope.Selecteds;
 
   check_selects();
+
+
+  var items = [];
+  for (var i = 0; i < 10000; i++) {
+    var person = {
+      name: 'Adam' + i,
+      email: 'adam' + i + '@email.com',
+      age: 12,
+      country: 'United States'
+    };
+    items.push(person);
+  }
+  $scope.all = {items: items};
+
+  $scope.multipleDemo = {};
+  $scope.multipleDemo.singleSelectedPerson = $scope.all.items[500];
+
 
 }])
 

@@ -43,14 +43,11 @@ angular.module('linc.admin.images.controller', [])
     check_selects();
   }
 
-  $scope.Select_Image1 = function ($event, image){
-    if($scope.Image_Mode != '') return;
-    image.selected = !image.selected;
-    $scope.Select_Image($event, image);
-  }
-
   var lastSelId = -1;
-  $scope.Select_Image = function ($event, image){
+  $scope.Select_Image = function ($event, image, type){
+    if(type == 'line-click'){
+      image.selected = !image.selected;
+    }
     var shiftKey = $event.shiftKey;
     if(shiftKey && lastSelId>=0){
       var index0 = _.findIndex($scope.paginated_images, {'id': lastSelId});
@@ -84,69 +81,157 @@ angular.module('linc.admin.images.controller', [])
     check_selects();
   }
 
-  var modal = null;
   $scope.Add_Image = function () {
-    $scope.modalTitle = 'Add Image';
-    $scope.showValidationMessages = false;
+    $scope.Image_Mode = 'add';    
+    $scope.check_all(false);
 
-    $scope.organizations = angular.copy($scope.$parent.organizations);
+    var modalScope = $scope.$new();
+    modalScope.modalTitle = 'Add Image';
+    
+    modalScope.dataSending = false;
+    modalScope.showValidationMessages = false;
 
-    $scope.image = {
-      'url': '', 'image_type': 'cv', 'image_set_id': '',
-      'is_public': true, 'selected': true
+    modalScope.edit = {'image_url': false};
+
+    modalScope.organizations = angular.copy($scope.$parent.organizations);
+    modalScope.image = {
+      'url': '', 
+      'image_type': 'cv', 
+      'image_set_id': '',
+      'is_public': true, 
+      'selected': true
     };
-    modal = $uibModal.open({
+
+    var modalInstance = $uibModal.open({
         templateUrl: 'Edit_Image.tmpl.html',
-        scope:$scope
+        scope: modalScope
     });
-    modal.result.then(function (result) {
-      console.log("Add");
+
+    modalInstance.result.then(function (result) {
+      $scope.Image_Mode = '';
+      modalScope.dataSending = false;
     }, function (){
       $scope.Image_Mode = '';
-      console.log("add dismiss");
+      modalScope.dataSending = false;
     });
 
-    $scope.check_all(false);
-    $scope.Image_Mode = 'add';
+    modalScope.submit = function(valid){
+      if(valid){
+        modalScope.dataSending = true;
+        var data = { 
+          'url': modalScope.image.url,
+          'image_type': modalScope.image.image_type,
+          'image_set_id': modalScope.image.image_set_id,
+          'is_public': modalScope.image.is_public
+        };
+        modalScope.dataSending = true;
+        $scope.LincApiServices.Images({'method': 'post', 'data': data}).then(function(response){
+          $scope.Notification.success({
+            title: 'Image Info', 
+            message: 'New Image successfully created',
+            position: "right",
+            duration: 2000
+          });
+          var image = response.data;
+          image.created_at = (image.created_at || "").substring(0,19);
+          image.updated_at = (image.updated_at || "").substring(0,19);
+          image.selected = true;
+          $scope.$parent.images.push(image);
+          $scope.Selecteds.push(image);
+          modalInstance.close();
+        },
+        function(error){
+          $scope.Notification.error({
+            title: "Image", 
+            message: 'Fail to create new Image',
+            position: 'right',
+            duration: 5000
+          });
+          modalInstance.dismiss();
+        });
+      }
+      else {
+        modalScope.showValidationMessages = true;
+      }
+    };
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
+    }
   };
 
   $scope.Edit_Image = function() {
-    $scope.modalTitle = 'Edit Image';
-    $scope.showValidationMessages = false;
-
-    $scope.imagesets = angular.copy($scope.$parent.imagesets);
-
     if($scope.Selecteds.length == 1){
       $scope.Image_Mode = 'edit';
-      $scope.image = angular.copy($scope.Selecteds[0]);
-      modal = $uibModal.open({
+
+      var modalScope = $scope.$new();
+      modalScope.modalTitle = 'Edit Image';
+
+      modalScope.showValidationMessages = false;
+      modalScope.dataSending = false;
+      
+      modalScope.edit = {'image_url': false};
+
+      modalScope.imagesets = angular.copy($scope.$parent.imagesets);
+      modalScope.image = angular.copy($scope.Selecteds[0]);
+      
+      var modalInstance = $uibModal.open({
           templateUrl: 'Edit_Image.tmpl.html',
-          scope:$scope
+          scope: modalScope,
+          size: 'lg'
       });
-      modal.result.then(function (result) {
-        console.log("Edited");
+
+      modalInstance.result.then(function (result) {
+        $scope.Image_Mode = '';
+        modalScope.dataSending = false;
       }, function (){
         $scope.Image_Mode = '';
-        console.log("edit dismiss");
+        modalScope.dataSending = false;
       });
+      
+      modalScope.submit = function(valid){
+        if(valid){
+          var data = { 
+            'url': modalScope.image.url,
+            'image_type': modalScope.image.image_type,
+            'image_set_id': modalScope.image.image_set_id,
+            'is_public': modalScope.image.is_public
+          };
+          modalScope.dataSending = true;
+          $scope.LincApiServices.Images({'method': 'put', 'image_id' : modalScope.image.id, 'data': data}).then(function(response){
+            $scope.Notification.success({
+              title: 'Image Info', 
+              message: 'Image data successfully updated',
+              position: "right",
+              duration: 2000
+            });
+            var image = $scope.Selecteds[0];
+            _.merge(image, image, response.data);
+            image.created_at = (image.created_at || "").substring(0,19);
+            image.updated_at = (image.updated_at || "").substring(0,19);
+            modalInstance.close();
+          },
+          function(error){
+            $scope.Notification.error({
+              title: "Fail", 
+              message: 'Fail to change Image data',
+              position: 'right',
+              duration: 5000 
+            });
+            modalInstance.dismiss();
+          });
+        }
+        else {
+          modalScope.showValidationMessages = true;
+        }
+      };
+      modalScope.cancel = function(){
+        modalInstance.dismiss();
+      }
     }
-  }
-
-  $scope.Cancel_Edit_Image = function(){
-    modal.dismiss();
-    $scope.Image_Mode = '';
-  }
-
-  $scope.Submit = function (valid){
-    if(valid){
-      modal.close();
-      Submit_Image();
-    }
-    else {$scope.showValidationMessages = true;}
   }
 
   $scope.Delete_Image = function() {
-    $scope.Delete('Images')
+    $scope.DialogDelete('Images')
     .then(function (result) {
       var images_id = _.pluck(_.map($scope.Selecteds, function (image){
         return {'id': image.id};
@@ -159,17 +244,19 @@ angular.module('linc.admin.images.controller', [])
           }), 'id');
           var msg = (data.length>1) ? 'Unable to delete images ' + data : 'Unable to delete image ' + data;
           $scope.Notification.error({
-            title: "Delete", message: msg,
-            position: "right", // right, left, center
-            duration: 2000     // milisecond
+            title: "Delete", 
+            message: msg,
+            position: "right", 
+            duration: 2000 
           });
         }
         else if(response.success.length>0){
           var msg = (response.success.length>1) ? 'Images successfully deleted' : 'Image successfully deleted';
           $scope.Notification.success({
-            title: "Delete", message: msg,
-            position: "right", // right, left, center
-            duration: 2000     // milisecond
+            title: "Delete", 
+            message: msg,
+            position: "right", 
+            duration: 2000 
           });
         }
         _.forEach(response.success, function(item, i){
@@ -184,72 +271,12 @@ angular.module('linc.admin.images.controller', [])
       });
     }, function () {
       $scope.Notification.info({
-        title: "Cancel", message: 'Delete canceled',
-        position: 'right', // right, left, center
-        duration: 2000   // milisecond
+        title: "Cancel", 
+        message: 'Delete canceled',
+        position: 'right',
+        duration: 2000
       });
     });
-  }
-
-  $scope.image = {
-    'url': '', 'image_type': 'cv', 'image_set_id': '',
-    'is_public': true, 'selected': true
-  };
-
-  var Submit_Image = function(){
-    if($scope.Image_Mode == 'edit'){
-      var data = { 'url': $scope.image.url,
-            'image_type': $scope.image.image_type,
-          'image_set_id': $scope.image.image_set_id,
-             'is_public': $scope.image.is_public
-      };
-      $scope.LincApiServices.Images({'method': 'put', 'image_id' : $scope.image.id, 'data': data}).then(function(response){
-        $scope.Notification.success({
-          title: 'Image Info', message: 'Image data successfully updated',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        var image = $scope.Selecteds[0];
-        _.merge(image, image, response.data);
-        image.created_at = (image.created_at || "").substring(0,19);
-        image.updated_at = (image.updated_at || "").substring(0,19);
-      },
-      function(error){
-        $scope.Notification.error({
-          title: "Fail", message: 'Fail to change Image data',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      });
-    }
-    if($scope.Image_Mode == 'add'){
-      var data = { 'url': $scope.image.url,
-            'image_type': $scope.image.image_type,
-          'image_set_id': $scope.image.image_set_id,
-             'is_public': $scope.image.is_public
-      };
-      $scope.LincApiServices.Images({'method': 'post', 'data': data}).then(function(response){
-        $scope.Notification.success({
-          title: 'Image Info', message: 'New Image successfully created',
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
-        });
-        var image = response.data;
-        image.created_at = (image.created_at || "").substring(0,19);
-        image.updated_at = (image.updated_at || "").substring(0,19);
-        image.selected = true;
-        $scope.$parent.images.push(image);
-        $scope.Selecteds.push(image);
-      },
-      function(error){
-        $scope.Notification.error({
-          title: "Image", message: 'Fail to create new Image',
-          position: 'right', // right, left, center
-          duration: 5000   // milisecond
-        });
-      });
-    }
-    $scope.Image_Mode = '';
   }
 
   $scope.show_photo = function(url){
