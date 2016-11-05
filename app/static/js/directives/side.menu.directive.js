@@ -26,12 +26,16 @@ angular.module('linc.side.menu.directive', [])
     restrict: 'EA',
     template: '<li><a ng-click="show()" data-placement="right"><i class="icon icon-menu"></i></a></li>',
     scope: {
-     debug: '='
+     debug: '=',
+     changePassword: '&'
     },
     link: function(scope, element, attrs) {
       scope.show = function(){
         var modalScope = scope.$new();
         modalScope.debug = scope.debug;
+        modalScope.changePassword = function(user){
+          scope.changePassword({user: user})
+        }
         var myModal = $aside({
                     scope: modalScope,
                controller: 'SideMenuCtrl',

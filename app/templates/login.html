@@ -16,29 +16,59 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
+<script type="text/ng-template" id="ForgetSended.tmpl.html">
+  <div class="modal-header" ng-show="modalTitle">
+    <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
+  </div>
+  <div class="modal-body" ng-bind-html="modalMessage">
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" ng-click="close()">Close</button>
+  </div>
+</script>
+<script type="text/ng-template" id="ForgetPwd.tmpl.html">
+  <div class="modal-header" ng-show="modalTitle">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h1 class="modal-title forgot-title" ng-bind-html="modalTitle"></h1>
+  </div>
+  <div class="modal-body">
+    <div id="container-forgot" class="wrapper">
+      <div class="instruction">
+        <p>Please provide the email address that you used when you signed up for your Linc account.</p>
+        <p>We will send you an email that will allow you to reset your password.</p>
+      </div>
+      <div class="callout-box">
+        <form name="form" class="form-signin" ng-submit="resetPassword(form.$valid)">
+          <div class="form-group" ng-class="{'has-error': form.username.$dirty && form.username.$error.required }">
+            <!-- <label for="username" class="sr-only">Email address</label> -->
+            <input type="username" name="username" id="username" class="form-control" ng-model="forgot.username" placeholder="Email address" required oninvalid="this.setCustomValidity('Email address is required')" oninput="setCustomValidity('')" autofocus>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Send Verification email</button>
+            <p class="text-center" ng-if="dataSending"><img src="/static/images/loading.gif" /> submitting&hellip;</p>
+           </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</script>
 <form name="form" class="form-signin" ng-submit="login()">
   <input type="hidden" name="_xsrf" ng-init="loginData._xsrf='{{xsrf}}'" ng-model="loginData._xsrf">
   <h2 class="form-signin-heading">Please sign in</h2>
-
   <div class="form-group" ng-class="{'has-error': form.username.$dirty && form.username.$error.required }">
     <label for="username" class="sr-only">Email address</label>
     <input type="username" name="username" id="username" class="form-control" ng-model="loginData.username" placeholder="Email address" required oninvalid="this.setCustomValidity('Email address is required')" oninput="setCustomValidity('')" autofocus>
   </div>
-
   <div class="form-group" ng-class="{'has-error': form.password.$dirty && form.password.$error.required }">
     <label for="password" class="sr-only">Email address</label>
     <input type="password" name="password" id="password" class="form-control" ng-model="loginData.password" placeholder="Password" required oninvalid="this.setCustomValidity('Password is required')" oninput="setCustomValidity('')">
   </div>
-  <!--<div class="checkbox">
-    <label>
-      <input type="checkbox" value="remember-me" ng-model="remember"> Remember me
-    </label>
-    <span class="separator">·</span>
-      <a class="forgot" href="/account/begin_password_reset">Forgot password?</a>
-    </label>
-  </div>-->
   <div class="form-actions">
     <p><button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button></p>
     <p class="text-center" ng-if="dataLoading"><img src="/static/images/loading.gif" /> Loading&hellip;</p>
+  </div>
+  <div class="forgotPasswordContainer">
+    <!-- <a ui-sref="forgotPassword" target="_top" class="forgot-password">Forgot password?</a> -->
+    <a ng-click="forgotPwd()" target="_top" class="forgot-password">Forgot password?</a>
   </div>
  </form>

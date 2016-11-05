@@ -28,6 +28,13 @@ For more information or to contact visit linclion.org or email tech@linclion.org
   {% end %}
 
   {% block content %}
+      <script type="text/ng-template" id="tooltip.password.tpl.html">
+        <div class="tooltip in tooltip-password" ng-show="title">
+          <div class="tooltip-arrow"></div>
+          <div class="tooltip-arrow custom-arrow"></div>
+          <div class="tooltip-inner" ng-bind-html="title | unsafe"></div>
+        </div>
+      </script>
       <script type="text/ng-template" id="Delete.tmpl.html">
         <div class="modal-header" ng-show="modalTitle">
           <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
@@ -39,6 +46,50 @@ For more information or to contact visit linclion.org or email tech@linclion.org
           <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
         </div>
       </script>
+      <script type="text/ng-template" id="ChangePwd.tmpl.html">
+        <form name="form" ng-submit="changePassword(form.$valid)">
+          <div class="modal-header" ng-show="modalTitle">
+            <button type="button" class="close" ng-click="cancel()">&times;</button>
+            <h1 class="modal-title forgot-title" ng-bind-html="modalTitle"></h1>
+          </div>
+          <div class="modal-body">
+            <div id="container-forgot" class="wrapper">
+              <div class="callout-box">
+                <div class="form-group">
+                  <label  for="useremail">User:</label>
+                  <input class="form-control" readonly type="text" name="useremail" ng-model="user.email">
+                </div>
+                <!-- <div class="form-group">
+                  <label  for="old_password">Old Password:</label>
+                  <input type="password" name="password_fake" value="" class="display-none" />
+                  <input class="form-control" type="password" name="old_password" ng-model="user.password.old" placeholder="enter the old password" required oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('please fill out this field with Password')">
+                </div> -->
+                <div class="form-group">
+                  <label for="password">Password:</label>
+                  <input type="password" name="password_fake" value="" class="display-none" />
+                  <input class="form-control" type="password" name="password" ng-model="user.password.password" placeholder="enter the new password" required oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('please fill out this field with Password')">
+                </div>
+                <div class="form-group">
+                  <label for="confirm_password">Password:</label>
+                  <input type="password" name="password_fake" value="" class="display-none" />
+                  <input class="form-control" type="password" name="
+                    confirm_password" ng-model="user.password.confirm" placeholder="confirm the new password" required oninput="setCustomValidity('')" nx-equal-ex="user.password.password"
+                    oninvalid="this.setCustomValidity('please repeat the Password in this field')"
+                    data-animation="am-flip-x" data-html="true" data-type="info" 
+                    placement="bottom" bs-tooltip="tooltip" data-template-url='tooltip.password.tpl.html'
+                    data-trigger="manual"
+                    data-bs-show="showValidationMessages && (form.confirm_password.$error.nxEqualEx!=undefined)">
+                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" ng-click="cancel()" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Change Password</button>
+            <p class="text-center" ng-if="dataSending"><img src="/static/images/loading.gif" /> submitting&hellip;</p>
+          </div>
+        </form>
+      </script>
       <!-- Main hero unit for a primary marketing message or call to action -->
       <nav class="navbar navbar-default navbar-fixed-top" role="navigation" bs-navbar>
         <div class="container-fluid">
@@ -46,7 +97,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <a class="navbar-brand" ng-disabled="!Auth.user.logged" ui-sref="home"><img src="static/logo.png" alt="logo" ></a>
           </div>
           <ul class="nav navbar-nav navbar-right" ng-show="Auth.user.logged">
-            <sidemenu debug="debug"></sidemenu>
+            <sidemenu change-password="changePWD(user)" debug="debug"></sidemenu>
           </ul>
         </div>
       </nav>

@@ -53,4 +53,9 @@ angular.module('linc.side.menu.controller', ['linc.side.menu.directive'])
       $state.go("login");
     });
   }
+  $scope.changePWD = function($hide){
+     $hide();
+     $scope.changePassword($scope.user);
+  }
+
 }]);
