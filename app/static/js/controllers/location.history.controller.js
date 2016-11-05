@@ -24,9 +24,7 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
   $scope.title = 'Location History';
   $scope.content = 'Map';
 
-  //$scope.locationSets = locationSets;
-  $scope.isLion = (options.type == 'lion');
-  $scope.GoBackMessage = $scope.isLion? "Go to Image Set" : "Go Back to Image Set";
+  $scope.show = (options.type == 'lion' || ((options.type == 'imageset') && options.is_primary));
 
   $scope.locations = history.locations;
   $scope.count = history.count;
@@ -108,32 +106,24 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
       fn();
     });
   }
-  // If is Lion, load from  url. If Imageset get by params
-/*  var load_imagesets = function (fn){
-    if($scope.locationSets.type == "imageset"){
-      $scope.GoBackMessage = "Go Back to Image Set";
-      $scope.locations = locationSets.locations
-      $scope.count = 1;
-      fn();
-    }
-    else{
-      $scope.GoBackMessage = "Go to Image Set";
-      LincServices.LocationHistory(locationSets.id).then()
-        $scope.locations = data.locations;
-        $scope.count = data.count;
-        fn();
-      });
-    }
-  }*/
+
   // Initialize map
   $scope.$on('mapInitialized', function(evt, evtMap) {
-    //load_imagesets (function (){
-      $scope.map = evtMap;
-      $scope.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
-      $scope.map.setZoom(8);
-      add_lions(function(){
-        // One Lion
-        if($scope.count == 1){
+    $scope.map = evtMap;
+    $scope.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+    $scope.map.setZoom(8);
+    add_lions(function(){
+      // One Lion
+      if($scope.count == 1){
+        var center = $scope.markers[0].marker.getPosition();
+        var radius = 40000;
+        add_circle(center, radius);
+        $scope.bounds = CircleToBounds(center, radius);
+        $scope.map.fitBounds($scope.bounds);
+        $scope.map.setCenter(center);
+      }
+      else{
+        if($scope.bounds.getNorthEast().equals($scope.bounds.getSouthWest())){
           var center = $scope.markers[0].marker.getPosition();
           var radius = 40000;
           add_circle(center, radius);
@@ -142,25 +132,15 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
           $scope.map.setCenter(center);
         }
         else{
-          if($scope.bounds.getNorthEast().equals($scope.bounds.getSouthWest())){
-            var center = $scope.markers[0].marker.getPosition();
-            var radius = 40000;
-            add_circle(center, radius);
-            $scope.bounds = CircleToBounds(center, radius);
-            $scope.map.fitBounds($scope.bounds);
-            $scope.map.setCenter(center);
-          }
-          else{
-            var center = $scope.bounds.getCenter();
-            var radius = Math.max(40000, Calc_Radius(center));
-            add_circle(center, radius*1.1);
-            $scope.bounds = CircleToBounds(center, radius);
-            $scope.map.fitBounds($scope.bounds);
-            $scope.map.setCenter(center);
-          }
+          var center = $scope.bounds.getCenter();
+          var radius = Math.max(40000, Calc_Radius(center));
+          add_circle(center, radius*1.1);
+          $scope.bounds = CircleToBounds(center, radius);
+          $scope.map.fitBounds($scope.bounds);
+          $scope.map.setCenter(center);
         }
-      });
-  //  });
+      }
+    });
   });
   // On Click Marker
   $scope.click = function (id, event){
@@ -168,6 +148,9 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
     $scope.infomsg = $scope.locations[index].label;
     $scope.date = 'Updated Date: ' + $scope.locations[index].updated_at;
     $scope.imageset_id = id;
+    $scope.GoBackMessage = "Go to Image Set";
+    if((options.type != 'lion') && ($scope.imageset_id == options.id))
+      $scope.GoBackMessage = "Go Back to Image Set";
     $scope.modalInstance = $uibModal.open({
         templateUrl: 'InfoWindow.tmpl.html',
         scope:$scope
@@ -176,10 +159,17 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
       $uibModalInstance.close($scope.imageset_id);
     });
   }
+  // Modal Functions
+  $scope.close=function(){
+    $scope.modalInstance.dismiss();
+  };
+  $scope.goto=function(){
+    $scope.modalInstance.close();
+  }
+
   var promise = null;
   // Animate marker when I click label
   $scope.animate = function(location){
-
     if(promise) return;
     promise = $timeout(function() {
       $timeout.cancel(promise);
@@ -208,12 +198,4 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
     window.open(url,'_blank');
   }
 
-
-  // Modal Functions
-  $scope.close=function(){
-    $scope.modalInstance.dismiss();
-  };
-  $scope.goto=function(){
-    $scope.modalInstance.close();
-  }
 }]);

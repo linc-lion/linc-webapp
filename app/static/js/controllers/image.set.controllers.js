@@ -145,11 +145,23 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   // Location History
   var label = 'Image Set ' + $scope.imageset.id;
   var date = (new Date($scope.imageset.updated_at)).toLocaleDateString();
-  $scope.location_options = { type: 'imageset', history: { count: 1,
-                 locations: [{'id': $scope.imageset.id, 'label': label, 'updated_at': date, 'longitude': $scope.imageset.longitude, 'latitude': $scope.imageset.latitude }]}
+  $scope.location_options = { 
+    type: 'imageset', 
+    id: $scope.imageset.id,
+    is_primary: $scope.imageset.is_primary, 
+    lion_id: $scope.imageset.lion_id, 
+    history: { 
+      count: 1,
+      locations: [{
+        'id': $scope.imageset.id, 'label': label, 'updated_at': date, 
+        'longitude': $scope.imageset.longitude, 'latitude': $scope.imageset.latitude 
+      }]
+    }
   };
 
-  $scope.location_goto = function (imageset_id){}
+  $scope.location_goto = function (imageset_id){
+    $state.go("imageset", {id: imageset_id});
+  }
 
   $scope.Delete = function (){
     $scope.modalTitle = 'Delete Image Set';
