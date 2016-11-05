@@ -25,8 +25,8 @@ from handlers.error import ErrorHandler
 from handlers.auth import LogoutHandler,LoginHandler, CheckAuthHandler
 from handlers.main import MainHandler,LoginMainHandler,HomeHandler,SideMenuHandler,\
     LionMainHandler,SearchLionHandler,ImageSetMainHandler,SearchImageSetHandler,\
-    ConservationistsHandler,ImageGalleryHandler,LocationHistoryHandler,\
-    EditMetadataHandler,CVResultsMainHandler,CVRequestMainHandler,UploadImagesHandler, VerifyImageSetHandler, \
+    ConservationistsHandler,ImageGalleryHandler,LocationHistoryHandler,ViewImagesHandler,\
+    EditMetadataHandler,CVResultsMainHandler,CVRequestMainHandler,UploadImagesHandler,VerifyImageSetHandler,\
     PageAdminHandler, PageAdminUsersHandler, PageAdminOrganizationsHandler, PageAdminLionsHandler,\
     PageAdminImageSetsHandler, PageAdminImagesHandler, PageAdminCVRequestsHandler, PageAdminCVResultsHandler
 from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler,\
@@ -61,6 +61,7 @@ url_patterns = [
     (r"/cvrequest.html", CVRequestMainHandler),
     (r"/uploadimages.html", UploadImagesHandler),
     (r"/verifyimageset.html", VerifyImageSetHandler),
+    (r"/view.images.html", ViewImagesHandler),
     # Handlers for API comunication
     (r"/imagesets/list", ImageSetsListHandler),
     (r"/imagesets/(\w+)/(cvrequest)$", ImageSetsListHandler),
