@@ -22,8 +22,45 @@ angular.module('linc.image.gallery.controller', ['linc.image.gallery.directive']
 
 .controller('ImageGalleryCtrl', ['$scope', '$timeout', '$sce', '$window', '$uibModal', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', 'gallery', function($scope, $timeout, $sce, $window, $uibModal, $uibModalInstance, LincServices, NotificationFactory, optionsSet, gallery) {
 
+  // Tmp
+  function randomDate(start, end) {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+  };
+  function makeid(){
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for(var i=0; i < 7; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
+  };
+  // Order
+  $scope.ListOfOrderBy = [
+    { id: 0, predicate: 'name', reverse: false, label: '<span>Name <i class="icon icon-sort-alpha-asc"></i></span>'},
+    { id: 1, predicate: 'name', reverse: true,  label: '<span>Name <i class="icon icon-sort-alpha-desc"></i></span>'},
+    { id: 2, predicate: 'date', reverse: false, label: '<span>Date <i class="icon icon-sort-numeric-asc"></i></span>'},
+    { id: 3, predicate: 'date', reverse: true,  label: '<span>Date <i class="icon icon-sort-numberic-desc"></i></span>'},
+    { id: 4, predicate: 'type', reverse: false, label: '<span>Type <i class="icon icon-sort-alpha-asc"></i></span>'},
+    { id: 5, predicate: 'type', reverse: true,  label: '<span>Type <i class="icon icon-sort-alpha-desc"></i></span>'}
+  ];
+  $scope.person = {selected : undefined};
+
+  // $scope.ListOfOrderBy = [
+  //   {id: 0, predicate: 'name', reverse: false, label: '<span>Name <i class="icon icon-sort-alpha-asc"></i></span>'},
+  //   {id: 1, predicate: 'name', reverse: true,  label: '<span>Name <i class="icon icon-sort-alpha-desc"></i></span>'},
+  //   {id: 2, predicate: 'date', reverse: false, label: '<span>Date <i class="icon icon-sort-numeric-asc"></i></span>'},
+  //   {id: 3, predicate: 'date', reverse: true,  label: '<span>Date <i class="icon icon-sort-numberic-desc"></i></span>'},
+  //   {id: 4, predicate: 'type', reverse: false, label: '<span>Type <i class="icon icon-sort-alpha-asc"></i></span>'},
+  //   {id: 5, predicate: 'type', reverse: true,  label: '<span>Type <i class="icon icon-sort-alpha-desc"></i></span>'}
+  // ];
+  $scope.Order = {by: $scope.ListOfOrderBy[0]};
+
   $scope.gallery = _.map(gallery.images, function(element, index) {
-    return _.extend({}, element, {'select': false});
+    var data = randomDate(new Date(2000, 0, 1), new Date());
+    //var name = Math.random().toString(36).substr(2, 10);
+    var name = makeid();
+    var texto = 'Name: ' + name + '<br> date: ' + data.toLocaleString(); 
+    var tooltip = {'title': texto, 'checked': true};
+    return _.extend({}, element, {'select': false, 'tooltip': tooltip, 'name': name, 'date': data});
   });
 
   $scope.imagesetId = optionsSet.id;
@@ -202,13 +239,48 @@ angular.module('linc.image.gallery.controller', ['linc.image.gallery.directive']
   // carousel image
   $scope.image_view = false;
   $scope.carousel = {active: -1, interval: 500000, noWrapSlides: false, no_transition : false};
+
   $scope.show_image_view = function(photo, index){
     $scope.carousel.active = index;
     $scope.image_view = true;
   }
+
+  var hidepromise = null;
   $scope.hide_image_view = function(){
+    if(hidepromise) return;
+    hidepromise = $timeout(function() {
+      $timeout.cancel(hidepromise);
+      hidepromise = null;
+      $scope.image_view = false;
+      $scope.carousel.active = -1;
+     }, 250);
+  }
+
+  // The panzoom config model can be used to override default configuration values
+  $scope.panzoomConfig = {
+      zoomLevels: 12,
+      neutralZoomLevel: 5,
+      scalePerZoomLevel: 1.5,
+      initialPanX: 200,
+      zoomOnDoubleClick: true,
+      //zoomToFitZoomLevelFactor: 1
+  };
+
+  // The panzoom model should initialle be empty; it is initialized by the <panzoom>
+  // directive. It can be used to read the current state of pan and zoom. Also, it will
+  // contain methods for manipulating this state.
+  $scope.panzoomModel = {};
+
+  $scope.show_zoom = function(url){
+    $timeout.cancel(hidepromise);
+    hidepromise = null;
+    $scope.zoom_view = true;
     $scope.image_view = false;
-    $scope.carousel.active = -1;
+    $scope.panzoomModel.photo = url;
+  }
+  $scope.hide_zoom = function(){
+    $scope.zoom_view = false;
+    $scope.image_view = true;
   }
 
   // Change tab
