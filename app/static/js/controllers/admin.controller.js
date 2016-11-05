@@ -26,7 +26,10 @@ angular.module('linc.admin.controller', [ 'linc.admin.users.controller',
                                           'linc.admin.cvrequests.controller',
                                           'linc.admin.cvresults.controller'])
 
-.controller('AdminCtrl', ['$scope', '$state', '$q', '$uibModal', 'LincApiServices', 'NotificationFactory', 'organizations', 'users', 'lions', 'imagesets', 'images', 'cvrequests', 'cvresults', 'settings', function ($scope, $state, $q, $uibModal, LincApiServices, NotificationFactory, organizations, users, lions, imagesets, images, cvrequests, cvresults, settings) {
+.controller('AdminCtrl', ['$scope', '$state', '$q', '$uibModal', 'LincApiServices', 'NotificationFactory', 'toClipboard',
+  'organizations', 'users', 'lions', 'imagesets', 'images', 'cvrequests', 'cvresults', 'settings', 
+  function ($scope, $state, $q, $uibModal, LincApiServices, NotificationFactory, toClipboard,
+    organizations, users, lions, imagesets, images, cvrequests, cvresults, settings) {
 
   //$scope.debug = $state.current.data.debug;
   $scope.LincApiServices = LincApiServices;
@@ -56,13 +59,13 @@ angular.module('linc.admin.controller', [ 'linc.admin.users.controller',
     settings.Selected_tab = tab.name;
   }
 
-  $scope.Delete = function (title){
+  $scope.DialogDelete = function (title){
     var deferred = $q.defer();
     $scope.modalTitle = 'Delete ' + title;
     $scope.modalMessage = 'Are you sure you want to delete the ' + title + ' ?';
     $scope.modalContent = 'Form';
     $scope.modalInstance = $uibModal.open({
-        templateUrl: 'Delete.tmpl.html',
+        templateUrl: 'Dialog.Delete.tmpl.html',
         scope:$scope
     });
     $scope.ok = function (){
@@ -98,7 +101,7 @@ angular.module('linc.admin.controller', [ 'linc.admin.users.controller',
     return deferred.promise;
   };
 
-  $scope.OrganizationsDeleted = function(){
+  $scope.OrganizationsUpdated = function(){
     var deferred = $q.defer();
     LincApiServices.Users({'method': 'get', 'organizations': $scope.organizations}).then(function(users){
       $scope.users = users;
@@ -124,7 +127,7 @@ angular.module('linc.admin.controller', [ 'linc.admin.users.controller',
     return deferred.promise;
   };
 
-  $scope.LionsDeleted = function(){
+  $scope.LionsUpdated = function(){
     var deferred = $q.defer();
     LincApiServices.ImageSets({'method': 'get', 'organizations': $scope.organizations, 'users': $scope.users, 'lions': $scope.lions, 'images': $scope.images}).then(function(response){
       $scope.imagesets = response;
@@ -135,7 +138,7 @@ angular.module('linc.admin.controller', [ 'linc.admin.users.controller',
     return deferred.promise;
   };
 
-  $scope.ImageSetsDeleted = function(){
+  $scope.ImageSetsUpdated = function(){
     var deferred = $q.defer();
     LincApiServices.Lions({'method': 'get', 'organizations': $scope.organizations}).then(function(lions){
       $scope.lions = lions;
@@ -156,6 +159,29 @@ angular.module('linc.admin.controller', [ 'linc.admin.users.controller',
     return deferred.promise;
   };
 
+  $scope.CopyTextToClipBoard = function(text,value){
+    var val = angular.copy(text);
+    toClipboard.copy(val);
+    alert('The '+value+' has been copied to the clipboard');
+  }
+  $scope.onCopySuccess = function(val){
+    alert('The '+val+' has been copied to the clipboard');
+  }
+  $scope.onCopyError = function(){
+    alert('Unable to copy');
+  }
+
+  $scope.CopyToClipBoard = function(items){
+    var datas = angular.copy(items);
+    toClipboard.copy(JSON.stringify(datas));
+    console.log(datas);
+    var count=datas.length;
+    if(count==1)
+      alert('One item has been copied to the clipboard');
+    else
+      alert(count.toString() + ' items have been copied to the clipboard');
+  }
+  
 }])
 
 ;

@@ -91,7 +91,7 @@ angular.module('linc.lions.controllers', [])
     $scope.ErrorMessage = 'Unable to delete this Lion.';
     $scope.modalContent = 'Form';
     $scope.modalInstance = $uibModal.open({
-        templateUrl: 'Delete.tmpl.html',
+        templateUrl: 'Dialog.Delete.tmpl.html',
         scope:$scope
     });
     $scope.modalInstance.result.then(function (result) {

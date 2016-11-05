@@ -184,7 +184,7 @@ angular.module('linc.image.gallery.controller', ['linc.image.gallery.directive']
       }
       $scope.modalContent = 'Form';
       $scope.modalInstance = $uibModal.open({
-          templateUrl: 'Delete.tmpl.html',
+          templateUrl: 'Dialog.Delete.tmpl.html',
           scope:$scope
       });
       $scope.modalInstance.result.then(function (result) {
