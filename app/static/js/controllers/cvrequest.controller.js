@@ -20,26 +20,19 @@
 
 angular.module('linc.cvrequest.controller', ['linc.cvrequest.directive'])
 
-.controller('CVRequesCtrl', ['$scope', '$window', '$timeout', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'imagesetId', 'lions', 'lion_filters', 'AuthService', function ($scope, $window, $timeout, $uibModalInstance, LincServices, NotificationFactory, imagesetId, lions, lion_filters, AuthService) {
+.controller('CVRequesCtrl', ['$scope', '$window', '$timeout', '$uibModalInstance', 'LincServices', 'NotificationFactory', 
+  'imagesetId', 'lions', 'lion_filters', 'AuthService', 'TAG_LABELS', 'TOOL_TITLE', function ($scope, $window, $timeout, 
+  $uibModalInstance, LincServices, NotificationFactory, imagesetId, lions, lion_filters, AuthService, TAG_LABELS, TOOL_TITLE) {
 
   $scope.title = 'CV Search';
   $scope.content = 'Search';
 
-  var tag_labels    = {'EYE_DAMAGE_BOTH': 'Eye Damage Both', 'EYE_DAMAGE_LEFT': 'Eye Damage Left', 'EYE_DAMAGE_RIGHT': 'Eye Damage Right', 'TEETH_BROKEN_CANINE_LEFT': 'Broken Teeth Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Broken Teeth Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Broken Teeth Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Broken Teeth Incisor Right',
-  'EAR_MARKING_BOTH': 'Ear Marking Both', 'EAR_MARKING_LEFT': 'Ear Marking Left', 'EAR_MARKING_RIGHT': 'Ear Marking Right',
-  'MOUTH_MARKING_BACK': 'Mouth Marking Back', 'MOUTH_MARKING_FRONT': 'Mouth Marking Front', 'MOUTH_MARKING_LEFT': 'Mouth Marking Left', 'MOUTH_MARKING_RIGHT': 'Mouth Marking Right', 'TAIL_MARKING_MISSING_TUFT': 'Tail Marking Missing Tuft', 'NOSE_COLOUR_BLACK': 'Nose Color Black', 'NOSE_COLOUR_PATCHY': 'Nose Color Patchy', 'NOSE_COLOUR_PINK': 'Nose Color Pink',
-  'NOSE_COLOUR_SPOTTED': 'Nose Color Spotted', 'SCARS_BODY_LEFT': 'Scars Body Left', 'SCARS_BODY_RIGHT': 'Scars Body Right', 'SCARS_FACE': 'Scars Face', 'SCARS_TAIL': 'Scars Tail'};
+  $scope.title_tooltip = {'title': 'tips: ' + TOOL_TITLE, 'checked': true};
 
-  var tool_title =  "Eye Damage: Left, Right or Both; Broken Teeth: Canine Left/Right and Incisor Left/Right; \n"; +
-    "Ear Marking: Left, Right, or Both; Mouth Marking: Back, Front, Left and Right; \n" +
-    "Tail Marking: Missing Tuft; Nose Color: Black, Patchy, Pink, or Spotted; Scars: Body Left/Right, Face and Tail";
-
-  $scope.title_tooltip = {'title': 'tips: ' + tool_title, 'checked': true};
-
-  var get_features = function (tag_labels, TAGS){
+  var GET_FEATURES = function (lbls, TAGS){
     var label = "";
     TAGS.forEach(function (elem, i){
-      label += tag_labels[elem];
+      label += lbls[elem];
       if(i<TAGS.length-1) label += ', ';
     });
     return label;
@@ -68,7 +61,7 @@ angular.module('linc.cvrequest.controller', ['linc.cvrequest.directive'])
     }catch(e){ TAGS = element['tags'].split(","); }
     if(TAGS==null) TAGS = [];
 
-    var tag_features = get_features(tag_labels, TAGS);
+    var tag_features = GET_FEATURES(TAG_LABELS, TAGS);
     elem['features_tooltip'] = {'title': tag_features, 'checked': true};
     elem['features'] = (tag_features.length > 0) ? true : false;
     elem['tag_features'] = tag_features;

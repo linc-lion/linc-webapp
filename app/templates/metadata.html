@@ -175,32 +175,48 @@ For more information or to contact visit linclion.org or email tech@linclion.org
               <input type="checkbox" class="form-input" ng-model="selected.isPrivate.gps">GPS Points is Private
             </label>
           </div>
+          <pre ng-show="debug">{{!selected.isPrivate.gps}}</pre>
           <div class="checkbox">
             <label class="checkbox-inline">
               <input type="checkbox" class="form-input" ng-model="selected.isPrivate.map">Map Location is Private
             </label>
           </div>
+          <pre ng-show="debug">{{!selected.isPrivate.map}}</pre>
           <div class="checkbox">
             <label class="checkbox-inline">
               <input type="checkbox" ng-disabled="!isLion" class="form-input" ng-model="selected.isDead">Dead Lion
             </label>
           </div>
+          <pre ng-show="debug">{{!selected.isDead}}</pre>
         </div>
 <!--tmp-->
       </div>
       <div class="col-sm-4">
-        <div class="form-group group-select" ng-repeat="marking in markings">
-          <label for="id_{{!marking.value}}" >{{!marking.label}} Markings: </label>
-          <button type="button" id="id_{{!marking.value}}" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.markings[marking.value]" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="{{!marking.allText}}" bs-options="mark.value as mark.label for mark in marking.items" placement="bottom-right" bs-select>
+        <div class="form-group group-select">
+          <label for="id_ear_markings">Ear Markings: </label>
+          <button type="button" name="id_ear_markings" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.ear_markings" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Ear Markings" max-length="2" bs-options="mark.value as mark.label for mark in tags.ear_markings" placement="bottom-right" bs-select>
             Action <span class="caret"></span>
           </button>
-          <pre ng-show="debug">{{!selected.markings[marking.value]}}</pre>
         </div>
-
+        <pre ng-show="debug">{{!selected.ear_markings}}</pre>
+        <div class="form-group group-select">
+          <label for="id_mouth_markings">Mouth Markings: </label>
+          <button type="button" name="id_mouth_markings" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.mouth_markings" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Mouth Markings" max-length="2" bs-options="mark.value as mark.label for mark in tags.mouth_markings" placement="bottom-right" bs-select>
+            Action <span class="caret"></span>
+          </button>
+        </div>
+        <pre ng-show="debug">{{!selected.mouth_markings}}</pre>
+        <div class="form-group group-select">
+          <label for="id_tail_markings" >Tail Markings: </label>
+          <button type="button" name="id_tail_markings" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.tail_markings" data-html="1" data-multiple="1" all-none-buttons="true" max-length="2" bs-options="mark.value as mark.label for mark in tags.tail_markings" placement="bottom-right" bs-select>
+            Action <span class="caret"></span>
+          </button>
+        </div>
+        <pre ng-show="debug">{{!selected.tail_markings}}</pre>
         <hr class="style-line">
         <div class="form-group group-select">
           <label for="id_nose_color">Nose Color: </label>
-          <button type="button" id="id_nose_color" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.nose_color" data-html="1" bs-options="color.value as color.label for color in nose_color" placement="bottom-right" bs-select>
+          <button type="button" id="id_nose_color" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.nose_color" data-html="1" bs-options="color.value as color.label for color in tags.nose_color" placement="bottom-right" bs-select>
             Action <span class="caret"></span>
           </button>
         </div>
@@ -209,7 +225,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <hr class="style-line">
         <div class="form-group group-select">
           <label for="id_scars">Scars: </label>
-          <button type="button" id="id_scars" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.scars" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Scars Type" bs-options="scar.value as scar.label for scar in scars" placement="bottom-right" bs-select>
+          <button type="button" id="id_scars" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.scars" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Scars Type" bs-options="scar.value as scar.label for scar in tags.scars" placement="bottom-right" bs-select>
             Action <span class="caret"></span>
           </button>
         </div>
@@ -219,7 +235,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <div class="form-group group-select">
 <!--tmp-->
           <label for="id_eye_damage">Eye Damage / Pigmentation: </label>
-          <button type="button" id="id_eye_damage" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.eye_damage" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Eye Damage" bs-options="damage.value as damage.label for damage in eye_damage" placement="bottom-right" bs-select>
+          <button type="button" id="id_eye_damage" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.eye_damage" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Eye Damage" bs-options="damage.value as damage.label for damage in tags.eye_damage" placement="bottom-right" bs-select>
             Action <span class="caret"></span>
           </button>
         </div>
@@ -228,7 +244,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <hr class="style-line">
         <div class="form-group group-select">
           <label for="id_broken_teeth">Broken Teeth: </label>
-          <button type="button" id="id_broken_teeth" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.broken_teeth" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Broken Teeth" bs-options="teeth.value as teeth.label for teeth in broken_teeth" placement="bottom-right" bs-select>
+          <button type="button" id="id_broken_teeth" placeholder="None" class="btn btn-default btn-sm select_btn" ng-model="selected.broken_teeth" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Broken Teeth" bs-options="teeth.value as teeth.label for teeth in tags.broken_teeth" placement="bottom-right" bs-select>
             Action <span class="caret"></span>
           </button>
         </div>

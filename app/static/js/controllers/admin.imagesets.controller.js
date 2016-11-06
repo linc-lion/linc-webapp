@@ -20,19 +20,20 @@
 
 angular.module('linc.admin.imagesets.controller', [])
 
-.controller('AdminImageSetsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+.controller('AdminImageSetsCtrl', ['$scope', '$uibModal', 'CONST_LIST', function ($scope, $uibModal, CONST_LIST) {
 
   $scope.ImageSet_Mode  =  $scope.settings.imagesets.Mode;
 
-  $scope.genders = [{value: 'male', label: 'Male'}, {value: 'female',label: 'Female'}, {value: null,label: 'Unknown'}];
-
-  $scope.tags = { 'ear_markings': [{'value': 'EAR_MARKING_LEFT',  'label': 'Left'},{'value': 'EAR_MARKING_RIGHT', 'label': 'Right'}],
-                  'mouth_markings': [{'value': 'MOUTH_MARKING_BACK',  'label': 'Back'},{'value': 'MOUTH_MARKING_FRONT', 'label': 'Front'},{'value': 'MOUTH_MARKING_LEFT',  'label': 'Left'},{'value': 'MOUTH_MARKING_RIGHT', 'label': 'Right'}],
-                  'tail_markings': [{'value': 'TAIL_MARKING_MISSING_TUFT', 'label': 'Missing Tuft'}],
-                  'eye_damages': [{'value': 'EYE_DAMAGE_LEFT',  'label': 'Left'},{'value': 'EYE_DAMAGE_RIGHT', 'label': 'Right'}],
-                  'nose_color': [{'value': undefined, 'label': 'None'},{'value': 'NOSE_COLOUR_BLACK', 'label': 'Black'},{'value': 'NOSE_COLOUR_PATCHY', 'label': 'Patchy'},{'value': 'NOSE_COLOUR_PINK', 'label': 'Pink'},{'value': 'NOSE_COLOUR_SPOTTED', 'label': 'Spotted'}],
-                  'broken_teeth': [{'value': 'TEETH_BROKEN_CANINE_LEFT', 'label': 'Canine Left'},{'value': 'TEETH_BROKEN_CANINE_RIGHT', 'label': 'Canine Right'},{'value': 'TEETH_BROKEN_INCISOR_LEFT', 'label': 'Incisor Left'},{'value': 'TEETH_BROKEN_INCISOR_RIGHT', 'label': 'Incisor Right'}],
-                  'scars': [{'value': 'SCARS_BODY_LEFT', 'label': 'Body Left'},{'value': 'SCARS_BODY_RIGHT', 'label': 'Body Right'},{'value': 'SCARS_FACE', 'label': 'Face'},{'value': 'SCARS_TAIL', 'label': 'Tail'}]
+  $scope.genders = CONST_LIST['GENDER'];
+    
+  $scope.tags = {
+    ear_markings : CONST_LIST['EAR_MARKING'],
+    mouth_markings : CONST_LIST['MOUTH_MARKING'],
+    tail_markings : CONST_LIST['TAIL_MARKING'],
+    eye_damage : CONST_LIST['EYE_DAMAGE'],
+    nose_color : CONST_LIST['NOSE_COLOUR'],
+    broken_teeth : CONST_LIST['TEETH_BROKEN'],
+    scars : CONST_LIST['SCARS']
   };
 
   $scope.check_all = function (val){
@@ -142,10 +143,10 @@ angular.module('linc.admin.imagesets.controller', [])
 
     modalScope.submit = function (valid){
       if(valid){
-        var eyes_dams = _.includes(modalScope.imageset.eye_damages, "EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT") ? ["EYE_DAMAGE_BOTH"] : modalScope.imageset.eye_damages;
-        var ear_marks = _.includes(modalScope.imageset.ear_markings, "EAR_MARKING_LEFT", "EAR_MARKING_RIGHT") ? ["EAR_MARKING_BOTH"] : modalScope.imageset.ear_markings;
+        var eye_dam = _.includes(modalScope.imageset.eye_damage, ["EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT"]) ? ["EYE_DAMAGE_BOTH"] : modalScope.imageset.eye_damage;
+        var ear_marks = _.includes(modalScope.imageset.ear_markings, ["EAR_MARKING_LEFT", "EAR_MARKING_RIGHT"]) ? ["EAR_MARKING_BOTH"] : modalScope.imageset.ear_markings;
 
-        var concat = _([]).concat(eyes_dams);
+        var concat = _([]).concat(eye_dam);
         concat = _(concat).concat(ear_marks);
         concat = _(concat).concat(modalScope.imageset.mouth_markings);
         concat = _(concat).concat(modalScope.imageset.tail_markings);
@@ -256,7 +257,7 @@ angular.module('linc.admin.imagesets.controller', [])
         TAGS = modalScope.imageset.tags.split(",");
       }
 
-      modalScope.imageset.eyes_damages = _.includes(TAGS,'EYE_DAMAGE_BOTH')? ['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT'] :  _.intersection(TAGS,['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']);
+      modalScope.imageset.eye_damage = _.includes(TAGS,'EYE_DAMAGE_BOTH')? ['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT'] :  _.intersection(TAGS,['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']);
       modalScope.imageset.ear_markings = _.includes(TAGS,'EAR_MARKING_BOTH')? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] :  _.intersection(TAGS,['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']);
       modalScope.imageset.mouth_markings = _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']);
       modalScope.imageset.tail_markings = _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT']);
@@ -286,10 +287,10 @@ angular.module('linc.admin.imagesets.controller', [])
       
       modalScope.submit = function(valid){
         if(valid){
-          var eyes_dams = _.includes(modalScope.imageset.eye_damages, "EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT") ? ["EYE_DAMAGE_BOTH"] : modalScope.imageset.eye_damages;
-          var ear_marks = _.includes(modalScope.imageset.ear_markings, "EAR_MARKING_LEFT", "EAR_MARKING_RIGHT") ? ["EAR_MARKING_BOTH"] : modalScope.imageset.ear_markings;
-
-          var concat = _([]).concat(eyes_dams);
+          var eye_dam = _.includes(modalScope.imageset.eye_damage, ["EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT"]) ? ["EYE_DAMAGE_BOTH"] : modalScope.imageset.eye_damage;
+          var ear_marks = _.includes(modalScope.imageset.ear_markings, ["EAR_MARKING_LEFT", "EAR_MARKING_RIGHT"]) ? ["EAR_MARKING_BOTH"] : modalScope.imageset.ear_markings;
+          
+          var concat = _([]).concat(eye_dam);
           concat = _(concat).concat(ear_marks);
           concat = _(concat).concat(modalScope.imageset.mouth_markings);
           concat = _(concat).concat(modalScope.imageset.tail_markings);
