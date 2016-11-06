@@ -20,38 +20,31 @@
 
 angular.module('linc.lions.controllers', [])
 
-.controller('LionCtrl', ['$scope', '$rootScope', '$state', '$uibModal', '$bsTooltip', 'NotificationFactory', 'LincServices', 'AuthService', 'organizations', 'lion', function ($scope, $rootScope, $state, $uibModal, $bsTooltip, NotificationFactory, LincServices, AuthService, organizations, lion) {
+.controller('LionCtrl', ['$scope', '$rootScope', '$state', '$uibModal', '$bsTooltip', 'NotificationFactory', 'LincServices', 
+  'AuthService', 'organizations', 'lion', 'TAGS_CONST', 'TAGS_BY_TYPE', function ($scope, $rootScope, $state, $uibModal, $bsTooltip, 
+  NotificationFactory, LincServices, AuthService, organizations, lion, TAGS_CONST, TAGS_BY_TYPE) {
 
   $scope.is_modal_open = false;
   $scope.lion = lion;
   $scope.user = AuthService.user;
-  var labels = function (damages, labels){
-    var label = "";
-    labels.forEach(function (elem, i){
-      label += damages[elem];
-      if(i<labels.length-1) label += ', ';
-    });
-    return label;
-  }
+
   //tmp
   $scope.lion.is_private = {map: true, gps: true};
   $scope.lion.is_dead = true;
 
   $scope.tooltip_need_verifiy = {'title': 'There are Image sets pending of verification', 'checked': true};
 
-  var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left', 'EYE_DAMAGE_RIGHT': 'Right'};
-  var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
-  var ear_markings   = {'EAR_MARKING_BOTH': 'Both', 'EAR_MARKING_LEFT': 'Left', 'EAR_MARKING_RIGHT': 'Right'};
-  var mouth_markings = {'MOUTH_MARKING_BACK': 'Back', 'MOUTH_MARKING_FRONT': 'Front', 'MOUTH_MARKING_LEFT': 'Left', 'MOUTH_MARKING_RIGHT': 'Right'};
-  var tail_markings  = {'TAIL_MARKING_MISSING_TUFT': 'Missing Tuft'};
-  var nose_color     = {'NOSE_COLOUR_BLACK': 'Black', 'NOSE_COLOUR_PATCHY': 'Patchy', 'NOSE_COLOUR_PINK': 'Pynk', 'NOSE_COLOUR_SPOTTED': 'Spotted'};
-  var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right', 'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
+  var LABELS = function (damage, labels){
+    var label = "";
+    labels.forEach(function (elem, i){
+      label += damage[elem];
+      if(i<labels.length-1) label += ', ';
+    });
+    return label;
+  }
 
   var Set_Tags = function(){
     $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.lion.organization_id);
-
-    //$scope.ShowIsVerified =
-    //(($scope.lion.organization_id === $scope.user.organization_id) || $scope.user.admin) ? $scope.lion.is_verified : true;
 
     var TAGS = [];
     try{
@@ -59,13 +52,13 @@ angular.module('linc.lions.controllers', [])
     }catch(e){
       TAGS = $scope.lion.tags.split(",");
     }
-    $scope.lion.eye_damage = labels(eye_damages,_.intersection(TAGS, ['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']));
-    $scope.lion.broken_teet = labels(broken_teeths,_.intersection(TAGS, ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT', 'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']));
-    $scope.lion.ear_markings = labels(ear_markings,_.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']));
-    $scope.lion.mouth_markings =labels(mouth_markings, _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT', 'MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']));
-    $scope.lion.tail_markings = labels(tail_markings,_.intersection(TAGS, ['TAIL_MARKING_MISSING_TUFT']));
-    $scope.lion.nose_color = labels(nose_color,_.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']));
-    $scope.lion.scars = labels(scars,_.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE', 'SCARS_TAIL']));
+    $scope.lion.eye_damage = LABELS(TAGS_BY_TYPE['EYE_DAMAGE'], _.intersection(TAGS, TAGS_CONST['EYE_DAMAGE']));
+    $scope.lion.broken_teet = LABELS(TAGS_BY_TYPE['TEETH_BROKEN'],_.intersection(TAGS, TAGS_CONST['TEETH_BROKEN']));
+    $scope.lion.ear_markings = LABELS(TAGS_BY_TYPE['EAR_MARKINGS'],_.intersection(TAGS, TAGS_CONST['EAR_MARKINGS']));
+    $scope.lion.mouth_markings =LABELS(TAGS_BY_TYPE['MOUTH_MARKING'], _.intersection(TAGS, TAGS_CONST['MOUTH_MARKING']));
+    $scope.lion.tail_markings = LABELS(TAGS_BY_TYPE['TAIL_MARKING_MISSING_TUFT'],_.intersection(TAGS, TAGS_CONST['TAIL_MARKING_MISSING_TUFT']));
+    $scope.lion.nose_color = LABELS(TAGS_BY_TYPE['NOSE_COLOUR'],_.intersection(TAGS, TAGS_CONST['NOSE_COLOUR']));
+    $scope.lion.scars = LABELS(TAGS_BY_TYPE['SCARS'],_.intersection(TAGS, TAGS_CONST['SCARS']));
   };
   Set_Tags();
   // Metadata Options
@@ -165,24 +158,18 @@ angular.module('linc.lions.controllers', [])
   $scope.lion.date_of_birth = date_format($scope.lion.date_of_birth);
 }])
 
-.controller('SearchLionCtrl', ['$scope', '$timeout', '$stateParams', '$bsTooltip', 'AuthService', 'lions', 'lion_filters', 'default_filters', function ($scope, $timeout, $stateParams, $bsTooltip, AuthService, lions, lion_filters, default_filters) {
+.controller('SearchLionCtrl', ['$scope', '$timeout', '$stateParams', '$bsTooltip', 'AuthService', 'lions', 'lion_filters', 
+  'default_filters', 'TAG_LABELS', 'TOOL_TITLE', function ($scope, $timeout, $stateParams, $bsTooltip, AuthService, 
+  lions, lion_filters, default_filters, TAG_LABELS, TOOL_TITLE) {
 
   $scope.user = AuthService.user;
-  var tag_labels    = {'EYE_DAMAGE_BOTH': 'Eye Damage Both', 'EYE_DAMAGE_LEFT': 'Eye Damage Left', 'EYE_DAMAGE_RIGHT': 'Eye Damage Right', 'TEETH_BROKEN_CANINE_LEFT': 'Broken Teeth Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Broken Teeth Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Broken Teeth Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Broken Teeth Incisor Right',
-  'EAR_MARKING_BOTH': 'Ear Marking Both', 'EAR_MARKING_LEFT': 'Ear Marking Left', 'EAR_MARKING_RIGHT': 'Ear Marking Right',
-  'MOUTH_MARKING_BACK': 'Mouth Marking Back', 'MOUTH_MARKING_FRONT': 'Mouth Marking Front', 'MOUTH_MARKING_LEFT': 'Mouth Marking Left', 'MOUTH_MARKING_RIGHT': 'Mouth Marking Right', 'TAIL_MARKING_MISSING_TUFT': 'Tail Marking Missing Tuft', 'NOSE_COLOUR_BLACK': 'Nose Color Black', 'NOSE_COLOUR_PATCHY': 'Nose Color Patchy', 'NOSE_COLOUR_PINK': 'Nose Color Pink',
-  'NOSE_COLOUR_SPOTTED': 'Nose Color Spotted', 'SCARS_BODY_LEFT': 'Scars Body Left', 'SCARS_BODY_RIGHT': 'Scars Body Right', 'SCARS_FACE': 'Scars Face', 'SCARS_TAIL': 'Scars Tail'};
 
-  var tool_title =  "Eye Damage: Left, Right or Both; Broken Teeth: Canine Left/Right and Incisor Left/Right; \n"; +
-    "Ear Marking: Left, Right, or Both; Mouth Marking: Back, Front, Left and Right; \n" +
-    "Tail Marking: Missing Tuft; Nose Color: Black, Patchy, Pink, or Spotted; Scars: Body Left/Right, Face and Tail";
+  $scope.title_tooltip = {'title': 'tips: ' + TOOL_TITLE, 'checked': true};
 
-  $scope.title_tooltip = {'title': 'tips: ' + tool_title, 'checked': true};
-
-  var get_features = function (tag_labels, TAGS){
+  var GET_FEATURES = function (lbs, TAGS){
     var label = "";
     TAGS.forEach(function (elem, i){
-      label += tag_labels[elem];
+      label += lbs[elem];
       if(i<TAGS.length-1) label += ', ';
     });
     return label;
@@ -206,7 +193,7 @@ angular.module('linc.lions.controllers', [])
     }catch(e){ TAGS = element['tags'].split(","); }
     if(TAGS==null) TAGS = [];
 
-    var tag_features = get_features(tag_labels, TAGS);
+    var tag_features = GET_FEATURES(TAG_LABELS, TAGS);
     elem['features_tooltip'] = {'title': tag_features, 'checked': true};
     elem['features'] = (tag_features.length > 0) ? true : false;
     elem['tag_features'] = tag_features;

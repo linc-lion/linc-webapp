@@ -20,11 +20,27 @@
 
 angular.module('linc.metadata.controller', ['linc.metadata.directive'])
 
-.controller('MetadataCtrl', ['$scope', '$window', 'AuthService', '$uibModal', '$uibModalInstance', '$bsTooltip', 'LincServices', 'NotificationFactory', 'optionsSet', '$state', '$q',  'organizations', function ($scope, $window, AuthService, $uibModal, $uibModalInstance, $bsTooltip, LincServices, NotificationFactory, optionsSet, $state, $q, organizations) {
+.controller('MetadataCtrl', ['$scope', '$window', 'AuthService', '$uibModal', '$uibModalInstance', '$bsTooltip', 
+  'LincServices', 'NotificationFactory', 'optionsSet', '$state', '$q', 'organizations', 'CONST_LIST', 
+  function ($scope, $window, AuthService, $uibModal, $uibModalInstance, $bsTooltip, LincServices, NotificationFactory, 
+  optionsSet, $state, $q, organizations, CONST_LIST) {
 
   if(!AuthService.user) return;
   $scope.optionsSet = optionsSet;
   $scope.user = AuthService.user;
+
+  // Gender List
+  $scope.genders = CONST_LIST['GENDERS'];
+  
+  $scope.tags = {
+    ear_markings : CONST_LIST['EAR_MARKING'],
+    mouth_markings : CONST_LIST['MOUTH_MARKING'],
+    tail_markings : CONST_LIST['TAIL_MARKING'],
+    eye_damage : CONST_LIST['EYE_DAMAGE'],
+    nose_color : CONST_LIST['NOSE_COLOUR'],
+    broken_teeth : CONST_LIST['TEETH_BROKEN'],
+    scars : CONST_LIST['SCARS']
+  };
 
   $scope.organizations = organizations;
   var titles = {}; titles['lion'] = 'Metadata'; titles['imageset'] = 'Metadata';
@@ -98,13 +114,13 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
 
   var Metadata = function() {
     var selected = $scope.selected;
-    var eyes_dams = _.includes(selected.eye_damage, "EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT") ? ["EYE_DAMAGE_BOTH"] : selected.eye_damage;
-    var ear_marks = _.includes(selected.markings['ear'], "EAR_MARKING_LEFT", "EAR_MARKING_RIGHT") ? ["EAR_MARKING_BOTH"] : selected.markings['ear'];
-
-    var concat = _([]).concat(eyes_dams);
+    var eye_dam = _.includes(selected.eye_damage, ["EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT"]) ? ["EYE_DAMAGE_BOTH"] : selected.eye_damage;
+    var ear_marks = _.includes(selected.ear_markings, ["EAR_MARKING_LEFT", "EAR_MARKING_RIGHT"]) ? ["EAR_MARKING_BOTH"] : selected.ear_markings;
+          
+    var concat = _([]).concat(eye_dam);
     concat = _(concat).concat(ear_marks);
-    concat = _(concat).concat(selected.markings['mouth']);
-    concat = _(concat).concat(selected.markings['tail']);
+    concat = _(concat).concat(selected.mouth_markings);
+    concat = _(concat).concat(selected.tail_markings);
     concat = _(concat).concat(selected.broken_teeth);
     if(selected.nose_color != undefined)
       concat = _(concat).concat([selected.nose_color]);
@@ -121,48 +137,48 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
     if(optionsSet.edit === 'new'){
       if(optionsSet.type === 'lion'){
         var imageset_data = {
-          "date_stamp": (selected.date_stamp == null || selected.date_stamp == '') ? null : selected.date_stamp.toISOString().slice(0,10),
-          "gender": selected.gender,
-          "date_of_birth": (selected.date_of_birth == null || selected.date_of_birth == '') ? null: selected.date_of_birth.toISOString().slice(0,10),
-          "tags": TAGS == "null" ? null: TAGS ,
-          "notes": selected.notes,
-          'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
-          'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
-          "lion_id": null,
-          "main_image_id": null,
-          "uploading_user_id": selected.uploading_user_id,
-          "uploading_organization_id": selected.organization_id,
-          "owner_organization_id": selected.organization_id,
-          "is_primary": true,
-          "is_verified": true
+          date_stamp: (selected.date_stamp == null || selected.date_stamp == '') ? null : selected.date_stamp.toISOString().slice(0,10),
+          gender: selected.gender,
+          date_of_birth: (selected.date_of_birth == null || selected.date_of_birth == '') ? null: selected.date_of_birth.toISOString().slice(0,10),
+          tags: TAGS == "null" ? null: TAGS ,
+          notes: selected.notes,
+          latitude: isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
+          longitude: isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
+          lion_id: null,
+          main_image_id: null,
+          uploading_user_id: selected.uploading_user_id,
+          uploading_organization_id: selected.organization_id,
+          owner_organization_id: selected.organization_id,
+          is_primary: true,
+          is_verified: true
           //tmp
           //"is_Dead"
           //"isPrivate": selected.isPrivate,
           //"isDead" : selected.isDead;
         }
         var lion_data = {
-          "name": selected.name,
-          "organization_id": selected.organization_id,
-          "primary_image_set_id": '' // Fill after save imageset
+          name: selected.name,
+          organization_id: selected.organization_id,
+          primary_image_set_id: '' // Fill after save imageset
         }
-        data = {"lion": lion_data, "imageset": imageset_data};
+        data = {lion: lion_data, imageset: imageset_data};
       }
       else{
         var imageset_data = {
-          "date_stamp": (selected.date_stamp == null || selected.date_stamp == '') ? null : selected.date_stamp.toISOString().slice(0,10),
-          'latitude': isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
-          'longitude': isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
-          "gender": selected.gender,
-          "date_of_birth": (selected.date_of_birth == null || selected.date_of_birth == '') ? null: selected.date_of_birth.toISOString().slice(0,10),
-          "tags": TAGS == "null" ? null : TAGS,
-          "notes": selected.notes,
-          "lion_id": null,
-          "main_image_id": null,
-          "uploading_user_id": selected.uploading_user_id,
-          "uploading_organization_id": selected.organization_id,
-          "owner_organization_id": selected.organization_id,
-          "is_primary": null,
-          "is_verified": false
+          date_stamp: (selected.date_stamp == null || selected.date_stamp == '') ? null : selected.date_stamp.toISOString().slice(0,10),
+          latitude: isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
+          longitude: isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
+          gender: selected.gender,
+          date_of_birth: (selected.date_of_birth == null || selected.date_of_birth == '') ? null: selected.date_of_birth.toISOString().slice(0,10),
+          tags: TAGS == "null" ? null : TAGS,
+          notes: selected.notes,
+          lion_id: null,
+          main_image_id: null,
+          uploading_user_id: selected.uploading_user_id,
+          uploading_organization_id: selected.organization_id,
+          owner_organization_id: selected.organization_id,
+          is_primary: null,
+          is_verified: false
         }
         data = imageset_data;
       }
@@ -172,17 +188,17 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       var date_of_birth = (selected.date_of_birth == null || selected.date_of_birth == '') ? "" : selected.date_of_birth.toISOString().slice(0,10);
       if(optionsSet.type === 'lion'){
         //Selected Dates
-        var lion_sel_data = { "organization_id": selected.organization_id,
-                              "name" : selected.name };
+        var lion_sel_data = { organization_id: selected.organization_id,
+                              name : selected.name };
         var imageset_sel_data = {
-          "owner_organization_id": selected.organization_id,
-          "date_stamp": date_stamp,
-          'latitude': isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
-          'longitude': isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
-          "gender": selected.gender,
-          "date_of_birth": date_of_birth,
-          "tags": TAGS,
-          "notes": selected.notes
+          owner_organization_id: selected.organization_id,
+          date_stamp: date_stamp,
+          latitude: isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
+          longitude: isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
+          gender: selected.gender,
+          date_of_birth: date_of_birth,
+          tags: TAGS,
+          notes: selected.notes
         };
         var lion_data = _.reduce(lion_sel_data, function(result, n, key) {
           if (lion_sel_data[key] && lion_sel_data[key] != original_data[key]) {
@@ -213,13 +229,14 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       }
       else{
         var sel_data = {
-          "owner_organization_id": selected.owner_organization_id,
-          "date_stamp": date_stamp,
-          'latitude': isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
-          'longitude': isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
-          "gender": selected.gender,
-          "date_of_birth": date_of_birth,
-          "tags": TAGS, 'notes': selected.notes
+          owner_organization_id: selected.owner_organization_id,
+          date_stamp: date_stamp,
+          latitude: isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
+          longitude: isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
+          gender: selected.gender,
+          date_of_birth: date_of_birth,
+          tags: TAGS, 
+          notes: selected.notes
         };
         sel_data.lion_id = $scope.new_lion.selected != undefined ? $scope.new_lion.selected.id : null;
         sel_data.name = $scope.new_lion.selected != undefined ? $scope.new_lion.selected.name : '-';
@@ -421,36 +438,7 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       else return null;
     }
   }
-  // Gender List
-  $scope.genders = [{value: 'male', label: 'Male'}, {value: 'female',label: 'Female'}, {value: null,label: 'Unknown'}];
-  // Markings List
-  $scope.markings = [
-    {value: 'ear',  label: 'Ear', allText : 'All Ear Markings',
-        items: [ //{value: 'EAR_MARKING_BOTH}', label: 'Both'},
-                {value: 'EAR_MARKING_LEFT',  label: 'Left'},
-                {value: 'EAR_MARKING_RIGHT', label: 'Right'}
-               ]},
-    {value: 'mouth', label: 'Mouth', allText: 'All Mouth Markings',
-        items: [ {value: 'MOUTH_MARKING_BACK',  label: 'Back'},
-                 {value: 'MOUTH_MARKING_FRONT', label: 'Front'},
-                 {value: 'MOUTH_MARKING_LEFT',  label: 'Left'},
-                 {value: 'MOUTH_MARKING_RIGHT', label: 'Right'} ]},
-    {value: 'tail', label: 'Tail',  allText: 'All Tail Markings',
-        items: [{value: 'TAIL_MARKING_MISSING_TUFT', label: 'Missing Tuft'}]}
-  ];
-  // Eye Markings
-  $scope.eye_damage = [ //{value: 'EYE_DAMAGE_BOTH',  label: 'Both'}
-    {value: 'EYE_DAMAGE_LEFT',  label: 'Left'}, {value: 'EYE_DAMAGE_RIGHT', label: 'Right'}];
-  // Nose Color
-  $scope.nose_color = [{value: undefined, label: 'None'}, {value: 'NOSE_COLOUR_BLACK', label: 'Black'},
-    {value: 'NOSE_COLOUR_PATCHY',  label: 'Patchy'}, {value: 'NOSE_COLOUR_PINK', label: 'Pink'},
-    {value: 'NOSE_COLOUR_SPOTTED', label: 'Spotted'}];
-  // Broken Teeths
-  $scope.broken_teeth = [{value: 'TEETH_BROKEN_CANINE_LEFT', label: 'Canine Left'},
-    {value: 'TEETH_BROKEN_CANINE_RIGHT', label: 'Canine Right'}, {value: 'TEETH_BROKEN_INCISOR_LEFT', label: 'Incisor Left'}, {value: 'TEETH_BROKEN_INCISOR_RIGHT', label: 'Incisor Right'}];
-  // Scars Markings
-  $scope.scars = [{value: 'SCARS_BODY_LEFT', label: 'Body Left'}, {value: 'SCARS_BODY_RIGHT', label: 'Body Right'}, {value: 'SCARS_FACE', label: 'Face'}, {value: 'SCARS_TAIL', label: 'Tail'}];
-
+ 
   var original_data = angular.copy(optionsSet.data);
 
   if(optionsSet.edit == 'edit'){
@@ -467,7 +455,7 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       TAGS = optionsSet.data.tags.split(",");
     }
 
-    var eyes_dams = _.includes(TAGS,'EYE_DAMAGE_BOTH')? ['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT'] :  _.intersection(TAGS,['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']);
+    var eye_dam = _.includes(TAGS,'EYE_DAMAGE_BOTH')? ['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT'] :  _.intersection(TAGS,['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']);
 
     var ear_marks = _.includes(TAGS,'EAR_MARKING_BOTH')? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] :  _.intersection(TAGS,['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'])
 
@@ -478,21 +466,23 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
     var longitude = (optionsSet.data.longitude == null) ? '' : optionsSet.data.longitude;
 
     $scope.selected = {
-      "name": optionsSet.data.name,
-      "id": optionsSet.data.id,
-      "date_stamp": date_stamp,
-      "owner_organization_id": optionsSet.data.organization_id,
-      "organization_id": optionsSet.data.organization_id,
-      "date_of_birth": date_of_birth,
-      "latitude": latitude,
-      "longitude": longitude,
-      "gender": optionsSet.data.gender,
-      "eye_damage": eyes_dams,
-      "broken_teeth": _.intersection(TAGS,['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT','TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']),
-      "nose_color": (_.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']))[0],
-      "scars": _.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE', 'SCARS_TAIL']),
-      "markings":{'ear': ear_marks,'mouth': _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']),'tail': _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT'])},
-      "notes": optionsSet.data.notes,
+      name: optionsSet.data.name,
+      id: optionsSet.data.id,
+      date_stamp: date_stamp,
+      owner_organization_id: optionsSet.data.organization_id,
+      organization_id: optionsSet.data.organization_id,
+      date_of_birth: date_of_birth,
+      latitude: latitude,
+      longitude: longitude,
+      gender: optionsSet.data.gender,
+      eye_damage: eye_dam,
+      broken_teeth: _.intersection(TAGS,['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT','TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']),
+      nose_color: (_.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']))[0],
+      scars: _.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE', 'SCARS_TAIL']),
+      ear_markings: ear_marks,
+      mouth_markings: _.intersection(TAGS,['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']),
+      tail_markings:  _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT']),
+      notes: optionsSet.data.notes,
       //tmp
       //"isPrivate" :{'map': optionsSet.data.isPrivate.map, 'gps' : optionsSet.data.isPrivate.gps},
       //"isDead" : optionsSet.data.isDead;
@@ -507,20 +497,28 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
   {
     // Result Datas
     var date = new Date();
-    $scope.selected = { "name": "",
-                        "uploading_user_id": $scope.user.id,
-                        "uploading_organization_id": $scope.user.organization_id,
-                        "owner_organization_id": $scope.user.organization_id,
-                        "organization_id": $scope.user.organization_id,
-                        "date_of_birth": null,
-                        "date_stamp": new Date(),
-                        "latitude":"", "longitude": "", "gender": "",
-                        "markings": {'ear': [],'mouth': [],'tail': []},
-                        "broken_teeth": [], "eye_damage": [],
-                        "nose_color": undefined, "scars": [], "notes": "",
-                        //tmp
-                        //"isPrivate" :{'map': false, 'gps' : false},
-                        //"isDead" : false;
+    $scope.selected = { 
+      name: "",
+      uploading_user_id: $scope.user.id,
+      uploading_organization_id: $scope.user.organization_id,
+      owner_organization_id: $scope.user.organization_id,
+      organization_id: $scope.user.organization_id,
+      date_of_birth: null,
+      date_stamp: new Date(),
+      latitude:"", 
+      longitude: "", 
+      gender: "",
+      ear_markings: [],
+      mouth_markings: [],
+      tail_markings: [],
+      broken_teeth: [], 
+      eye_damage: [],
+      nose_color: undefined, 
+      scars: [], 
+      notes: "",
+      //tmp
+      //"isPrivate" :{'map': false, 'gps' : false},
+      //"isDead" : false;
     };
   }
   // Calc Age Function

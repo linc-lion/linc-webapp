@@ -20,32 +20,17 @@
 
 angular.module('linc.image.set.controllers', [])
 
-.controller('ImageSetCtrl', ['$scope', '$rootScope', '$state', '$timeout', '$uibModal', '$bsTooltip', '$interval', 'NotificationFactory', 'LincServices', 'AuthService', 'PollerService', 'organizations', 'imageset', function ($scope, $rootScope, $state, $timeout, $uibModal, $bsTooltip, $interval,
-NotificationFactory, LincServices, AuthService, PollerService, organizations, imageset) {
+.controller('ImageSetCtrl', ['$scope', '$rootScope', '$state', '$timeout', '$uibModal', '$bsTooltip', '$interval', 'NotificationFactory', 
+  'LincServices', 'AuthService', 'PollerService', 'organizations', 'imageset', 'TAGS_CONST', 'TAGS_BY_TYPE', function ($scope, $rootScope, $state, $timeout, 
+  $uibModal, $bsTooltip, $interval, NotificationFactory, LincServices, AuthService, PollerService, organizations, imageset, TAGS_CONST, TAGS_BY_TYPE) {
 
   $scope.is_modal_open = false;
   $scope.imageset = imageset;
   $scope.user = AuthService.user;
-  var labels = function (damages, labels){
-    var label = "";
-    labels.forEach(function (elem, i){
-      label += damages[elem];
-      if(i<labels.length-1) label += ', ';
-    });
-    return label;
-  }
 
   //tmp
   $scope.imageset.is_private = {map: true, gps: true};
   $scope.imageset.is_dead = true;
-
-  var eye_damages    = {'EYE_DAMAGE_BOTH': 'Both', 'EYE_DAMAGE_LEFT': 'Left', 'EYE_DAMAGE_RIGHT': 'Right'};
-  var broken_teeths  = {'TEETH_BROKEN_CANINE_LEFT': 'Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Incisor Right'};
-  var ear_markings   = {'EAR_MARKING_BOTH': 'Both', 'EAR_MARKING_LEFT': 'Left', 'EAR_MARKING_RIGHT': 'Right'};
-  var mouth_markings = {'MOUTH_MARKING_BACK': 'Back', 'MOUTH_MARKING_FRONT': 'Front', 'MOUTH_MARKING_LEFT': 'Left', 'MOUTH_MARKING_RIGHT': 'Right'};
-  var tail_markings  = {'TAIL_MARKING_MISSING_TUFT': 'Missing Tuft'};
-  var nose_color     = {'NOSE_COLOUR_BLACK': 'Black', 'NOSE_COLOUR_PATCHY': 'Patchy', 'NOSE_COLOUR_PINK': 'Pink', 'NOSE_COLOUR_SPOTTED': 'Spotted'};
-  var scars          = {'SCARS_BODY_LEFT': 'Body Left', 'SCARS_BODY_RIGHT': 'Body Right', 'SCARS_FACE': 'Face', 'SCARS_TAIL': 'Tail'};
 
   var count = 0;
   var Poller = function () {
@@ -90,6 +75,15 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     }, 0);
   }
 
+  var LABELS = function (damage, labels){
+    var label = "";
+    labels.forEach(function (elem, i){
+      label += damage[elem];
+      if(i<labels.length-1) label += ', ';
+    });
+    return label;
+  }
+
   var Set_Tags = function(){
     $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.imageset.organization_id);
     $scope.canDelete = ($scope.canShow && !$scope.imageset.is_primary);
@@ -122,13 +116,13 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     }catch(e){
       TAGS = $scope.imageset.tags.split(",");
     }
-    $scope.imageset.eye_damage = labels(eye_damages,_.intersection(TAGS, ['EYE_DAMAGE_BOTH', 'EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']));
-    $scope.imageset.broken_teet = labels(broken_teeths,_.intersection(TAGS, ['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT', 'TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']));
-    $scope.imageset.ear_markings = labels(ear_markings,_.intersection(TAGS, ['EAR_MARKING_BOTH', 'EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']));
-    $scope.imageset.mouth_markings =labels(mouth_markings, _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT', 'MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']));
-    $scope.imageset.tail_markings = labels(tail_markings,_.intersection(TAGS, ['TAIL_MARKING_MISSING_TUFT']));
-    $scope.imageset.nose_color = labels(nose_color,_.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']));
-    $scope.imageset.scars = labels(scars,_.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE', 'SCARS_TAIL']));
+    $scope.imageset.eye_damage = LABELS(TAGS_BY_TYPE['EYE_DAMAGE'], _.intersection(TAGS, TAGS_CONST['EYE_DAMAGE']));
+    $scope.imageset.broken_teet = LABELS(TAGS_BY_TYPE['TEETH_BROKEN'],_.intersection(TAGS, TAGS_CONST['TEETH_BROKEN']));
+    $scope.imageset.ear_markings = LABELS(TAGS_BY_TYPE['EAR_MARKINGS'],_.intersection(TAGS, TAGS_CONST['EAR_MARKINGS']));
+    $scope.imageset.mouth_markings =LABELS(TAGS_BY_TYPE['MOUTH_MARKING'], _.intersection(TAGS, TAGS_CONST['MOUTH_MARKING']));
+    $scope.imageset.tail_markings = LABELS(TAGS_BY_TYPE['TAIL_MARKING_MISSING_TUFT'],_.intersection(TAGS, TAGS_CONST['TAIL_MARKING_MISSING_TUFT']));
+    $scope.imageset.nose_color = LABELS(TAGS_BY_TYPE['NOSE_COLOUR'],_.intersection(TAGS, TAGS_CONST['NOSE_COLOUR']));
+    $scope.imageset.scars = LABELS(TAGS_BY_TYPE['SCARS'],_.intersection(TAGS, TAGS_CONST['SCARS']));
   };
   Set_Tags();
 
@@ -318,20 +312,15 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
   $scope.imageset.date_of_birth = date_format($scope.imageset.date_of_birth);
 }])
 
-.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$uibModal', '$stateParams', '$bsTooltip', 'NotificationFactory', 'LincServices', 'AuthService', 'PollerService', 'imagesets_filters', 'default_filters', 'imagesets', function ($scope, $timeout, $interval, $uibModal, $stateParams, $bsTooltip, NotificationFactory, LincServices, AuthService, PollerService, imagesets_filters, default_filters, imagesets) {
+.controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$uibModal', '$stateParams', '$bsTooltip', 'NotificationFactory', 
+  'LincServices', 'AuthService', 'PollerService', 'imagesets_filters', 'default_filters', 'imagesets', 'TAG_LABELS', 'TOOL_TITLE', 
+  function ($scope, $timeout, $interval, $uibModal, $stateParams, $bsTooltip, NotificationFactory, LincServices, AuthService, 
+    PollerService, imagesets_filters, default_filters, imagesets, TAG_LABELS, TOOL_TITLE) {
 
   $scope.user = AuthService.user;
-  var tag_labels    = {'EYE_DAMAGE_BOTH': 'Eye Damage Both', 'EYE_DAMAGE_LEFT': 'Eye Damage Left', 'EYE_DAMAGE_RIGHT': 'Eye Damage Right', 'TEETH_BROKEN_CANINE_LEFT': 'Broken Teeth Canine Left', 'TEETH_BROKEN_CANINE_RIGHT': 'Broken Teeth Canine Right', 'TEETH_BROKEN_INCISOR_LEFT': 'Broken Teeth Incisor Left', 'TEETH_BROKEN_INCISOR_RIGHT': 'Broken Teeth Incisor Right',
-  'EAR_MARKING_BOTH': 'Ear Marking Both', 'EAR_MARKING_LEFT': 'Ear Marking Left', 'EAR_MARKING_RIGHT': 'Ear Marking Right',
-  'MOUTH_MARKING_BACK': 'Mouth Marking Back', 'MOUTH_MARKING_FRONT': 'Mouth Marking Front', 'MOUTH_MARKING_LEFT': 'Mouth Marking Left', 'MOUTH_MARKING_RIGHT': 'Mouth Marking Right', 'TAIL_MARKING_MISSING_TUFT': 'Tail Marking Missing Tuft', 'NOSE_COLOUR_BLACK': 'Nose Color Black', 'NOSE_COLOUR_PATCHY': 'Nose Color Patchy', 'NOSE_COLOUR_PINK': 'Nose Color Pink',
-  'NOSE_COLOUR_SPOTTED': 'Nose Color Spotted', 'SCARS_BODY_LEFT': 'Scars Body Left', 'SCARS_BODY_RIGHT': 'Scars Body Right', 'SCARS_FACE': 'Scars Face', 'SCARS_TAIL': 'Scars Tail'};
-
-  var tool_title =  "Eye Damage: Left, Right or Both; Broken Teeth: Canine Left/Right and Incisor Left/Right; \n"; +
-    "Ear Marking: Left, Right, or Both; Mouth Marking: Back, Front, Left and Right; \n" +
-    "Tail Marking: Missing Tuft; Nose Color: Black, Patchy, Pink, or Spotted; Scars: Body Left/Right, Face and Tail";
 
   $scope.is_modal_open = false;
-  $scope.title_tooltip = {'title': 'tips: ' + tool_title, 'checked': true};
+  $scope.title_tooltip = {'title': 'tips: ' + TOOL_TITLE, 'checked': true};
 
   var count = 0;
   var cvrequest_pendings = [];
@@ -393,10 +382,10 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     }, 0);
   }
 
-  var get_features = function (tag_labels, TAGS){
+  var GET_FEATURES = function (lbs, TAGS){
     var label = "";
     TAGS.forEach(function (elem, i){
-      label += tag_labels[elem];
+      label += lbs[elem];
       if(i<TAGS.length-1) label += ', ';
     });
     return label;
@@ -438,7 +427,7 @@ NotificationFactory, LincServices, AuthService, PollerService, organizations, im
     }catch(e){ TAGS = element['tags'].split(","); }
     if(TAGS==null) TAGS = [];
 
-    var tag_features = get_features(tag_labels, TAGS);
+    var tag_features = GET_FEATURES(TAG_LABELS, TAGS);
     elem['features_tooltip'] = {'title': tag_features, 'checked': true};
     elem['features'] = (tag_features.length > 0) ? true : false;
     elem['tag_features'] = tag_features;
