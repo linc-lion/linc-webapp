@@ -71,20 +71,20 @@ class BaseHandler(RequestHandler):
         request = HTTPRequest(**params)
         try:
             response = yield http_client.fetch(request)
-        except HTTPError, e:
-            print 'HTTTP error returned... '
-            print "Code: ", e.code
-            print "Message: ", e.message
+        except HTTPError as e:
+            info('HTTTP error returned... ')
+            info('Code: '+str(e.code))
+            info('Message: '+str(e.message))
             if e.response:
-                print 'URL: ', e.response.effective_url
-                print 'Reason: ', e.response.reason
-                print 'Body: ', e.response.body
+                info('URL: '+str(e.response.effective_url))
+                info('Reason: '+str(e.response.reason))
+                info('Body: '+str(e.response.body))
                 response = e.response
             else:
                 response = e
         except Exception as e:
             # Other errors are possible, such as IOError.
-            print("Other Errors: " + str(e))
+            info("Other Errors: " + str(e))
             response = e
         callback(response)
 
