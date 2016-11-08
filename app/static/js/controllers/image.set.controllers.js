@@ -118,9 +118,9 @@ angular.module('linc.image.set.controllers', [])
     }
     $scope.imageset.eye_damage = LABELS(TAGS_BY_TYPE['EYE_DAMAGE'], _.intersection(TAGS, TAGS_CONST['EYE_DAMAGE']));
     $scope.imageset.broken_teet = LABELS(TAGS_BY_TYPE['TEETH_BROKEN'],_.intersection(TAGS, TAGS_CONST['TEETH_BROKEN']));
-    $scope.imageset.ear_markings = LABELS(TAGS_BY_TYPE['EAR_MARKINGS'],_.intersection(TAGS, TAGS_CONST['EAR_MARKINGS']));
-    $scope.imageset.mouth_markings =LABELS(TAGS_BY_TYPE['MOUTH_MARKING'], _.intersection(TAGS, TAGS_CONST['MOUTH_MARKING']));
-    $scope.imageset.tail_markings = LABELS(TAGS_BY_TYPE['TAIL_MARKING_MISSING_TUFT'],_.intersection(TAGS, TAGS_CONST['TAIL_MARKING_MISSING_TUFT']));
+    $scope.imageset.ear_marking = LABELS(TAGS_BY_TYPE['EAR_MARKING'],_.intersection(TAGS, TAGS_CONST['EAR_MARKING']));
+    $scope.imageset.mouth_marking =LABELS(TAGS_BY_TYPE['MOUTH_MARKING'],_.intersection(TAGS, TAGS_CONST['MOUTH_MARKING']));
+    $scope.imageset.tail_marking = LABELS(TAGS_BY_TYPE['TAIL_MARKING_MISSING_TUFT'],_.intersection(TAGS, TAGS_CONST['TAIL_MARKING_MISSING_TUFT']));
     $scope.imageset.nose_color = LABELS(TAGS_BY_TYPE['NOSE_COLOUR'],_.intersection(TAGS, TAGS_CONST['NOSE_COLOUR']));
     $scope.imageset.scars = LABELS(TAGS_BY_TYPE['SCARS'],_.intersection(TAGS, TAGS_CONST['SCARS']));
   };
@@ -423,6 +423,7 @@ angular.module('linc.image.set.controllers', [])
     if(!element.gender) element.gender = 'unknown';
 
     var TAGS = [];
+    if(element['tags']==undefined)element['tags']="[]";
     try{ TAGS = JSON.parse(element['tags']);
     }catch(e){ TAGS = element['tags'].split(","); }
     if(TAGS==null) TAGS = [];

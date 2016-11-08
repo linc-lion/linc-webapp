@@ -189,7 +189,7 @@ angular.module('linc.controllers', ['linc.admin.controller',
   };
 })
 
-// All Markings
+// All Marking
 .filter('features_filter', function(){
   return function(input, features_str) {
     if(!features_str.length)
