@@ -299,7 +299,7 @@ angular.module('linc.admin.images.controller', [])
 
   $scope.TypesLabel = [ {'type': 'cv', 'label': 'CV Image'},{'type': 'full-body', 'label': 'Full Body'},
                         {'type': 'whisker', 'label': 'Whisker'},{'type': 'main-id', 'label': 'Main Id'},
-                        {'type': 'markings', 'label': 'Markings'}];
+                        {'type': 'marking', 'label': 'Marking'}];
 
 
   // Order by

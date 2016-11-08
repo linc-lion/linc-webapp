@@ -40,7 +40,8 @@ angular.module('linc.upload.images.controller', ['linc.upload.images.directive',
   };
 
   $scope.Types = {'Images':[{"value":"cv","label":"CV Image"},{"value":"full-body","label":"Full Body"},
-                            {"value":"whisker","label":"Whisker"}, {"value":"main-id","label":"Main Id"}, {"value":"markings","label":"Markings"}],
+                            {"value":"whisker","label":"Whisker"}, {"value":"main-id","label":"Main Id"}, 
+                            {"value":"marking","label":"Marking"}],
               'Properties':[{"value":true,"label":"Public"},{"value":false,"label":"Private"}]
   };
   $scope.Default = {isPublic: true, ImageType: 'cv', isCover: ''};

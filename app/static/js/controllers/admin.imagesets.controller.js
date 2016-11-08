@@ -20,16 +20,17 @@
 
 angular.module('linc.admin.imagesets.controller', [])
 
-.controller('AdminImageSetsCtrl', ['$scope', '$uibModal', 'CONST_LIST', function ($scope, $uibModal, CONST_LIST) {
+.controller('AdminImageSetsCtrl', ['$scope', '$uibModal', 'CONST_LIST', 'TAGS_CONST', 
+  function ($scope, $uibModal, CONST_LIST, TAGS_CONST) {
 
   $scope.ImageSet_Mode  =  $scope.settings.imagesets.Mode;
 
   $scope.genders = CONST_LIST['GENDER'];
     
   $scope.tags = {
-    ear_markings : CONST_LIST['EAR_MARKING'],
-    mouth_markings : CONST_LIST['MOUTH_MARKING'],
-    tail_markings : CONST_LIST['TAIL_MARKING'],
+    ear_marking : CONST_LIST['EAR_MARKING'],
+    mouth_marking : CONST_LIST['MOUTH_MARKING'],
+    tail_marking : CONST_LIST['TAIL_MARKING'],
     eye_damage : CONST_LIST['EYE_DAMAGE'],
     nose_color : CONST_LIST['NOSE_COLOUR'],
     broken_teeth : CONST_LIST['TEETH_BROKEN'],
@@ -143,19 +144,25 @@ angular.module('linc.admin.imagesets.controller', [])
 
     modalScope.submit = function (valid){
       if(valid){
-        var eye_dam = _.includes(modalScope.imageset.eye_damage, ["EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT"]) ? ["EYE_DAMAGE_BOTH"] : modalScope.imageset.eye_damage;
-        var ear_marks = _.includes(modalScope.imageset.ear_markings, ["EAR_MARKING_LEFT", "EAR_MARKING_RIGHT"]) ? ["EAR_MARKING_BOTH"] : modalScope.imageset.ear_markings;
+
+        var eye_dam = _.includes(modalScope.imageset.eye_damage,'NONE') ? ['EYE_DAMAGE_NONE'] : _.intersection(modalScope.imageset.eye_damage,['EYE_DAMAGE_YES']);
+        var broken_teeth = _.includes(modalScope.imageset.broken_teeth,'NONE') ? ['TEETH_BROKEN_NONE'] : _.intersection(modalScope.imageset.broken_teeth, TAGS_CONST['TEETH_BROKEN']);
+        var ear_marking = _.includes(modalScope.imageset.ear_marking,'NONE') ? ['EAR_MARKING_NONE'] : (_.isEmpty(_.difference(['EAR_MARKING_LEFT','EAR_MARKING_RIGHT'], modalScope.imageset.ear_marking)) ? ["EAR_MARKING_BOTH"] : _.intersection(modalScope.imageset.ear_marking,['EAR_MARKING_LEFT','EAR_MARKING_RIGHT']));
+        var mouth_marking = _.includes(modalScope.imageset.mouth_marking,'NONE') ? ['MOUTH_MARKING_NONE'] : _.intersection(modalScope.imageset.mouth_marking,['MOUTH_MARKING_YES']);
+        var tail_marking = _.includes(modalScope.imageset.tail_marking,'NONE') ? ['TAIL_MARKING_MISSING_TUFT_NONE'] : _.intersection(modalScope.imageset.tail_marking,['TAIL_MARKING_MISSING_TUFT_YES']);
+        var scars = _.includes(modalScope.imageset.scars,'NONE')? ['SCARS_NONE'] : _.intersection(modalScope.imageset.scars,TAGS_CONST['SCARS']);
 
         var concat = _([]).concat(eye_dam);
-        concat = _(concat).concat(ear_marks);
-        concat = _(concat).concat(modalScope.imageset.mouth_markings);
-        concat = _(concat).concat(modalScope.imageset.tail_markings);
-        concat = _(concat).concat(modalScope.imageset.broken_teeth);
+        concat = _(concat).concat(broken_teeth);
+        concat = _(concat).concat(ear_marking);
+        concat = _(concat).concat(tail_marking);
+        concat = _(concat).concat(mouth_marking);
         if(modalScope.imageset.nose_color != undefined)
           concat = _(concat).concat([modalScope.imageset.nose_color]);
-        concat = _(concat).concat(modalScope.imageset.scars);
+        concat = _(concat).concat(scars);
+
         var TAGS = JSON.stringify(concat.value());
-        if(!concat.value().length) TAGS = "null";
+        //if(!concat.value().length) TAGS = "null";
 
         var latitude = isNaN(parseFloat(modalScope.imageset.latitude)) ? null : parseFloat(modalScope.imageset.latitude);
         var longitude = isNaN(parseFloat(modalScope.imageset.longitude)) ? null : parseFloat(modalScope.imageset.longitude);
@@ -257,13 +264,13 @@ angular.module('linc.admin.imagesets.controller', [])
         TAGS = modalScope.imageset.tags.split(",");
       }
 
-      modalScope.imageset.eye_damage = _.includes(TAGS,'EYE_DAMAGE_BOTH')? ['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT'] :  _.intersection(TAGS,['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']);
-      modalScope.imageset.ear_markings = _.includes(TAGS,'EAR_MARKING_BOTH')? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] :  _.intersection(TAGS,['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT']);
-      modalScope.imageset.mouth_markings = _.intersection(TAGS, ['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']);
-      modalScope.imageset.tail_markings = _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT']);
-      modalScope.imageset.broken_teeth = _.intersection(TAGS,['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT','TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']);
-      modalScope.imageset.nose_color = (_.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']))[0];
-      modalScope.imageset.scars = _.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE', 'SCARS_TAIL']);
+      modalScope.imageset.eye_damage = _.includes(TAGS,'EYE_DAMAGE_NONE') ? ['NONE'] : _.intersection(TAGS,['EYE_DAMAGE_YES']);
+      modalScope.imageset.broken_teeth = _.includes(TAGS,'TEETH_BROKEN_NONE') ? ['NONE'] : _.intersection(TAGS, TAGS_CONST['TEETH_BROKEN']);
+      modalScope.imageset.ear_marking = _.includes(TAGS,'EAR_MARKING_NONE')? ['NONE'] : (_.includes(TAGS,'EAR_MARKING_BOTH') ? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] : _.intersection(TAGS,TAGS_CONST['ear_marking']));
+      modalScope.imageset.mouth_marking = _.includes(TAGS,'MOUTH_MARKING_NONE') ? ['NONE'] : _.intersection(TAGS,['MOUTH_MARKING_YES']);
+      modalScope.imageset.tail_marking = _.includes(TAGS,'TAIL_MARKING_MISSING_TUFT_NONE') ? ['NONE'] : _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT_YES']);
+      modalScope.imageset.nose_color = _.intersection(TAGS, TAGS_CONST['NOSE_COLOUR'])[0];
+      modalScope.imageset.scars = _.includes(TAGS,'SCARS_NONE')? ['NONE'] : _.intersection(TAGS,TAGS_CONST['SCARS']);
 
       var modalInstance = $uibModal.open({
           templateUrl: 'Edit_ImageSet.tmpl.html',
@@ -287,19 +294,25 @@ angular.module('linc.admin.imagesets.controller', [])
       
       modalScope.submit = function(valid){
         if(valid){
-          var eye_dam = _.includes(modalScope.imageset.eye_damage, ["EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT"]) ? ["EYE_DAMAGE_BOTH"] : modalScope.imageset.eye_damage;
-          var ear_marks = _.includes(modalScope.imageset.ear_markings, ["EAR_MARKING_LEFT", "EAR_MARKING_RIGHT"]) ? ["EAR_MARKING_BOTH"] : modalScope.imageset.ear_markings;
-          
+
+          var eye_dam = _.includes(modalScope.imageset.eye_damage,'NONE') ? ['EYE_DAMAGE_NONE'] : _.intersection(modalScope.imageset.eye_damage,['EYE_DAMAGE_YES']);
+          var broken_teeth = _.includes(modalScope.imageset.broken_teeth,'NONE') ? ['TEETH_BROKEN_NONE'] : _.intersection(modalScope.imageset.broken_teeth, TAGS_CONST['TEETH_BROKEN']);
+          var ear_marking = _.includes(modalScope.imageset.ear_marking,'NONE') ? ['EAR_MARKING_NONE'] : (_.isEmpty(_.difference(['EAR_MARKING_LEFT','EAR_MARKING_RIGHT'], modalScope.imageset.ear_marking)) ? ["EAR_MARKING_BOTH"] : _.intersection(modalScope.imageset.ear_marking,['EAR_MARKING_LEFT','EAR_MARKING_RIGHT']));
+          var mouth_marking = _.includes(modalScope.imageset.mouth_marking,'NONE') ? ['MOUTH_MARKING_NONE'] : _.intersection(modalScope.imageset.mouth_marking,['MOUTH_MARKING_YES']);
+          var tail_marking = _.includes(modalScope.imageset.tail_marking,'NONE') ? ['TAIL_MARKING_MISSING_TUFT_NONE'] : _.intersection(modalScope.imageset.tail_marking,['TAIL_MARKING_MISSING_TUFT_YES']);
+          var scars = _.includes(modalScope.imageset.scars,'NONE')? ['SCARS_NONE'] : _.intersection(modalScope.imageset.scars,TAGS_CONST['SCARS']);
+
           var concat = _([]).concat(eye_dam);
-          concat = _(concat).concat(ear_marks);
-          concat = _(concat).concat(modalScope.imageset.mouth_markings);
-          concat = _(concat).concat(modalScope.imageset.tail_markings);
-          concat = _(concat).concat(modalScope.imageset.broken_teeth);
+          concat = _(concat).concat(broken_teeth);
+          concat = _(concat).concat(ear_marking);
+          concat = _(concat).concat(tail_marking);
+          concat = _(concat).concat(mouth_marking);
           if(modalScope.imageset.nose_color != undefined)
             concat = _(concat).concat([modalScope.imageset.nose_color]);
-          concat = _(concat).concat(modalScope.imageset.scars);
+          concat = _(concat).concat(scars);
+
           var TAGS = JSON.stringify(concat.value());
-          if(!concat.value().length) TAGS = "null";
+          //if(!concat.value().length) TAGS = "null";
 
           var latitude = isNaN(parseFloat(modalScope.imageset.latitude)) ? null : parseFloat(modalScope.imageset.latitude);
           var longitude = isNaN(parseFloat(modalScope.imageset.longitude)) ? null : parseFloat(modalScope.imageset.longitude);
