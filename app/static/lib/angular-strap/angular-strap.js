@@ -1546,11 +1546,15 @@
       delay: 0,
       multiple: false,
       allNoneButtons: false,
+      allButton: false,
+      unknownButton: false,
+      noneButton: false,
       sort: true,
       caretHtml: '&nbsp;<span class="caret"></span>',
       placeholder: 'Choose among the following...',
       allText: 'All',
       noneText: 'None',
+      unknownText: 'Unknown',
       maxLength: 3,
       maxLengthHtml: 'selected',
       iconCheckmark: 'glyphicon glyphicon-ok'
@@ -1572,9 +1576,13 @@
         }
         scope.$isMultiple = options.multiple;
         scope.$showAllNoneButtons = options.allNoneButtons && options.multiple;
+        scope.$showAllButton = options.allButton;
+        scope.$showUnknownButton = options.unknownButton;
+        scope.$showNoneButton = options.noneButton;
         scope.$iconCheckmark = options.iconCheckmark;
         scope.$allText = options.allText;
         scope.$noneText = options.noneText;
+        scope.$unknownText = options.unknownText;
         scope.$activate = function(index) {
           scope.$$postDigest(function() {
             $select.activate(index);
@@ -1583,6 +1591,13 @@
         scope.$select = function(index, evt) {
           scope.$$postDigest(function() {
             $select.select(index);
+            if(scope.$matches[index].value != 'NONE'){
+              for (var i = 0; i < scope.$matches.length; i++) {
+                if (scope.$isActive(i) && scope.$matches[i].value == 'NONE') {
+                  $select.select(i);
+                }
+              }
+            }
           });
         };
         scope.$isVisible = function() {
@@ -1593,17 +1608,35 @@
         };
         scope.$selectAll = function() {
           for (var i = 0; i < scope.$matches.length; i++) {
-            if (!scope.$isActive(i)) {
+            if (!scope.$isActive(i) && scope.$matches[i].value != 'NONE') {
               scope.$select(i);
             }
           }
+          $select.hide();
+        };
+        scope.$select2 = function(index, evt) {
+          scope.$$postDigest(function() {
+            $select.select(index);
+          });
         };
         scope.$selectNone = function() {
+          for (var i = 0; i < scope.$matches.length; i++) {
+            if (scope.$isActive(i) && scope.$matches[i].value != 'NONE') {
+              scope.$select2(i);
+            }
+            else if(!scope.$isActive(i) && scope.$matches[i].value == 'NONE'){
+              scope.$select2(i);
+            }
+          }
+          $select.hide();
+        };
+        scope.$selectUnknown = function() {
           for (var i = 0; i < scope.$matches.length; i++) {
             if (scope.$isActive(i)) {
               scope.$select(i);
             }
           }
+          $select.hide();
         };
         $select.update = function(matches) {
           scope.$matches = matches;
@@ -1752,11 +1785,11 @@
           scope: scope,
           placeholder: defaults.placeholder
         };
-        angular.forEach([ 'template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'container', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'placeholder', 'allNoneButtons', 'maxLength', 'maxLengthHtml', 'allText', 'noneText', 'iconCheckmark', 'autoClose', 'id', 'sort', 'caretHtml', 'prefixClass', 'prefixEvent' ], function(key) {
+        angular.forEach([ 'template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'container', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'placeholder', 'allNoneButtons', 'allButton', 'unknownButton', 'noneButton', 'maxLength', 'maxLengthHtml', 'allText', 'noneText', 'unknownText', 'iconCheckmark', 'autoClose', 'id', 'sort', 'caretHtml', 'prefixClass', 'prefixEvent' ], function(key) {
           if (angular.isDefined(attr[key])) options[key] = attr[key];
         });
         var falseValueRegExp = /^(false|0|)$/i;
-        angular.forEach([ 'html', 'container', 'allNoneButtons', 'sort' ], function(key) {
+        angular.forEach([ 'html', 'container', 'allNoneButtons', 'allButton', 'unknownButton', 'noneButton', 'sort' ], function(key) {
           if (angular.isDefined(attr[key]) && falseValueRegExp.test(attr[key])) options[key] = false;
         });
         var dataMultiple = element.attr('data-multiple');

@@ -121,46 +121,130 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         </div>
         <div class="col-sm-4">
           <div class="form-group">
-            <label for="id_ear_markings"  >Ear Markings: </label>
-            <button type="button" name="id_ear_markings" placeholder="None" class="btn btn-default btn-select" ng-model="imageset.ear_markings" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Ear Markings" max-length="2" bs-options="tag.value as tag.label for tag in tags.ear_markings" placement="bottom-right" bs-select>
+            <!--<label for="id_ear_marking"  >Ear Marking: </label>
+            <button type="button" name="id_ear_marking" placeholder="None" class="btn btn-default btn-select" ng-model="imageset.ear_marking" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Ear Marking" max-length="2" bs-options="tag.value as tag.label for tag in tags.ear_marking" placement="bottom-right" bs-select>
+              Action <span class="caret"></span>
+            </button>-->
+            <label for="id_ear_marking">Ear Markings: </label>
+            <button type="button" name="id_ear_marking" placeholder="Unknown" 
+                    class="btn btn-default btn-select" ng-model="imageset.ear_marking" 
+                    data-html="1" data-multiple="1" max-length="2" 
+                    all-none-buttons="true" all-Text="All Ear Markings" all-button="true"
+                    none-button="false" none-Text=""
+                    unknown-button="true" unknown-Text="Unknown" 
+                    bs-options="tag.value as tag.label for tag in tags.ear_marking" 
+                    data-template-url='custom-select.tpl.html'
+                    placement="bottom-right" bs-select>
               Action <span class="caret"></span>
             </button>
           </div>
           <div class="form-group">
-            <label for="id_mouth_markings">Mouth Markings: </label>
-            <button type="button" name="id_mouth_markings" placeholder="None" class="btn btn-default btn-select" ng-model="imageset.mouth_markings" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Mouth Markings" max-length="2" bs-options="tag.value as tag.label for tag in tags.mouth_markings" placement="bottom-right" bs-select>
+            <!--<label for="id_mouth_marking">Mouth Marking: </label>
+            <button type="button" name="id_mouth_marking" placeholder="None" class="btn btn-default btn-select" ng-model="imageset.mouth_marking" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Mouth Marking" max-length="2" bs-options="tag.value as tag.label for tag in tags.mouth_marking" placement="bottom-right" bs-select>
+              Action <span class="caret"></span>
+            </button> -->
+            <label for="id_mouth_marking">Mouth Markings: </label>
+            <button type="button" name="id_mouth_marking" placeholder="Unknown" 
+                    class="btn btn-default btn-select" ng-model="imageset.mouth_marking" 
+                    data-html="1" data-multiple="1" max-length="2" 
+                    all-none-buttons="true" all-Text="All Mouth Markings" all-button="false"
+                    none-button="false" none-Text=""
+                    unknown-button="true" unknown-Text="Unknown" 
+                    bs-options="tag.value as tag.label for tag in tags.mouth_marking" 
+                    data-template-url='custom-select.tpl.html'
+                    placement="bottom-right" bs-select>
               Action <span class="caret"></span>
             </button>
           </div>
           <div class="form-group">
-            <label for="id_tail_markings" >Tail Markings: </label>
-            <button type="button" name="id_tail_markings" placeholder="None" class="btn btn-default btn-select" ng-model="imageset.tail_markings" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Tail Markings" max-length="2" bs-options="tag.value as tag.label for tag in tags.tail_markings" placement="bottom-right" bs-select>
-              Action <span class="caret"></span>
-            </button>
-          </div>
-          <div class="form-group">
-            <label for="id_nose_color" >Nose Colors: </label>
+            <!--<label for="id_nose_color" >Nose Colors: </label>
             <button type="button" name="id_nose_color" placeholder="None" class="btn btn-default btn-select" ng-model="imageset.nose_color" data-html="1" bs-options="tag.value as tag.label for tag in tags.nose_color" placement="bottom-right" bs-select>
               Action <span class="caret"></span>
+            </button> -->
+            <label for="id_nose_color">Nose Color: </label>
+            <button type="button" id="id_nose_color" placeholder="Unknown" 
+                    class="btn btn-default btn-select" ng-model="imageset.nose_color" 
+                    data-html="1" data-multiple="0"
+                    all-none-buttons="false" all-button="false"
+                    none-button="false" 
+                    unknown-button="false"
+                    bs-options="tag.value as tag.label for tag in tags.nose_color" 
+                    data-template-url='custom-select.tpl.html'
+                    placement="bottom-right" bs-select>
+              Action <span class="caret"></span>
             </button>
           </div>
           <div class="form-group">
-            <label for="id_scars" >Scars: </label>
+            <!--<label for="id_scars" >Scars: </label>
             <button type="button" name="id_scars" placeholder="None" class="btn btn-default btn-select" ng-model="imageset.scars" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Scars" max-length="2" bs-options="tag.value as tag.label for tag in tags.scars" placement="bottom-right" bs-select>
               Action <span class="caret"></span>
+            </button> -->
+            <label for="id_scars">Scars: </label>
+            <button type="button" id="id_scars" placeholder="Unknown" 
+                    class="btn btn-default btn-select" ng-model="imageset.scars" 
+                    data-html="1" data-multiple="1" max-length="2" 
+                    all-none-buttons="true" all-Text="All Type of Scars" all-button="true"
+                    none-button="false" none-Text=""
+                    unknown-button="true" unknown-Text="Unknown" 
+                    bs-options="tag.value as tag.label for tag in tags.scars" 
+                    data-template-url='custom-select.tpl.html'
+                    placement="bottom-right" bs-select>
+              Action <span class="caret"></span>
             </button>
           </div>
           <div class="form-group">
-            <label for="id_eye_damage" >Eye Damage / Pigmentation: </label>
+            <!--<label for="id_eye_damage" >Eye Damage / Pigmentation: </label>
             <button type="button" name="id_eye_damage" placeholder="None" class="btn btn-default btn-select" ng-model="imageset.eye_damage" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Eye Damage" max-length="2" bs-options="tag.value as tag.label for tag in tags.eye_damage" placement="bottom-right" bs-select>
               Action <span class="caret"></span>
+            </button> -->
+            <label for="id_eye_damage">Eye Damage / Pigmentation: </label>
+            <button type="button" id="id_eye_damage" placeholder="Unknown" 
+                    class="btn btn-default btn-select" ng-model="imageset.eye_damage" 
+                    data-html="1" data-multiple="1" 
+                    all-none-buttons="true" all-Text="All Eye Damages" all-button="false"
+                    none-button="false" none-Text=""
+                    unknown-button="true" unknown-Text="Unknown" 
+                    bs-options="tag.value as tag.label for tag in tags.eye_damage" 
+                    data-template-url='custom-select.tpl.html'
+                    placement="bottom-right" bs-select>
+              Action <span class="caret"></span>
             </button>
           </div>
           <div class="form-group">
-            <label for="id_broken_teeth" >Broken Teeth: </label>
+            <!--  <label for="id_broken_teeth" >Broken Teeth: </label>
             <button type="button" name="id_broken_teeth" placeholder="None" class="btn btn-default btn-select" ng-model="imageset.broken_teeth" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Broken Teeth" max-length="2" bs-options="tag.value as tag.label for tag in tags.broken_teeth" placement="bottom-right" bs-select>
               Action <span class="caret"></span>
+            </button> -->
+            <label for="id_broken_teeth">Broken Teeth: </label>
+            <button type="button" id="id_broken_teeth" placeholder="Unknown" 
+                    class="btn btn-default btn-select" ng-model="imageset.broken_teeth" 
+                    data-html="1" data-multiple="1" 
+                    all-none-buttons="true" all-Text="All Broken Teeth" all-button="true"
+                    none-button="false" none-Text=""
+                    unknown-button="true" unknown-Text="Unknown" 
+                    bs-options="tag.value as tag.label for tag in tags.broken_teeth" 
+                    data-template-url='custom-select.tpl.html'
+                    placement="bottom-right" bs-select>
+              Action <span class="caret"></span>
             </button>
+            <div class="form-group">
+              <!-- <label for="id_tail_marking" >Tail Marking: </label>
+              <button type="button" name="id_tail_marking" placeholder="None" class="btn btn-default btn-select" ng-model="imageset.tail_marking" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Tail Marking" max-length="2" bs-options="tag.value as tag.label for tag in tags.tail_marking" placement="bottom-right" bs-select>
+                Action <span class="caret"></span>
+              </button> -->
+              <label for="id_tail_marking" >Tail Markings / Missing Tuft: </label>
+              <button type="button" name="id_tail_marking" placeholder="Unknown" 
+                      class="btn btn-default btn-select" ng-model="imageset.tail_marking" 
+                      data-html="1" data-multiple="1" max-length="2" 
+                      all-none-buttons="true" all-Text="All Tail Markings" all-button="false"
+                      none-button="false" none-Text=""
+                      unknown-button="true" unknown-Text="Unknown" 
+                      bs-options="tag.value as tag.label for tag in tags.tail_marking" 
+                      data-template-url='custom-select.tpl.html'
+                      placement="bottom-right" bs-select>
+                Action <span class="caret"></span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

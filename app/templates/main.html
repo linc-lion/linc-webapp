@@ -90,6 +90,36 @@ For more information or to contact visit linclion.org or email tech@linclion.org
           </div>
         </form>
       </script>
+      <script type="text/ng-template" id="custom-select.tpl.html">
+        <ul tabindex="-1" class="select dropdown-menu custom-bs-select" ng-show="$isVisible()" role="select">
+          <li ng-if="$showAllNoneButtons" class="show-all-button">
+            <div class="btn-group class-all-btn">
+              <button ng-show="$showAllButton" type="button" class="btn btn-default btn-xs" style="font-size: 14px;" ng-click="$selectAll()">{{!$allText}}</button> 
+              <button ng-show="$showNoneButton" type="button" class="btn btn-default btn-xs text-right" style="font-size: 14px;" ng-click="$selectNone()">{{!$noneText}}</button>
+              <button ng-show="$showUnknownButton" type="button" class="btn btn-default btn-xs text-right" style="font-size: 14px;" ng-click="$selectUnknown()">{{!$unknownText}}</button>
+            </div>
+          </li>
+          <li role="presentation" ng-repeat="match in $matches" ng-class="{active: $isActive($index)}">
+            <a ng-if="match.value!='NONE' && match.value!='NOSE_COLOUR_NONE' && match.value!=undefined"
+              class="a-match-values"
+              role="menuitem" tabindex="-1" ng-click="$select($index, $event)">
+              <i class="{{!$iconCheckmark}} pull-right" ng-if="$isMultiple && $isActive($index)"></i> 
+              <span ng-bind="match.label"></span>
+            </a>
+            <a ng-if="match.value=='NOSE_COLOUR_NONE' || match.value==undefined" 
+              class="a-match-values nose-color"
+              role="menuitem" tabindex="-1" ng-click="$select($index, $event)">
+              <i class="{{!$iconCheckmark}} pull-right" ng-if="$isMultiple && $isActive($index)"></i> 
+              <span ng-bind="match.label" class="select-none-btn"></span>
+            </a>
+            <a ng-if="match.value=='NONE'" class="a-match-values nose-color"
+              role="menuitem" tabindex="-1" ng-click="$selectNone()">
+              <i class="{{!$iconCheckmark}} pull-right" ng-if="$isMultiple && $isActive($index)"></i> 
+              <span ng-bind="match.label" class="select-none-btn"></span>
+            </a>    
+          </li>
+        </ul>
+      </script>
       <!-- Main hero unit for a primary marketing message or call to action -->
       <nav class="navbar navbar-default navbar-fixed-top" role="navigation" bs-navbar>
         <div class="container-fluid">
