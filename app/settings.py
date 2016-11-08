@@ -63,21 +63,9 @@ for item in list(sys.path):
 sys.path[:0] = new_sys_path
 
 # port defined as heroku deploy
-define("port",
-    default=5000,
-    type=int,
-    help=("Server port")
-    )
-define("config",
-    default=None,
-    help=("Tornado configuration file")
-    )
-define('debug',
-    default=True,
-    type=bool,
-    help=("Turn on autoreload, log to stderr only")
-    )
-
+define("port",default=5080,type=int,help=("Server port"))
+define("config",default=None,help=("Tornado configuration file"))
+define('debug',default=True,type=bool,help=("Turn on autoreload, log to stderr only"))
 tornado.options.parse_command_line()
 
 # Temporary alternative to define app URL

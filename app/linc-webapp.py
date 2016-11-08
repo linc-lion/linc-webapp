@@ -54,7 +54,7 @@ def main():
     for h in url_patterns:
         print(h)
     httpserver = tornado.httpserver.HTTPServer(app)
-    httpserver.listen(int(os.environ.get('PORT',5000)))
+    httpserver.listen(int(os.environ.get('PORT',options.port)))
     tornado.ioloop.IOLoop.instance().start()
 
 if __name__ == "__main__":
