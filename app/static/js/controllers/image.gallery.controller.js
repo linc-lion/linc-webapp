@@ -79,14 +79,14 @@ angular.module('linc.image.gallery.controller', ['linc.image.gallery.directive']
 
   // Photo Caption
   $scope.Type_Labels = {'cv': 'CV Image', 'full-body': 'Full Body', 'whisker': 'Whisker',
-                   'main-id': 'Main Id', 'markings': 'Markings'};
+                   'main-id': 'Main Id', 'marking': 'Marking'};
   // Painel - Labels
   $scope.Filters = [{type: 'all', label: 'All'}, {type: 'cv', label: 'CV Image'},
                     {type:'full-body', label:'Full Body'}, {type:'whisker', label:'Whisker'},
-                    {type:'main-id',label:'Main Id'}, {type:'markings',label:'Markings'}];
+                    {type:'main-id',label:'Main Id'}, {type:'marking',label:'Marking'}];
   $scope.Selects = [{type: 'cv', label: 'CV Image'}, {type:'full-body', label:'Full Body'},
                     {type:'whisker', label:'Whisker'}, {type:'main-id',label:'Main Id'},
-                    {type:'markings',label:'Markings'}];
+                    {type:'marking',label:'Marking'}];
   // Label properties
   $scope.Properties = [{'name': 'Public', 'checked': true, 'value' : true},
                        {'name': 'Private', 'checked': true, 'value' : false}];

@@ -54,9 +54,9 @@ angular.module('linc.lions.controllers', [])
     }
     $scope.lion.eye_damage = LABELS(TAGS_BY_TYPE['EYE_DAMAGE'], _.intersection(TAGS, TAGS_CONST['EYE_DAMAGE']));
     $scope.lion.broken_teet = LABELS(TAGS_BY_TYPE['TEETH_BROKEN'],_.intersection(TAGS, TAGS_CONST['TEETH_BROKEN']));
-    $scope.lion.ear_markings = LABELS(TAGS_BY_TYPE['EAR_MARKINGS'],_.intersection(TAGS, TAGS_CONST['EAR_MARKINGS']));
-    $scope.lion.mouth_markings =LABELS(TAGS_BY_TYPE['MOUTH_MARKING'], _.intersection(TAGS, TAGS_CONST['MOUTH_MARKING']));
-    $scope.lion.tail_markings = LABELS(TAGS_BY_TYPE['TAIL_MARKING_MISSING_TUFT'],_.intersection(TAGS, TAGS_CONST['TAIL_MARKING_MISSING_TUFT']));
+    $scope.lion.ear_marking = LABELS(TAGS_BY_TYPE['EAR_MARKING'],_.intersection(TAGS, TAGS_CONST['EAR_MARKING']));
+    $scope.lion.mouth_marking =LABELS(TAGS_BY_TYPE['MOUTH_MARKING'], _.intersection(TAGS, TAGS_CONST['MOUTH_MARKING']));
+    $scope.lion.tail_marking = LABELS(TAGS_BY_TYPE['TAIL_MARKING_MISSING_TUFT'],_.intersection(TAGS, TAGS_CONST['TAIL_MARKING_MISSING_TUFT']));
     $scope.lion.nose_color = LABELS(TAGS_BY_TYPE['NOSE_COLOUR'],_.intersection(TAGS, TAGS_CONST['NOSE_COLOUR']));
     $scope.lion.scars = LABELS(TAGS_BY_TYPE['SCARS'],_.intersection(TAGS, TAGS_CONST['SCARS']));
   };

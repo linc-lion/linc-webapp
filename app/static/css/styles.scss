@@ -1010,3 +1010,46 @@ i.icon-border.active{background: #999 !important;}
     }
   }
 }
+
+.ui-select-match > .btn {
+  color: #333;
+}
+
+.custom-bs-select{
+
+  .show-all-button{
+    margin-left: 10px;
+  }
+  .class-all-btn{
+    margin-bottom: 5px; 
+    margin-left: 5px;
+    button{
+      margin: 3px;
+      border-radius: 3px !important;
+    }
+  }
+  .a-match-values{
+    cursor: default;
+  }
+  .nose-color{
+    padding-left: 16px;
+  }
+  li.active{
+    .select-none-btn{
+      color: white;
+    }
+  }
+  .select-none-btn{
+    color: $orange;
+    border-color: #ccc;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    padding: 2px 6px;
+    .active {
+      color: white;
+    }
+    &:hover {
+      border-color: $orange;
+    }
+  }
+}

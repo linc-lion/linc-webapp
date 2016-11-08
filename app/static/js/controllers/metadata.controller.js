@@ -21,9 +21,9 @@
 angular.module('linc.metadata.controller', ['linc.metadata.directive'])
 
 .controller('MetadataCtrl', ['$scope', '$window', 'AuthService', '$uibModal', '$uibModalInstance', '$bsTooltip', 
-  'LincServices', 'NotificationFactory', 'optionsSet', '$state', '$q', 'organizations', 'CONST_LIST', 
+  'LincServices', 'NotificationFactory', 'optionsSet', '$state', '$q', 'organizations', 'CONST_LIST', 'TAGS_CONST', 
   function ($scope, $window, AuthService, $uibModal, $uibModalInstance, $bsTooltip, LincServices, NotificationFactory, 
-  optionsSet, $state, $q, organizations, CONST_LIST) {
+  optionsSet, $state, $q, organizations, CONST_LIST, TAGS_CONST) {
 
   if(!AuthService.user) return;
   $scope.optionsSet = optionsSet;
@@ -33,9 +33,9 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
   $scope.genders = CONST_LIST['GENDERS'];
   
   $scope.tags = {
-    ear_markings : CONST_LIST['EAR_MARKING'],
-    mouth_markings : CONST_LIST['MOUTH_MARKING'],
-    tail_markings : CONST_LIST['TAIL_MARKING'],
+    ear_marking : CONST_LIST['EAR_MARKING'],
+    mouth_marking : CONST_LIST['MOUTH_MARKING'],
+    tail_marking : CONST_LIST['TAIL_MARKING'],
     eye_damage : CONST_LIST['EYE_DAMAGE'],
     nose_color : CONST_LIST['NOSE_COLOUR'],
     broken_teeth : CONST_LIST['TEETH_BROKEN'],
@@ -114,19 +114,26 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
 
   var Metadata = function() {
     var selected = $scope.selected;
-    var eye_dam = _.includes(selected.eye_damage, ["EYE_DAMAGE_LEFT", "EYE_DAMAGE_RIGHT"]) ? ["EYE_DAMAGE_BOTH"] : selected.eye_damage;
-    var ear_marks = _.includes(selected.ear_markings, ["EAR_MARKING_LEFT", "EAR_MARKING_RIGHT"]) ? ["EAR_MARKING_BOTH"] : selected.ear_markings;
-          
+
+    var eye_dam = _.includes(selected.eye_damage,'NONE') ? ['EYE_DAMAGE_NONE'] : _.intersection(selected.eye_damage,['EYE_DAMAGE_YES']);
+
+    var broken_teeth = _.includes(selected.broken_teeth,'NONE') ? ['TEETH_BROKEN_NONE'] : _.intersection(selected.broken_teeth, TAGS_CONST['TEETH_BROKEN']);
+    var ear_marking = _.includes(selected.ear_marking,'NONE') ? ['EAR_MARKING_NONE'] : (_.isEmpty(_.difference(['EAR_MARKING_LEFT','EAR_MARKING_RIGHT'], selected.ear_marking)) ? ["EAR_MARKING_BOTH"] : _.intersection(selected.ear_marking,['EAR_MARKING_LEFT','EAR_MARKING_RIGHT']));
+     
+    var mouth_marking = _.includes(selected.mouth_marking,'NONE') ? ['MOUTH_MARKING_NONE'] : _.intersection(selected.mouth_marking,['MOUTH_MARKING_YES']);
+    var tail_marking = _.includes(selected.tail_marking,'NONE') ? ['TAIL_MARKING_MISSING_TUFT_NONE'] : _.intersection(selected.tail_marking,['TAIL_MARKING_MISSING_TUFT_YES']);
+    var scars = _.includes(selected.scars,'NONE')? ['SCARS_NONE'] : _.intersection(selected.scars,TAGS_CONST['SCARS']);
+
     var concat = _([]).concat(eye_dam);
-    concat = _(concat).concat(ear_marks);
-    concat = _(concat).concat(selected.mouth_markings);
-    concat = _(concat).concat(selected.tail_markings);
-    concat = _(concat).concat(selected.broken_teeth);
+    concat = _(concat).concat(broken_teeth);
+    concat = _(concat).concat(ear_marking);
+    concat = _(concat).concat(tail_marking);
+    concat = _(concat).concat(mouth_marking);
     if(selected.nose_color != undefined)
       concat = _(concat).concat([selected.nose_color]);
-    concat = _(concat).concat(selected.scars);
+    concat = _(concat).concat(scars);
+
     var TAGS = JSON.stringify(concat.value());
-    //if(!concat.value().length) TAGS = null;
 
     if(typeof selected.latitude === 'string')
       selected.latitude = selected.latitude.replace(",",".");
@@ -270,16 +277,17 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
     var deferred = $q.defer();
     if(optionsSet.type === 'lion'){
       var id = optionsSet.data.id;
-      LincServices.SaveLion(id, data, function(results){
-        var data0 = _.merge({}, data.imageset, data.lion);
-        delete data0._xsrf;
-        if(_.has(data0, 'date_of_birth'))
-          data0.age = getAge(data0['date_of_birth']);
-        deferred.resolve({type: 'save', 'data': data0, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
-      },
-      function(error){
-        deferred.reject({'error': error, 'title': 'Error', 'message': "Unable to Save Lion's Metadata"});
-      });
+      // LincServices.SaveLion(id, data, function(results){
+      //   var data0 = _.merge({}, data.imageset, data.lion);
+      //   delete data0._xsrf;
+      //   if(_.has(data0, 'date_of_birth'))
+      //     data0.age = getAge(data0['date_of_birth']);
+      //   deferred.resolve({type: 'save', 'data': data0, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
+      // },
+      // function(error){
+      //   deferred.reject({'error': error, 'title': 'Error', 'message': "Unable to Save Lion's Metadata"});
+      // });
+      deferred.reject();
     }
     else{
       var id = optionsSet.data.id;
@@ -455,9 +463,15 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       TAGS = optionsSet.data.tags.split(",");
     }
 
-    var eye_dam = _.includes(TAGS,'EYE_DAMAGE_BOTH')? ['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT'] :  _.intersection(TAGS,['EYE_DAMAGE_LEFT', 'EYE_DAMAGE_RIGHT']);
+    var eye_dam = _.includes(TAGS,'EYE_DAMAGE_NONE') ? ['NONE'] : _.intersection(TAGS,['EYE_DAMAGE_YES']);
+    var broken_teeth = _.includes(TAGS,'TEETH_BROKEN_NONE') ? ['NONE'] : _.intersection(TAGS, TAGS_CONST['TEETH_BROKEN']);
+    var ear_marking = _.includes(TAGS,'EAR_MARKING_NONE')? ['NONE'] : (_.includes(TAGS,'EAR_MARKING_BOTH') ? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] : _.intersection(TAGS,TAGS_CONST['EAR_MARKING']));
 
-    var ear_marks = _.includes(TAGS,'EAR_MARKING_BOTH')? ['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'] :  _.intersection(TAGS,['EAR_MARKING_LEFT', 'EAR_MARKING_RIGHT'])
+
+    var mouth_marking = _.includes(TAGS,'MOUTH_MARKING_NONE') ? ['NONE'] : _.intersection(TAGS,['MOUTH_MARKING_YES']);
+    var tail_marking = _.includes(TAGS,'TAIL_MARKING_MISSING_TUFT_NONE') ? ['NONE'] : _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT_YES']);
+    var nose_color = _.intersection(TAGS, TAGS_CONST['NOSE_COLOUR'])[0];
+    var scars = _.includes(TAGS,'SCARS_NONE')? ['NONE'] : _.intersection(TAGS,TAGS_CONST['SCARS']);
 
     var date_of_birth = local_date(optionsSet.data.date_of_birth);
     var date_stamp = local_date(optionsSet.data.date_stamp);
@@ -476,12 +490,12 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       longitude: longitude,
       gender: optionsSet.data.gender,
       eye_damage: eye_dam,
-      broken_teeth: _.intersection(TAGS,['TEETH_BROKEN_CANINE_LEFT', 'TEETH_BROKEN_CANINE_RIGHT','TEETH_BROKEN_INCISOR_LEFT', 'TEETH_BROKEN_INCISOR_RIGHT']),
-      nose_color: (_.intersection(TAGS, ['NOSE_COLOUR_BLACK', 'NOSE_COLOUR_PATCHY', 'NOSE_COLOUR_PINK', 'NOSE_COLOUR_SPOTTED']))[0],
-      scars: _.intersection(TAGS, ['SCARS_BODY_LEFT', 'SCARS_BODY_RIGHT', 'SCARS_FACE', 'SCARS_TAIL']),
-      ear_markings: ear_marks,
-      mouth_markings: _.intersection(TAGS,['MOUTH_MARKING_BACK', 'MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT', 'MOUTH_MARKING_RIGHT']),
-      tail_markings:  _.intersection(TAGS,['TAIL_MARKING_MISSING_TUFT']),
+      broken_teeth: broken_teeth,
+      ear_marking: ear_marking,
+      mouth_marking: mouth_marking,
+      tail_marking: tail_marking,
+      nose_color: nose_color,
+      scars: scars,      
       notes: optionsSet.data.notes,
       //tmp
       //"isPrivate" :{'map': optionsSet.data.isPrivate.map, 'gps' : optionsSet.data.isPrivate.gps},
@@ -508,9 +522,9 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       latitude:"", 
       longitude: "", 
       gender: "",
-      ear_markings: [],
-      mouth_markings: [],
-      tail_markings: [],
+      ear_marking: [],
+      mouth_marking: [],
+      tail_marking: [],
       broken_teeth: [], 
       eye_damage: [],
       nose_color: undefined, 
