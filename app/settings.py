@@ -88,8 +88,6 @@ config['debug'] = options.debug
 config['cookie_secret'] = os.environ.get('COOKIE_SECRET','c84b706bc36363217b2cdf0e615e41c186c5e0cfc6869a078e7243e9affc8e87')
 config['xsrf_cookies'] = True
 config['app_path'] = appdir
-config['default_handler_class'] = ErrorHandler
-config['default_handler_args'] = dict(status_code=404)
 config['version'] = 'LINC webapp version v1.0.0-20160117'
 config['static_path'] = os.path.join(appdir, "static")
 config['template_path'] = os.path.join(appdir, "templates")
@@ -100,11 +98,11 @@ config['scheduler'] = TornadoScheduler()
 config['scheduler'].start()
 
 # Setting URL
-appurl = "https://linc-website.herokuapp.com/"
-#appurl = 'http://localhost:5080'
+#appurl = "https://linc-website.herokuapp.com/"
+appurl = 'http://localhost:5080'
 config['url'] = appurl
 
 # Setting linc-api URL
-config['API_URL'] = 'https://linc-api.herokuapp.com'
+#config['API_URL'] = 'https://linc-api.herokuapp.com'
 # for development purpose
-#config['API_URL'] = 'http://192.168.100.10:5000'
+config['API_URL'] = 'http://192.168.100.10:5050'

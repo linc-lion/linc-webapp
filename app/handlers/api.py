@@ -530,7 +530,7 @@ class ImagesHandler(BaseHandler):
                     self.write(f.read())
                 self.finish()
             else:
-                self.dropError(500,'fail to get urls to download the images')
+                self.response(500,'fail to get urls to download the images')
                 return
         else:
             resource_url = '/images/' + image_id
@@ -615,15 +615,15 @@ class ImagesUploadHandler(BaseHandler, ProcessMixin):
                 response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                               method='POST',body=self.json_encode(body),headers=headers)
                 if response.code in [200,201]:
-                    self.setSuccess(200,'File successfully uploaded. You must wait the processing phase for your image.')
+                    self.response(200,'File successfully uploaded. You must wait the processing phase for your image.')
                 elif response.code == 409:
-                    self.dropError(response.code,'The file already exists in the system.')
+                    self.response(409,'The file already exists in the system.')
                 elif response.code == 400:
-                    self.dropError(response.code,'The data or file sent is invalid to add the image in the system.')
+                    self.response(400,'The data or file sent is invalid to add the image in the system.')
                 else:
-                    self.dropError(500,'Fail to upload image')
+                    self.response(500,'Fail to upload image.')
         else:
-            self.dropError(400,'Please send a file to upload.')
+            self.response(400,'Please send a file to upload.')
 
 def remove_file(sched,fn,jid):
     remove(fn)
