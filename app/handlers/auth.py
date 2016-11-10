@@ -54,12 +54,12 @@ class CheckAuthHandler(BaseHandler):
                        'password':password}
                 self.set_secure_cookie("userlogin",dumps(obj))
                 del obj['password']
-                self.setSuccess(200,'User has a new token login in API',obj)
+                self.response(200,'User has a new token login in API.',obj)
                 return
         elif response.code == 200:
-            self.setSuccess(200,'Token valid for the current user.')
+            self.response(200,'Token valid for the current user.')
             return
-        self.dropError(401,'Fail to get User Authentication')
+        self.response(401,'Fail to get user authentication.')
 
 class LoginHandler(BaseHandler):
     @asynchronous
@@ -86,11 +86,11 @@ class LoginHandler(BaseHandler):
                 self.set_secure_cookie("userlogin",dumps(obj))
                 del obj['password']
                 # this will be acquired with the api
-                self.setSuccess(200,'You are now logged in the website.',obj)
+                self.response(200,'You are now logged in the website.',obj)
             else:
-                self.dropError(500,'Fail to authenticate with API.')
+                self.response(500,'Fail to authenticate with API.')
         else:
-            self.dropError(401,'Invalid request, you must provide username and password to login.')
+            self.response(401,'Invalid request, you must provide username and password to login.')
 
 class LogoutHandler(BaseHandler):
     @asynchronous
@@ -104,6 +104,6 @@ class LogoutHandler(BaseHandler):
         response = yield Task(self.api,url=url,method='POST',body='{}',headers=headers)
         if response and response.code == 200:
             self.clear_cookie("userlogin")
-            self.setSuccess(200,'Logout ok.')
+            self.response(200,'Logout ok.')
         else:
-            self.dropError(500,'Fail to logout.')
+            self.response(500,'Fail to logout.')
