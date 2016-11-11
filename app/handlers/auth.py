@@ -25,6 +25,7 @@ from lib.authentication import web_authenticated
 from tornado.gen import engine,Task
 from handlers.base import BaseHandler
 from json import dumps,loads
+from logging import info
 
 class CheckAuthHandler(BaseHandler):
     @asynchronous
@@ -44,7 +45,7 @@ class CheckAuthHandler(BaseHandler):
             url = self.settings['API_URL']+resource_url
             response = yield Task(self.api,url=url,method='POST',body=self.json_encode(body))
             if response and response.code == 200:
-                data = loads(response.body)
+                data = loads(response.body.decode('utf-8'))['data']
                 obj = {'username' : username,
                        'orgname' : data['orgname'],
                        'admin' : (data['role']=='admin'),
@@ -75,7 +76,7 @@ class LoginHandler(BaseHandler):
             url = self.settings['API_URL']+resource_url
             response = yield Task(self.api,url=url,method='POST',body=self.json_encode(body))
             if response and response.code == 200:
-                data = loads(response.body)
+                data = loads(response.body.decode('utf-8'))['data']
                 obj = {'username' : username,
                        'orgname' : data['orgname'],
                        'admin' : (data['role']=='admin'),
