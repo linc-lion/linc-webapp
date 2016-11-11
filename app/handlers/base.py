@@ -35,7 +35,7 @@ class BaseHandler(RequestHandler):
     def get_current_user(self):
         cookieinfo = self.get_secure_cookie("userlogin")
         if cookieinfo:
-            cookieinfo = loads(cookieinfo)
+            cookieinfo = loads(cookieinfo.decode('utf-8'))
         return cookieinfo
 
     def prepare(self):
@@ -58,7 +58,7 @@ class BaseHandler(RequestHandler):
         http_client = AsyncHTTPClient()
         dictheaders = {"content-type": "application/json"}
         if headers:
-            for k,v in headers.iteritems():
+            for k,v in headers.items():
                 dictheaders[k] = v
         h = HTTPHeaders(dictheaders)
         params={
