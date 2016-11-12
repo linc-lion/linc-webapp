@@ -34,8 +34,8 @@ angular.module('linc.controllers', ['linc.admin.controller',
                                     'linc.notification.factory',
                                     'linc.data.factory' ])
 
-.controller('BodyCtrl', ['$scope', '$state', '$interval', '$timeout', '$uibModal', 'AuthService', 
-  function ($scope, $state, $interval, $timeout, $uibModal, AuthService){
+.controller('BodyCtrl', ['$scope', '$state', '$interval', '$timeout', '$uibModal', 'AuthService', 'NotificationFactory',
+  function ($scope, $state, $interval, $timeout, $uibModal, AuthService, NotificationFactory){
 
     $scope.bodyClasses = 'default';
     $scope.debug = false;
@@ -80,28 +80,29 @@ angular.module('linc.controllers', ['linc.admin.controller',
       });
       modalInstance.result.then(function (result) {
         modalScope.dataSending = false;
+        ShowInfo();
       }, function(error){
         modalScope.dataSending = false;
       });
+
       modalScope.changePassword = function (valid){
         if(valid){
           modalScope.dataSending = true;
           var data = {
-            'method': 'put', 
             'user_id' : modalScope.user.id, 
-            'data': {'password': modalScope.user.email.password}
+            'data': {'password': modalScope.user.password.password}
           };
-          $scope.LincApiServices.Users(data).then(function(response){
-            $scope.Notification.success({
-              title: 'Change Password', message: 'Password of '+ $scope.sel_user.email +' successfully updated',
-              position: "right", // right, left, center
-              duration: 2000     // milisecond
-            });
+          AuthService.ChangePassword(data).then(function(response){
+            // NotificationFactory.success({
+            //   title: 'Change Password', message: 'Password of '+ modalScope.user.email +' successfully updated',
+            //   position: "right", // right, left, center
+            //   duration: 2000     // milisecond
+            // });
             modalInstance.close();
           },
           function(error){
-            $scope.Notification.error({
-              title: "Fail", message: 'Fail to change User Password',
+            NotificationFactory.error({
+              title: "Fail", message: 'Fail to change Password',
               position: 'right', // right, left, center
               duration: 5000   // milisecond
             });
@@ -114,6 +115,34 @@ angular.module('linc.controllers', ['linc.admin.controller',
       }
       modalScope.cancel = function(){
         modalInstance.dismiss();
+      }
+    };
+    var ShowInfo = function (){
+      var modalScope = $scope.$new();
+      modalScope.modalTitle = 'Password';
+      modalScope.modalMessage = "Password has been changed.\n" +
+        "The current session will be closed and you need login with the new password.";
+      var modalInstance = $uibModal.open({
+          templateUrl: 'PwdChanged.tmpl.html',
+          scope: modalScope,
+          size: '350px',
+          backdrop  : 'static',
+      });
+      modalInstance.result.then(function (result) {
+        AuthService.Logout(function(result){
+          $state.go("login");
+          NotificationFactory.success({
+            title: "Logout", message:'Good bye.',
+            position: "right", // right, left, center
+            duration: 3000     // milisecond
+          });
+        }, function(){
+          $state.go("login");
+        });
+      }, function(error){
+      });
+      modalScope.close = function (){
+        modalInstance.close();
       }
     }
   }
