@@ -88,12 +88,6 @@ class BaseHandler(RequestHandler):
             response = e
         callback(response)
 
-    # def setSuccess(self,code=200,message="",data=None):
-    #     output_response = {'status':'success','message':message}
-    #     if data:
-    #         output_response['data'] = loads(self.json_encode(data))
-    #     self.set_status(code)
-    #     self.finish(output_response)
     def response(self,code,message="",data=None,headers=None):
         output_response = {'status':None,'message':message}
         if data:
@@ -110,7 +104,8 @@ class BaseHandler(RequestHandler):
             for k,v in headers.items():
                 self.add_header(k,v)
         self.set_status(code)
-        self.finish(output_response)
+        self.write(self.json_encode(output_response))
+        self.finish()
 
     def sanitizestr(self,strs):
         txt = "%s%s" % (string.ascii_letters, string.digits)
