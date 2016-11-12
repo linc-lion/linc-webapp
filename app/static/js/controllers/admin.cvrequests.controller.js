@@ -92,7 +92,7 @@ angular.module('linc.admin.cvrequests.controller', [])
 
     modalScope.showValidationMessages = false;
     modalScope.dataSending = false;
-
+    modalScope.rows = 8;
     modalScope.edit = {'server_uuid': false, 'request_body': false};
 
     modalScope.organizations = angular.copy($scope.$parent.organizations);
@@ -170,6 +170,7 @@ angular.module('linc.admin.cvrequests.controller', [])
 
       modalScope.showValidationMessages = false;
       modalScope.dataSending = false;
+      modalScope.rows = 16;
 
       modalScope.edit = {'server_uuid': false, 'request_body': false};
 

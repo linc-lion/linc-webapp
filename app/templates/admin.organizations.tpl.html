@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
 <script type="text/ng-template" id="Edit_Organization.tmpl.html">
-  <form name="form" ng-submit="submit(form.$valid)">
+  <form name="form" ng-submit="submit(form.$valid)" class="font-homenaje">
     <div class="modal-header" ng-show="modalTitle">
       <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
     </div>
@@ -91,6 +91,6 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <td class="text-center">{{!org.created_at}}</td>
         <td class="text-center">{{!org.updated_at}}</td>
       </tr>
-    </body>
+    </tbody>
   </table>
 </div>

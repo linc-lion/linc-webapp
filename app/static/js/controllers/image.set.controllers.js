@@ -123,11 +123,31 @@ angular.module('linc.image.set.controllers', [])
     $scope.imageset.tail_marking = LABELS(TAGS_BY_TYPE['TAIL_MARKING_MISSING_TUFT'],_.intersection(TAGS, TAGS_CONST['TAIL_MARKING_MISSING_TUFT']));
     $scope.imageset.nose_color = LABELS(TAGS_BY_TYPE['NOSE_COLOUR'],_.intersection(TAGS, TAGS_CONST['NOSE_COLOUR']));
     $scope.imageset.scars = LABELS(TAGS_BY_TYPE['SCARS'],_.intersection(TAGS, TAGS_CONST['SCARS']));
-  };
-  Set_Tags();
 
-  // Metadata Options
-  $scope.metadata_options = { type: 'imageset', edit: 'edit', data: $scope.imageset};
+    // Image Gallery
+    $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.id};
+    // Location History
+    var label = 'Image Set ' + $scope.imageset.id;
+    var date = (new Date($scope.imageset.updated_at)).toLocaleDateString();
+    $scope.location_options = { 
+      type: 'imageset', 
+      id: $scope.imageset.id,
+      is_primary: $scope.imageset.is_primary, 
+      lion_id: $scope.imageset.lion_id, 
+      history: { 
+        count: 1,
+        locations: [{
+          'id': $scope.imageset.id, 'label': label, 'updated_at': date, 
+          'longitude': $scope.imageset.longitude, 'latitude': $scope.imageset.latitude 
+        }]
+      }
+    };
+    // Metadata Options
+    $scope.metadata_options = { type: 'imageset', edit: 'edit', data: $scope.imageset};
+
+    $scope.imageset.date_of_birth = date_format($scope.imageset.date_of_birth);
+  };
+
   // Updated in Metadata
   $scope.update_imageset = function (data){
     _.merge($scope.imageset, $scope.imageset, data);
@@ -138,45 +158,33 @@ angular.module('linc.image.set.controllers', [])
   $scope.goto_lion = function (id){
     $state.go("lion", {'id': id});
   }
-  // Image Gallery
-  $scope.gallery_options = { type: 'imageset', edit: 'edit', id: $scope.imageset.id};
-  // Location History
-  var label = 'Image Set ' + $scope.imageset.id;
-  var date = (new Date($scope.imageset.updated_at)).toLocaleDateString();
-  $scope.location_options = { 
-    type: 'imageset', 
-    id: $scope.imageset.id,
-    is_primary: $scope.imageset.is_primary, 
-    lion_id: $scope.imageset.lion_id, 
-    history: { 
-      count: 1,
-      locations: [{
-        'id': $scope.imageset.id, 'label': label, 'updated_at': date, 
-        'longitude': $scope.imageset.longitude, 'latitude': $scope.imageset.latitude 
-      }]
-    }
-  };
 
   $scope.location_goto = function (imageset_id){
     $state.go("imageset", {id: imageset_id});
   }
 
   $scope.Delete = function (){
-    $scope.modalTitle = 'Delete Image Set';
-    $scope.modalMessage = 'Are you sure you want to delete the Image Set?';
-    $scope.SucessMessage = 'Lions was successfully deleted.';
-    $scope.ErrorMessage = 'Unable to delete this Image Set.';
-    $scope.modalContent = 'Form';
-    $scope.modalInstance = $uibModal.open({
+
+    var modalScope = $scope.$new();
+    modalScope.title = 'Delete Image Set';
+    modalScope.message = 'Are you sure you want to delete the Image Set?';
+    var message = {
+      Sucess:'Lions was successfully deleted.',
+      Error: 'Unable to delete this Image Set.'
+    };
+    
+    var modalInstance = $uibModal.open({
         templateUrl: 'Dialog.Delete.tmpl.html',
-        scope:$scope
+        scope: modalScope
     });
-    $scope.modalInstance.result.then(function (result) {
+
+    modalInstance.result.then(function (result) {
       LincServices.DeleteImageSet($scope.imageset.id, function(results){
         NotificationFactory.success({
-          title: $scope.modalTitle, message: $scope.SucessMessage,
-          position: "right", // right, left, center
-          duration: 2000     // milisecond
+          title: modalScope.title, 
+          message: message.Sucess,
+          position: "right",
+          duration: 2000
         });
         $rootScope.remove_history('imageset', $scope.imageset.id);
         $state.go("searchimageset");
@@ -184,20 +192,21 @@ angular.module('linc.image.set.controllers', [])
       function(error){
         if($scope.debug || (error.status != 401 && error.status != 403)){
           NotificationFactory.error({
-            title: "Fail: " + $scope.modalTitle, message: $scope.ErrorMessage,
-            position: 'right', // right, left, center
-            duration: 5000   // milisecond
+            title: "Fail: " + modalScope.title, 
+            message: message.Error,
+            position: 'right',
+            duration: 5000
           });
         }
       });
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });
-    $scope.ok = function (){
-      $scope.modalInstance.close();
+    modalScope.ok = function (){
+      modalInstance.close();
     }
-    $scope.cancel = function(){
-      $scope.modalInstance.dismiss();
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
     }
   };
 
@@ -253,6 +262,7 @@ angular.module('linc.image.set.controllers', [])
       return data;
     }
   }
+
   $scope.UpdateImageset = function(data, ImagesetId){
     var change = {'name': data.name, 'lion_id': data.lion_id,
     'is_verified': data.is_verified, 'lions_org_id': data.lions_org_id};
@@ -309,7 +319,8 @@ angular.module('linc.image.set.controllers', [])
     });
   };
 
-  $scope.imageset.date_of_birth = date_format($scope.imageset.date_of_birth);
+  Set_Tags();
+
 }])
 
 .controller('SearchImageSetCtrl', ['$scope', '$timeout', '$interval', '$uibModal', '$stateParams', '$bsTooltip', 'NotificationFactory', 

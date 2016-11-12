@@ -80,7 +80,7 @@ angular.module('linc.controllers', ['linc.admin.controller',
       });
       modalInstance.result.then(function (result) {
         modalScope.dataSending = false;
-        ShowInfo();
+        //ShowInfo();
       }, function(error){
         modalScope.dataSending = false;
       });
@@ -93,11 +93,11 @@ angular.module('linc.controllers', ['linc.admin.controller',
             'data': {'password': modalScope.user.password.password}
           };
           AuthService.ChangePassword(data).then(function(response){
-            // NotificationFactory.success({
-            //   title: 'Change Password', message: 'Password of '+ modalScope.user.email +' successfully updated',
-            //   position: "right", // right, left, center
-            //   duration: 2000     // milisecond
-            // });
+            NotificationFactory.success({
+              title: 'Change Password', message: 'Password of '+ modalScope.user.email +' successfully updated',
+              position: "right", // right, left, center
+              duration: 5000     // milisecond
+            });
             modalInstance.close();
           },
           function(error){
@@ -117,34 +117,34 @@ angular.module('linc.controllers', ['linc.admin.controller',
         modalInstance.dismiss();
       }
     };
-    var ShowInfo = function (){
-      var modalScope = $scope.$new();
-      modalScope.modalTitle = 'Password';
-      modalScope.modalMessage = "Password has been changed.\n" +
-        "The current session will be closed and you need login with the new password.";
-      var modalInstance = $uibModal.open({
-          templateUrl: 'PwdChanged.tmpl.html',
-          scope: modalScope,
-          size: '350px',
-          backdrop  : 'static',
-      });
-      modalInstance.result.then(function (result) {
-        AuthService.Logout(function(result){
-          $state.go("login");
-          NotificationFactory.success({
-            title: "Logout", message:'Good bye.',
-            position: "right", // right, left, center
-            duration: 3000     // milisecond
-          });
-        }, function(){
-          $state.go("login");
-        });
-      }, function(error){
-      });
-      modalScope.close = function (){
-        modalInstance.close();
-      }
-    }
+    // var ShowInfo = function (){
+    //   var modalScope = $scope.$new();
+    //   modalScope.modalTitle = 'Password';
+    //   modalScope.modalMessage = "Password has been changed.\n" +
+    //     "The current session will be closed and you need login with the new password.";
+    //   var modalInstance = $uibModal.open({
+    //       templateUrl: 'PwdChanged.tmpl.html',
+    //       scope: modalScope,
+    //       size: '350px',
+    //       backdrop  : 'static',
+    //   });
+    //   modalInstance.result.then(function (result) {
+    //     AuthService.Logout(function(result){
+    //       $state.go("login");
+    //       NotificationFactory.success({
+    //         title: "Logout", message:'Good bye.',
+    //         position: "right", // right, left, center
+    //         duration: 3000     // milisecond
+    //       });
+    //     }, function(){
+    //       $state.go("login");
+    //     });
+    //   }, function(error){
+    //   });
+    //   modalScope.close = function (){
+    //     modalInstance.close();
+    //   }
+    // }
   }
 ])
 

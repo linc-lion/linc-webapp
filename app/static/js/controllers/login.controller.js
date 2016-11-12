@@ -96,10 +96,15 @@ angular.module('linc.login.controller', [])
             modalInstance.close(modalScope.forgot);
           },
           function(error){
+            modalScope.dataSending = false;
+            var title = "Error";
+            if(error.status == 404)
+              title = "Not Found";
+            var message = error.data.message;
             NotificationFactory.error({
-              title: "Fail", message: 'Fail to change User Password',
-              position: 'right',
-              duration: 5000 
+              title: title, message: message,
+              position: 'right', // right, left, center
+              duration: 5000   // milisecond
             });
           });
         }

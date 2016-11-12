@@ -36,28 +36,32 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         </div>
       </script>
       <script type="text/ng-template" id="Dialog.Delete.tmpl.html">
-        <div class="modal-header" ng-show="modalTitle">
-          <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
-        </div>
-        <div class="modal-body" ng-bind-html="modalMessage">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" ng-click="ok()">OK</button>
-          <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-        </div>
-      </script>
-      <script type="text/ng-template" id="PwdChanged.tmpl.html">
-        <div class="modal-header" ng-show="modalTitle">
-          <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
-        </div>
-        <div class="modal-body break-paragraph" ng-bind-html="modalMessage">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" ng-click="close()">Close</button>
+        <div name="DialogDelete" class="font-homenaje">
+          <div class="modal-header" ng-show="title">
+            <h4 class="modal-title" ng-bind-html="title"></h4>
+          </div>
+          <div class="modal-body" ng-bind-html="message">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ng-click="ok()">OK</button>
+            <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+          </div>
         </div>
       </script>
+      <!-- <script type="text/ng-template" id="PwdChanged.tmpl.html">
+        <div name="PwdChanged" class="font-homenaje">
+          <div class="modal-header" ng-show="modalTitle">
+            <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
+          </div>
+          <div class="modal-body break-paragraph" ng-bind-html="modalMessage">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ng-click="close()">Close</button>
+          </div>
+        </div>
+      </script> -->
       <script type="text/ng-template" id="ChangePwd.tmpl.html">
-        <form name="form" ng-submit="changePassword(form.$valid)">
+        <form name="form" ng-submit="changePassword(form.$valid)" class="font-homenaje">
           <div class="modal-header" ng-show="modalTitle">
             <button type="button" class="close" ng-click="cancel()">&times;</button>
             <h1 class="modal-title forgot-title" ng-bind-html="modalTitle"></h1>
@@ -104,9 +108,9 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <ul tabindex="-1" class="select dropdown-menu custom-bs-select" ng-show="$isVisible()" role="select">
           <li ng-if="$showAllNoneButtons" class="show-all-button">
             <div class="btn-group class-all-btn">
-              <button ng-show="$showAllButton" type="button" class="btn btn-default btn-xs" style="font-size: 14px;" ng-click="$selectAll()">{{!$allText}}</button> 
-              <button ng-show="$showNoneButton" type="button" class="btn btn-default btn-xs text-right" style="font-size: 14px;" ng-click="$selectNone()">{{!$noneText}}</button>
-              <button ng-show="$showUnknownButton" type="button" class="btn btn-default btn-xs text-right" style="font-size: 14px;" ng-click="$selectUnknown()">{{!$unknownText}}</button>
+              <button ng-show="$showAllButton" type="button" class="btn btn-default btn-xs" ng-click="$selectAll()">{{!$allText}}</button> 
+              <button ng-show="$showNoneButton" type="button" class="btn btn-default btn-xs text-right" ng-click="$selectNone()">{{!$noneText}}</button>
+              <button ng-show="$showUnknownButton" type="button" class="btn btn-default btn-xs text-right" ng-click="$selectUnknown()">{{!$unknownText}}</button>
             </div>
           </li>
           <li role="presentation" ng-repeat="match in $matches" ng-class="{active: $isActive($index)}">
@@ -142,7 +146,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         </div>
       </nav>
       <div id="main">
-        <div ui-view></div>
+        <div ui-view class="font-homenaje"></div>
       </div>
 
   {% end %}
