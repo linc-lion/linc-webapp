@@ -66,12 +66,34 @@ angular.module('linc.auth.services', [])
 
   authService.resetPassword = function(data){
     var deferred = $q.defer();
-    var req = { method: 'POST',
-                url: '/auth/recover',
-                data: data['data'],
-                headers: {'Content-Type': 'application/json', 'X-XSRFToken' : data['_xsrf']},
-                config: {}
-              };
+    var xsrfcookie = $cookies.get('_xsrf');
+    var req = { 
+      method: 'POST',
+        url: '/auth/recover',
+        data: data,
+        headers: {'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie},
+        //'X-XSRFToken' : data['_xsrf']},
+        config: {}
+      };
+    $http(req).then(function(response){
+      deferred.resolve(response.data);
+    },function(err){
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  }
+  authService.ChangePassword = function(data){
+    var deferred = $q.defer();
+    var xsrfcookie = $cookies.get('_xsrf');
+    var url = '/users/' + data['user_id'];
+    var req = { 
+      method: 'PUT', 
+      url: url, 
+      data: data['data'],
+      headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, 
+      config: {}
+    };
+
     $http(req).then(function(response){
       deferred.resolve(response.data);
     },function(err){

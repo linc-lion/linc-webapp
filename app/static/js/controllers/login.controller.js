@@ -71,7 +71,7 @@ angular.module('linc.login.controller', [])
       modalScope.dataSending = false;
       modalScope.modalTitle = 'Reset your password?';
       modalScope.showValidationMessages = false;
-      modalScope.forgot = {username: ''};
+      modalScope.forgot = {username: $scope.loginData.username};
 
       var modalInstance = $uibModal.open({
         templateUrl: 'ForgetPwd.tmpl.html',
@@ -85,8 +85,9 @@ angular.module('linc.login.controller', [])
       modalScope.resetPassword = function (valid){
         if(valid){
           modalScope.dataSending = true;
-          AuthService.resetPassword({'data': {'email': modalScope.forgot.username}, '_xsrf': $scope.loginData._xsrf})
+          AuthService.resetPassword({'email': modalScope.forgot.username})
           .then(function(response){
+            $scope.loginData.username = modalScope.forgot.username;
             // NotificationFactory.success({
             //   title: 'Change Password', message: 'Password of '+ modalScope.forgot.username +' successfully updated',
             //   position: "right", 
