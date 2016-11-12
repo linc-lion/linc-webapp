@@ -245,8 +245,9 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
           tags: TAGS, 
           notes: selected.notes
         };
-        sel_data.lion_id = $scope.new_lion.selected != undefined ? $scope.new_lion.selected.id : null;
-        sel_data.name = $scope.new_lion.selected != undefined ? $scope.new_lion.selected.name : '-';
+
+        sel_data.lion_id = selected.lion_id ? selected.lion_id : ($scope.new_lion.selected == undefined ? null : $scope.new_lion.selected.id);     
+        sel_data.name = selected.lion_id ? selected.name : ($scope.new_lion.selected == undefined ? '-' : $scope.new_lion.selected.name);
 
         var imageset_data = _.reduce(sel_data, function(result, n, key) {
           if (sel_data[key] != original_data[key]) {

@@ -39,17 +39,33 @@ For more information or to contact visit linclion.org or email tech@linclion.org
   <h4 class="modal-title" ng-bind-html="title"></h4>
 </div>
 <div class="modal-body" ng-show="content">
-  <div class="row">
-    <div ng-show="show" class="col-sm-3 text-center">
+  <div ng-if="show" class="row">
+    <div class="col-sm-3 text-center">
       <div class="list-group">
         <div class="form-group" ng-repeat="location in locations" >
-          <button ng-class="{'btn btn-default': !location.selected, 'btn btn-warning': location.selected}" ng-model="location.selected" ng-click="animate(location)" ng-dblclick="open_imageset(location.id)">{{!location.label}} - <span class="badge">{{!location.updated_at}}</span>
+          <button ng-class="{'btn btn-default': !location.selected, 'btn btn-warning': location.selected}" ng-model="location.selected" ng-click="animate(location)" ng-dblclick="open_imageset(location.id)">{{!location.label}} - <span class="badge">{{!location.date_stamp}}</span>
           </button>
         </div>
       </div>
     </div>
-    <div class="map-container" ng-class="{'col-sm-9 ': show, 'col-sm-12': !isLion}">
+    <div class="map-container col-sm-9">
       <map scale-control="true"></map>
     </div>
+  </div>
+  <!-- <div class="row">
+    <div ng-show="show" class="col-sm-3 text-center">
+      <div class="list-group">
+        <div class="form-group" ng-repeat="location in locations" >
+          <button ng-class="{'btn btn-default': !location.selected, 'btn btn-warning': location.selected}" ng-model="location.selected" ng-click="animate(location)" ng-dblclick="open_imageset(location.id)">{{!location.label}} - <span class="badge">{{!location.date_stamp}}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="map-container" ng-class="{'col-sm-9 ': show, 'col-sm-12': !show}">
+      <map scale-control="true"></map>
+    </div>
+  </div> -->
+  <div ng-if="!show" class="map-container" style="width: 70%">
+    <map scale-control="true"></map>
   </div>
 </div>

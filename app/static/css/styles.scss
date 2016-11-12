@@ -966,24 +966,24 @@ i.icon-border.active{background: #999 !important;}
   .dead-icon{
     position: relative;
     top: 2px;
-    background-image: url(/static/icons/dead-tombstone.png);
-    background-size: 24px 24px;
+    background-image: url(/static/icons/rip.png);
+    background-size: 36px 36px;
     background-repeat: no-repeat;
-    padding: 10px 0px 0px 26px;
+    padding: 14px 0px 0px 36px;
     margin: 0px 6px;
-    font-size: 14px;
+    font-size: 18px;
   }
 }
 
 .search-icon-dead{
   position: relative;
   top: 2px;
-  background-image: url(/static/icons/dead-tombstone.png);
-  background-size: 16px 16px;
+  background-image: url(/static/icons/rip.png);
+  background-size: 30px 30px;
   background-repeat: no-repeat;
-  padding: 0px 0px 0px 16px;
+  padding: 6px 0px 0px 30px;
   margin: 0px 6px;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .ui-select-class{
@@ -1052,4 +1052,21 @@ i.icon-border.active{background: #999 !important;}
       border-color: $orange;
     }
   }
+}
+
+.show_markerlabel{
+  color: black;
+  background-color: #c6cbcc;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  width: auto;
+  padding: 2px 2px 2px 2px;
+  border-radius:5px;
+  border: 1px solid black;
+  white-space: nowrap;
+}
+.hide_markerlabel{
+  display: none !important;
 }

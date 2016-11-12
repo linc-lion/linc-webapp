@@ -18,7 +18,8 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 angular.module('linc.auth.services', [])
 
-.factory('AuthService', ['$http', '$localStorage', '$cookies', function ($http, $localStorage, $cookies) {
+.factory('AuthService', ['$http', '$q', '$localStorage', '$cookies', 
+  function ($http, $q, $localStorage, $cookies) {
   var authService = {'user': $localStorage.user};
 
   authService.Login = function (data, success, error){
@@ -63,6 +64,21 @@ angular.module('linc.auth.services', [])
     });
   };
 
+  authService.resetPassword = function(data){
+    var deferred = $q.defer();
+    var req = { method: 'POST',
+                url: '/auth/recover',
+                data: data['data'],
+                headers: {'Content-Type': 'application/json', 'X-XSRFToken' : data['_xsrf']},
+                config: {}
+              };
+    $http(req).then(function(response){
+      deferred.resolve(response.data);
+    },function(err){
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  }
   authService.isAuthenticated = function(){
     var user = authService.user;
     if(user==undefined || !user.logged)
