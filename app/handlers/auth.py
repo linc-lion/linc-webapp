@@ -21,6 +21,7 @@
 # For more information or to contact visit linclion.org or email tech@linclion.org
 
 from tornado.web import asynchronous
+from tornado.gen import coroutine
 from lib.authentication import web_authenticated
 from tornado.gen import engine,Task
 from handlers.base import BaseHandler
@@ -108,3 +109,21 @@ class LogoutHandler(BaseHandler):
             self.response(200,'Logout ok.')
         else:
             self.response(500,'Fail to logout.')
+
+
+class ResetPassword(BaseHandler):
+    @asynchronous
+    @coroutine
+    def post(self):
+        if 'email' in self.input_data.keys():
+            print('aqui')
+            url = self.settings['API_URL']+'/auth/recover'
+            body = {'email': self.input_data['email']}
+
+            response = yield Task(self.api,url=url,method='POST',body=self.json_encode(body))
+
+            self.set_status(response.code)
+            self.finish(response.body)
+
+        else:
+            self.response(400,'An email is required to restart user\'s passwords.')

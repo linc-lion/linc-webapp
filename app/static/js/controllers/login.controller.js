@@ -85,23 +85,22 @@ angular.module('linc.login.controller', [])
       modalScope.resetPassword = function (valid){
         if(valid){
           modalScope.dataSending = true;
-          $timeout(function() {
+          AuthService.resetPassword({'data': {'email': modalScope.forgot.username}, '_xsrf': $scope.loginData._xsrf})
+          .then(function(response){
+            // NotificationFactory.success({
+            //   title: 'Change Password', message: 'Password of '+ modalScope.forgot.username +' successfully updated',
+            //   position: "right", 
+            //   duration: 2000 
+            // });
             modalInstance.close(modalScope.forgot);
-          }, 2000);
-          // $scope.LincApiServices.Users({'method': 'put', 'user_id' : $scope.sel_user.id, 'data': data}).then(function(response){
-          //   $scope.Notification.success({
-          //     title: 'Change Password', message: 'Password of '+ $scope.sel_user.email +' successfully updated',
-          //     position: "right", // right, left, center
-          //     duration: 2000     // milisecond
-          //   });
-          // },
-          // function(error){
-          //   $scope.Notification.error({
-          //     title: "Fail", message: 'Fail to change User Password',
-          //     position: 'right', // right, left, center
-          //     duration: 5000   // milisecond
-          //   });
-          // });
+          },
+          function(error){
+            NotificationFactory.error({
+              title: "Fail", message: 'Fail to change User Password',
+              position: 'right',
+              duration: 5000 
+            });
+          });
         }
         else {
           modalScope.showValidationMessages = true;
