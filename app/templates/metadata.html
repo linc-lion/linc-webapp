@@ -17,17 +17,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
 <script type="text/ng-template" id="Warning.tmpl.html">
-  <div class="modal-header" ng-show="modalTitle">
-    <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
-  </div>
-  <div class="modal-body" ng-bind-html="modalMessage">
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-    <button type="button" class="btn btn-primary" ng-click="ok()">OK</button>
+  <div name="Warning" class="font-homenaje">
+    <div class="modal-header" ng-show="modalTitle">
+      <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
+    </div>
+    <div class="modal-body" ng-bind-html="modalMessage">
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+      <button type="button" class="btn btn-primary" ng-click="ok()">OK</button>
+    </div>
   </div>
 </script>
-<form name="metadataForm">
+<form name="metadataForm" class="font-homenaje">
   <div class="modal-header" ng-show="title">
     <button type="button" class="close" ng-click="Cancel()">&times;</button>
     <h3 class="modal-title" ng-bind-html="title"></h3>
@@ -119,7 +121,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
                 <div ng-if="selected.lion_id === null">
                   <div ng-if="select_new_lion.show" class="form-group group-input">
                     <label class="meta_label" for="lion_name">Lion:</label>
-                    <ui-select class="lion-ui-select" ng-model="new_lion.selected" theme="bootstrap">
+                    <ui-select class="lion-ui-select custom-select" ng-model="new_lion.selected" theme="bootstrap">
                       <ui-select-match placeholder="Select a Lion...">
                         <span ng-bind="$select.selected.label"></span>
                       </ui-select-match>

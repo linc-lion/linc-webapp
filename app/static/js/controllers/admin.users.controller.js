@@ -340,9 +340,9 @@ angular.module('linc.admin.users.controller', [])
           .then(function(response){
               $scope.Notification.success({
               title: 'Change Password', 
-              message: 'Password of '+ modalScope.sel_user.email +' successfully updated',
+              message: modalScope.sel_user.email + "'s password successfully updated",
               position: "right",
-              duration: 2000
+              duration: 4000
             });
             modalInstance.close();
           },

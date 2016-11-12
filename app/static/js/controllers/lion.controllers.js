@@ -59,20 +59,22 @@ angular.module('linc.lions.controllers', [])
     $scope.lion.tail_marking = LABELS(TAGS_BY_TYPE['TAIL_MARKING_MISSING_TUFT'],_.intersection(TAGS, TAGS_CONST['TAIL_MARKING_MISSING_TUFT']));
     $scope.lion.nose_color = LABELS(TAGS_BY_TYPE['NOSE_COLOUR'],_.intersection(TAGS, TAGS_CONST['NOSE_COLOUR']));
     $scope.lion.scars = LABELS(TAGS_BY_TYPE['SCARS'],_.intersection(TAGS, TAGS_CONST['SCARS']));
+    // Metadata Options
+    $scope.metadata_options = { type: 'lion', edit: 'edit', data: $scope.lion};
+    // Image Gallery
+    $scope.gallery_options = { type: 'lion', edit: 'edit', id: $scope.lion.primary_image_set_id};
+    // Location History
+    $scope.location_options = { type: 'lion', lion_id: $scope.lion.id};
+
+    $scope.lion.date_of_birth = date_format($scope.lion.date_of_birth);
   };
-  Set_Tags();
-  // Metadata Options
-  $scope.metadata_options = { type: 'lion', edit: 'edit', data: $scope.lion};
+  
   // Updated in Metadata
   $scope.update_lion = function (data){
     _.merge($scope.lion, $scope.lion, data);
     $scope.lion.organization =  _.find(organizations, {id: $scope.lion.organization_id}).name;
     Set_Tags();
   }
-  // Image Gallery
-  $scope.gallery_options = { type: 'lion', edit: 'edit', id: $scope.lion.primary_image_set_id};
-  // Location History
-  $scope.location_options = { type: 'lion', lion_id: $scope.lion.id};
 
   $scope.location_goto = function (imageset_id){
     $state.go("imageset", {id: imageset_id});
@@ -82,19 +84,26 @@ angular.module('linc.lions.controllers', [])
   }
 
   $scope.Delete = function (){
-    $scope.modalTitle = 'Delete Lion';
-    $scope.modalMessage = 'Are you sure you want to delete the lion?';
-    $scope.SucessMessage = 'Lions was successfully deleted.';
-    $scope.ErrorMessage = 'Unable to delete this Lion.';
-    $scope.modalContent = 'Form';
-    $scope.modalInstance = $uibModal.open({
+
+    var modalScope = $scope.$new();
+    modalScope.title = 'Delete Lion';
+    modalScope.message = 'Are you sure you want to delete the lion?';
+
+    var message = { 
+      Sucess: 'Lions was successfully deleted.',
+      Error: 'Unable to delete this Lion.'
+    };
+    
+    var modalInstance = $uibModal.open({
         templateUrl: 'Dialog.Delete.tmpl.html',
-        scope:$scope
+        scope: modalScope
     });
-    $scope.modalInstance.result.then(function (result) {
+    
+    modalInstance.result.then(function (result) {
       LincServices.DeleteLion($scope.lion.id, function(results){
         NotificationFactory.success({
-          title: $scope.modalTitle, message: $scope.SucessMessage,
+          title: modalScope.title, 
+          message: message.Sucess,
           position: "right", // right, left, center
           duration: 2000     // milisecond
         });
@@ -104,7 +113,7 @@ angular.module('linc.lions.controllers', [])
       function(error){
         if($scope.debug || (error.status != 401 && error.status != 403)){
           NotificationFactory.error({
-            title: "Fail: "+$scope.modalTitle, message: $scope.ErrorMessage,
+            title: "Fail: "+ modalScope.title, message: message.Error,
             position: 'right', // right, left, center
             duration: 5000   // milisecond
           });
@@ -113,11 +122,11 @@ angular.module('linc.lions.controllers', [])
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });
-    $scope.ok = function (){
-      $scope.modalInstance.close();
+    modalScope.ok = function (){
+      modalInstance.close();
     }
-    $scope.cancel = function(){
-      $scope.modalInstance.dismiss();
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
     }
   };
   $scope.Disassociate = function (id){
@@ -155,7 +164,7 @@ angular.module('linc.lions.controllers', [])
       return data;
     }
   }
-  $scope.lion.date_of_birth = date_format($scope.lion.date_of_birth);
+  Set_Tags();
 }])
 
 .controller('SearchLionCtrl', ['$scope', '$timeout', '$stateParams', '$bsTooltip', 'AuthService', 'lions', 'lion_filters', 

@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
 <script type="text/ng-template" id="Edit_ImageSet.tmpl.html">
-  <form name="form" ng-submit="submit(form.$valid)">
+  <form name="form" ng-submit="submit(form.$valid)" class="font-homenaje">
     <div class="modal-header" ng-show="modalTitle">
       <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
     </div>
@@ -35,8 +35,9 @@ For more information or to contact visit linclion.org or email tech@linclion.org
                 {{!$select.selected.id}} - {{!$select.selected.name}}
               </ui-select-match>
               <ui-select-choices repeat="lion.id as lion in lions | propsFilter: {name: $select.search, id: $select.search}">
-                <div ng-bind-html="lion.name | highlight: $select.search"></div>
-                <small> id: {{!lion.id}}</small>
+                <small>{{!lion.id}} - 
+                  <div class="display-inline" ng-bind-html="lion.name | highlight: $select.search"></div>
+                </small>
               </ui-select-choices>
             </ui-select>
           </div>
@@ -46,7 +47,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
               <img ng-src="{{!imageset.main_image || '//:0' }}"  width="80" height="80">
             </div>
             <ui-select ng-model="imageset.image" theme="bootstrap" title="Choose a main image" on-select="onSelected($item, $model)">
-              <ui-select-match placeholder="Select a main image" class="ui-select-class" allow-clear="true">{{!$select.selected.id}}</ui-select-match>
+              <ui-select-match placeholder="Select a main image" class="ui-select-class" allow-clear="true">Image Set {{!$select.selected.id}}</ui-select-match>
               <ui-select-choices position="auto" all-choices="images"  refresh-delay="0"
                   repeat="image in $select.pageOptions | propsFilter: {id: $select.search}">
                 <div ng-bind-html="image.id | highlight: $select.search"></div>
@@ -61,7 +62,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <ui-select ng-model="imageset.gender" theme="bootstrap" title="Select a Gender">
               <ui-select-match placeholder="Select a Gender">{{!$select.selected.label}}</ui-select-match>
               <ui-select-choices repeat="gender.value as gender in genders | propsFilter: {label: $select.search}">
-                <div ng-bind-html="gender.label | highlight: $select.search"></div>
+                <small><div ng-bind-html="gender.label | highlight: $select.search"></div></small>
               </ui-select-choices>
             </ui-select>
           </div>
@@ -80,7 +81,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <ui-select ng-model="imageset.owner_organization_id" theme="bootstrap">
               <ui-select-match placeholder="Select a owner organization">{{!$select.selected.name}}</ui-select-match>
               <ui-select-choices repeat="organization.id as organization in organizations | filter: {'name' : $select.search}">
-                <div ng-bind-html="organization.name | highlight: $select.search"></div>
+                <small><div ng-bind-html="organization.name | highlight: $select.search"></div></small>
               </ui-select-choices>
             </ui-select>
           </div>
@@ -89,7 +90,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <ui-select ng-model="imageset.uploading_organization_id" theme="bootstrap">
               <ui-select-match placeholder="Select a uploading organization">{{!$select.selected.name}}</ui-select-match>
               <ui-select-choices repeat="organization.id as organization in organizations | filter: {'name' : $select.search}">
-                <div ng-bind-html="organization.name | highlight: $select.search"></div>
+                <small><div ng-bind-html="organization.name | highlight: $select.search"></div></small>
               </ui-select-choices>
             </ui-select>
           </div>
@@ -98,21 +99,21 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <ui-select ng-model="imageset.uploading_user_id" theme="bootstrap">
               <ui-select-match placeholder="Select a uploading user">{{!$select.selected.email}}</ui-select-match>
               <ui-select-choices repeat="user.id as user in users | filter: {'email' : $select.search}">
-                <div ng-bind-html="user.email | highlight: $select.search"></div>
+                <small><div ng-bind-html="user.email | highlight: $select.search"></div></small>
               </ui-select-choices>
             </ui-select>
           </div>
           <div class="form-group">
             <label for="latitude">Latitude: </label>
-            <input  type="number" class="form-control" ng-model="imageset.latitude" step="any" name="latitude" min="-90" max="90">
+            <input type="number" class="form-control" ng-model="imageset.latitude" step="any" name="latitude" min="-90" max="90">
           </div>
           <div class="form-group">
             <label for="longitude">Longitude: </label>
-            <input  type="number" class="form-control" ng-model="imageset.longitude" step="any" name="longitude" min="-180" max="180">
+            <input type="number" class="form-control" ng-model="imageset.longitude" step="any" name="longitude" min="-180" max="180">
           </div>
           <div class="form-group" ng-class="{'has-error': datepickerForm.date.$invalid}">
             <label for="date_stamp" class="control-label"><i class="fa fa-calendar"></i>Date Stamp: </label>
-            <input type="text" class="form-control"  ng-model="imageset.date_stamp" data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date_stamp" bs-datepicker placement="top-right">
+            <input type="text" class="form-control" ng-model="imageset.date_stamp" data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date_stamp" bs-datepicker placement="top-right">
           </div>
           <div for="date_of_birth" class="form-group" ng-class="{'has-error': datepickerForm.date1.$invalid}">
             <label class="control-label"><i class="fa fa-calendar"></i>Date of Birth: </label>
@@ -227,24 +228,24 @@ For more information or to contact visit linclion.org or email tech@linclion.org
                     placement="bottom-right" bs-select>
               Action <span class="caret"></span>
             </button>
-            <div class="form-group">
-              <!-- <label for="id_tail_marking" >Tail Marking: </label>
-              <button type="button" name="id_tail_marking" placeholder="None" class="btn btn-default btn-select" ng-model="imageset.tail_marking" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Tail Marking" max-length="2" bs-options="tag.value as tag.label for tag in tags.tail_marking" placement="bottom-right" bs-select>
-                Action <span class="caret"></span>
-              </button> -->
-              <label for="id_tail_marking" >Tail Markings / Missing Tuft: </label>
-              <button type="button" name="id_tail_marking" placeholder="Unknown" 
-                      class="btn btn-default btn-select" ng-model="imageset.tail_marking" 
-                      data-html="1" data-multiple="1" max-length="2" 
-                      all-none-buttons="true" all-Text="All Tail Markings" all-button="false"
-                      none-button="false" none-Text=""
-                      unknown-button="true" unknown-Text="Unknown" 
-                      bs-options="tag.value as tag.label for tag in tags.tail_marking" 
-                      data-template-url='custom-select.tpl.html'
-                      placement="bottom-right" bs-select>
-                Action <span class="caret"></span>
-              </button>
-            </div>
+          </div>
+          <div class="form-group">
+            <!-- <label for="id_tail_marking" >Tail Marking: </label>
+            <button type="button" name="id_tail_marking" placeholder="None" class="btn btn-default btn-select" ng-model="imageset.tail_marking" data-html="1" data-multiple="1" all-none-buttons="true" all-Text="All Tail Marking" max-length="2" bs-options="tag.value as tag.label for tag in tags.tail_marking" placement="bottom-right" bs-select>
+              Action <span class="caret"></span>
+            </button> -->
+            <label for="id_tail_marking" >Tail Markings / Missing Tuft: </label>
+            <button type="button" name="id_tail_marking" placeholder="Unknown" 
+                    class="btn btn-default btn-select" ng-model="imageset.tail_marking" 
+                    data-html="1" data-multiple="1" max-length="2" 
+                    all-none-buttons="true" all-Text="All Tail Markings" all-button="false"
+                    none-button="false" none-Text=""
+                    unknown-button="true" unknown-Text="Unknown" 
+                    bs-options="tag.value as tag.label for tag in tags.tail_marking" 
+                    data-template-url='custom-select.tpl.html'
+                    placement="bottom-right" bs-select>
+              Action <span class="caret"></span>
+            </button>
           </div>
         </div>
       </div>
@@ -368,6 +369,6 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <td class="text-center">{{!imageset.created_at}}</td>
         <td class="text-center">{{!imageset.updated_at}}</td>
       </tr>
-    </body>
+    </tbody>
   </table>
 </div>

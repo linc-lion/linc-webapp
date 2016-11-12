@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
 <script type="text/ng-template" id="Edit_User.tmpl.html">
-  <form name="form" ng-submit="submit(form.$valid)">
+  <form name="form" ng-submit="submit(form.$valid)" class="font-homenaje">
     <div class="modal-header" ng-show="modalTitle">
       <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
     </div>
@@ -46,7 +46,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <ui-select ng-model="user.organization_id" theme="bootstrap">
           <ui-select-match placeholder="Select or search a organization in the list...">{{!$select.selected.name}}</ui-select-match>
           <ui-select-choices repeat="organization.id as organization in organizations | filter: {'name' : $select.search}">
-            <div ng-bind-html="organization.name | highlight: $select.search"></div>
+            <small><div ng-bind-html="organization.name | highlight: $select.search"></div></small>
           </ui-select-choices>
         </ui-select>
       </div>
@@ -145,6 +145,6 @@ For more information or to contact visit linclion.org or email tech@linclion.org
           <a href data-animation="am-flip-x" data-html="true" placement="auto" bs-tooltip="user.tooltip">Info</a>
         </td>
       </tr>
-    </body>
+    </tbody>
   </table>
 </div>
