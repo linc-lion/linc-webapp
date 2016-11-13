@@ -161,12 +161,12 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
           //tmp
           //"is_Dead"
           //"isPrivate": selected.isPrivate,
-          //"isDead" : selected.isDead;
         }
         var lion_data = {
           name: selected.name,
           organization_id: selected.organization_id,
-          primary_image_set_id: '' // Fill after save imageset
+          primary_image_set_id: '',
+          dead: selected.isDead
         }
         data = {lion: lion_data, imageset: imageset_data};
       }
@@ -195,8 +195,11 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       var date_of_birth = (selected.date_of_birth == null || selected.date_of_birth == '') ? "" : selected.date_of_birth.toISOString().slice(0,10);
       if(optionsSet.type === 'lion'){
         //Selected Dates
-        var lion_sel_data = { organization_id: selected.organization_id,
-                              name : selected.name };
+        var lion_sel_data = { 
+          organization_id: selected.organization_id,
+          name : selected.name,
+          dead: selected.isDead
+        };
         var imageset_sel_data = {
           owner_organization_id: selected.organization_id,
           date_stamp: date_stamp,
@@ -500,7 +503,7 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       notes: optionsSet.data.notes,
       //tmp
       //"isPrivate" :{'map': optionsSet.data.isPrivate.map, 'gps' : optionsSet.data.isPrivate.gps},
-      //"isDead" : optionsSet.data.isDead;
+      "isDead" : $scope.isLion ? optionsSet.data.dead : ''
     }
     if(!$scope.isLion)
       $scope.selected.lion_id = optionsSet.data.lion_id;
@@ -533,7 +536,7 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       notes: "",
       //tmp
       //"isPrivate" :{'map': false, 'gps' : false},
-      //"isDead" : false;
+      "isDead" : false
     };
   }
   // Calc Age Function

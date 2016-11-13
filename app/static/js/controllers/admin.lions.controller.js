@@ -93,7 +93,8 @@ angular.module('linc.admin.lions.controller', [])
       'name': '', 
       'organization_id': undefined, 
       'primary_image_set_id': '', 
-      'selected': true
+      'selected': true,
+      'dead': false
     }
 
     var modalInstance = $uibModal.open({
@@ -114,7 +115,8 @@ angular.module('linc.admin.lions.controller', [])
         var data = {
           'name': modalScope.lion.name,
           'organization_id': modalScope.lion.organization_id,
-          'primary_image_set_id': modalScope.lion.primary_image_set_id
+          'primary_image_set_id': modalScope.lion.primary_image_set_id,
+          'dead': modalScope.lion.dead
         };
         modalScope.dataSending = true;
         $scope.LincApiServices.Lions({'method': 'post', 'data': data}).then(function(response){
@@ -185,7 +187,8 @@ angular.module('linc.admin.lions.controller', [])
           var data = {
             'name': modalScope.lion.name,
             'organization_id': modalScope.lion.organization_id,
-            'primary_image_set_id': modalScope.lion.primary_image_set_id
+            'primary_image_set_id': modalScope.lion.primary_image_set_id,
+            'dead': modalScope.lion.dead
           };
           modalScope.dataSending = true;
           $scope.LincApiServices.Lions({'method': 'put', 'lion_id' : modalScope.lion.id, 'data': data}).then(function(response){

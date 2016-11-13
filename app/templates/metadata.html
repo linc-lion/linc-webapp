@@ -184,7 +184,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             </label>
           </div>
           <pre ng-show="debug">{{!selected.isPrivate.map}}</pre>
-          <div class="checkbox">
+          <div class="checkbox" ng-show="isLion">
             <label class="checkbox-inline">
               <input type="checkbox" ng-disabled="!isLion" class="form-input" ng-model="selected.isDead">Dead Lion
             </label>

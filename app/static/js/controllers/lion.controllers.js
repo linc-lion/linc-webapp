@@ -30,7 +30,6 @@ angular.module('linc.lions.controllers', [])
 
   //tmp
   $scope.lion.is_private = {map: true, gps: true};
-  $scope.lion.is_dead = true;
 
   $scope.tooltip_need_verifiy = {'title': 'There are Image sets pending of verification', 'checked': true};
 
@@ -192,7 +191,6 @@ angular.module('linc.lions.controllers', [])
     var gps = (Math.random() > 0.5) ? true : false;
     element['is_private'] = {gps: gps, map: gps};
     element['canLocate'] = (!element.is_private.gps || element.canShow);
-    element['is_dead'] = (Math.random() > 0.5) ? true : false;
     
     var elem = {};
     var TAGS = [];

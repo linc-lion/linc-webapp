@@ -51,7 +51,6 @@ angular.module('linc.cvrequest.controller', ['linc.cvrequest.directive'])
     var gps = (Math.random() > 0.5) ? true : false;
     element['is_private'] = {gps: gps, map: gps};
     element['canLocate'] = (!element.is_private.gps || element.canShow);
-    element['is_dead'] = (Math.random() > 0.5) ? true : false;
 
     var elem = {};
     var TAGS = [];
