@@ -76,8 +76,9 @@ class LoginHandler(BaseHandler):
                     'password':password}
             url = self.settings['API_URL']+resource_url
             response = yield Task(self.api,url=url,method='POST',body=self.json_encode(body))
-            if response and response.code == 200:
-                data = loads(response.body.decode('utf-8'))['data']
+            resp = loads(response.body.decode('utf-8'))
+            if 200 <= response.code < 300:
+                data = resp['data']
                 obj = {'username' : username,
                        'orgname' : data['orgname'],
                        'admin' : (data['role']=='admin'),
@@ -88,9 +89,9 @@ class LoginHandler(BaseHandler):
                 self.set_secure_cookie("userlogin",dumps(obj))
                 del obj['password']
                 # this will be acquired with the api
-                self.response(200,'You are now logged in the website.',obj)
+                self.response(response.code,resp['message'],obj)
             else:
-                self.response(500,'Fail to authenticate with API.')
+                self.response(response.code,resp['message'])
         else:
             self.response(401,'Invalid request, you must provide username and password to login.')
 
