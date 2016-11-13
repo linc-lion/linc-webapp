@@ -217,8 +217,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
                 </tr>
               </thead>
               <tbody>
-  <!--tmp-->
-                <tr class="link" ng-repeat="lion in filtered_lions = (lions | filter: {is_dead: false} | orderBy:predicate:reverse | nameid_filter:cv_name_or_id:'primary_image_set_id' | age_filter:LionAge | organization_filter:organizations | features_filter:tag_features | gender_filter:genders | LatLngFilter:cv_location:true)">
+                <tr class="link" ng-repeat="lion in filtered_lions = (lions | filter: {dead: false} | orderBy:predicate:reverse | nameid_filter:cv_name_or_id:'primary_image_set_id' | age_filter:LionAge | organization_filter:organizations | features_filter:tag_features | gender_filter:genders | LatLngFilter:cv_location:true)">
                   <td class="text-center">
                     <a ui-sref="lion({id: lion.id})" target="_blank">{{!lion.id}}</a>
                   </td>
@@ -234,8 +233,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
                     <a ui-sref="lion({id: lion.id})" target="_blank">{{!lion.age}} y/o</a>
                   </td>
                   <td class="text-center">
-  <!--tmp-->
-                    <a ui-sref="lion({id: lion.id})" target="_blank">{{!lion.primary_image_set_id}} >{{!lion.is_dead}}<</a>
+                    <a ui-sref="lion({id: lion.id})" target="_blank">{{!lion.primary_image_set_id}}</a>
                   </td>
                   <td class="text-center">
                     <a ui-sref="lion({id: lion.id})" target="_blank">{{!lion.organization}}</a>
