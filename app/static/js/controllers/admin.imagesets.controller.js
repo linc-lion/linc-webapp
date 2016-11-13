@@ -25,7 +25,7 @@ angular.module('linc.admin.imagesets.controller', [])
 
   $scope.ImageSet_Mode  =  $scope.settings.imagesets.Mode;
 
-  $scope.genders = CONST_LIST['GENDER'];
+  $scope.genders = CONST_LIST['GENDERS'];
     
   $scope.tags = {
     ear_marking : CONST_LIST['EAR_MARKING'],

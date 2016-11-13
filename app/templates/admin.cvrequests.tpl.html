@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
 <script type="text/ng-template" id="Edit_CVRequest.tmpl.html">
-  <form name="form" ng-submit="submit(form.$valid)">
+  <form name="form" ng-submit="submit(form.$valid)" class="font-homenaje">
     <div class="modal-header" ng-show="modalTitle">
       <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
     </div>
@@ -31,16 +31,16 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <ui-select ng-model="cvrequest.requesting_organization_id" theme="bootstrap">
           <ui-select-match placeholder="Select a organization">{{!$select.selected.name}}</ui-select-match>
           <ui-select-choices repeat="organization.id as organization in organizations | filter: {'name' : $select.search}">
-            <div ng-bind-html="organization.name | highlight: $select.search"></div>
+            <small><div ng-bind-html="organization.name | highlight: $select.search"></div></small>
           </ui-select-choices>
         </ui-select>
       </div>
       <div class="form-group">
         <label for="req_imageset_id">Image Set Id:</label>
         <ui-select ng-model="cvrequest.image_set_id" theme="bootstrap">
-          <ui-select-match placeholder="Select a image set">{{!$select.selected.id}}</ui-select-match>
+          <ui-select-match placeholder="Select a image set">Image Set {{!$select.selected.id}}</ui-select-match>
           <ui-select-choices repeat="imageset.id as imageset in imagesets | filter: {'id': $select.search}">
-            <div ng-bind-html="imageset.id | highlight: $select.search"></div>
+            <small>Image Set <div class="display-inline" ng-bind-html="imageset.id | highlight: $select.search"></div></small>
           </ui-select-choices>
         </ui-select>
       </div>
@@ -49,7 +49,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <ui-select ng-model="cvrequest.status" theme="bootstrap">
           <ui-select-match placeholder="Select a status">{{!$select.selected.label}}</ui-select-match>
           <ui-select-choices repeat="item.status as item in CVReq_Status | filter: {'label': $select.search}">
-            <div ng-bind-html="item.label | highlight: $select.search"></div>
+            <small><div ng-bind-html="item.label | highlight: $select.search"></div></small>
           </ui-select-choices>
         </ui-select>
       </div>
@@ -61,16 +61,14 @@ For more information or to contact visit linclion.org or email tech@linclion.org
           <span class="input-group-addon icon icon-pencil2" ng-click="edit.server_uuid=!edit.server_uuid">Edit</span>
         </div>
       </div>
-      {{!edit.server_uuid}}
       <div class="form-group">
         <label for="request_body">Request Body:</label>
-        <textarea class="form-control" rows="4" ng-readonly="!edit.request_body" ng-model="cvrequest.request_body"
+        <textarea class="form-control" rows="{{!rows}}" ng-readonly="!edit.request_body" ng-model="cvrequest.request_body"
           ng-dblclick="cvrequest.request_body.length && !edit.request_body && CopyTextToClipBoard(cvrequest.request_body,'Request Body')"></textarea>
         <div class="input-group margin-left-80"> 
           <span class="input-group-addon icon icon-pencil2" ng-click="edit.request_body=!edit.request_body">Edit</span>
         </div>
       </div>
-      {{!edit.request_body}}
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-default" ng-click="cancel()" data-dismiss="modal">Cancel</button>
@@ -80,6 +78,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
     </div>
   </form>
 </script>
+
 <div class="form-group" ng-controller="AdminCVRequestsCtrl">
   <div class="btn-toolbar" role="toolbar" aria-label="toolbar_btns" >
     <div class="btn-group" >
@@ -142,14 +141,15 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <td class="text-center">{{!cvrequest.image_set_id}}</td>
         <td class="text-center">{{!cvrequest.status}}</td>
         <td class="text-center">
-          <div class="div-witdh-fixed">{{!cvrequest.server_uuid}}</div>
+          <div class="div-width-fixed-200">{{!cvrequest.server_uuid}}</div>
         </td>
         <td class="text-center">
-          <div class="div-witdh-limited">{{!cvrequest.request_body}}</div>
+          <div class="div-width-fixed-400">{{!cvrequest.request_body}}</div>
         </td>
         <td class="text-center">{{!cvrequest.created_at}}</td>
         <td class="text-center">{{!cvrequest.updated_at}}</td>
       </tr>
-    </body>
+    </tbody>
   </table>
 </div>
+

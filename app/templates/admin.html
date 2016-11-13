@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
 <script type="text/ng-template" id="Password.tmpl.html">
-  <form name="form" ng-submit="submit(form.$valid)">
+  <form name="form" ng-submit="submit(form.$valid)" class="font-homenaje">
     <div class="modal-header" ng-show="modalTitle">
       <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
     </div>
@@ -51,15 +51,15 @@ For more information or to contact visit linclion.org or email tech@linclion.org
   </form>
 </script>
 
-<div>
-
-<nav class="navbar navbar-default">
-  <p class="navbar-text"><strong>Administration:</strong></p>
-  <ul class="nav navbar-nav">
-    <li ng-repeat="tab in tabs"
-        ui-sref="{{!tab.sref}}"
-        ng-click="onTabClick(tab)"
-        ui-sref-active="active"><a>{{!tab.title}}</a></li>
-  </ul>
-</nav>
+<div class="font-homenaje">
+  <nav class="navbar navbar-default">
+    <p class="navbar-text"><strong>Administration:</strong></p>
+    <ul class="nav navbar-nav">
+      <li ng-repeat="tab in tabs"
+          ui-sref="{{!tab.sref}}"
+          ng-click="onTabClick(tab)"
+          ui-sref-active="active"><a>{{!tab.title}}</a></li>
+    </ul>
+  </nav>
   <div ui-view></div>
+</div>

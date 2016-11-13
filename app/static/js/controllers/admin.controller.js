@@ -61,19 +61,20 @@ angular.module('linc.admin.controller', [ 'linc.admin.users.controller',
 
   $scope.DialogDelete = function (title){
     var deferred = $q.defer();
-    $scope.modalTitle = 'Delete ' + title;
-    $scope.modalMessage = 'Are you sure you want to delete the ' + title + ' ?';
-    $scope.modalContent = 'Form';
-    $scope.modalInstance = $uibModal.open({
+
+    var modalScope = $scope.$new();
+    modalScope.title = 'Delete ' + title;
+    modalScope.message = 'Are you sure you want to delete the ' + title + ' ?';
+    var modalInstance = $uibModal.open({
         templateUrl: 'Dialog.Delete.tmpl.html',
-        scope:$scope
+        scope: modalScope
     });
-    $scope.ok = function (){
-      $scope.modalInstance.close();
+    modalScope.ok = function (){
+      modalInstance.close();
       deferred.resolve();
     }
-    $scope.cancel = function(){
-      $scope.modalInstance.dismiss();
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
       deferred.reject();
     }
     return deferred.promise;
