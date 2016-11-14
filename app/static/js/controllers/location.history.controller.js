@@ -20,28 +20,16 @@
 
 angular.module('linc.location.history.controller', ['linc.location.history.directive'])
 
-// .constant('Colors',['#fffdfc','#fff0e8','#ffe4d5','#ffd8c1','#ffcbae','#ffbf9a','#feb287','#fea673',
-//   '#fe9960','#fe8d4c','#fe8039','#fe7425','#fe6811'])
-
 .controller('LocationHistoryCtrl', ['$scope', '$state', '$timeout', '$uibModal', '$q', '$uibModalInstance', 
   'LincServices', 'options', 'history',
   function ($scope, $state, $timeout, $uibModal, $q, $uibModalInstance, LincServices, options, history) {
     $scope.title = 'Location History';
     $scope.content = 'Map';
 
-    $scope.radius = 15000;
+    $scope.radius = 5000;
     $scope.global_radius = 15000;
-    //var opacity = 0.7;
-    var Colors = [];
-    var colours = new ColorSpectrum();
-    colours.setSpectrum('#FF6600', '#ffe3d1');
-    colours.setNumberRange(-1, 1);
-    for (var i = 0; i <= history.count; i++) {
-      var hex = '#' + colours.colourAt(i/history.count);
-      Colors.push(hex);
-      //s += '<span style="color:' + hex + '">' + i/10 + ' -&gt; ' + hex + '</span><br/>';
-    }
-
+    $scope.arrow = {'show': true};
+ 
     $scope.show = (options.type == 'lion' || ((options.type == 'imageset') && options.is_primary));
 
     //$scope.locations = history.locations;
@@ -62,9 +50,8 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
     };
 
     $scope.locations = history.locations.sort(compare);
-    //$scope.delta = 12./history.count;
-    //$scope.count = history.count;
-
+    
+    // Close Location History
     $scope.Cancel = function () {
      $uibModalInstance.dismiss();
     };
@@ -88,8 +75,8 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
     // Bounds of circle
     var CircleBounds = function (center, radius) {
       var Spherical = google.maps.geometry.spherical;
-      var southwest = Spherical.computeOffset(center, radius * Math.sqrt(2.0), 225);
-      var northeast = Spherical.computeOffset(center, radius * Math.sqrt(2.0), 45);
+      var southwest = Spherical.computeOffset(center, radius , 225);
+      var northeast = Spherical.computeOffset(center, radius , 45);
       return (new google.maps.LatLngBounds(southwest, northeast));
     };
 
@@ -102,6 +89,17 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
       });
       return (dist);
     };
+
+    var marker_bounds = function(bounds){
+      var sw = bounds.getSouthWest();
+      var marker = new google.maps.Marker({
+          position: sw, map: $scope.map
+        });
+      var ne = bounds.getNorthEast();
+      marker = new google.maps.Marker({
+        position: ne, map: $scope.map
+      });
+    }
 
      // Add circle
     var add_circle = function (center, radius, stroke, fill){
@@ -117,6 +115,7 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
     var add_arrows = function(){
       if($scope.lines)
         $scope.lines.setMap(null);
+      if(!$scope.arrow.show) return;
       $scope.coord = [];
       _.forEach($scope.locations, function(location, i){
         if(location.selected){
@@ -142,7 +141,11 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
         });
         $scope.lines.set('zIndex',100);
       }
-    };
+    };  
+
+    $scope.show_arrow = function(){
+      add_arrows();
+    }
 
     var show_label = function(marker, status){
       if(status)
@@ -171,7 +174,7 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
           map: $scope.map,
           draggable: false,
           raiseOnDrag: true,
-          labelContent: location.label,
+          labelContent: location.label + '\n (' + location.latitude.toString() + ',' + location.longitude.toString() + ')',
           labelAnchor: new google.maps.Point(30, 50),
           labelClass: "hide_markerlabel",
           labelStyle: {opacity: 1.0},
@@ -191,16 +194,20 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
 
         var delta = (0.9-0.3)/(history.count-1);
         var opacity = 0.3 + i*delta;
-        var colour = Colors[i];
-        var stroke = {color: colour, opacity: opacity};
-        var fill = {color: colour, opacity: opacity};
+        var colour = {stroke: '#9f3d0e', fill: "rgba( 217, 82, 16, " + opacity + ")"};
+        var stroke = {color: colour.stroke, opacity: 0.7};
+        var fill = {color: colour.fill, opacity: opacity};
         var circle = add_circle(position, $scope.radius, stroke, fill);
+        location.style = {
+          "background": "rgba( 217, 82, 16, " + opacity + ")",
+          "border-color": colour.stroke,
+          "color": "#333"
+        };
         $scope.markers.push({'id': location.id, 'marker': marker, 'circle': circle});
         deferred.resolve(marker);
       }, i * 200);
       return deferred.promise;
     };
-
     // Initialize map
     $scope.$on('mapInitialized', function(evt, evtMap) {
       $scope.map = evtMap;
@@ -215,55 +222,65 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
       $q.all(promises).then(function (results) {
         var center = $scope.bounds.getCenter();
         $scope.map.setCenter(center);
-        
-        // // One Imageset
+        // One Imageset
         if(history.count == 1){
           $scope.bounds = CircleBounds(center, $scope.radius);
         }
+        else{
+          var ne = $scope.bounds.getNorthEast();
+          var sw = $scope.bounds.getSouthWest();
+          if(ne.equals(sw)){
+            $scope.bounds = CircleBounds(center, $scope.radius);
+          }
+          else{
+            var radius = Math.max($scope.global_radius, Calc_Max_Radius(center));
+            console.log(radius);
+            $scope.bounds = CircleBounds(center, radius);
+          }
+        }
         add_arrows();
-          // var offseticon = {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW};//{path: 'M 1,0 -1,0',strokeColor: 'black', strokeWeight: 3};
-          // var endicon = {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW};
-          // $scope.lines = new google.maps.Polyline({
-          //   map: $scope.map, 
-          //   path: $scope.coord, 
-          //   icons: [
-          //     {icon: offseticon,offset:'0%'},
-          //     {icon: endicon,offset:'100%'}
-          //   ], 
-          //   strokeColor: 'black',
-          //   strokeOpacity: 0.8, 
-          //   strokeWeight: 3,
-          //   editable: false, 
-          //   draggable: false
-          // });
+        //marker_bounds($scope.bounds);
         $scope.map.fitBounds($scope.bounds);
       });
     });
     // On Click Marker
     $scope.click = function (id, event){
-      var index = _.indexOf($scope.locations, _.find($scope.locations, {id: id}));
-      $scope.infomsg = $scope.locations[index].label;
-      $scope.date = 'Updated Date: ' + $scope.locations[index].updated_at;
-      $scope.imageset_id = id;
-      $scope.GoBackMessage = "Go to Image Set";
-      if((options.type != 'lion') && ($scope.imageset_id == options.id))
-        $scope.GoBackMessage = "Go Back to Image Set";
-      $scope.modalInstance = $uibModal.open({
-          templateUrl: 'InfoWindow.tmpl.html',
-          scope:$scope
-      });
-      $scope.modalInstance.result.then(function (result) {
-        $uibModalInstance.close($scope.imageset_id);
-      });
-    }
-    // Modal Functions
-    $scope.close=function(){
-      $scope.modalInstance.dismiss();
-    };
-    $scope.goto=function(){
-      $scope.modalInstance.close();
-    };
 
+      var modalScope = $scope.$new();
+      modalScope.title = 'Location detail';
+
+      var index = _.indexOf($scope.locations, _.find($scope.locations, {id: id}));
+
+      modalScope.info = {
+        imageset: $scope.locations[index].label,
+        imageset_id: id,
+        lion_name: 'Lion Name',
+        latitude: $scope.locations[index].latitude,
+        longitude: $scope.locations[index].longitude,
+        date_stamp: $scope.locations[index].date_stamp
+      }
+
+      modalScope.GoBackMessage = "Go to " + $scope.locations[index].label;
+      if((options.type != 'lion') && (modalScope.imageset_id == options.id))
+        modalScope.GoBackMessage = "Go Back to " + $scope.locations[index].label;
+      
+      var modalInstance = $uibModal.open({
+          templateUrl: 'InfoWindow.tmpl.html',
+          scope: modalScope,
+          size: 'sm'
+      });
+      modalInstance.result.then(function (result) {
+        $uibModalInstance.close(modalScope.info.imageset_id);
+      });
+       // Modal Functions
+      modalScope.close=function(){
+        modalInstance.dismiss();
+      };
+      modalScope.goto=function(){
+        modalInstance.close();
+      };
+    }
+   
     var promise = null;
     // Animate marker when I click label
     $scope.animate = function(location){

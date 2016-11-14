@@ -63,7 +63,10 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       console.log("loaded");
       _.forEach(lions, function(lion, index) {
         if(lion.organization_id === $scope.user.organization_id){
-          var label = lion.id + ' - ' + lion.name;
+          var label = '<span>' + lion.id + ' - ' + lion.name ;
+          if(lion.dead)
+            label += '<i class="lion-list-icon-dead"></i>';
+          label += '</span>'
           $scope.ListLions.push({'index': index, 'id': lion.id, 'name': lion.name, 'label': label});
         }
       });
@@ -198,7 +201,7 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
         var lion_sel_data = { 
           organization_id: selected.organization_id,
           name : selected.name,
-          dead: selected.isDead
+          dead : selected.isDead
         };
         var imageset_sel_data = {
           owner_organization_id: selected.organization_id,
@@ -211,11 +214,12 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
           notes: selected.notes
         };
         var lion_data = _.reduce(lion_sel_data, function(result, n, key) {
-          if (lion_sel_data[key] && lion_sel_data[key] != original_data[key]) {
+          if ((lion_sel_data[key]!= undefined) && lion_sel_data[key] != original_data[key]) {
               result[key] = lion_sel_data[key];
           }
           return result;
         }, {});
+
         var imageset_data = _.reduce(imageset_sel_data, function(result, n, key) {
           if (imageset_sel_data[key] && imageset_sel_data[key] != original_data[key]) {
               result[key] = imageset_sel_data[key];
@@ -231,6 +235,14 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
           imageset_data['latitude'] = null;
         if(_.has(imageset_data, 'longitude') && imageset_data['longitude'] == '')
           imageset_data['longitude'] = null;
+        if(_.intersection(_.keys(imageset_data),['longitude','latitude']).length==1){
+          if(_.includes(_.keys(imageset_data),'longitude')){
+            imageset_data['latitude'] = original_data['latitude'];
+          }
+          else if(_.includes(_.keys(imageset_data),'latitude')){
+            imageset_data['longitude'] = original_data['longitude'];
+          }
+        }
         if(_.has(imageset_data, 'tags') && imageset_data['tags'] == 'null')
           imageset_data['tags'] = null;
 
@@ -267,6 +279,14 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
           imageset_data['latitude'] = null;
         if(_.has(imageset_data, 'longitude') && imageset_data['longitude'] == '')
           imageset_data['longitude'] = null;
+        if(_.intersection(_.keys(imageset_data),['longitude','latitude']).length==1){
+          if(_.includes(_.keys(imageset_data),'longitude')){
+            imageset_data['latitude'] = original_data['latitude'];
+          }
+          else if(_.includes(_.keys(imageset_data),'latitude')){
+            imageset_data['longitude'] = original_data['longitude'];
+          }
+        }
         if(_.has(imageset_data, 'tags') && imageset_data['tags'] == 'null')
           imageset_data['tags'] = null;
 
@@ -281,17 +301,16 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
     var deferred = $q.defer();
     if(optionsSet.type === 'lion'){
       var id = optionsSet.data.id;
-      // LincServices.SaveLion(id, data, function(results){
-      //   var data0 = _.merge({}, data.imageset, data.lion);
-      //   delete data0._xsrf;
-      //   if(_.has(data0, 'date_of_birth'))
-      //     data0.age = getAge(data0['date_of_birth']);
-      //   deferred.resolve({type: 'save', 'data': data0, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
-      // },
-      // function(error){
-      //   deferred.reject({'error': error, 'title': 'Error', 'message': "Unable to Save Lion's Metadata"});
-      // });
-      deferred.reject();
+      LincServices.SaveLion(id, data, function(results){
+        var data0 = _.merge({}, data.imageset, data.lion);
+        delete data0._xsrf;
+        if(_.has(data0, 'date_of_birth'))
+          data0.age = getAge(data0['date_of_birth']);
+        deferred.resolve({type: 'save', 'data': data0, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
+      },
+      function(error){
+        deferred.reject({'error': error, 'title': 'Error', 'message': "Unable to Save Lion's Metadata"});
+      });
     }
     else{
       var id = optionsSet.data.id;

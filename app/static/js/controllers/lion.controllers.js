@@ -130,7 +130,7 @@ angular.module('linc.lions.controllers', [])
   };
   $scope.Disassociate = function (id){
     var data = {'lion_id': null};
-    LincServices.Associate(id, data, function(){
+    LincServices.Associate(id, data, function(response){
       $scope.lion.primary_image_set_id = null;
       NotificationFactory.success({
         title: "Disassociate", message:'Lion was disassociated',
