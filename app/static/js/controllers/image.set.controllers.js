@@ -30,7 +30,6 @@ angular.module('linc.image.set.controllers', [])
 
   //tmp
   $scope.imageset.is_private = {map: true, gps: true};
-  $scope.imageset.is_dead = true;
 
   var count = 0;
   var Poller = function () {
@@ -223,9 +222,10 @@ angular.module('linc.image.set.controllers', [])
 
   $scope.Disassociate = function (id){
     var data = {'lion_id': null, 'is_verified': false};
-    LincServices.Associate(id, data, function(){
+    LincServices.Associate(id, data, function(response){
       $scope.imageset.lion_id = null;
       $scope.imageset.name = '-';
+      $scope.imageset.dead = false;
       $scope.imageset.lions_org_id = null;
       $scope.imageset.is_verified = false;
       Set_Tags();
@@ -409,7 +409,6 @@ angular.module('linc.image.set.controllers', [])
     var gps = (Math.random() > 0.5) ? true : false;
     element['is_private'] = {gps: gps, map: gps};
     element['canLocate'] = (!element.is_private.gps || element.canShow);
-    element['is_dead'] = (Math.random() > 0.5) ? true : false;
 
     element.NeedVerify = (!element.is_primary && element.lion_id &&
       ($scope.user.organization_id == element.lions_org_id) &&
@@ -684,10 +683,11 @@ angular.module('linc.image.set.controllers', [])
 
   $scope.Disassociate = function (ImagesetId){
     var data = {'lion_id': null, 'is_verified': false};
-    LincServices.Associate(ImagesetId, data, function(){
+    LincServices.Associate(ImagesetId, data, function(response){
       var id = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
       $scope.imagesets[id].lion_id = null;
       $scope.imagesets[id].name = '-';
+      $scope.imagesets[id].dead = false;
       $scope.imagesets[id].lions_org_id = null;
       $scope.imagesets[id].is_verified = false;
       //$scope.imagesets[id].NeedVerify = false;

@@ -19,19 +19,33 @@ For more information or to contact visit linclion.org or email tech@linclion.org
 <script type="text/ng-template" id="InfoWindow.tmpl.html">
   <div name="InfoWindow" class="font-homenaje">
     <div class="modal-header" ng-show="title">
-      <h4 class="modal-title">Location detail</h4>
-      <div class="row">
-        <div class="col-sm-4 text-center">
-          <h3 class="text-center" ng-bind-html="infomsg"></h3>
-        </div>
-        <div class="col-sm-8 text-center">
-          <h3 class="text-center" ng-bind-html="date"></h3>
-        </div>
+      <h4 class="modal-title" ng-bind-html="title"></h4>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="imageset">Image Set:</label>
+        <input name="imageset" readonly type="text" class="form-control" ng-model="info.imageset">
+      </div>
+      <div class="form-group" ng-if="info.lion_name">
+        <label for="lion_name">Lion name:</label>
+        <input type="text" readonly class="form-control" name="lion_name" ng-model="info.lion_name">
+      </div>
+      <div class="form-group">
+        <label for="latitude">Latitude: </label>
+        <input type="text" readonly class="form-control" name="latitude" ng-model="info.latitude">
+      </div>
+      <div class="form-group">
+        <label for="longitude">Longitude: </label>
+        <input type="text" readonly class="form-control" ng-model="info.longitude">
+      </div>
+      <div class="form-group">
+        <label for="date_stamp">Date Stamp: </label>
+        <input type="text" readonly class="form-control" ng-model="info.date_stamp">
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" ng-click="close()" data-dismiss="modal">Close</button>
       <button type="button" class="btn btn-primary" ng-click="goto()">{{!GoBackMessage}}</button>
+      <button type="button" class="btn btn-default" ng-click="close()" data-dismiss="modal">Close</button>
     </div>
   </div>
 </script>
@@ -44,9 +58,18 @@ For more information or to contact visit linclion.org or email tech@linclion.org
   <div class="modal-body" ng-show="content">
     <div ng-if="show" class="row">
       <div class="col-sm-3 text-center">
-        <div class="list-group">
-          <div class="form-group" ng-repeat="location in locations" >
-            <button ng-class="{'btn btn-default': !location.selected, 'btn btn-warning': location.selected}" ng-model="location.selected" ng-click="animate(location)" ng-dblclick="open_imageset(location.id)">{{!location.label}} - <span class="badge">{{!location.date_stamp}}</span>
+        <div class="btn-group show-arrow">
+          <button type="button" class="btn btn-default" ng-class="{'disabled-btn':!arrow.show}" 
+            ng-model="arrow.show" uib-btn-checkbox ng-click="show_arrow()">
+            <span ng-if="arrow.show">Show moviment</span>
+            <span ng-if="!arrow.show">Hide moviment</span>
+            <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="list-group list-locations">
+          <div class="form-group location-group" ng-repeat="location in locations">
+           <button ng-class="{'btn btn-default': !location.selected, 'btn btn-primary': location.selected}" 
+             ng-style="location.selected && location.style" ng-model="location.selected" ng-click="animate(location)" ng-dblclick="open_imageset(location.id)">{{!location.label}} - <span class="badge">{{!location.date_stamp}}</span>
             </button>
           </div>
         </div>
