@@ -18,13 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 For more information or to contact visit linclion.org or email tech@linclion.org -->
 <!-- Tooltip Info Date & Name -->
 <script type="text/ng-template" id="tooltip.image.tpl.html">
-  <div class="tooltip in tooltip-image font-homenaje" ng-show="title">
+  <div class="tooltip in tooltip-image font-homenaje-1-2" ng-show="title">
     <div class="tooltip-arrow"></div>
     <div class="tooltip-arrow custom-arrow"></div>
     <div class="tooltip-inner" ng-bind-html="title | unsafe"></div>
   </div>
 </script>
-<div name="ImageGallery" class="font-homenaje">
+<div name="ImageGallery" class="font-homenaje-1-2">
   <!-- Download Waiting -->
   <div id="download_view" ng-show="download_view" class="downloading-view">
     <h3>Pease wait. Downloading file</h3>
@@ -41,7 +41,6 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <i class="icon icon-star" ng-if="photo.cover">&nbsp;</i>
             {{!Type_Labels[photo.type]}}
             <i class="icon icon-globe" ng-if="photo.is_public">&nbsp;</i>
-            
           </div>
           <div class="photo-controller">
             {{!photo.name}} {{!photo.date | date:'yyyy/MM/dd @ hh:mm'}}
@@ -79,7 +78,11 @@ For more information or to contact visit linclion.org or email tech@linclion.org
           <img ng-src="{{!photo.thumbnail}}" width="157" height="157" 
             data-animation="am-flip-x" data-html="true" data-template-url='tooltip.image.tpl.html'
             placement="bottom" bs-tooltip="photo.tooltip">
-          <div class="caption"><i class="icon icon-globe pull-right" ng-if="photo.is_public"></i><i class="icon icon-star" ng-if="photo.cover"></i>{{!Type_Labels[photo.type]}}</div>
+          <div class="caption">
+            <i class="icon icon-globe pull-right" ng-if="photo.is_public"></i>
+            <i class="icon icon-star" ng-if="photo.cover"></i>
+            {{!Type_Labels[photo.type]}}
+            </div>
         </a>
         <p class="clearfix">
           <a class="btn btn-link" ng-click="Select_All()">Select All</a>
