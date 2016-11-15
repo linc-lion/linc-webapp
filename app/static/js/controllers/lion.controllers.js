@@ -28,9 +28,6 @@ angular.module('linc.lions.controllers', [])
   $scope.lion = lion;
   $scope.user = AuthService.user;
 
-  //tmp
-  $scope.lion.is_private = {map: true, gps: true};
-
   $scope.tooltip_need_verifiy = {'title': 'There are Image sets pending of verification', 'checked': true};
 
   var LABELS = function (damage, labels){
@@ -42,8 +39,13 @@ angular.module('linc.lions.controllers', [])
     return label;
   }
 
+  //tmp
+  $scope.lion.geopos_private = true;
+
   var Set_Tags = function(){
     $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.lion.organization_id);
+    //tmp
+    $scope.showGeoPos = $scope.canShow || !$scope.lion.geopos_private;
 
     var TAGS = [];
     try{
@@ -188,9 +190,11 @@ angular.module('linc.lions.controllers', [])
     element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
 
     //tmp
-    var gps = (Math.random() > 0.5) ? true : false;
-    element['is_private'] = {gps: gps, map: gps};
-    element['canLocate'] = (!element.is_private.gps || element.canShow);
+    //var gps = (Math.random() > 0.5) ? true : false;
+    //element['is_private'] = {gps: gps, map: gps};
+    //element['canLocate'] = (!element.is_private.gps || element.canShow);
+    element['geopos_private'] = true;
+    element['canLocate'] = (!element.geopos_private || element.canShow);
     
     var elem = {};
     var TAGS = [];
@@ -312,7 +316,7 @@ angular.module('linc.lions.controllers', [])
     $scope.isAgeCollapsed = !$scope.isAgeCollapsed;
     lion_filters.isAgeCollapsed = $scope.isAgeCollapsed;
   }
-  $scope.collapse_organization = function(){
+  $scope.collapse_organizations = function(){
     $scope.isOrgCollapsed = !$scope.isOrgCollapsed;
     lion_filters.isOrgCollapsed = $scope.isOrgCollapsed;
   }
@@ -392,7 +396,7 @@ angular.module('linc.lions.controllers', [])
     console.log('Search lions - has filter params');
     $scope.name_or_id = $scope.filters.hasOwnProperty('name_or_id') ? $scope.filters.name_or_id : default_filters.name_or_id;
     $scope.tag_features = $scope.filters.hasOwnProperty('tag_features') ? $scope.filters.tag_features : default_filters.tag_features;
-    $scope.organizations = $scope.filters.hasOwnProperty('organizations') ? $scope.filters.name_or_id : default_filters.organizations;
+    $scope.organizations = $scope.filters.hasOwnProperty('organizations') ? $scope.filters.organizations : default_filters.organizations;
     $scope.genders = $scope.filters.hasOwnProperty('genders') ? $scope.filters.genders : default_filters.genders;
     $scope.LionAge = $scope.filters.hasOwnProperty('LionAge') ? $scope.filters.LionAge : default_filters.LionAge;
     $scope.isNameIdCollapsed = $scope.filters.hasOwnProperty('isNameIdCollapsed') ? $scope.filters.isNameIdCollapsed : default_filters.isNameIdCollapsed;

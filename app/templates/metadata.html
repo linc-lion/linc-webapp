@@ -289,16 +289,10 @@ For more information or to contact visit linclion.org or email tech@linclion.org
       <div class="col-sm-4">
         <div class="checkbox">
           <label class="checkbox-inline">
-            <input type="checkbox" class="form-input" ng-model="selected.isPrivate.gps">GPS Points is Private
+            <input type="checkbox" class="form-input" ng-model="selected.isPrivate">GPS points and Location on map are Private
           </label>
         </div>
-        <pre ng-show="debug">{{!selected.isPrivate.gps}}</pre>
-        <div class="checkbox">
-          <label class="checkbox-inline">
-            <input type="checkbox" class="form-input" ng-model="selected.isPrivate.map">Map Location is Private
-          </label>
-        </div>
-        <pre ng-show="debug">{{!selected.isPrivate.map}}</pre>
+        <pre ng-show="debug">{{!selected.isPrivate}}</pre>
         <div class="checkbox" ng-show="isLion">
           <label class="checkbox-inline">
             <input type="checkbox" ng-disabled="!isLion" class="form-input" ng-model="selected.isDead">Dead Lion
