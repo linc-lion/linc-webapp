@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
 <script type="text/ng-template" id="ForgetSended.tmpl.html">
-  <div name="ForgetSended" class="font-homenaje">
+  <div name="ForgetSended" class="font-homenaje-1-2">
     <div class="modal-header" ng-show="title">
       <h4 class="modal-title" ng-bind-html="title"></h4>
     </div>
@@ -29,7 +29,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
   </div>
 </script>
 <script type="text/ng-template" id="ForgetPwd.tmpl.html">
-  <div name="ForgetPws" class="font-homenaje">
+  <div name="ForgetPws" class="font-homenaje-1-2">
     <div class="modal-header" ng-show="title">
       <button type="button" class="close" ng-click="cancel()">&times;</button>
       <h1 class="modal-title forgot-title" ng-bind-html="title"></h1>
@@ -56,7 +56,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
     </div>
   </div>
 </script>
-<form name="form" class="form-signin font-homenaje" ng-submit="login()">
+<form name="form" class="form-signin font-homenaje-1-2" ng-submit="login()">
   <input type="hidden" name="_xsrf" ng-init="loginData._xsrf='{{xsrf}}'" ng-model="loginData._xsrf">
   <h2 class="form-signin-heading">Please sign in</h2>
   <div class="form-group" ng-class="{'has-error': form.username.$dirty && form.username.$error.required }">
