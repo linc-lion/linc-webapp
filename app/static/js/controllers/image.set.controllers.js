@@ -28,9 +28,6 @@ angular.module('linc.image.set.controllers', [])
   $scope.imageset = imageset;
   $scope.user = AuthService.user;
 
-  //tmp
-  $scope.imageset.is_private = {map: true, gps: true};
-
   var count = 0;
   var Poller = function () {
     PollerService.cvrequests_list().then(function(response){
@@ -83,8 +80,13 @@ angular.module('linc.image.set.controllers', [])
     return label;
   }
 
+  //tmp
+  $scope.imageset.geopos_private = true;
+
   var Set_Tags = function(){
     $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.imageset.organization_id);
+    //tmp
+    $scope.showGeoPos = $scope.canShow || !$scope.imageset.geopos_private;
     $scope.canDelete = ($scope.canShow && !$scope.imageset.is_primary);
     $scope.canDisassociate = (!$scope.imageset.is_primary && $scope.imageset.lion_id && ($scope.user.organization_id == $scope.imageset.organization_id));
     $scope.NeedVerify = (!$scope.imageset.is_primary && $scope.imageset.lion_id && ($scope.user.organization_id == $scope.imageset.lions_org_id) && ($scope.user.organization_id != $scope.imageset.organization_id));
@@ -405,11 +407,12 @@ angular.module('linc.image.set.controllers', [])
 
   $scope.imagesets = _.map(imagesets, function(element, index) {
     element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
-
     //tmp
-    var gps = (Math.random() > 0.5) ? true : false;
-    element['is_private'] = {gps: gps, map: gps};
-    element['canLocate'] = (!element.is_private.gps || element.canShow);
+    //var gps = (Math.random() > 0.5) ? true : false;
+    //element['is_private'] = {gps: gps, map: gps};
+    //element['canLocate'] = (!element.is_private.gps || element.canShow);
+    element['geopos_private'] = true;
+    element['canLocate'] = (!element.geopos_private || element.canShow);
 
     element.NeedVerify = (!element.is_primary && element.lion_id &&
       ($scope.user.organization_id == element.lions_org_id) &&
@@ -548,7 +551,7 @@ angular.module('linc.image.set.controllers', [])
     $scope.isAgeCollapsed = !$scope.isAgeCollapsed;
     imagesets_filters.isAgeCollapsed = $scope.isAgeCollapsed;
   }
-  $scope.collapse_organization = function(){
+  $scope.collapse_organizations = function(){
     $scope.isOrgCollapsed = !$scope.isOrgCollapsed;
     imagesets_filters.isOrgCollapsed = $scope.isOrgCollapsed;
   }
@@ -728,7 +731,7 @@ angular.module('linc.image.set.controllers', [])
     console.log('Search Imagesets - has filter params');
     $scope.name_or_id = $scope.filters.hasOwnProperty('name_or_id') ? $scope.filters.name_or_id : default_filters.name_or_id;
     $scope.tag_features = $scope.filters.hasOwnProperty('tag_features') ? $scope.filters.tag_features : default_filters.tag_features;
-    $scope.organizations = $scope.filters.hasOwnProperty('organizations') ? $scope.filters.name_or_id : default_filters.organizations;
+    $scope.organizations = $scope.filters.hasOwnProperty('organizations') ? $scope.filters.organizations : default_filters.organizations;
     $scope.genders = $scope.filters.hasOwnProperty('genders') ? $scope.filters.genders : default_filters.genders;
     $scope.LionAge = $scope.filters.hasOwnProperty('LionAge') ? $scope.filters.LionAge : default_filters.LionAge;
 

@@ -164,7 +164,7 @@ angular.module('linc.controllers', ['linc.admin.controller',
         if(special_str.length && idx!=-1)
         {
           var special = piece.substring(idx+1, piece.length);
-          if(_.has(value, special_str) && value[special_str] == special)
+          if(value.hasOwnProperty(special_str) && value[special_str] == special)
           {
             contain = true;
             return;
