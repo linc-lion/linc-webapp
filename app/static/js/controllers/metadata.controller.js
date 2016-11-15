@@ -96,22 +96,27 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       return;
     }
     var org = _.find($scope.organizations, {'id': $scope.selected.organization_id});
-    var type = optionsSet.type == 'lion [' + ']'? 'Lion' : 'ImageSet [' + ']';
-    $scope.modalTitle = 'Warning';
-    $scope.modalMessage = 'This change transfers Ownership of Lion/Image Set, and can not be undone!' +
+    var type = optionsSet.type == 'lion' ? 'Lion' : 'ImageSet';
+    var modalScope = $scope.$new();
+    modalScope.title = 'Warning';
+    modalScope.message = 'This change transfers Ownership of Lion/Image Set, and can not be undone!' +
     'Would you like to transfer ownership of this ' + type + ' to ' + org.name + ' ?';
-    $scope.modalContent = 'Form';
-    $scope.modalInstance = $uibModal.open({
+    var modalInstance = $uibModal.open({
         templateUrl: 'Warning.tmpl.html',
-        scope:$scope
+        scope: modalScope
     });
-    $scope.ok = function (){
-      $scope.modalInstance.close();
-    }
-    $scope.cancel = function(){
+    modalInstance.result.then(function (result) {
+      
+    }, function (){
       $scope.selected.organization_id = original_data.organization_id;
       $scope.selected.owner_organization_id = original_data.organization_id;
-      $scope.modalInstance.dismiss();
+    });
+
+    modalScope.ok = function (){
+      modalInstance.close();
+    }
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
     }
   }
 
