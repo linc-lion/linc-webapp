@@ -82,7 +82,7 @@ angular.module('linc.admin.users.controller', [])
     $scope.check_all(false);
 
     var modalScope = $scope.$new();
-    modalScope.modalTitle = 'Add User';
+    modalScope.title = 'Add User';
 
     modalScope.dataSending = false;
     modalScope.password_required = true;
@@ -161,7 +161,7 @@ angular.module('linc.admin.users.controller', [])
       $scope.User_Mode = 'edit';
 
       var modalScope = $scope.$new();
-      modalScope.modalTitle = 'Edit User';
+      modalScope.title = 'Edit User';
 
       modalScope.dataSending = false;
       modalScope.password_required = false;
@@ -310,7 +310,7 @@ angular.module('linc.admin.users.controller', [])
   $scope.ChangePassword = function(){
     if($scope.Selecteds.length == 1){
       var modalScope = $scope.$new();
-      modalScope.modalTitle = 'Change Password';
+      modalScope.title = 'Change Password';
       modalScope.showValidationMessages = false;
       modalScope.tooltip = {title: '<span><i class="icon icon-info"></i>passwords must match</span>', checked: false};
       modalScope.sel_user = { 

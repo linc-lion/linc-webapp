@@ -88,7 +88,7 @@ angular.module('linc.admin.cvrequests.controller', [])
     $scope.check_all(false);
 
     var modalScope = $scope.$new();
-    modalScope.modalTitle = 'Add CV Request';
+    modalScope.title = 'Add CV Request';
 
     modalScope.showValidationMessages = false;
     modalScope.dataSending = false;
@@ -166,7 +166,7 @@ angular.module('linc.admin.cvrequests.controller', [])
       $scope.CVRequest_Mode = 'edit';
 
       var modalScope = $scope.$new();
-      modalScope.modalTitle = 'Edit CV Request';
+      modalScope.title = 'Edit CV Request';
 
       modalScope.showValidationMessages = false;
       modalScope.dataSending = false;

@@ -83,7 +83,7 @@ angular.module('linc.admin.organizations.controller', [])
     $scope.check_all(false);
 
     var modalScope = $scope.$new();
-    modalScope.modalTitle = 'Add Organization';
+    modalScope.title = 'Add Organization';
 
     modalScope.dataSending = false;
     modalScope.showValidationMessages = false;
@@ -151,7 +151,7 @@ angular.module('linc.admin.organizations.controller', [])
       $scope.Org_Mode = 'edit';
 
       var modalScope = $scope.$new();
-      modalScope.modalTitle = 'Edit Organization';
+      modalScope.title = 'Edit Organization';
 
       modalScope.dataSending = false;
       modalScope.showValidationMessages = false;

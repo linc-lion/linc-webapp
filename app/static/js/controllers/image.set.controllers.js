@@ -270,31 +270,32 @@ angular.module('linc.image.set.controllers', [])
     Set_Tags();
   }
 
-  var modal = null;
   $scope.Verify = function (imageset) {
-    $scope.modalTitle = 'Verify Associated Image Set';
-    $scope.imgset = imageset;
-    modal = $uibModal.open({
-        templateUrl: 'verifyimageset.html',
-        scope:$scope
+    var modalScope = $scope.$new();
+    modalScope.title = 'Verify Associated Image Set';
+    modalScope.imageset = angular.copy(imageset);
+    var modalInstance = $uibModal.open({
+        templateUrl: 'verify_imageset.tpl.html',
+        scope: modalScope
     });
-    modal.result.then(function (result) {
+    modalInstance.result.then(function (result) {
+      if(result)
+        $scope.Verify_Imageset(modalScope.imageset.id);
+      else
+        $scope.Disassociate(modalScope.imageset.id);
     },
     function (){
     });
+
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
+    }
+    // Set Imageset Verified
+    modalScope.ok = function (result) {
+      modalInstance.close(result);
+    };
   };
 
-  $scope.ModalCancel = function(){
-    modal.dismiss();
-  }
-  // Set Imageset Verified
-  $scope.ModalOk = function (opt) {
-    modal.close();
-    if(opt)
-      $scope.Verify_Imageset($scope.imgset.id);
-    else
-      $scope.Disassociate($scope.imgset.id);
-  };
 
   $scope.Verify_Imageset = function (id) {
     var data = {"is_verified": true};
@@ -632,31 +633,33 @@ angular.module('linc.image.set.controllers', [])
     $scope.imagesets[index]["action"] = 'cvrequest';
   }
 
-  var modal = null;
   $scope.Verify = function (imageset) {
-    $scope.imgset = imageset;
-    $scope.modalTitle = 'Verify Associated Image Set';
-    modal = $uibModal.open({
-        templateUrl: 'verifyimageset.html',
-        scope:$scope
+    var modalScope = $scope.$new();
+    modalScope.title = 'Verify Associated Image Set';
+    modalScope.imageset = angular.copy(imageset);
+    
+    var modalInstance  = $uibModal.open({
+        templateUrl: 'verify_imageset.tpl.html',
+        scope: modalScope
     });
-    modal.result.then(function (result) {
+    modalInstance.result.then(function (result) {
+      if(result)
+        $scope.Verify_Imageset(modalScope.imageset.id);
+      else
+        $scope.Disassociate(modalScope.imageset.id);
     },
     function (){
     });
+
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
+    }
+    // Set Imageset Verified
+    modalScope.ok = function (result) {
+      modalInstance.close(result);
+    };
   };
 
-  $scope.ModalCancel = function(){
-    modal.dismiss();
-  }
-  // Set Imageset Verified
-  $scope.ModalOk = function (opt) {
-    modal.close();
-    if(opt)
-      $scope.Verify_Imageset($scope.imgset.id);
-    else
-      $scope.Disassociate($scope.imgset.id);
-  };
   $scope.Verify_Imageset = function (ImagesetId) {
     var data = {"is_verified": true};
     LincServices.Verify(ImagesetId, data, function(){

@@ -63,7 +63,7 @@ angular.module('linc.controllers', ['linc.admin.controller',
       var modalScope = $scope.$new();
       modalScope.dataSending = false;
       modalScope.tooltip = {title: '<span><i class="icon icon-info"></i>passwords must match</span>', checked: false};
-      modalScope.modalTitle = 'Change your password?';
+      modalScope.title = 'Change your password?';
       modalScope.showValidationMessages = false;
       modalScope.user = {
         'email': user.name, 
@@ -117,34 +117,6 @@ angular.module('linc.controllers', ['linc.admin.controller',
         modalInstance.dismiss();
       }
     };
-    // var ShowInfo = function (){
-    //   var modalScope = $scope.$new();
-    //   modalScope.modalTitle = 'Password';
-    //   modalScope.modalMessage = "Password has been changed.\n" +
-    //     "The current session will be closed and you need login with the new password.";
-    //   var modalInstance = $uibModal.open({
-    //       templateUrl: 'PwdChanged.tmpl.html',
-    //       scope: modalScope,
-    //       size: '350px',
-    //       backdrop  : 'static',
-    //   });
-    //   modalInstance.result.then(function (result) {
-    //     AuthService.Logout(function(result){
-    //       $state.go("login");
-    //       NotificationFactory.success({
-    //         title: "Logout", message:'Good bye.',
-    //         position: "right", // right, left, center
-    //         duration: 3000     // milisecond
-    //       });
-    //     }, function(){
-    //       $state.go("login");
-    //     });
-    //   }, function(error){
-    //   });
-    //   modalScope.close = function (){
-    //     modalInstance.close();
-    //   }
-    // }
   }
 ])
 
