@@ -18,8 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 For more information or to contact visit linclion.org or email tech@linclion.org -->
 <script type="text/ng-template" id="ForgetSended.tmpl.html">
   <div name="ForgetSended" class="font-homenaje">
-    <div class="modal-header" ng-show="modalTitle">
-      <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
+    <div class="modal-header" ng-show="title">
+      <h4 class="modal-title" ng-bind-html="title"></h4>
     </div>
     <div class="modal-body break-paragraph" ng-bind-html="modalMessage">
     </div>
@@ -30,9 +30,9 @@ For more information or to contact visit linclion.org or email tech@linclion.org
 </script>
 <script type="text/ng-template" id="ForgetPwd.tmpl.html">
   <div name="ForgetPws" class="font-homenaje">
-    <div class="modal-header" ng-show="modalTitle">
+    <div class="modal-header" ng-show="title">
       <button type="button" class="close" ng-click="cancel()">&times;</button>
-      <h1 class="modal-title forgot-title" ng-bind-html="modalTitle"></h1>
+      <h1 class="modal-title forgot-title" ng-bind-html="title"></h1>
     </div>
     <div class="modal-body">
       <div id="container-forgot" class="wrapper">
