@@ -80,12 +80,9 @@ angular.module('linc.image.set.controllers', [])
     return label;
   }
 
-  //tmp
-  $scope.imageset.geopos_private = true;
-
   var Set_Tags = function(){
     $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.imageset.organization_id);
-    //tmp
+    
     $scope.showGeoPos = $scope.canShow || !$scope.imageset.geopos_private;
     $scope.canDelete = ($scope.canShow && !$scope.imageset.is_primary);
     $scope.canDisassociate = (!$scope.imageset.is_primary && $scope.imageset.lion_id && ($scope.user.organization_id == $scope.imageset.organization_id));
@@ -407,11 +404,7 @@ angular.module('linc.image.set.controllers', [])
 
   $scope.imagesets = _.map(imagesets, function(element, index) {
     element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
-    //tmp
-    //var gps = (Math.random() > 0.5) ? true : false;
-    //element['is_private'] = {gps: gps, map: gps};
-    //element['canLocate'] = (!element.is_private.gps || element.canShow);
-    element['geopos_private'] = true;
+
     element['canLocate'] = (!element.geopos_private || element.canShow);
 
     element.NeedVerify = (!element.is_primary && element.lion_id &&
