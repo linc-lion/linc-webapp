@@ -40,9 +40,11 @@ For more information or to contact visit linclion.org or email tech@linclion.org
           </h4>
         </div>
         <div uib-collapse="isOrgCollapsed">
-          <div class="panel-body">
+          <div class="panel-body checkbox">
             <label ng-repeat="organization in organizations">
-              <input ng-click="change_organizations()" type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">{{! organization.name}}
+              <input ng-click="change_organizations()" type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">
+              <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+              {{! organization.name}}
             </label>
           </div>
         </div>
@@ -69,9 +71,11 @@ For more information or to contact visit linclion.org or email tech@linclion.org
           </h4>
         </div>
         <div uib-collapse="isGenderCollapsed">
-          <div class="panel-body">
+          <div class="panel-body checkbox">
             <label ng-repeat="gender in genders">
-              <input ng-click="change_gender()" type="checkbox"  ng-model="gender.checked" ng-checked="gender.checked">{{! gender.label}}
+              <input ng-click="change_gender()" type="checkbox"  ng-model="gender.checked" ng-checked="gender.checked">
+              <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+              {{! gender.label}}
             </label>
           </div>
         </div>

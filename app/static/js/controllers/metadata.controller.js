@@ -53,12 +53,12 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
   $scope.Editable = ($scope.user.admin || (optionsSet.edit === 'edit' && optionsSet.data && $scope.user.organization_id === optionsSet.data.organization_id));
 
   // Associate
-  $scope.select_new_lion = {'show': false, 'label': 'Associate'};
-  $scope.new_lion = {'selected': undefined};
-  $scope.set_select = function(val){
+  $scope.lion_association = {'show': false, 'label': 'Associate'};
+  $scope.set_lion_list = function(val){
+    $scope.selected.new_lion = undefined;
     var org = $scope.user.organization_id;
     $scope.ListLions = [];
-    $scope.select_new_lion.label = 'Wait. Loading...'
+    $scope.lion_association.label = 'Wait. Loading...'
     LincServices.Lions(org).then(function(lions){
       console.log("loaded");
       _.forEach(lions, function(lion, index) {
@@ -70,7 +70,7 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
           $scope.ListLions.push({'index': index, 'id': lion.id, 'name': lion.name, 'label': label});
         }
       });
-      $scope.select_new_lion.show = val;
+      $scope.lion_association.show = val;
     });
   }
 
@@ -269,8 +269,8 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
           owner_organization_id: selected.owner_organization_id
         };
 
-        sel_data.lion_id = selected.lion_id ? selected.lion_id : ($scope.new_lion.selected == undefined ? null : $scope.new_lion.selected.id);     
-        sel_data.name = selected.lion_id ? selected.name : ($scope.new_lion.selected == undefined ? '-' : $scope.new_lion.selected.name);
+        sel_data.lion_id = selected.lion_id ? selected.lion_id : ($scope.selected.new_lion == undefined ? null : $scope.selected.new_lion.id);     
+        sel_data.name = selected.lion_id ? selected.name : ($scope.selected.new_lion == undefined ? '-' : $scope.selected.new_lion.name);
 
         var imageset_data = _.reduce(sel_data, function(result, n, key) {
           if (sel_data.hasOwnProperty(key) && (sel_data[key] != original_data[key])) {
@@ -529,10 +529,12 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       scars: scars,      
       notes: optionsSet.data.notes,
       isPrivate: optionsSet.data.geopos_private,
-      isDead: $scope.isLion ? optionsSet.data.dead : ''
+      isDead: optionsSet.data.dead
     }
-    if(!$scope.isLion)
+    if(!$scope.isLion){
       $scope.selected.lion_id = optionsSet.data.lion_id;
+      $scope.selected.label =  $scope.selected.lion_id + ' - '+ $scope.selected.name
+    }
     $scope.lion_age = getAge($scope.selected.date_of_birth);
 
     $scope.tooltip = {'title': 'Open ' + optionsSet.data.name + "'s Lion Page in new window", 'checked': true};

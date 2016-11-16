@@ -120,10 +120,18 @@ For more information or to contact visit linclion.org or email tech@linclion.org
           </div>
           <h4>Properties</h4>
           <div class="checkbox" ng-repeat="(key, property)  in Properties">
-            <label><input type="checkbox" checked ng-model="property.checked" ng-click="UnSelect_All();calc_itemspage()">{{! property.name}}</label>
+            <label>
+              <input type="checkbox" checked ng-model="property.checked" ng-click="UnSelect_All();calc_itemspage()">
+              <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+              {{! property.name}}
+            </label>
           </div>
           <div class="checkbox">
-            <label><input type="checkbox" ng-model="FilterSel.isCover" ng-click="UnSelect_All();calc_itemspage()"> Cover image</label>
+            <label>
+              <input type="checkbox" ng-model="FilterSel.isCover" ng-click="UnSelect_All();calc_itemspage()"> 
+              <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+              Cover image
+            </label>
           </div>
         </div>
 
@@ -138,12 +146,12 @@ For more information or to contact visit linclion.org or email tech@linclion.org
               <option></option>
             </select>
           </div>
-          <!--
           <div class="checkbox">
-            <label><input ng-click="Change_isPublic();" type="checkbox" checked ng-model="Selected.isPublic" >Public</label>
-          </div>-->
-          <div class="checkbox">
-            <label><input ng-click="Change_Cover()" ng-disabled="!Selected.isPublic || Selecteds.length!=1" type="checkbox" ng-model="Selected.isCover">Cover image</label>
+            <label>
+              <input ng-click="Change_Cover()" ng-disabled="!Selected.isPublic || Selecteds.length!=1" type="checkbox" ng-model="Selected.isCover">
+              <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+              Cover image
+            </label>
           </div>
         </div>
         <p>
