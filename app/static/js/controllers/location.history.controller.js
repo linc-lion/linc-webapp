@@ -32,20 +32,24 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
  
     $scope.show = (options.type == 'lion' || ((options.type == 'imageset') && options.is_primary));
 
-    //$scope.locations = history.locations;
-    // Tmp
     _.forEach(history.locations, function(hist){
-      hist.date_stamp = randomDate(new Date(2010, 0, 1), new Date());
+      var title;
+      var checked = false;
+      if(hist.date_stamp){
+        hist.date = hist.date_stamp;
+        title = 'Date Stamp';
+      }else{
+        hist.date = hist.updated_at;
+        title = 'No stamp date.<br>Using the update date.';
+        checked = true;
+      }
+      hist.date = hist.date_stamp ? hist.date_stamp : hist.updated_at;
+      hist.tooltip = {title: title, checked: checked};
     });
-    function randomDate(start, end) {
-      var date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-      return date.toJSON().slice(0,10);
-    };
+
     function compare(a,b) {
-      if (a.date_stamp < b.date_stamp)
-        return -1;
-      if (a.date_stamp > b.date_stamp)
-        return 1;
+      if (a.date < b.date) return -1;
+      if (a.date > b.date) return 1;
       return 0;
     };
 
@@ -124,7 +128,7 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
         }
       });
       if($scope.coord.length > 1){
-        var offseticon = {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW};//{path: 'M 1,0 -1,0',strokeColor: 'black', strokeWeight: 3};
+        var offseticon = {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW};
         var endicon = {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW};
         $scope.lines = new google.maps.Polyline({
           map: $scope.map, 
@@ -254,10 +258,11 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
       modalScope.info = {
         imageset: $scope.locations[index].label,
         imageset_id: id,
-        lion_name: 'Lion Name',
+        lion_name: $scope.locations[index].name,
         latitude: $scope.locations[index].latitude,
         longitude: $scope.locations[index].longitude,
-        date_stamp: $scope.locations[index].date_stamp
+        date_stamp: $scope.locations[index].date_stamp,
+        updated_at: $scope.locations[index].updated_at
       }
 
       modalScope.GoBackMessage = "Go to " + $scope.locations[index].label;

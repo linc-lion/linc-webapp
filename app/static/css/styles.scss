@@ -617,8 +617,14 @@ rzslider{
     .btn-primary .badge{
       color: $orange;
     }
+    .btn-primary .badge.update_at{
+      color: #7BAFD4;
+    }
     .btn-default .badge {
       background-color: $orange;
+    }
+    .btn-default .badge.update_at{
+      background-color: #7BAFD4;
     }
   }
 }

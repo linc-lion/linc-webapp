@@ -36,7 +36,8 @@ angular.module('linc.cvrequest.directive', [])
       useTemplateUrl: '@',
       useCtrl: '@',
       formSize: '@',
-      imagesetId: '=',
+      //imagesetId: '=',
+      imageset: '=',
       cvRequestSuccess:'&',
       debug: '=',
       modalIsOpen: '='
@@ -56,8 +57,11 @@ angular.module('linc.cvrequest.directive', [])
           scope: modalScope,
           windowClass: 'large-Modal',
           resolve: {
-            imagesetId: function () {
-              return scope.imagesetId;
+            // imagesetId: function () {
+            //   return scope.imagesetId;
+            // },
+            imageset: function () {
+              return scope.imageset;
             },
             lions: ['LincServices', function(LincServices) {
               return LincServices.Lions();
@@ -69,7 +73,8 @@ angular.module('linc.cvrequest.directive', [])
         });
         modalInstance.result.then(function (cvrequest) {
           scope.modalIsOpen = false;
-          scope.cvRequestSuccess({imageset_Id: scope.imagesetId, request_Obj: cvrequest});
+          //scope.cvRequestSuccess({imageset_Id: scope.imagesetId, request_Obj: cvrequest});
+          scope.cvRequestSuccess({imageset_Id: scope.imageset.id, request_Obj: cvrequest});
           console.log('Modal ok ' + cvrequest);
         }, function () {
           scope.modalIsOpen = false;
