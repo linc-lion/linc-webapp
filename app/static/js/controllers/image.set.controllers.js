@@ -127,6 +127,7 @@ angular.module('linc.image.set.controllers', [])
     // Location History
     var label = 'Image Set ' + $scope.imageset.id;
     var date = (new Date($scope.imageset.updated_at)).toLocaleDateString();
+
     $scope.location_options = { 
       type: 'imageset', 
       id: $scope.imageset.id,
@@ -135,8 +136,13 @@ angular.module('linc.image.set.controllers', [])
       history: { 
         count: 1,
         locations: [{
-          'id': $scope.imageset.id, 'label': label, 'updated_at': date, 
-          'longitude': $scope.imageset.longitude, 'latitude': $scope.imageset.latitude 
+          id: $scope.imageset.id, 
+          label: label, 
+          name: $scope.imageset.name,
+          updated_at: date, 
+          date_stamp: $scope.imageset.date_stamp,
+          longitude: $scope.imageset.longitude, 
+          latitude: $scope.imageset.latitude 
         }]
       }
     };

@@ -121,7 +121,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
       <metadata ng-if="imageset && canShow" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options" update-action="update_imageset(data)" debug="debug" modal-is-open="is_modal_open"></metadata>
       <div ng-if="imageset && canShow">
         <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset="imageset" cvresults-id="imageset.cvresults" cvrequest-id="imageset.cvrequest" ng-if="imageset.action == 'cvresults'" cv-result-erased="CVResultsErased(imagesetId)" imageset-updated="UpdateImageset(data, imagesetId)" debug="debug" modal-is-open="is_modal_open"></cvresults>
-        <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest.html" form-size="lg" imageset-id="imageset.id" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)" debug="debug" modal-is-open="is_modal_open"></cvrequest>
+        <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest.html" form-size="lg" imageset="imageset" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)" debug="debug" modal-is-open="is_modal_open"></cvrequest>
         <p ng-if="imageset.action == 'cvpending'">
           <!--<a class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ><img src="/static/images/waiting.gif" />CV Request Pending</a>-->
           <a class="btn btn-lg btn-default btn-block btn-minwidth-180" data-animation="am-fade-and-slide-top" ><i class="icon icon-clock"></i>CV Request Pending</a>
