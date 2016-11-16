@@ -27,9 +27,9 @@ from handlers.base import BaseHandler
 import hmac, hashlib
 from os.path import realpath,dirname
 from os import remove,mkdir,chdir,curdir
-from base64 import b64encode as convertImage
+from base64 import b64encode
 from json import loads,dumps
-import logging
+from logging import info
 from uuid import uuid4 as uid
 from zipfile import ZipFile
 from shutil import rmtree
@@ -37,6 +37,7 @@ from datetime import datetime,timedelta
 from utils.rolecheck import allowedRole
 from tornadoist import ProcessMixin
 import pycurl
+from lib.exif import get_exif_data
 
 class ImageSetsListHandler(BaseHandler):
     @asynchronous
@@ -127,7 +128,7 @@ class CVResultsHandler(BaseHandler):
         if xlist:
             resource_url += '/' + xlist
 
-        print(resource_url)
+        info(resource_url)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_json_output()
@@ -171,7 +172,7 @@ class CVRequestHandler(BaseHandler):
     @web_authenticated
     def get(self, req_id=''):
         resource_url = '/cvrequests/' + req_id
-        print(resource_url)
+        info(resource_url)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_json_output()
@@ -207,7 +208,7 @@ class LionsHandler(BaseHandler):
                 resource_url += '?api=true'
         elif api:
             resource_url += '?api=true'
-        logging.info(resource_url)
+        info(resource_url)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_json_output()
@@ -238,11 +239,11 @@ class LionsHandler(BaseHandler):
         self.set_json_output()
         if lion_id:
             resource_url = '/lions/' + lion_id
-            print(self.input_data)
+            info(self.input_data)
             data = dict(self.input_data)
             if "_xsrf" in data.keys():
                 del data["_xsrf"]
-            print(data)
+            info(data)
             headers = {'Linc-Api-AuthToken':self.current_user['token']}
             response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                        method='PUT',body=self.json_encode(data),headers=headers)
@@ -278,7 +279,7 @@ class ImageSetsHandler(BaseHandler):
         resource_url = '/imagesets'
         if imageset_id:
             resource_url += '/' + imageset_id
-        print(resource_url)
+        info(resource_url)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_json_output()
@@ -310,11 +311,11 @@ class ImageSetsHandler(BaseHandler):
         self.set_json_output()
         if imageset_id:
             resource_url = '/imagesets/' + imageset_id
-            print(self.input_data)
+            info(self.input_data)
             data = dict(self.input_data)
             if "_xsrf" in data.keys():
                 del data["_xsrf"]
-            print(data)
+            info(data)
             headers = {'Linc-Api-AuthToken':self.current_user['token']}
             response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                        method='PUT',body=self.json_encode(data),headers=headers)
@@ -350,7 +351,7 @@ class OrganizationsHandler(BaseHandler):
         resource_url = '/organizations'
         if organization_id:
             resource_url += '/' + organization_id
-        print(resource_url)
+        info(resource_url)
         headers = {'Linc-Api-AuthToken':self.current_user['token']}
         response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
         self.set_json_output()
@@ -501,7 +502,7 @@ class ImagesHandler(BaseHandler):
                 folder = self.settings['static_path']+'/'+str(uid())
                 mkdir(folder)
                 for link in links:
-                    print('Downloading: '+link)
+                    info('Downloading: '+link)
                     #urllib.urlretrieve(link,folder+'/'+link.split('/')[-1])
                     #r = http.request('GET',link)
                     #with open(folder+'/'+link.split('/')[-1],'wb') as f:
@@ -515,7 +516,7 @@ class ImagesHandler(BaseHandler):
                         c.close()
                 curpath = dirname(realpath(curdir))
                 chdir(folder)
-                print('Creating zip file: '+folder+'.zip')
+                info('Creating zip file: '+folder+'.zip')
                 with ZipFile(folder+'.zip', 'w') as myzip:
                     for link in links:
                         myzip.write(link.split('/')[-1])
@@ -548,11 +549,11 @@ class ImagesHandler(BaseHandler):
         self.set_json_output()
         if image_id:
             resource_url = '/images/' + image_id
-            print(self.input_data)
+            info(self.input_data)
             data = dict(self.input_data)
             if "_xsrf" in data.keys():
                 del data["_xsrf"]
-            print(data)
+            info(data)
             headers = {'Linc-Api-AuthToken':self.current_user['token']}
             response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
                            method='PUT',body=self.json_encode(data),headers=headers)
@@ -592,8 +593,9 @@ class ImagesUploadHandler(BaseHandler, ProcessMixin):
             fh = open(dirfs+'/'+fname, 'wb')
             fh.write(body)
             fh.close()
+            exif_data = get_exif_data(dirfs+'/'+fname)
             with open(dirfs+'/'+fname, "rb") as imageFile:
-                fileencoded = convertImage(imageFile.read())
+                fileencoded = b64encode(imageFile.read())
             if fileencoded:
                 remove(dirfs+'/'+fname)
                 image_type = self.get_argument("image_type","cv")
@@ -606,14 +608,15 @@ class ImagesUploadHandler(BaseHandler, ProcessMixin):
                     "image_type" : image_type,
                     "is_public" : is_public,
                     "image_set_id" : int(image_set_id),
-                    "iscover" : iscover
+                    "iscover" : iscover,
+                    "filename": fname,
+                    "exif_data": exif_data
                 }
-                logging.info(body)
-                body["image"] = fileencoded
+                body["image"] = fileencoded.decode('utf-8')
                 resource_url = '/images/upload'
                 headers = {'Linc-Api-AuthToken':self.current_user['token']}
                 response = yield Task(self.api,url=self.settings['API_URL']+resource_url,
-                              method='POST',body=self.json_encode(body),headers=headers)
+                              method='POST',body=dumps(body),headers=headers)
                 if response.code in [200,201]:
                     self.response(200,'File successfully uploaded. You must wait the processing phase for your image.')
                 elif response.code == 409:

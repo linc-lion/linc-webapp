@@ -50,9 +50,9 @@ class Application(tornado.web.Application):
 # Run server
 def main():
     app = Application()
-    print('Web App Handlers:')
+    logging.info('Web App Handlers:')
     for h in url_patterns:
-        print(h)
+        logging.info(h)
     httpserver = tornado.httpserver.HTTPServer(app)
     httpserver.listen(int(os.environ.get('PORT',options.port)))
     tornado.ioloop.IOLoop.instance().start()

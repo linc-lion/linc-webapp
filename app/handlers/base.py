@@ -126,8 +126,7 @@ class BaseHandler(RequestHandler):
         elif status_code == 405:
             self.response(status_code,'Method not allowed in this resource. Check your verb (GET,POST,PUT and DELETE)')
         else:
-            info(kwargs)
-            self.response(status_code,'Error: '+str(kwargs))
+            self.response(status_code,'Internal server error.')
 
 class VersionHandler(BaseHandler):
     def get(self):
