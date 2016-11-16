@@ -32,11 +32,13 @@ For more information or to contact visit linclion.org or email tech@linclion.org
       </div>
       <div class="form-group">
         <label for="image_url">Image url:</label>
-        <div class="input-group"> 
+        <input type="url" readonly class="form-control" name="image_url" ng-model="image.url" 
+          ng-dblclick="image.url.length && !edit.image_url && CopyTextToClipBoard(image.url,'image url')">
+<!--         <div class="input-group"> 
           <input type="url" ng-readonly="!edit.image_url" class="form-control" name="image_url" ng-model="image.url" 
             ng-dblclick="image.url.length && !edit.image_url && CopyTextToClipBoard(image.url,'image url')">
           <span class="input-group-addon icon icon-pencil2" ng-click="edit.image_url=!edit.image_url">Edit</span>
-        </div>
+        </div> -->
       </div>
       <div class="form-group">
         <ui-select ng-model="image.image_type" theme="bootstrap">
@@ -57,8 +59,10 @@ For more information or to contact visit linclion.org or email tech@linclion.org
       </div>
       <div class="checkbox">
         <label for="is_public">
-        <input name="is_public" id="is_public"  type="checkbox"  ng-model="image.is_public" ng-checked="image.is_public">
-          Is Public </label>
+          <input name="is_public" id="is_public" type="checkbox" ng-model="image.is_public" ng-checked="image.is_public">
+          <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+          Is Public 
+        </label>
       </div>
     </div>
     <div class="modal-footer">
