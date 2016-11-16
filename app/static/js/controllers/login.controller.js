@@ -69,7 +69,7 @@ angular.module('linc.login.controller', [])
     $scope.forgotPwd = function(){
       var modalScope = $scope.$new();
       modalScope.dataSending = false;
-      modalScope.modalTitle = 'Reset your password?';
+      modalScope.title = 'Reset your password?';
       modalScope.showValidationMessages = false;
       modalScope.forgot = {username: $scope.loginData.username};
 
@@ -118,7 +118,7 @@ angular.module('linc.login.controller', [])
     }
     var ShowInfo = function (data){
       var modalScope = $scope.$new();
-      modalScope.modalTitle = 'Verification email';
+      modalScope.title = 'Verification email';
       modalScope.modalMessage = "An email with password reset instructions has been sent to "+ 
                             data.username + ", if it exists on our system.";
       var modalInstance = $uibModal.open({

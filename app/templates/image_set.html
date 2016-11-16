@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
-<div name="ImageSet" class="font-homenaje">
+<div name="ImageSet" class="font-homenaje-1-2">
   <h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a> Image Set Info</h1>
   <div class="row">
     <div class="col-sm-3 line-right">
@@ -35,14 +35,12 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <h4 class="h4inline">Lion ID:</h4>
         <h4 class="h4data">{{!imageset.lion_id}}</h4>
       </div>
-  <!--tmp-->
-      <div class="meta-info">
+      <div class="meta-info" ng-show="imageset.dead">
         <h4 class="h4inline">Dead:</h4>
         <div class="div-dead-icon">
           <span class="dead-icon"></span>
         </div>
       </div>
-  <!--tmp-->
       <div class="meta-info" ng-show="canDisassociate">
         <button type="button" class="btn btn-primary btn-sm btn-minwidth-100" ng-click="Disassociate(imageset.id)">Disassociate</button>
       </div>
@@ -72,11 +70,11 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <h4 class="h4data">{{!imageset.age}}</h4>
       </div>
   <!--tmp-->
-      <div class="meta-info" ng-show="canShow || !imageset.is_private.gps">
+      <div class="meta-info" ng-if="showGeoPos">
         <h4 class="h4inline">Latitude:</h4>
         <h4 class="h4data">{{!imageset.latitude | number:4}}</h4>
       </div>
-      <div class="meta-info" ng-show="canShow || !imageset.is_private.gps">
+      <div class="meta-info" ng-if="showGeoPos">
         <h4 class="h4inline">Longitude:</h4>
         <h4 class="h4data">{{!imageset.longitude | number:4}}</h4>
       </div>
@@ -107,7 +105,6 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <h4 class="h4data">{{!imageset.scars}}</h4>
       </div>
       <div class="meta-info" ng-show="imageset.eye_damage">
-  <!--tmp-->
         <h4 class="h4inline">Eye Damage /<br> Pigmentation:</h4>
         <h4 class="h4data" >{{!imageset.eye_damage}}</h4>
       </div>
@@ -123,7 +120,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
     <div class="col-sm-3 line-left padding-top-12">
       <image-gallery ng-show="imageset" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="gallery_options" debug="debug" modal-is-open="is_modal_open" gallery-updated="Reload_Page()" show-privated="canShow"></image-gallery>
   <!--tmp-->
-      <location-history ng-if="imageset && (canShow || !imageset.is_private.map)" use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" type="imageset" options="location_options" location-goto="location_goto(imageset_Id)" debug="debug" modal-is-open="is_modal_open"></location-history>
+      <location-history ng-if="imageset && showGeoPos" use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" type="imageset" options="location_options" location-goto="location_goto(imageset_Id)" debug="debug" modal-is-open="is_modal_open"></location-history>
       <metadata ng-if="imageset && canShow" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options" update-action="update_imageset(data)" debug="debug" modal-is-open="is_modal_open"></metadata>
       <div ng-if="imageset && canShow">
         <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset="imageset" cvresults-id="imageset.cvresults" cvrequest-id="imageset.cvrequest" ng-if="imageset.action == 'cvresults'" cv-result-erased="CVResultsErased(imagesetId)" imageset-updated="UpdateImageset(data, imagesetId)" debug="debug" modal-is-open="is_modal_open"></cvresults>

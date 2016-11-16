@@ -48,9 +48,11 @@ angular.module('linc.cvrequest.controller', ['linc.cvrequest.directive'])
     element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
 
     //tmp
-    var gps = (Math.random() > 0.5) ? true : false;
-    element['is_private'] = {gps: gps, map: gps};
-    element['canLocate'] = (!element.is_private.gps || element.canShow);
+    //var gps = (Math.random() > 0.5) ? true : false;
+    //element['is_private'] = {gps: gps, map: gps};
+    //element['canLocate'] = (!element.is_private.gps || element.canShow);
+    element['geopos_private'] = true;
+    element['canLocate'] = (!element.geopos_private || element.canShow);
 
     var elem = {};
     var TAGS = [];
@@ -123,7 +125,7 @@ angular.module('linc.cvrequest.controller', ['linc.cvrequest.directive'])
     $scope.isCVAgeCollapsed = !$scope.isCVAgeCollapsed
     lion_filters.isAgeCollapsed = $scope.isCVAgeCollapsed;
   }
-  $scope.collapse_cv_organization = function(){
+  $scope.collapse_cv_organizations = function(){
     $scope.isCVOrgCollapsed = !$scope.isCVOrgCollapsed
     lion_filters.isOrgCollapsed = $scope.isCVOrgCollapsed;
   }

@@ -36,7 +36,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         </div>
       </script>
       <script type="text/ng-template" id="Dialog.Delete.tmpl.html">
-        <div name="DialogDelete" class="font-homenaje">
+        <div name="DialogDelete" class="font-homenaje-1-2">
           <div class="modal-header" ng-show="title">
             <h4 class="modal-title" ng-bind-html="title"></h4>
           </div>
@@ -48,23 +48,11 @@ For more information or to contact visit linclion.org or email tech@linclion.org
           </div>
         </div>
       </script>
-      <!-- <script type="text/ng-template" id="PwdChanged.tmpl.html">
-        <div name="PwdChanged" class="font-homenaje">
-          <div class="modal-header" ng-show="modalTitle">
-            <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
-          </div>
-          <div class="modal-body break-paragraph" ng-bind-html="modalMessage">
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" ng-click="close()">Close</button>
-          </div>
-        </div>
-      </script> -->
       <script type="text/ng-template" id="ChangePwd.tmpl.html">
-        <form name="form" ng-submit="changePassword(form.$valid)" class="font-homenaje">
-          <div class="modal-header" ng-show="modalTitle">
+        <form name="form" ng-submit="changePassword(form.$valid)" class="font-homenaje-1-2">
+          <div class="modal-header" ng-show="title">
             <button type="button" class="close" ng-click="cancel()">&times;</button>
-            <h1 class="modal-title forgot-title" ng-bind-html="modalTitle"></h1>
+            <h1 class="modal-title forgot-title" ng-bind-html="title"></h1>
           </div>
           <div class="modal-body">
             <div id="container-forgot" class="wrapper">
@@ -73,11 +61,6 @@ For more information or to contact visit linclion.org or email tech@linclion.org
                   <label  for="useremail">User:</label>
                   <input class="form-control" readonly type="text" name="useremail" ng-model="user.email">
                 </div>
-                <!-- <div class="form-group">
-                  <label  for="old_password">Old Password:</label>
-                  <input type="password" name="password_fake" value="" class="display-none" />
-                  <input class="form-control" type="password" name="old_password" ng-model="user.password.old" placeholder="enter the old password" required oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('please fill out this field with Password')">
-                </div> -->
                 <div class="form-group">
                   <label for="password">Password:</label>
                   <input type="password" name="password_fake" value="" class="display-none" />
@@ -146,7 +129,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         </div>
       </nav>
       <div id="main">
-        <div ui-view class="font-homenaje"></div>
+        <div ui-view class="ffont-homenaje-1-2"></div>
       </div>
 
   {% end %}

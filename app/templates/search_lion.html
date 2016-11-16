@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
-<div name="SearchLion" class="font-homenaje">
+<div name="SearchLion" class="font-homenaje-1-2">
   <button type="button" class="btn-help pull-right btn btn-icon" data-placement="left" title="" data-content="Search lions to view summaries of name, age, sex, and organization. Select a search result row to view a lion's primary image set, metadata, and click through to more lion information." data-trigger="focus" bs-popover><i class="icon icon-help-with-circle"></i></button>
 
   <h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a> Search Lion</h1>
@@ -36,13 +36,15 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         </div>
         <div role="tab">
           <h4 >
-            <a bs-collapse-toggle ng-click="collapse_organization()"><i class="pull-right icon icon-select-arrows"></i> Organization</a>
+            <a bs-collapse-toggle ng-click="collapse_organizations()"><i class="pull-right icon icon-select-arrows"></i> Organization</a>
           </h4>
         </div>
         <div uib-collapse="isOrgCollapsed">
-          <div class="panel-body">
+          <div class="panel-body checkbox">
             <label ng-repeat="organization in organizations">
-              <input ng-click="change_organizations()" type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">{{! organization.name}}
+              <input ng-click="change_organizations()" type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">
+              <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+              {{! organization.name}}
             </label>
           </div>
         </div>
@@ -69,9 +71,11 @@ For more information or to contact visit linclion.org or email tech@linclion.org
           </h4>
         </div>
         <div uib-collapse="isGenderCollapsed">
-          <div class="panel-body">
+          <div class="panel-body checkbox">
             <label ng-repeat="gender in genders">
-              <input ng-click="change_gender()" type="checkbox"  ng-model="gender.checked" ng-checked="gender.checked">{{! gender.label}}
+              <input ng-click="change_gender()" type="checkbox"  ng-model="gender.checked" ng-checked="gender.checked">
+              <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+              {{! gender.label}}
             </label>
           </div>
         </div>

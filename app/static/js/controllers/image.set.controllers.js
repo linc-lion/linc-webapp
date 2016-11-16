@@ -28,10 +28,6 @@ angular.module('linc.image.set.controllers', [])
   $scope.imageset = imageset;
   $scope.user = AuthService.user;
 
-  //tmp
-  $scope.imageset.is_private = {map: true, gps: true};
-  $scope.imageset.is_dead = true;
-
   var count = 0;
   var Poller = function () {
     PollerService.cvrequests_list().then(function(response){
@@ -84,8 +80,13 @@ angular.module('linc.image.set.controllers', [])
     return label;
   }
 
+  //tmp
+  $scope.imageset.geopos_private = true;
+
   var Set_Tags = function(){
     $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.imageset.organization_id);
+    //tmp
+    $scope.showGeoPos = $scope.canShow || !$scope.imageset.geopos_private;
     $scope.canDelete = ($scope.canShow && !$scope.imageset.is_primary);
     $scope.canDisassociate = (!$scope.imageset.is_primary && $scope.imageset.lion_id && ($scope.user.organization_id == $scope.imageset.organization_id));
     $scope.NeedVerify = (!$scope.imageset.is_primary && $scope.imageset.lion_id && ($scope.user.organization_id == $scope.imageset.lions_org_id) && ($scope.user.organization_id != $scope.imageset.organization_id));
@@ -223,9 +224,10 @@ angular.module('linc.image.set.controllers', [])
 
   $scope.Disassociate = function (id){
     var data = {'lion_id': null, 'is_verified': false};
-    LincServices.Associate(id, data, function(){
+    LincServices.Associate(id, data, function(response){
       $scope.imageset.lion_id = null;
       $scope.imageset.name = '-';
+      $scope.imageset.dead = false;
       $scope.imageset.lions_org_id = null;
       $scope.imageset.is_verified = false;
       Set_Tags();
@@ -270,31 +272,32 @@ angular.module('linc.image.set.controllers', [])
     Set_Tags();
   }
 
-  var modal = null;
   $scope.Verify = function (imageset) {
-    $scope.modalTitle = 'Verify Associated Image Set';
-    $scope.imgset = imageset;
-    modal = $uibModal.open({
-        templateUrl: 'verifyimageset.html',
-        scope:$scope
+    var modalScope = $scope.$new();
+    modalScope.title = 'Verify Associated Image Set';
+    modalScope.imageset = angular.copy(imageset);
+    var modalInstance = $uibModal.open({
+        templateUrl: 'verify_imageset.tpl.html',
+        scope: modalScope
     });
-    modal.result.then(function (result) {
+    modalInstance.result.then(function (result) {
+      if(result)
+        $scope.Verify_Imageset(modalScope.imageset.id);
+      else
+        $scope.Disassociate(modalScope.imageset.id);
     },
     function (){
     });
+
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
+    }
+    // Set Imageset Verified
+    modalScope.ok = function (result) {
+      modalInstance.close(result);
+    };
   };
 
-  $scope.ModalCancel = function(){
-    modal.dismiss();
-  }
-  // Set Imageset Verified
-  $scope.ModalOk = function (opt) {
-    modal.close();
-    if(opt)
-      $scope.Verify_Imageset($scope.imgset.id);
-    else
-      $scope.Disassociate($scope.imgset.id);
-  };
 
   $scope.Verify_Imageset = function (id) {
     var data = {"is_verified": true};
@@ -404,12 +407,12 @@ angular.module('linc.image.set.controllers', [])
 
   $scope.imagesets = _.map(imagesets, function(element, index) {
     element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
-
     //tmp
-    var gps = (Math.random() > 0.5) ? true : false;
-    element['is_private'] = {gps: gps, map: gps};
-    element['canLocate'] = (!element.is_private.gps || element.canShow);
-    element['is_dead'] = (Math.random() > 0.5) ? true : false;
+    //var gps = (Math.random() > 0.5) ? true : false;
+    //element['is_private'] = {gps: gps, map: gps};
+    //element['canLocate'] = (!element.is_private.gps || element.canShow);
+    element['geopos_private'] = true;
+    element['canLocate'] = (!element.geopos_private || element.canShow);
 
     element.NeedVerify = (!element.is_primary && element.lion_id &&
       ($scope.user.organization_id == element.lions_org_id) &&
@@ -548,7 +551,7 @@ angular.module('linc.image.set.controllers', [])
     $scope.isAgeCollapsed = !$scope.isAgeCollapsed;
     imagesets_filters.isAgeCollapsed = $scope.isAgeCollapsed;
   }
-  $scope.collapse_organization = function(){
+  $scope.collapse_organizations = function(){
     $scope.isOrgCollapsed = !$scope.isOrgCollapsed;
     imagesets_filters.isOrgCollapsed = $scope.isOrgCollapsed;
   }
@@ -633,31 +636,33 @@ angular.module('linc.image.set.controllers', [])
     $scope.imagesets[index]["action"] = 'cvrequest';
   }
 
-  var modal = null;
   $scope.Verify = function (imageset) {
-    $scope.imgset = imageset;
-    $scope.modalTitle = 'Verify Associated Image Set';
-    modal = $uibModal.open({
-        templateUrl: 'verifyimageset.html',
-        scope:$scope
+    var modalScope = $scope.$new();
+    modalScope.title = 'Verify Associated Image Set';
+    modalScope.imageset = angular.copy(imageset);
+    
+    var modalInstance  = $uibModal.open({
+        templateUrl: 'verify_imageset.tpl.html',
+        scope: modalScope
     });
-    modal.result.then(function (result) {
+    modalInstance.result.then(function (result) {
+      if(result)
+        $scope.Verify_Imageset(modalScope.imageset.id);
+      else
+        $scope.Disassociate(modalScope.imageset.id);
     },
     function (){
     });
+
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
+    }
+    // Set Imageset Verified
+    modalScope.ok = function (result) {
+      modalInstance.close(result);
+    };
   };
 
-  $scope.ModalCancel = function(){
-    modal.dismiss();
-  }
-  // Set Imageset Verified
-  $scope.ModalOk = function (opt) {
-    modal.close();
-    if(opt)
-      $scope.Verify_Imageset($scope.imgset.id);
-    else
-      $scope.Disassociate($scope.imgset.id);
-  };
   $scope.Verify_Imageset = function (ImagesetId) {
     var data = {"is_verified": true};
     LincServices.Verify(ImagesetId, data, function(){
@@ -684,10 +689,11 @@ angular.module('linc.image.set.controllers', [])
 
   $scope.Disassociate = function (ImagesetId){
     var data = {'lion_id': null, 'is_verified': false};
-    LincServices.Associate(ImagesetId, data, function(){
+    LincServices.Associate(ImagesetId, data, function(response){
       var id = _.indexOf($scope.imagesets, _.find($scope.imagesets, {id: ImagesetId}));
       $scope.imagesets[id].lion_id = null;
       $scope.imagesets[id].name = '-';
+      $scope.imagesets[id].dead = false;
       $scope.imagesets[id].lions_org_id = null;
       $scope.imagesets[id].is_verified = false;
       //$scope.imagesets[id].NeedVerify = false;
@@ -725,7 +731,7 @@ angular.module('linc.image.set.controllers', [])
     console.log('Search Imagesets - has filter params');
     $scope.name_or_id = $scope.filters.hasOwnProperty('name_or_id') ? $scope.filters.name_or_id : default_filters.name_or_id;
     $scope.tag_features = $scope.filters.hasOwnProperty('tag_features') ? $scope.filters.tag_features : default_filters.tag_features;
-    $scope.organizations = $scope.filters.hasOwnProperty('organizations') ? $scope.filters.name_or_id : default_filters.organizations;
+    $scope.organizations = $scope.filters.hasOwnProperty('organizations') ? $scope.filters.organizations : default_filters.organizations;
     $scope.genders = $scope.filters.hasOwnProperty('genders') ? $scope.filters.genders : default_filters.genders;
     $scope.LionAge = $scope.filters.hasOwnProperty('LionAge') ? $scope.filters.LionAge : default_filters.LionAge;
 

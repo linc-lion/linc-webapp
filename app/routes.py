@@ -60,7 +60,7 @@ url_patterns = [
     (r"/cvresults.html", CVResultsMainHandler),
     (r"/cvrequest.html", CVRequestMainHandler),
     (r"/uploadimages.html", UploadImagesHandler),
-    (r"/verifyimageset.html", VerifyImageSetHandler),
+    (r"/verify_imageset.tpl.html", VerifyImageSetHandler),
     (r"/view.images.html", ViewImagesHandler),
     # Handlers for API comunication
     (r"/imagesets/list", ImageSetsListHandler),
