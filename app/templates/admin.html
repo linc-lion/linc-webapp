@@ -17,22 +17,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
 <script type="text/ng-template" id="Password.tmpl.html">
-  <form name="form" ng-submit="submit(form.$valid)" class="font-homenaje">
-    <div class="modal-header" ng-show="modalTitle">
-      <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
+  <form name="form" ng-submit="submit(form.$valid)" class="font-homenaje-1-2">
+    <div class="modal-header" ng-show="title">
+      <h4 class="modal-title" ng-bind-html="title"></h4>
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label  for="admin_email">Name:</label>
+        <label for="admin_email">Name:</label>
         <input class="form-control" readonly type="text" name="admin_email" ng-model="sel_user.email">
       </div>
       <div class="form-group">
-        <label  for="password">Password:</label>
+        <label for="password">Password:</label>
         <input type="password" name="password_fake" value="" class="display-none" />
         <input class="form-control" type="password" name="password" ng-model="sel_user.password" placeholder="New Password" required oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('please fill out this field with Password')">
       </div>
       <div class="form-group">
-        <label  for="confirm_password">Password:</label>
+        <label for="confirm_password">Password:</label>
         <input type="password" name="password_fake" value="" class="display-none" />
         <input class="form-control" type="password" name="confirm_password"  ng-model="sel_user.confirmPassword" placeholder="Confirm Password"
           required oninput="setCustomValidity('')" nx-equal-ex="sel_user.password"
@@ -52,8 +52,8 @@ For more information or to contact visit linclion.org or email tech@linclion.org
 </script>
 
 <div class="font-homenaje">
-  <nav class="navbar navbar-default">
-    <p class="navbar-text"><strong>Administration:</strong></p>
+  <nav class="navbar navbar-default font-homenaje-1-2">
+    <p class="navbar-text" ><strong>Administration:</strong></p>
     <ul class="nav navbar-nav">
       <li ng-repeat="tab in tabs"
           ui-sref="{{!tab.sref}}"

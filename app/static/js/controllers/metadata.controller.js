@@ -53,21 +53,24 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
   $scope.Editable = ($scope.user.admin || (optionsSet.edit === 'edit' && optionsSet.data && $scope.user.organization_id === optionsSet.data.organization_id));
 
   // Associate
-  $scope.select_new_lion = {'show': false, 'label': 'Associate'};
-  $scope.new_lion = {'selected': undefined};
-  $scope.set_select = function(val){
+  $scope.lion_association = {'show': false, 'label': 'Associate'};
+  $scope.set_lion_list = function(val){
+    $scope.selected.new_lion = undefined;
     var org = $scope.user.organization_id;
     $scope.ListLions = [];
-    $scope.select_new_lion.label = 'Wait. Loading...'
+    $scope.lion_association.label = 'Wait. Loading...'
     LincServices.Lions(org).then(function(lions){
       console.log("loaded");
       _.forEach(lions, function(lion, index) {
         if(lion.organization_id === $scope.user.organization_id){
-          var label = lion.id + ' - ' + lion.name;
+          var label = '<span>' + lion.id + ' - ' + lion.name ;
+          if(lion.dead)
+            label += '<i class="lion-list-icon-dead"></i>';
+          label += '</span>'
           $scope.ListLions.push({'index': index, 'id': lion.id, 'name': lion.name, 'label': label});
         }
       });
-      $scope.select_new_lion.show = val;
+      $scope.lion_association.show = val;
     });
   }
 
@@ -93,22 +96,27 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       return;
     }
     var org = _.find($scope.organizations, {'id': $scope.selected.organization_id});
-    var type = optionsSet.type == 'lion [' + ']'? 'Lion' : 'ImageSet [' + ']';
-    $scope.modalTitle = 'Warning';
-    $scope.modalMessage = 'This change transfers Ownership of Lion/Image Set, and can not be undone!' +
+    var type = optionsSet.type == 'lion' ? 'Lion' : 'ImageSet';
+    var modalScope = $scope.$new();
+    modalScope.title = 'Warning';
+    modalScope.message = 'This change transfers Ownership of Lion/Image Set, and can not be undone!' +
     'Would you like to transfer ownership of this ' + type + ' to ' + org.name + ' ?';
-    $scope.modalContent = 'Form';
-    $scope.modalInstance = $uibModal.open({
+    var modalInstance = $uibModal.open({
         templateUrl: 'Warning.tmpl.html',
-        scope:$scope
+        scope: modalScope
     });
-    $scope.ok = function (){
-      $scope.modalInstance.close();
-    }
-    $scope.cancel = function(){
+    modalInstance.result.then(function (result) {
+      
+    }, function (){
       $scope.selected.organization_id = original_data.organization_id;
       $scope.selected.owner_organization_id = original_data.organization_id;
-      $scope.modalInstance.dismiss();
+    });
+
+    modalScope.ok = function (){
+      modalInstance.close();
+    }
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
     }
   }
 
@@ -147,20 +155,19 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
           date_stamp: (selected.date_stamp == null || selected.date_stamp == '') ? null : selected.date_stamp.toISOString().slice(0,10),
           gender: selected.gender,
           date_of_birth: (selected.date_of_birth == null || selected.date_of_birth == '') ? null: selected.date_of_birth.toISOString().slice(0,10),
-          tags: TAGS == "null" ? null: TAGS ,
-          notes: selected.notes,
           latitude: isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
           longitude: isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
+          tags: TAGS == "null" ? null: TAGS ,
+          notes: selected.notes,
+          geopos_private: selected.isPrivate,
+          owner_organization_id: selected.organization_id,
+          // Fixed
           lion_id: null,
           main_image_id: null,
           uploading_user_id: selected.uploading_user_id,
           uploading_organization_id: selected.organization_id,
-          owner_organization_id: selected.organization_id,
           is_primary: true,
           is_verified: true
-          //tmp
-          //"is_Dead"
-          //"isPrivate": selected.isPrivate,
         }
         var lion_data = {
           name: selected.name,
@@ -173,17 +180,19 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       else{
         var imageset_data = {
           date_stamp: (selected.date_stamp == null || selected.date_stamp == '') ? null : selected.date_stamp.toISOString().slice(0,10),
-          latitude: isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
-          longitude: isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
           gender: selected.gender,
           date_of_birth: (selected.date_of_birth == null || selected.date_of_birth == '') ? null: selected.date_of_birth.toISOString().slice(0,10),
+          latitude: isNaN(parseFloat(selected.latitude)) ? null : parseFloat(selected.latitude),
+          longitude: isNaN(parseFloat(selected.longitude)) ? null : parseFloat(selected.longitude),
           tags: TAGS == "null" ? null : TAGS,
           notes: selected.notes,
+          geopos_private: selected.isPrivate,
+          owner_organization_id: selected.owner_organization_id,
+          // Fixed
           lion_id: null,
           main_image_id: null,
           uploading_user_id: selected.uploading_user_id,
           uploading_organization_id: selected.organization_id,
-          owner_organization_id: selected.organization_id,
           is_primary: null,
           is_verified: false
         }
@@ -196,42 +205,52 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       if(optionsSet.type === 'lion'){
         //Selected Dates
         var lion_sel_data = { 
-          organization_id: selected.organization_id,
           name : selected.name,
-          dead: selected.isDead
+          organization_id: selected.organization_id,
+          dead : selected.isDead
         };
         var imageset_sel_data = {
-          owner_organization_id: selected.organization_id,
           date_stamp: date_stamp,
-          latitude: isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
-          longitude: isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
           gender: selected.gender,
           date_of_birth: date_of_birth,
+          latitude: isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
+          longitude: isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
           tags: TAGS,
-          notes: selected.notes
+          notes: selected.notes,
+          geopos_private: selected.isPrivate,
+          owner_organization_id: selected.organization_id          
         };
         var lion_data = _.reduce(lion_sel_data, function(result, n, key) {
-          if (lion_sel_data[key] && lion_sel_data[key] != original_data[key]) {
+          if (lion_sel_data.hasOwnProperty(key) && (lion_sel_data[key] != original_data[key])) {
               result[key] = lion_sel_data[key];
           }
           return result;
         }, {});
+
         var imageset_data = _.reduce(imageset_sel_data, function(result, n, key) {
-          if (imageset_sel_data[key] && imageset_sel_data[key] != original_data[key]) {
+          if (imageset_sel_data.hasOwnProperty(key) && (imageset_sel_data[key] != original_data[key])) {
               result[key] = imageset_sel_data[key];
           }
           return result;
         }, {});
 
-        if(_.has(imageset_data, 'date_stamp') && imageset_data['date_stamp'] == '')
+        if(imageset_data.hasOwnProperty('date_stamp') && imageset_data['date_stamp'] == '')
           imageset_data['date_stamp'] = null;
-        if(_.has(imageset_data, 'date_of_birth') && imageset_data['date_of_birth'] == '')
+        if(imageset_data.hasOwnProperty('date_of_birth') && imageset_data['date_of_birth'] == '')
           imageset_data['date_of_birth'] = null;
-        if(_.has(imageset_data, 'latitude') && imageset_data['latitude'] == '')
+        if(imageset_data.hasOwnProperty('latitude') && imageset_data['latitude'] == '')
           imageset_data['latitude'] = null;
-        if(_.has(imageset_data, 'longitude') && imageset_data['longitude'] == '')
+        if(imageset_data.hasOwnProperty('longitude') && imageset_data['longitude'] == '')
           imageset_data['longitude'] = null;
-        if(_.has(imageset_data, 'tags') && imageset_data['tags'] == 'null')
+        if(_.intersection(_.keys(imageset_data),['longitude','latitude']).length==1){
+          if(_.includes(_.keys(imageset_data),'longitude')){
+            imageset_data['latitude'] = original_data['latitude'];
+          }
+          else if(_.includes(_.keys(imageset_data),'latitude')){
+            imageset_data['longitude'] = original_data['longitude'];
+          }
+        }
+        if(imageset_data.hasOwnProperty('tags') && imageset_data['tags'] == 'null')
           imageset_data['tags'] = null;
 
         if(Object.keys(lion_data).length || Object.keys(imageset_data).length)
@@ -239,35 +258,44 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       }
       else{
         var sel_data = {
-          owner_organization_id: selected.owner_organization_id,
           date_stamp: date_stamp,
-          latitude: isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
-          longitude: isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
           gender: selected.gender,
           date_of_birth: date_of_birth,
+          latitude: isNaN(parseFloat(selected.latitude)) ? '' : parseFloat(selected.latitude),
+          longitude: isNaN(parseFloat(selected.longitude)) ? '' : parseFloat(selected.longitude),
           tags: TAGS, 
-          notes: selected.notes
+          notes: selected.notes,
+          geopos_private: selected.isPrivate,
+          owner_organization_id: selected.owner_organization_id
         };
 
-        sel_data.lion_id = selected.lion_id ? selected.lion_id : ($scope.new_lion.selected == undefined ? null : $scope.new_lion.selected.id);     
-        sel_data.name = selected.lion_id ? selected.name : ($scope.new_lion.selected == undefined ? '-' : $scope.new_lion.selected.name);
+        sel_data.lion_id = selected.lion_id ? selected.lion_id : ($scope.selected.new_lion == undefined ? null : $scope.selected.new_lion.id);     
+        sel_data.name = selected.lion_id ? selected.name : ($scope.selected.new_lion == undefined ? '-' : $scope.selected.new_lion.name);
 
         var imageset_data = _.reduce(sel_data, function(result, n, key) {
-          if (sel_data[key] != original_data[key]) {
+          if (sel_data.hasOwnProperty(key) && (sel_data[key] != original_data[key])) {
               result[key] = sel_data[key];
           }
           return result;
         }, {});
 
-        if(_.has(imageset_data, 'date_stamp') && imageset_data['date_stamp'] == '')
+        if(imageset_data.hasOwnProperty('date_stamp') && imageset_data['date_stamp'] == '')
           imageset_data['date_stamp'] = null;
-        if(_.has(imageset_data, 'date_of_birth') && imageset_data['date_of_birth'] == '')
+        if(imageset_data.hasOwnProperty('date_of_birth') && imageset_data['date_of_birth'] == '')
           imageset_data['date_of_birth'] = null;
-        if(_.has(imageset_data, 'latitude') && imageset_data['latitude'] == '')
+        if(imageset_data.hasOwnProperty('latitude') && imageset_data['latitude'] == '')
           imageset_data['latitude'] = null;
-        if(_.has(imageset_data, 'longitude') && imageset_data['longitude'] == '')
+        if(imageset_data.hasOwnProperty('longitude') && imageset_data['longitude'] == '')
           imageset_data['longitude'] = null;
-        if(_.has(imageset_data, 'tags') && imageset_data['tags'] == 'null')
+        if(_.intersection(_.keys(imageset_data),['longitude','latitude']).length==1){
+          if(_.includes(_.keys(imageset_data),'longitude')){
+            imageset_data['latitude'] = original_data['latitude'];
+          }
+          else if(_.includes(_.keys(imageset_data),'latitude')){
+            imageset_data['longitude'] = original_data['longitude'];
+          }
+        }
+        if(imageset_data.hasOwnProperty('tags') && imageset_data['tags'] == 'null')
           imageset_data['tags'] = null;
 
         if(Object.keys(imageset_data).length)
@@ -281,23 +309,22 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
     var deferred = $q.defer();
     if(optionsSet.type === 'lion'){
       var id = optionsSet.data.id;
-      // LincServices.SaveLion(id, data, function(results){
-      //   var data0 = _.merge({}, data.imageset, data.lion);
-      //   delete data0._xsrf;
-      //   if(_.has(data0, 'date_of_birth'))
-      //     data0.age = getAge(data0['date_of_birth']);
-      //   deferred.resolve({type: 'save', 'data': data0, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
-      // },
-      // function(error){
-      //   deferred.reject({'error': error, 'title': 'Error', 'message': "Unable to Save Lion's Metadata"});
-      // });
-      deferred.reject();
+      LincServices.SaveLion(id, data, function(results){
+        var data0 = _.merge({}, data.imageset, data.lion);
+        delete data0._xsrf;
+        if(data0.hasOwnProperty('date_of_birth'))
+          data0.age = getAge(data0['date_of_birth']);
+        deferred.resolve({type: 'save', 'data': data0, 'title': 'Save', 'message': "Lion's Metadata saved with success"});
+      },
+      function(error){
+        deferred.reject({'error': error, 'title': 'Error', 'message': "Unable to Save Lion's Metadata"});
+      });
     }
     else{
       var id = optionsSet.data.id;
       LincServices.SaveImageset(id, data, function(results){
         delete data._xsrf;
-        if(_.has(data, 'date_of_birth'))
+        if(data.hasOwnProperty('date_of_birth'))
           data.age = getAge(data['date_of_birth']);
         deferred.resolve({type: 'save', 'data': data, 'title': 'Save', 'message': "Image Set's Metadata saved with success"});
       },
@@ -313,7 +340,7 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
     if(optionsSet.type === 'lion'){
       LincServices.CreateLion(data, function(results){
         var data0 = results.data.data;
-        if(_.has(data0, 'date_of_birth'))
+        if(data0.hasOwnProperty('date_of_birth'))
           data0.age = getAge(data0['date_of_birth']);
         deferred.resolve({type: 'create', 'data': data0, 'title': 'Create', 'message': "Lion's Metadata created with success"});
       },
@@ -324,7 +351,7 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
     else{
       LincServices.CreateImageset(data, function(results){
         var data0 = results.data.data;
-        if(_.has(data0, 'date_of_birth'))
+        if(data0.hasOwnProperty('date_of_birth'))
           data0.age = getAge(data0['date_of_birth']);
         deferred.resolve({type: 'create', 'data': data0, 'title': 'Create', 'message': "Image Set's Metadata created with success"});
       },
@@ -456,8 +483,8 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
   if(optionsSet.edit == 'edit'){
     original_data.latitude = (original_data.latitude == null) ? '' : original_data.latitude;
     original_data.longitude = (original_data.longitude == null) ? '' : original_data.longitude;
-    original_data.date_stamp = (original_data.date_stamp == null) ? '' : original_data.date_stamp;
-    original_data.date_of_birth = (original_data.date_of_birth == null) ? '' : original_data.date_of_birth;
+    original_data.date_stamp = (original_data.date_stamp == null || original_data.date_stamp =="-") ? '' : original_data.date_stamp;
+    original_data.date_of_birth = (original_data.date_of_birth == null || original_data.date_of_birth == "-") ? '' : original_data.date_of_birth;
 
     //var TAGS = JSON.parse(optionsSet.data.tags);
     var TAGS = [];
@@ -501,12 +528,13 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       nose_color: nose_color,
       scars: scars,      
       notes: optionsSet.data.notes,
-      //tmp
-      //"isPrivate" :{'map': optionsSet.data.isPrivate.map, 'gps' : optionsSet.data.isPrivate.gps},
-      "isDead" : $scope.isLion ? optionsSet.data.dead : ''
+      isPrivate: optionsSet.data.geopos_private,
+      isDead: optionsSet.data.dead
     }
-    if(!$scope.isLion)
+    if(!$scope.isLion){
       $scope.selected.lion_id = optionsSet.data.lion_id;
+      $scope.selected.label =  $scope.selected.lion_id + ' - '+ $scope.selected.name
+    }
     $scope.lion_age = getAge($scope.selected.date_of_birth);
 
     $scope.tooltip = {'title': 'Open ' + optionsSet.data.name + "'s Lion Page in new window", 'checked': true};
@@ -534,9 +562,8 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
       nose_color: undefined, 
       scars: [], 
       notes: "",
-      //tmp
-      //"isPrivate" :{'map': false, 'gps' : false},
-      "isDead" : false
+      isPrivate : false,
+      isDead : false
     };
   }
   // Calc Age Function

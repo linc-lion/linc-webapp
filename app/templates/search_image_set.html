@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
-<div name="SearchImageSet" class="font-homenaje">
+<div name="SearchImageSet" class="font-homenaje-1-2">
   <button type="button" class="btn-help pull-right btn btn-icon" data-placement="left" title="" data-content="Search image sets to view summaries of name, age, organization, and CV status. Select a search result row to view an image set's primary image, to create a lion from an image set, disassociate a lion from an image set, or run or view a CV." data-trigger="focus" bs-popover><i class="icon icon-help-with-circle"></i></button>
 
   <h1><a class="btn btn-default" ng-click="go_back()"><i class="icon icon-arrow-left"></i></a> Search Image Set</h1>
@@ -36,13 +36,15 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         </div>
         <div role="tab">
           <h4 >
-            <a bs-collapse-toggle ng-click="collapse_organization()"><i class="pull-right icon icon-select-arrows"></i> Organization</a>
+            <a bs-collapse-toggle ng-click="collapse_organizations()"><i class="pull-right icon icon-select-arrows"></i> Organization</a>
           </h4>
         </div>
         <div uib-collapse="isOrgCollapsed">
-          <div class="panel-body">
+          <div class="panel-body checkbox">
             <label ng-repeat="organization in organizations">
-              <input ng-click="change_organizations()" type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">{{! organization.name}}
+              <input ng-click="change_organizations()" type="checkbox"  ng-model="organization.checked" ng-checked="organization.checked">
+              <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+              {{! organization.name}}
             </label>
           </div>
         </div>
@@ -69,9 +71,11 @@ For more information or to contact visit linclion.org or email tech@linclion.org
           </h4>
         </div>
         <div uib-collapse="isGenderCollapsed">
-          <div class="panel-body">
+          <div class="panel-body checkbox">
             <label ng-repeat="gender in genders">
-              <input ng-click="change_gender()" type="checkbox"  ng-model="gender.checked" ng-checked="gender.checked">{{! gender.label}}
+              <input ng-click="change_gender()" type="checkbox"  ng-model="gender.checked" ng-checked="gender.checked">
+              <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+              {{! gender.label}}
             </label>
           </div>
         </div>
@@ -197,11 +201,9 @@ For more information or to contact visit linclion.org or email tech@linclion.org
               <span class="sortorder" ng-show="predicate === 'age'" ng-class="{reverse:reverse}"></span>
             </th>
             <th class="text-center">
-  <!--tmp-->
               <a href="" ng-click="order('is_dead')" ng-class="{'order_class': predicate === 'is_dead'}">Dead</a>
               <span class="sortorder" ng-show="predicate === 'is_dead'" ng-class="{reverse:reverse}"></span>
             </th>
-  <!--tmp-->
             <th class="text-center">
               <a href="" ng-click="order('organization')" ng-class="{'order_class': predicate === 'organization'}">Organization</a>
               <span class="sortorder" ng-show="predicate === 'organization'" ng-class="{reverse:reverse}"></span>
@@ -245,7 +247,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.lion_id}}</td>
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.age}} y/o</td>
             <td class="text-center">
-              <i ng-if="imageset.is_dead" class="search-icon-dead"></i>
+              <i ng-if="imageset.dead" class="search-icon-dead"></i>
             </td>
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.organization}}</td>
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.gender}}</td>

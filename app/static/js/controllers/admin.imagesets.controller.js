@@ -95,7 +95,7 @@ angular.module('linc.admin.imagesets.controller', [])
     $scope.check_all(false);
 
     var modalScope = $scope.$new();
-    modalScope.modalTitle = 'Add ImageSet';
+    modalScope.title = 'Add ImageSet';
 
     modalScope.dataSending = false;
     modalScope.showValidationMessages = false;
@@ -240,7 +240,7 @@ angular.module('linc.admin.imagesets.controller', [])
       $scope.ImageSet_Mode = 'edit';
       
       var modalScope = $scope.$new();
-      modalScope.modalTitle = 'Edit ImageSet';
+      modalScope.title = 'Edit ImageSet';
 
       modalScope.dataSending = false;
       modalScope.showValidationMessages = false;

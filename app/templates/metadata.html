@@ -17,11 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
 <script type="text/ng-template" id="Warning.tmpl.html">
-  <div name="Warning" class="font-homenaje">
-    <div class="modal-header" ng-show="modalTitle">
-      <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
+  <div name="Warning" class="font-homenaje-1-2"">
+    <div class="modal-header" ng-show="title">
+      <h4 class="modal-title" ng-bind-html="title"></h4>
     </div>
-    <div class="modal-body" ng-bind-html="modalMessage">
+    <div class="modal-body" ng-bind-html="message">
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
@@ -29,16 +29,16 @@ For more information or to contact visit linclion.org or email tech@linclion.org
     </div>
   </div>
 </script>
-<form name="metadataForm" class="font-homenaje">
+<form name="metadataForm" class="font-homenaje-1-2">
   <div class="modal-header" ng-show="title">
     <button type="button" class="close" ng-click="Cancel()">&times;</button>
     <h3 class="modal-title" ng-bind-html="title"></h3>
   </div>
   <div class="modal-body" ng-show="content">
     <div class="row">
-      <div class="col-sm-8 line-right">
+      <div class="col-sm-6 line-right">
         <div class="row">
-          <div class="col-sm-6 line-right">
+          <div class="col-sm-6">
             <div ng-show="optionsSet.type === 'imageset'" class="form-inline group-select"  ng-class="{'has-error': metadataForm.owner_organization_id.$dirty && metadataForm.owner_organization_id.$error.required }">
               <label class="meta_label" for="owner_organization_id">Organization:</label>
               <select class="form-control custom-select" name="owner_organization_id" ng-options="organization.id as organization.name for organization in organizations" ng-model="selected.owner_organization_id" ng-disabled="!Editable" oninvalid="this.setCustomValidity('Please select an Organization in this list')" oninput="setCustomValidity('')" ng-change="ChangeWarning($event);" required><option value="">Select Organization</option>
@@ -102,8 +102,9 @@ For more information or to contact visit linclion.org or email tech@linclion.org
               </div>
             </div>
             <pre ng-show="debug">{{!selected.latitude}} {{!selected.longitude}}</pre>
-          </div>
+          </div><!-- End Col 1 -->
           <div class="col-sm-6">
+            <!--Lion of Lion-->
             <div ng-show="isLion">
               <div class="form-inline group-input" ng-class="{'has-error': metadataForm.lion_name.$dirty && metadataForm.lion_name.$error.required }">
                 <label class="meta_label" for="lion_name">Lion Name:</label>
@@ -112,27 +113,40 @@ For more information or to contact visit linclion.org or email tech@linclion.org
                 <label ng-show="!isNew"><small>(id: {{!selected.id}})</small></label>
               </div>
             </div>
+            <!--Lion of Image Set-->
             <div ng-show="!isLion">
+              <!-- Show only Edit -->
               <div ng-show="!isNew">
-                <div ng-if="selected.lion_id !== null" class="form-inline group-input-center">
+                <!--Has Lion-->
+                <!-- <div ng-if="selected.lion_id !== null" class="form-inline group-input-center">
                   <label class="meta_label" for="lion_name2">Lion: </label>
                   <a ui-sref="lion({id: selected.lion_id})" target="_blank" name="lion_name2" data-animation="am-flip-x" placement="bottom-right" bs-tooltip="tooltip">{{!selected.lion_id}}-{{!selected.name}}</a>
+                </div> -->
+                <div ng-if="selected.lion_id !== null" class="form-inline group-input">
+                  <label class="meta_label" for="lion_name2">Lion: </label>
+                  <a ui-sref="lion({id: selected.lion_id})" target="_blank" name="lion_name2" data-animation="am-flip-x" placement="bottom-right" bs-tooltip="tooltip">
+                    <input type="text" class="form-control meta_input_name" name="lion_name2"
+                   readonly ng-model="selected.label">
+                  </a>
                 </div>
+                <!--Associate button-->
                 <div ng-if="selected.lion_id === null">
-                  <div ng-if="select_new_lion.show" class="form-group group-input">
+                  <!--Associate Button-->
+                  <div ng-if="!lion_association.show" class="form-group group-select">
+                    <label class="meta_label" for="lion_name1" >Lion: - </label>
+                    <button class="btn btn-default btn-sm select_btn select_btn_1" ng-click="set_lion_list(true)"> {{!lion_association.label}} </button>
+                  </div>
+                  <!--Show Select Lion List-->
+                  <div ng-if="lion_association.show" class="form-group group-input">
                     <label class="meta_label" for="lion_name">Lion:</label>
-                    <ui-select class="lion-ui-select custom-select" ng-model="new_lion.selected" theme="bootstrap">
+                    <ui-select class="lion-ui-select custom-select" ng-model="selected.new_lion" theme="bootstrap">
                       <ui-select-match placeholder="Select a Lion...">
-                        <span ng-bind="$select.selected.label"></span>
+                        <div ng-bind-html="$select.selected.label | highlight: $select.search"></div>
                       </ui-select-match>
                       <ui-select-choices repeat="item in (ListLions | filter: $select.search) track by item.index">
-                        <span ng-bind="item.label"></span>
+                        <div ng-bind-html="item.label | highlight: $select.search"></div>
                       </ui-select-choices>
                     </ui-select>
-                  </div>
-                  <div ng-if="!select_new_lion.show" class="form-group group-select">
-                    <label class="meta_label" for="lion_name1" >Lion: - </label>
-                    <button class="btn btn-default btn-sm select_btn select_btn_1" ng-click="set_select(true)"> {{!select_new_lion.label}} </button>
                   </div>
                 </div>
               </div>
@@ -161,146 +175,151 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             </div>
 
             <pre ng-show="debug">{{!selected.gender}}</pre>
-          </div>
+          </div><!--End Col 2 -->
+        </div><!-- End Row -->
+      </div><!-- End Col Left -->
+      <div class="col-sm-6">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group group-select">
+              <label for="id_ear_marking">Ear Markings: </label>
+              <button type="button" name="id_ear_marking" placeholder="Unknown" 
+                      class="btn btn-default btn-sm select_btn" ng-model="selected.ear_marking" 
+                      data-html="1" data-multiple="1" max-length="2" 
+                      all-none-buttons="true" all-Text="All Ear Markings" all-button="true"
+                      none-button="false" none-Text=""
+                      unknown-button="true" unknown-Text="Unknown" 
+                      bs-options="mark.value as mark.label for mark in tags.ear_marking" 
+                      data-template-url='custom-select.tpl.html'
+                      placement="bottom-right" bs-select>
+                Action <span class="caret"></span>
+              </button>
+            </div>
+            <pre ng-show="debug">{{!selected.ear_marking}}</pre>
+            <div class="form-group group-select">
+              <label for="id_mouth_marking">Mouth Markings: </label>
+              <button type="button" name="id_mouth_marking" placeholder="Unknown" 
+                      class="btn btn-default btn-sm select_btn" ng-model="selected.mouth_marking" 
+                      data-html="1" data-multiple="1" max-length="2" 
+                      all-none-buttons="true" all-Text="All Mouth Markings" all-button="false"
+                      none-button="false" none-Text=""
+                      unknown-button="true" unknown-Text="Unknown" 
+                      bs-options="mark.value as mark.label for mark in tags.mouth_marking" 
+                      data-template-url='custom-select.tpl.html'
+                      placement="bottom-right" bs-select>
+                Action <span class="caret"></span>
+              </button>
+            </div>
+            <pre ng-show="debug">{{!selected.mouth_marking}}</pre>
+            <div class="form-group group-select">
+              <label for="id_nose_color">Nose Color: </label>
+              <button type="button" id="id_nose_color" placeholder="Unknown" 
+                      class="btn btn-default btn-sm select_btn" ng-model="selected.nose_color" 
+                      data-html="1" data-multiple="0"
+                      all-none-buttons="false" all-button="false"
+                      none-button="false" 
+                      unknown-button="false"
+                      bs-options="color.value as color.label for color in tags.nose_color" 
+                      data-template-url='custom-select.tpl.html'
+                      placement="bottom-right" bs-select>
+                Action <span class="caret"></span>
+              </button>
+            </div>
+            <pre ng-show="debug">{{!selected.nose_color}}</pre>
+            <div class="form-group group-select">
+              <label for="id_scars">Scars: </label>
+              <button type="button" id="id_scars" placeholder="Unknown" 
+                      class="btn btn-default btn-sm select_btn" ng-model="selected.scars" 
+                      data-html="1" data-multiple="1" max-length="2" 
+                      all-none-buttons="true" all-Text="All Type of Scars" all-button="true"
+                      none-button="false" none-Text=""
+                      unknown-button="true" unknown-Text="Unknown" 
+                      bs-options="scar.value as scar.label for scar in tags.scars" 
+                      data-template-url='custom-select.tpl.html'
+                      placement="bottom-right" bs-select>
+                Action <span class="caret"></span>
+              </button>
+            </div>
+            <pre ng-show="debug">{{!selected.scars}}</pre>
+          </div><!-- End Col 3 -->
+          <div class="col-sm-6">
+            <div class="form-group group-select">
+              <label for="id_broken_teeth">Broken Teeth: </label>
+              <button type="button" id="id_broken_teeth" placeholder="Unknown" 
+                      class="btn btn-default btn-sm select_btn" ng-model="selected.broken_teeth" 
+                      data-html="1" data-multiple="1" 
+                      all-none-buttons="true" all-Text="All Broken Teeth" all-button="true"
+                      none-button="false" none-Text=""
+                      unknown-button="true" unknown-Text="Unknown" 
+                      bs-options="teeth.value as teeth.label for teeth in tags.broken_teeth" 
+                      data-template-url='custom-select.tpl.html'
+                      placement="bottom-right" bs-select>
+                Action <span class="caret"></span>
+              </button>
+            </div>
+            <pre ng-show="debug">{{!selected.broken_teeth}}</pre>
+            <div class="form-group group-select">
+              <label for="id_tail_marking" >Tail Markings / Missing Tuft: </label>
+              <button type="button" name="id_tail_marking" placeholder="Unknown" 
+                      class="btn btn-default btn-sm select_btn" ng-model="selected.tail_marking" 
+                      data-html="1" data-multiple="1" max-length="2" 
+                      all-none-buttons="true" all-Text="All Tail Markings" all-button="false"
+                      none-button="false" none-Text=""
+                      unknown-button="true" unknown-Text="Unknown" 
+                      bs-options="mark.value as mark.label for mark in tags.tail_marking" 
+                      data-template-url='custom-select.tpl.html'
+                      placement="bottom-right" bs-select>
+                Action <span class="caret"></span>
+              </button>
+            </div>
+            <pre ng-show="debug">{{!selected.tail_marking}}</pre>
+            <div class="form-group group-select">
+              <label for="id_eye_damage">Eye Damage / Pigmentation: </label>
+              <button type="button" id="id_eye_damage" placeholder="Unknown" 
+                      class="btn btn-default btn-sm select_btn" ng-model="selected.eye_damage" 
+                      data-html="1" data-multiple="1" 
+                      all-none-buttons="true" all-Text="All Eye Damages" all-button="false"
+                      none-button="false" none-Text=""
+                      unknown-button="true" unknown-Text="Unknown" 
+                      bs-options="damage.value as damage.label for damage in tags.eye_damage" 
+                      data-template-url='custom-select.tpl.html'
+                      placement="bottom-right" bs-select>
+                Action <span class="caret"></span>
+              </button>
+            </div>
+            <pre ng-show="debug">{{!selected.eye_damage}}</pre>
+          </div><!-- End Col 4 -->
+        </div><!-- End Row -->     
+      </div><!-- End Col Right -->
+    </div><!-- End Row -->
+    <hr class="style-line">
+    <div class="row">
+      <div class="col-sm-7">
+        <div class="form-group">
+          <textarea class="form-control" rows="5" ng-model="selected.notes" placeholder="Notes here" ></textarea>
         </div>
-        <div>
-          <hr class="style-line">
-          <div class="form-group">
-            <textarea class="form-control" rows="5" ng-model="selected.notes" placeholder="Notes here" ></textarea>
-          </div>
-          <pre ng-show="debug">{{!selected.notes}}</pre>
-        </div>
-<!--tmp-->
-        <div>
-          <div class="checkbox">
-            <label class="checkbox-inline">
-              <input type="checkbox" class="form-input" ng-model="selected.isPrivate.gps">GPS Points is Private
-            </label>
-          </div>
-          <pre ng-show="debug">{{!selected.isPrivate.gps}}</pre>
-          <div class="checkbox">
-            <label class="checkbox-inline">
-              <input type="checkbox" class="form-input" ng-model="selected.isPrivate.map">Map Location is Private
-            </label>
-          </div>
-          <pre ng-show="debug">{{!selected.isPrivate.map}}</pre>
-          <div class="checkbox" ng-show="isLion">
-            <label class="checkbox-inline">
-              <input type="checkbox" ng-disabled="!isLion" class="form-input" ng-model="selected.isDead">Dead Lion
-            </label>
-          </div>
-          <pre ng-show="debug">{{!selected.isDead}}</pre>
-        </div>
+        <pre ng-show="debug">{{!selected.notes}}</pre>
       </div>
-      <div class="col-sm-4">
-        <div class="form-group group-select">
-          <label for="id_ear_marking">Ear Markings: </label>
-          <button type="button" name="id_ear_marking" placeholder="Unknown" 
-                  class="btn btn-default btn-sm select_btn" ng-model="selected.ear_marking" 
-                  data-html="1" data-multiple="1" max-length="2" 
-                  all-none-buttons="true" all-Text="All Ear Markings" all-button="true"
-                  none-button="false" none-Text=""
-                  unknown-button="true" unknown-Text="Unknown" 
-                  bs-options="mark.value as mark.label for mark in tags.ear_marking" 
-                  data-template-url='custom-select.tpl.html'
-                  placement="bottom-right" bs-select>
-            Action <span class="caret"></span>
-          </button>
+      <div class="col-sm-5">
+        <div class="checkbox">
+          <label class="checkbox-inline">
+            <input type="checkbox" class="form-input" ng-model="selected.isPrivate">
+            <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+            GPS points and Location on map are Private
+          </label>
         </div>
-        <pre ng-show="debug">{{!selected.ear_marking}}</pre>
-        <div class="form-group group-select">
-          <label for="id_mouth_marking">Mouth Markings: </label>
-          <button type="button" name="id_mouth_marking" placeholder="Unknown" 
-                  class="btn btn-default btn-sm select_btn" ng-model="selected.mouth_marking" 
-                  data-html="1" data-multiple="1" max-length="2" 
-                  all-none-buttons="true" all-Text="All Mouth Markings" all-button="false"
-                  none-button="false" none-Text=""
-                  unknown-button="true" unknown-Text="Unknown" 
-                  bs-options="mark.value as mark.label for mark in tags.mouth_marking" 
-                  data-template-url='custom-select.tpl.html'
-                  placement="bottom-right" bs-select>
-            Action <span class="caret"></span>
-          </button>
+        <pre ng-show="debug">{{!selected.isPrivate}}</pre>
+        <div class="checkbox" ng-show="(isLion && isNew) || !isNew">
+          <label class="checkbox-inline">
+            <input type="checkbox" ng-disabled="!isLion" class="form-input" ng-model="selected.isDead">
+            <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+            Dead Lion
+          </label>
         </div>
-        <pre ng-show="debug">{{!selected.mouth_marking}}</pre>
-        <div class="form-group group-select">
-          <label for="id_nose_color">Nose Color: </label>
-          <button type="button" id="id_nose_color" placeholder="Unknown" 
-                  class="btn btn-default btn-sm select_btn" ng-model="selected.nose_color" 
-                  data-html="1" data-multiple="0"
-                  all-none-buttons="false" all-button="false"
-                  none-button="false" 
-                  unknown-button="false"
-                  bs-options="color.value as color.label for color in tags.nose_color" 
-                  data-template-url='custom-select.tpl.html'
-                  placement="bottom-right" bs-select>
-            Action <span class="caret"></span>
-          </button>
-        </div>
-        <pre ng-show="debug">{{!selected.nose_color}}</pre>
-        <div class="form-group group-select">
-          <label for="id_scars">Scars: </label>
-          <button type="button" id="id_scars" placeholder="Unknown" 
-                  class="btn btn-default btn-sm select_btn" ng-model="selected.scars" 
-                  data-html="1" data-multiple="1" max-length="2" 
-                  all-none-buttons="true" all-Text="All Type of Scars" all-button="true"
-                  none-button="false" none-Text=""
-                  unknown-button="true" unknown-Text="Unknown" 
-                  bs-options="scar.value as scar.label for scar in tags.scars" 
-                  data-template-url='custom-select.tpl.html'
-                  placement="bottom-right" bs-select>
-            Action <span class="caret"></span>
-          </button>
-        </div>
-        <pre ng-show="debug">{{!selected.scars}}</pre>
-        <div class="form-group group-select">
-          <label for="id_eye_damage">Eye Damage / Pigmentation: </label>
-          <button type="button" id="id_eye_damage" placeholder="Unknown" 
-                  class="btn btn-default btn-sm select_btn" ng-model="selected.eye_damage" 
-                  data-html="1" data-multiple="1" 
-                  all-none-buttons="true" all-Text="All Eye Damages" all-button="false"
-                  none-button="false" none-Text=""
-                  unknown-button="true" unknown-Text="Unknown" 
-                  bs-options="damage.value as damage.label for damage in tags.eye_damage" 
-                  data-template-url='custom-select.tpl.html'
-                  placement="bottom-right" bs-select>
-            Action <span class="caret"></span>
-          </button>
-        </div>
-        <pre ng-show="debug">{{!selected.eye_damage}}</pre>
-        <div class="form-group group-select">
-          <label for="id_broken_teeth">Broken Teeth: </label>
-          <button type="button" id="id_broken_teeth" placeholder="Unknown" 
-                  class="btn btn-default btn-sm select_btn" ng-model="selected.broken_teeth" 
-                  data-html="1" data-multiple="1" 
-                  all-none-buttons="true" all-Text="All Broken Teeth" all-button="true"
-                  none-button="false" none-Text=""
-                  unknown-button="true" unknown-Text="Unknown" 
-                  bs-options="teeth.value as teeth.label for teeth in tags.broken_teeth" 
-                  data-template-url='custom-select.tpl.html'
-                  placement="bottom-right" bs-select>
-            Action <span class="caret"></span>
-          </button>
-        </div>
-        <pre ng-show="debug">{{!selected.broken_teeth}}</pre>
-        <div class="form-group group-select">
-          <label for="id_tail_marking" >Tail Markings / Missing Tuft: </label>
-          <button type="button" name="id_tail_marking" placeholder="Unknown" 
-                  class="btn btn-default btn-sm select_btn" ng-model="selected.tail_marking" 
-                  data-html="1" data-multiple="1" max-length="2" 
-                  all-none-buttons="true" all-Text="All Tail Markings" all-button="false"
-                  none-button="false" none-Text=""
-                  unknown-button="true" unknown-Text="Unknown" 
-                  bs-options="mark.value as mark.label for mark in tags.tail_marking" 
-                  data-template-url='custom-select.tpl.html'
-                  placement="bottom-right" bs-select>
-            Action <span class="caret"></span>
-          </button>
-        </div>
-        <pre ng-show="debug">{{!selected.tail_marking}}</pre>
+        <pre ng-show="debug">{{!selected.isDead}}</pre>
       </div>
     </div>
-  </div>
+  </div><!-- End Modal Body -->
   <div class="modal-footer">
     <!--<button type="button" class="btn btn-default" ng-click="Cancel()">Close</button>-->
 

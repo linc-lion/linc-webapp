@@ -17,9 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
 <script type="text/ng-template" id="Edit_CVRequest.tmpl.html">
-  <form name="form" ng-submit="submit(form.$valid)" class="font-homenaje">
-    <div class="modal-header" ng-show="modalTitle">
-      <h4 class="modal-title" ng-bind-html="modalTitle"></h4>
+  <form name="form" ng-submit="submit(form.$valid)" class="font-homenaje-1-2">
+    <div class="modal-header" ng-show="title">
+      <h4 class="modal-title" ng-bind-html="title"></h4>
     </div>
     <div class="modal-body">
       <div ng-hide="CVRequest_Mode=='add'" class="form-group">
@@ -55,19 +55,23 @@ For more information or to contact visit linclion.org or email tech@linclion.org
       </div>
       <div class="form-group">
         <label for="server_uuid">Server UUID:</label>
-        <div class="input-group"> 
+        <input type="text" readonly class="form-control" name="server_uuid" ng-model="cvrequest.server_uuid"
+          ng-dblclick="cvrequest.server_uuid.length && !edit.server_uuid && CopyTextToClipBoard(cvrequest.server_uuid,'Server UUID')">
+        <!-- <div class="input-group"> 
           <input type="text" ng-readonly="!edit.server_uuid" class="form-control" name="server_uuid" ng-model="cvrequest.server_uuid"
             ng-dblclick="cvrequest.server_uuid.length && !edit.server_uuid && CopyTextToClipBoard(cvrequest.server_uuid,'Server UUID')">
           <span class="input-group-addon icon icon-pencil2" ng-click="edit.server_uuid=!edit.server_uuid">Edit</span>
-        </div>
+        </div> -->
       </div>
       <div class="form-group">
         <label for="request_body">Request Body:</label>
-        <textarea class="form-control" rows="{{!rows}}" ng-readonly="!edit.request_body" ng-model="cvrequest.request_body"
+        <textarea class="form-control" rows="{{!rows}}" readonly ng-model="cvrequest.request_body"
+          ng-dblclick="cvrequest.request_body.length && !edit.request_body && CopyTextToClipBoard(cvrequest.request_body,'Request Body')"></textarea>
+        <!-- <textarea class="form-control" rows="{{!rows}}" ng-readonly="!edit.request_body" ng-model="cvrequest.request_body"
           ng-dblclick="cvrequest.request_body.length && !edit.request_body && CopyTextToClipBoard(cvrequest.request_body,'Request Body')"></textarea>
         <div class="input-group margin-left-80"> 
           <span class="input-group-addon icon icon-pencil2" ng-click="edit.request_body=!edit.request_body">Edit</span>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="modal-footer">
@@ -135,7 +139,9 @@ For more information or to contact visit linclion.org or email tech@linclion.org
     <tbody>
       <tr class="link" ng-repeat="cvrequest in ordered_cvrequests = (cvrequests | orderBy:predicate:reverse)" 
         ng-class="{active:cvrequest.selected}" ng-click="Select_CVRequest($event, cvrequest, 'line-click');$event.stopPropagation();">
-        <td class="text-center"><input type="checkbox" ng-disabled="CVRequest_Mode != ''" ng-model="cvrequest.selected" ng-click="Select_CVRequest($event, cvrequest, 'checkbox-click');$event.stopPropagation();"></td>
+        <td class="text-center">
+          <input type="checkbox" ng-disabled="CVRequest_Mode != ''" ng-model="cvrequest.selected" ng-click="Select_CVRequest($event, cvrequest, 'checkbox-click');$event.stopPropagation();">
+        </td>
         <td class="text-center">{{!cvrequest.id}}</td>
         <td class="text-center">{{!cvrequest.requesting_organization}}</td>
         <td class="text-center">{{!cvrequest.image_set_id}}</td>

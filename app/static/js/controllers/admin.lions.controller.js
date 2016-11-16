@@ -82,7 +82,7 @@ angular.module('linc.admin.lions.controller', [])
     $scope.check_all(false);
 
     var modalScope = $scope.$new();
-    modalScope.modalTitle = 'Add Lion';
+    modalScope.title = 'Add Lion';
 
     modalScope.dataSending = false;
     modalScope.showValidationMessages = false;
@@ -160,7 +160,7 @@ angular.module('linc.admin.lions.controller', [])
       $scope.Lion_Mode = 'edit';
 
       var modalScope = $scope.$new();
-      modalScope.modalTitle = 'Edit Lion';
+      modalScope.title = 'Edit Lion';
 
       modalScope.dataSending = false;
       modalScope.showValidationMessages = false;
