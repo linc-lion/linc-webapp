@@ -249,11 +249,15 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <td class="text-center">{{!lion.organization}}</td>
             <td class="text-center">{{!lion.gender}}</td>
 
-            <td ng-if="lion.canLocate" class="text-center">{{!lion.latitude | number:6}}</td>
-            <td ng-if="!lion.canLocate"></td>
-            <td ng-if="lion.canLocate" class="text-center">{{!lion.longitude | number:6}}</td>
-            <td ng-if="!lion.canLocate"></td>
-            <td class="text-center">{{!lion.geopos_private}}</td>
+            <td ng-if="lion.permissions.canLocate" class="text-center">{{!lion.latitude | number:6}}</td>
+            <td ng-if="!lion.permissions.canLocate"></td>
+            <td ng-if="lion.permissions.canLocate" class="text-center">{{!lion.longitude | number:6}}</td>
+            <td ng-if="!lion.permissions.canLocate"></td>
+
+            <td class="text-center">
+              <i ng-if="lion.geopos_private" class="icon icon-check"></i>
+              <i ng-if="!lion.geopos_private" class="icon icon-cross"></i>
+            </td>
 
             <td class="text-center">
               <div class="div-date_stamp">{{!lion.date_stamp | date:'yyyy-MM-dd'}}</div>

@@ -138,8 +138,8 @@ For more information or to contact visit linclion.org or email tech@linclion.org
                   </div>
                   <!--Show Select Lion List-->
                   <div ng-if="lion_association.show" class="form-group group-input">
-                    <label class="meta_label" for="lion_name">Lion:</label>
-                    <ui-select class="lion-ui-select custom-select" ng-model="selected.new_lion" theme="bootstrap">
+                    <label class="meta_label" for="lion_name3">Lion:</label>
+                    <ui-select class="lion-ui-select custom-select" name="lion_name3" ng-model="selected.new_lion" theme="bootstrap">
                       <ui-select-match placeholder="Select a Lion...">
                         <div ng-bind-html="$select.selected.label | highlight: $select.search"></div>
                       </ui-select-match>
@@ -322,13 +322,18 @@ For more information or to contact visit linclion.org or email tech@linclion.org
   </div><!-- End Modal Body -->
   <div class="modal-footer">
     <!--<button type="button" class="btn btn-default" ng-click="Cancel()">Close</button>-->
+    <button ng-disabled="!metadataForm.modified && !selected.new_lion" ng-show="!isNew" type="submit" class="btn btn-primary" ng-click="submit(metadataForm) && metadataForm.$valid && SaveMetadata()">Save</button>
 
-    <button ng-disabled="!metadataForm.modified" ng-show="!isNew" type="submit" class="btn btn-primary" ng-click="submit(metadataForm) && metadataForm.$valid && SaveMetadata()">Save</button>
+    <div ng-if="isLion">
+      <button ng-disabled="!metadataForm.modified" ng-show="isNew" type="submit" class="btn btn-primary" ng-click="submit(metadataForm) &&  metadataForm.$valid && CreateClose()">Create</button>
 
-    <button ng-show="isNew" type="submit" class="btn btn-primary" ng-click="submit(metadataForm) &&  metadataForm.$valid && CreateClose()">Create</button>
+      <upload-images disable-upload="!metadataForm.modified" btn-submit="submit(metadataForm)" ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new" save-metadata-action="CreateUpload()" close-action="Close()" debug="debug"></upload-images>
+    </div>
+    <div ng-if="!isLion">
+      <button ng-show="isNew" type="submit" class="btn btn-primary" ng-click="submit(metadataForm) &&  metadataForm.$valid && CreateClose()">Create</button>
 
-    <upload-images btn-submit="submit(metadataForm)" ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new" save-metadata-action="CreateUpload()" close-action="Close()" debug="debug"></upload-images>
-
+      <upload-images btn-submit="submit(metadataForm)" ng-show="isNew" use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new" save-metadata-action="CreateUpload()" close-action="Close()" debug="debug"></upload-images>
+    </div>
     <br>
   </div>
 </form>

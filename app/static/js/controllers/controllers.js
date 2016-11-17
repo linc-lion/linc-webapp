@@ -286,7 +286,7 @@ angular.module('linc.controllers', ['linc.admin.controller',
     var filtered = _.filter(input, function(value){
       if(!value.latitude) return false;
       if(!value.longitude) return false;
-      if(isprivate!=undefined && !value.canLocate) return false;
+      if(isprivate!=undefined && !value.permissions.canLocate) return false;
       return check_dist(lat, lng, value.latitude, value.longitude, radius);
     });
     return filtered;
