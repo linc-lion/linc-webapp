@@ -22,17 +22,6 @@ angular.module('linc.image.gallery.controller', ['linc.image.gallery.directive']
 
 .controller('ImageGalleryCtrl', ['$scope', '$timeout', '$sce', '$window', '$uibModal', '$uibModalInstance', 'LincServices', 'NotificationFactory', 'optionsSet', 'gallery', function($scope, $timeout, $sce, $window, $uibModal, $uibModalInstance, LincServices, NotificationFactory, optionsSet, gallery) {
 
-  // Tmp
-  function randomDate(start, end) {
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-  };
-  function makeid(){
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for(var i=0; i < 7; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    return text;
-  };
   // Order
   $scope.ListOfOrderBy = [
     { id: 0, predicate: 'name', reverse: false, label: '<span>Name <i class="icon icon-sort-alpha-asc"></i></span>'},
@@ -44,21 +33,27 @@ angular.module('linc.image.gallery.controller', ['linc.image.gallery.directive']
   ];
   $scope.person = {selected : undefined};
 
-  // $scope.ListOfOrderBy = [
-  //   {id: 0, predicate: 'name', reverse: false, label: '<span>Name <i class="icon icon-sort-alpha-asc"></i></span>'},
-  //   {id: 1, predicate: 'name', reverse: true,  label: '<span>Name <i class="icon icon-sort-alpha-desc"></i></span>'},
-  //   {id: 2, predicate: 'date', reverse: false, label: '<span>Date <i class="icon icon-sort-numeric-asc"></i></span>'},
-  //   {id: 3, predicate: 'date', reverse: true,  label: '<span>Date <i class="icon icon-sort-numberic-desc"></i></span>'},
-  //   {id: 4, predicate: 'type', reverse: false, label: '<span>Type <i class="icon icon-sort-alpha-asc"></i></span>'},
-  //   {id: 5, predicate: 'type', reverse: true,  label: '<span>Type <i class="icon icon-sort-alpha-desc"></i></span>'}
-  // ];
   $scope.Order = {by: $scope.ListOfOrderBy[0]};
 
+  /*
+  cover       : false
+  filename      : "noname"
+  icon        : "https://linc-media.linclion.org/linc-api-lions/imageset_14_569b0b5a064d5_icon.jpg"
+  id          : 169
+  img_date_stamp    : null
+  img_updated_at    : "2015-10-16"
+  imgset_date_stamp : null
+  is_public     : true
+  medium        : "https://linc-media.linclion.org/linc-api-lions/imageset_14_56951fad5_medium.jpg"
+  thumbnail       : "https://linc-media.linclion.org/linc-api-lions/imageset_14_569ad5_thumbnail.jpg"
+  type        : "whisker"
+  */
+
   $scope.gallery = _.map(gallery.images, function(element, index) {
-    var data = randomDate(new Date(2000, 0, 1), new Date());
-    //var name = Math.random().toString(36).substr(2, 10);
-    var name = makeid();
-    var texto = 'Name: ' + name + '<br> date: ' + data.toLocaleString(); 
+    var name = 'Name: ' + element.name;
+    var data = element.img_date_stamp ? element.img_date_stamp : element.img_updated_at;
+    var date = element.img_date_stamp ? 'date stamp: '+ element.img_date_stamp.toLocaleString() : 'updated at: ' + element.img_updated_at.toLocaleString();
+    var texto = name + '<br> ' + date; 
     var tooltip = {'title': texto, 'checked': true};
     return _.extend({}, element, {'select': false, 'tooltip': tooltip, 'name': name, 'date': data});
   });
