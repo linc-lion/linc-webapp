@@ -117,7 +117,8 @@ angular.module('linc.admin.imagesets.controller', [])
       'tags': [], 
       'notes': '', 
       'is_verified': false, 
-      'selected': true
+      'selected': true,
+      'geopos_private': false
     };
     modalScope.imageset.main_image = '';
     modalScope.imageset.lion_id = undefined;
@@ -179,7 +180,8 @@ angular.module('linc.admin.imagesets.controller', [])
           'date_stamp': modalScope.imageset.date_stamp,
           'date_of_birth': modalScope.imageset.date_of_birth,
           'tags': TAGS,
-          'is_verified': modalScope.imageset.is_verified
+          'is_verified': modalScope.imageset.is_verified,
+          'geopos_private': modalScope.imageset.geopos_private
         };
         modalScope.dataSending = true;
         $scope.LincApiServices.ImageSets({'method': 'post', 'data': data}).then(function(response){
@@ -329,7 +331,8 @@ angular.module('linc.admin.imagesets.controller', [])
             'date_stamp': modalScope.imageset.date_stamp,
             'date_of_birth': modalScope.imageset.date_of_birth,
             'tags': TAGS,
-            'is_verified': modalScope.imageset.is_verified
+            'is_verified': modalScope.imageset.is_verified,
+            'geopos_private': modalScope.imageset.geopos_private
           };
           modalScope.dataSending = true;
           $scope.LincApiServices.ImageSets({'method': 'put', 'imageset_id' : modalScope.imageset.id, 'data': data}).then(function(response){

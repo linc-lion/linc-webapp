@@ -80,22 +80,21 @@ angular.module('linc.image.set.controllers', [])
     return label;
   }
 
-  //tmp
-  $scope.imageset.geopos_private = true;
-
   var Set_Tags = function(){
     $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.imageset.organization_id);
-    //tmp
+    
     $scope.showGeoPos = $scope.canShow || !$scope.imageset.geopos_private;
     $scope.canDelete = ($scope.canShow && !$scope.imageset.is_primary);
     $scope.canDisassociate = (!$scope.imageset.is_primary && $scope.imageset.lion_id && ($scope.user.organization_id == $scope.imageset.organization_id));
     $scope.NeedVerify = (!$scope.imageset.is_primary && $scope.imageset.lion_id && ($scope.user.organization_id == $scope.imageset.lions_org_id) && ($scope.user.organization_id != $scope.imageset.organization_id));
 
-    $scope.title_tooltip = {'title': ''};
+    $scope.tooltip = {title:'', checked: false};
     if($scope.canShow && !$scope.canDelete){
-      $scope.title_tooltip = {'title': 'This is primary image set <br> of the lion ' + $scope.imageset.lion_id +
-      '- ' + $scope.imageset.name + '.<br>Delete the lion ' + $scope.imageset.name + '<br>to delete this image set.', 'checked': true};
+      $scope.tooltip.title = 'This is primary image set <br> of the lion ' + $scope.imageset.lion_id +
+      '- ' + $scope.imageset.name + '.<br>Delete the lion ' + $scope.imageset.name + '<br>to delete this image set.';
+      $scope.tooltip.checked = true;
     }
+
     if(!$scope.imageset.is_primary){
       if($scope.imageset.cvresults)
         $scope.imageset["action"] = 'cvresults';
@@ -130,6 +129,7 @@ angular.module('linc.image.set.controllers', [])
     // Location History
     var label = 'Image Set ' + $scope.imageset.id;
     var date = (new Date($scope.imageset.updated_at)).toLocaleDateString();
+
     $scope.location_options = { 
       type: 'imageset', 
       id: $scope.imageset.id,
@@ -138,8 +138,13 @@ angular.module('linc.image.set.controllers', [])
       history: { 
         count: 1,
         locations: [{
-          'id': $scope.imageset.id, 'label': label, 'updated_at': date, 
-          'longitude': $scope.imageset.longitude, 'latitude': $scope.imageset.latitude 
+          id: $scope.imageset.id, 
+          label: label, 
+          name: $scope.imageset.name,
+          updated_at: date, 
+          date_stamp: $scope.imageset.date_stamp,
+          longitude: $scope.imageset.longitude, 
+          latitude: $scope.imageset.latitude 
         }]
       }
     };
@@ -170,7 +175,7 @@ angular.module('linc.image.set.controllers', [])
     modalScope.title = 'Delete Image Set';
     modalScope.message = 'Are you sure you want to delete the Image Set?';
     var message = {
-      Sucess:'Lions was successfully deleted.',
+      Sucess:'Image Set was successfully deleted.',
       Error: 'Unable to delete this Image Set.'
     };
     
@@ -322,6 +327,54 @@ angular.module('linc.image.set.controllers', [])
     });
   };
 
+  $scope.SetPrimary = function (){
+    var modalScope = $scope.$new();
+    modalScope.title = 'Primary Image Set';
+    modalScope.message = 'Do you want to set as Primary Image Set?';
+    var message = {
+      Sucess:'Imageset was successfully set as primary.',
+      Error: 'Unable to set this Image Set as primary.'
+    };
+    
+    var modalInstance = $uibModal.open({
+        templateUrl: 'Dialog.Delete.tmpl.html',
+        scope: modalScope
+    });
+
+    modalInstance.result.then(function (result) {
+      var data = {'primary_image_set_id': $scope.imageset.id};
+      LincServices.SetPrimary($scope.imageset.lion_id, data, function(results){
+        NotificationFactory.success({
+          title: modalScope.title, 
+          message: message.Sucess,
+          position: "right",
+          duration: 2000
+        });
+        $scope.imageset.is_primary = true;
+        imageset.is_primary = true; // garantee
+        Set_Tags();
+      },
+      function(error){
+        if($scope.debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Fail: " + modalScope.title, 
+            message: message.Error,
+            position: 'right',
+            duration: 5000
+          });
+        }
+      });
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
+    modalScope.ok = function (){
+      modalInstance.close();
+    }
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
+    }
+  };
+
   Set_Tags();
 
 }])
@@ -334,7 +387,7 @@ angular.module('linc.image.set.controllers', [])
   $scope.user = AuthService.user;
 
   $scope.is_modal_open = false;
-  $scope.title_tooltip = {'title': 'tips: ' + TOOL_TITLE, 'checked': true};
+  $scope.tooltip = {'features' :{'title': 'tips: ' + TOOL_TITLE, 'checked': true}};
 
   var count = 0;
   var cvrequest_pendings = [];
@@ -405,50 +458,52 @@ angular.module('linc.image.set.controllers', [])
     return label;
   }
 
-  $scope.imagesets = _.map(imagesets, function(element, index) {
-    element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
-    //tmp
-    //var gps = (Math.random() > 0.5) ? true : false;
-    //element['is_private'] = {gps: gps, map: gps};
-    //element['canLocate'] = (!element.is_private.gps || element.canShow);
-    element['geopos_private'] = true;
-    element['canLocate'] = (!element.geopos_private || element.canShow);
+  var set_all_imagesets = function(sets){
 
-    element.NeedVerify = (!element.is_primary && element.lion_id &&
-      ($scope.user.organization_id == element.lions_org_id) &&
-      ($scope.user.organization_id != element.organization_id));
+    $scope.imagesets = _.map(sets, function(element, index) {
+      element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
 
-    var elem = {};
-    if(!element.is_primary){
-      if(element.cvresults)
-        elem["action"] = 'cvresults';
-      else if(element.cvrequest){
-        elem["action"] = 'cvpending';
-        if(element.canShow)
-          cvrequest_pendings.push({'imageset': element, 'id': index});
+      element['canLocate'] = (!element.geopos_private || element.canShow);
+
+      element.NeedVerify = (!element.is_primary && element.lion_id &&
+        ($scope.user.organization_id == element.lions_org_id) &&
+        ($scope.user.organization_id != element.organization_id));
+
+      var elem = {};
+      if(!element.is_primary){
+        if(element.cvresults)
+          elem["action"] = 'cvresults';
+        else if(element.cvrequest){
+          elem["action"] = 'cvpending';
+          if(element.canShow)
+            cvrequest_pendings.push({'imageset': element, 'id': index});
+        }
+        else
+          elem["action"] = 'cvrequest';
       }
-      else
-        elem["action"] = 'cvrequest';
-    }
-    else{
-      elem["action"] = '';
-    }
+      else{
+        elem["action"] = '';
+      }
 
-    if(!element.gender) element.gender = 'unknown';
+      if(!element.gender) element.gender = 'unknown';
 
-    var TAGS = [];
-    if(element['tags']==undefined)element['tags']="[]";
-    try{ TAGS = JSON.parse(element['tags']);
-    }catch(e){ TAGS = element['tags'].split(","); }
-    if(TAGS==null) TAGS = [];
+      var TAGS = [];
+      if(element['tags']==undefined)element['tags']="[]";
+      try{ TAGS = JSON.parse(element['tags']);
+      }catch(e){ TAGS = element['tags'].split(","); }
+      if(TAGS==null) TAGS = [];
 
-    var tag_features = GET_FEATURES(TAG_LABELS, TAGS);
-    elem['features_tooltip'] = {'title': tag_features, 'checked': true};
-    elem['features'] = (tag_features.length > 0) ? true : false;
-    elem['tag_features'] = tag_features;
+      var tag_features = GET_FEATURES(TAG_LABELS, TAGS);
+      elem['tooltip'] = {features: {'title': tag_features, 'checked': true}};
+      elem['features'] = (tag_features.length > 0) ? true : false;
+      elem['tag_features'] = tag_features;
 
-    return _.extend({}, element, elem);
-  });
+      return _.extend({}, element, elem);
+    });
+  }
+
+  set_all_imagesets(imagesets);
+
   if(cvrequest_pendings.length)
     start_Poller(0);
 
@@ -493,10 +548,10 @@ angular.module('linc.image.set.controllers', [])
   };
   $scope.PerPages = [
       {'index': 0, 'label' : '10 Image Sets', 'value': 10, 'disabled': false},
-      {'index': 1, 'label' : '20 Image Sets', 'value': 20, 'disabled': imagesets.length < 10 ?  true : false},
-      {'index': 2, 'label' : '30 Image Sets', 'value': 30, 'disabled': imagesets.length < 20 ?  true : false},
-      {'index': 3, 'label' : '60 Image Sets', 'value': 60, 'disabled': imagesets.length < 30 ?  true : false},
-      {'index': 4, 'label' : '100 Image Sets', 'value' : 100, 'disabled': imagesets.length < 60 ?  true : false}
+      {'index': 1, 'label' : '20 Image Sets', 'value': 20, 'disabled': $scope.imagesets.length < 10 ?  true : false},
+      {'index': 2, 'label' : '30 Image Sets', 'value': 30, 'disabled': $scope.imagesets.length < 20 ?  true : false},
+      {'index': 3, 'label' : '60 Image Sets', 'value': 60, 'disabled': $scope.imagesets.length < 30 ?  true : false},
+      {'index': 4, 'label' : '100 Image Sets', 'value' : 100, 'disabled': $scope.imagesets.length < 60 ?  true : false}
     ];
 
   $scope.PerPage = imagesets_filters.PerPage;
@@ -724,6 +779,58 @@ angular.module('linc.image.set.controllers', [])
     _.merge(imageset, imageset, change);
     Set_Tags(imageset);
   }
+
+  $scope.SetPrimary = function (imageset){
+    var modalScope = $scope.$new();
+    modalScope.title = 'Primary Image Set';
+    modalScope.message = 'Do you want to set as Primary Image Set?';
+    var message = {
+      Sucess:'Imageset was successfully set as primary.',
+      Error: 'Unable to set this Image Set as primary.'
+    };
+    
+    var modalInstance = $uibModal.open({
+        templateUrl: 'Dialog.Delete.tmpl.html',
+        scope: modalScope
+    });
+
+    modalInstance.result.then(function (result) {
+      var data = {'primary_image_set_id': imageset.id};
+      LincServices.SetPrimary(imageset.lion_id, data, function(results){
+        NotificationFactory.success({
+          title: modalScope.title, 
+          message: message.Sucess,
+          position: "right",
+          duration: 2000
+        });
+        _.forEach($scope.imagesets, function(item){
+          if(item.lion_id==imageset.lion_id){
+            item.is_primary = (imageset.id == item.id) ? true : false;
+          }
+        });
+        //$scope.imagesets = 
+        set_all_imagesets($scope.imagesets);
+      },
+      function(error){
+        if($scope.debug || (error.status != 401 && error.status != 403)){
+          NotificationFactory.error({
+            title: "Fail: " + modalScope.title, 
+            message: message.Error,
+            position: 'right',
+            duration: 5000
+          });
+        }
+      });
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
+    modalScope.ok = function (){
+      modalInstance.close();
+    }
+    modalScope.cancel = function(){
+      modalInstance.dismiss();
+    }
+  };
 
   $scope.filters = $stateParams.filter ? $stateParams.filter : {};
 

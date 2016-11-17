@@ -39,12 +39,9 @@ angular.module('linc.lions.controllers', [])
     return label;
   }
 
-  //tmp
-  $scope.lion.geopos_private = true;
-
   var Set_Tags = function(){
     $scope.canShow = ($scope.user.admin || $scope.user.organization_id == $scope.lion.organization_id);
-    //tmp
+
     $scope.showGeoPos = $scope.canShow || !$scope.lion.geopos_private;
 
     var TAGS = [];
@@ -189,11 +186,6 @@ angular.module('linc.lions.controllers', [])
 
     element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
 
-    //tmp
-    //var gps = (Math.random() > 0.5) ? true : false;
-    //element['is_private'] = {gps: gps, map: gps};
-    //element['canLocate'] = (!element.is_private.gps || element.canShow);
-    element['geopos_private'] = true;
     element['canLocate'] = (!element.geopos_private || element.canShow);
     
     var elem = {};
