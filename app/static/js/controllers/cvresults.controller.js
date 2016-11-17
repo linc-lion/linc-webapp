@@ -27,15 +27,13 @@ angular.module('linc.cvresults.controller', ['linc.cvresults.directive'])
   $scope.imageset = imageset;
   $scope.cvresults = data_cvresults.cvresults;
   $scope.cvresults = _.map(data_cvresults.cvresults, function(element, index) {
-    var elem = {};
-    var number = Math.random();
     var style = {'background-color': 'green'};
-    if(number < .45)
+    if(element.cn < .45)
       style = {'background-color': 'red'};
-    else if(number < .70)
+    else if(element.cn < .70)
       style = {'background-color': 'yellow', 'color': 'black'};
-    
-    var conf = {'number': number, 'style': style};
+    var elem = {};
+    var conf = {'number': element.cn, 'style': style};
     elem['confidence'] = conf;
     return _.extend({}, element, elem);
   });
