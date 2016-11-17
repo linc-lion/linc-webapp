@@ -19,7 +19,12 @@ For more information or to contact visit linclion.org or email tech@linclion.org
 <div name="CVRequest" class="font-homenaje-1-2">
   <div class="modal-header" ng-show="title">
     <button type="button" class="close" ng-click="Close()">&times;</button>
-    <h3 class="modal-title" ng-bind-html="title"></h3>
+    <div class="modal-header-image" ng-right-click="show_photo(imageset.image)">
+      <a ui-sref="imageset({id: imageset.id})" target="_blank">
+        <img ng-src="{{!imageset.thumbnail}}" width="40" height="40">
+      </a>
+    </div>
+    <h3 class="modal-title modal-title-image" ng-bind-html="title"></h3>
   </div>
   <div class="modal-body" ng-show="content">
     <div class="Container-Panel-1">

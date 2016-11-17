@@ -21,11 +21,12 @@
 angular.module('linc.cvrequest.controller', ['linc.cvrequest.directive'])
 
 .controller('CVRequesCtrl', ['$scope', '$window', '$timeout', '$uibModalInstance', 'LincServices', 'NotificationFactory', 
-  'imagesetId', 'lions', 'lion_filters', 'AuthService', 'TAG_LABELS', 'TOOL_TITLE', function ($scope, $window, $timeout, 
-  $uibModalInstance, LincServices, NotificationFactory, imagesetId, lions, lion_filters, AuthService, TAG_LABELS, TOOL_TITLE) {
+  'imageset', 'lions', 'lion_filters', 'AuthService', 'TAG_LABELS', 'TOOL_TITLE', function ($scope, $window, $timeout, 
+  $uibModalInstance, LincServices, NotificationFactory, imageset, lions, lion_filters, AuthService, TAG_LABELS, TOOL_TITLE) {
 
   $scope.title = 'CV Search';
   $scope.content = 'Search';
+  $scope.imageset = imageset;
 
   $scope.title_tooltip = {'title': 'tips: ' + TOOL_TITLE, 'checked': true};
 
@@ -38,20 +39,22 @@ angular.module('linc.cvrequest.controller', ['linc.cvrequest.directive'])
     return label;
   }
 
-  $scope.show_photo = function(url){
-    var win = window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=100, left=100, width=600, height=600");
-    win.focus();
+  $scope.show_photo = function(object){
+    if(angular.isObject(object)){
+      var url = $state.href("viewimages", {'images':{'imageset': imageset, 'lion': object}},  {absolute: true});
+      window.open(url,"_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=100, left=100, width=1200");
+    }
+    else if (angular.isString(object)){
+      var win = window.open(object, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=100, left=100, width=600, height=600");
+      win.focus();    
+    }
   }
+
   $scope.user = AuthService.user;
   $scope.lions = _.map(lions, function(element, index) {
 
     element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
 
-    //tmp
-    //var gps = (Math.random() > 0.5) ? true : false;
-    //element['is_private'] = {gps: gps, map: gps};
-    //element['canLocate'] = (!element.is_private.gps || element.canShow);
-    element['geopos_private'] = true;
     element['canLocate'] = (!element.geopos_private || element.canShow);
 
     var elem = {};
@@ -159,7 +162,7 @@ angular.module('linc.cvrequest.controller', ['linc.cvrequest.directive'])
   $scope.requestCV = function () {
     var lions_id = _.pluck($scope.filtered_lions, 'id');
     var data = {"lions": lions_id};
-    LincServices.requestCV(imagesetId, data, function(result){
+    LincServices.requestCV(imageset.id, data, function(result){
       var requestObj = result.data.data;
       $uibModalInstance.close(requestObj);
       NotificationFactory.success({

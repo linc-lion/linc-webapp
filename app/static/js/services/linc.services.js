@@ -381,6 +381,10 @@ angular.module('linc.services', ['linc.api.services'])
       error(err);
     });
   }
+  // Put Lion (Set Primary)
+  var PutLion = function (lion_id, data, success, error){
+    return HTTP('PUT', '/lions/' + lion_id, data, {}, success, error);
+  }
   // Post Lion - New Lion
   var PostLionImageset = function (data, success, error){
     AuthService.chech_auth().then( function(resp){
@@ -591,6 +595,7 @@ angular.module('linc.services', ['linc.api.services'])
   // Update Lion
   dataFactory.SaveLion = PutLionImageset;
   dataFactory.CreateLion = PostLionImageset;
+  dataFactory.SetPrimary = PutLion;
 
   // Get List of CV Results
   dataFactory.getCVResults = GetCVResults;
