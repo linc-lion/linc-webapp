@@ -67,7 +67,13 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
           if(lion.dead)
             label += '<i class="lion-list-icon-dead"></i>';
           label += '</span>'
-          $scope.ListLions.push({'index': index, 'id': lion.id, 'name': lion.name, 'label': label});
+          $scope.ListLions.push({
+            'index': index, 
+            'id': lion.id, 
+            'name': lion.name, 
+            'label': label,
+            'organization_id': lion.organization_id
+          });
         }
       });
       $scope.lion_association.show = val;
@@ -271,6 +277,11 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
 
         sel_data.lion_id = selected.lion_id ? selected.lion_id : ($scope.selected.new_lion == undefined ? null : $scope.selected.new_lion.id);     
         sel_data.name = selected.lion_id ? selected.name : ($scope.selected.new_lion == undefined ? '-' : $scope.selected.new_lion.name);
+
+        if(!original_data.lion_id && sel_data.lion_id){
+          if($scope.selected.new_lion.organization_id==optionsSet.data.organization_id)
+            sel_data.is_verified = true;
+        }
 
         var imageset_data = _.reduce(sel_data, function(result, n, key) {
           if (sel_data.hasOwnProperty(key) && (sel_data[key] != original_data[key])) {

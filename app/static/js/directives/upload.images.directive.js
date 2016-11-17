@@ -27,7 +27,7 @@ angular.module('linc.upload.images.directive', [])
     template: function(element, attrs) {
       switch (attrs.type) {
         case 'new':
-          return '<button type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="btnSubmit(metadataForm) && showNew()"><i class="icon icon-camera"> </i>Create & Add Images</button>';
+          return '<button ng-disabled="disableUpload" type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="btnSubmit(metadataForm) && showNew()"><i class="icon icon-camera"> </i>Create & Add Images</button>';
         default:
           return '<button class="btn btn-primary btn-block" ng-click="ShowOpen()">Upload images</button>';
       }
@@ -41,7 +41,8 @@ angular.module('linc.upload.images.directive', [])
       closeAction:'&',
       btnSubmit: '&',
       imageUpdated:'&',
-      debug: '='
+      debug: '=',
+      disableUpload: '='
     },
     link: function(scope, element, attrs) {
       scope.showNew = function(){

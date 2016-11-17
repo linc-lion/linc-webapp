@@ -45,8 +45,10 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <h4 class="h4inline">Primary Image Set:</h4>
         <h4 class="h4data">Yes</h4>
       </div>
-      <div class="meta-info" ng-show="canDisassociate">
-        <button type="button" class="btn btn-primary btn-sm btn-minwidth-100" ng-click="Disassociate(imageset.id)">Disassociate</button>
+      <div class="meta-info" ng-show="permissions.canDisassociate">
+        <button type="button" class="btn btn-primary btn-sm btn-minwidth-100" ng-click="Disassociate(imageset.id)">
+          Disassociate
+        </button>
       </div>
       <div class="meta-info">
         <h4 class="h4inline">Organization:</h4>
@@ -57,7 +59,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <h4 ng-hide="!imageset.is_verified" class="h4data">Yes</h4>
         <h4 ng-hide="imageset.is_verified" class="h4data">No</h4>
       </div>
-      <div class="meta-info" ng-show="NeedVerify">
+      <div class="meta-info" ng-show="permissions.NeedVerify">
         <button ng-if="!imageset.is_verified" type="button" class="btn btn-primary btn-sm btn-minwidth-100" ng-click="Verify(imageset)"> Verify </button>
         <button ng-if="imageset.is_verified" type="button" class="btn btn-primary btn-sm btn-minwidth-100" ng-click="Disassociate(imageset.id)"> Disassociate </button>
       </div>
@@ -73,11 +75,11 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <h4 class="h4inline">Age:</h4>
         <h4 class="h4data">{{!imageset.age}}</h4>
       </div>
-      <div class="meta-info" ng-if="showGeoPos">
+      <div class="meta-info" ng-if="permissions.showGeoPos">
         <h4 class="h4inline">Latitude:</h4>
         <h4 class="h4data">{{!imageset.latitude | number:4}}</h4>
       </div>
-      <div class="meta-info" ng-if="showGeoPos">
+      <div class="meta-info" ng-if="permissions.showGeoPos">
         <h4 class="h4inline">Longitude:</h4>
         <h4 class="h4data">{{!imageset.longitude | number:4}}</h4>
       </div>
@@ -120,22 +122,21 @@ For more information or to contact visit linclion.org or email tech@linclion.org
       <h4 class="h4data">{{!imageset.notes}}</h4>
     </div>
     <div class="col-sm-3 line-left padding-top-12">
-      <image-gallery ng-show="imageset" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="gallery_options" debug="debug" modal-is-open="is_modal_open" gallery-updated="Reload_Page()" show-privated="canShow"></image-gallery>
-      <location-history ng-if="imageset && showGeoPos" use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" type="imageset" options="location_options" location-goto="location_goto(imageset_Id)" debug="debug" modal-is-open="is_modal_open"></location-history>
-      <metadata ng-if="imageset && canShow" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options" update-action="update_imageset(data)" debug="debug" modal-is-open="is_modal_open"></metadata>
-      <div ng-if="imageset && canShow">
+      <image-gallery ng-show="imageset" use-ctrl="ImageGalleryCtrl" use-template-url="imagegallery.html" form-size="lg" options-set="gallery_options" debug="debug" modal-is-open="is_modal_open" gallery-updated="Reload_Page()" show-privated="permissions.canShow"></image-gallery>
+     <location-history ng-if="imageset && permissions.showGeoPos" use-ctrl="LocationHistoryCtrl" use-template-url="locationhistory.html" form-size="lg" type="imageset" options="location_options" location-goto="location_goto(imageset_Id)" debug="debug" modal-is-open="is_modal_open"></location-history>
+      <metadata ng-if="imageset && permissions.canShow" use-ctrl="MetadataCtrl" use-template-url="metadata.html" form-size="lg" type="edit" options-set="metadata_options" update-action="update_imageset(data)" debug="debug" modal-is-open="is_modal_open"></metadata>
+      <div ng-if="imageset && permissions.canShow">
         <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset="imageset" cvresults-id="imageset.cvresults" cvrequest-id="imageset.cvrequest" ng-if="imageset.action == 'cvresults'" cv-result-erased="CVResultsErased(imagesetId)" imageset-updated="UpdateImageset(data, imagesetId)" debug="debug" modal-is-open="is_modal_open"></cvresults>
         <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest.html" form-size="lg" imageset="imageset" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)" debug="debug" modal-is-open="is_modal_open"></cvrequest>
         <p ng-if="imageset.action == 'cvpending'">
-          <!--<a class="btn btn-lg btn-default btn-block" data-animation="am-fade-and-slide-top" ><img src="/static/images/waiting.gif" />CV Request Pending</a>-->
           <a class="btn btn-lg btn-default btn-block btn-minwidth-180" data-animation="am-fade-and-slide-top" ><i class="icon icon-clock"></i>CV Request Pending</a>
         </p>
       </div>
-      <p ng-if="imageset && canShow">
+      <p ng-if="imageset && permissions.canShow">
         <a class="btn btn-lg btn-default btn-block btn-minwidth-180" ng-disabled="!canDelete" ng-click="canDelete && Delete()" data-placement="auto top" data-trigger="hover" data-animation="am-fade-and-scale" data-html=true bs-tooltip="tooltip" bs-enabled="tooltip.checked"><i class="icon icon-trash"></i> DELETE IMAGE SET</a>
       </p>
-      <p ng-if="imageset && canShow">
-        <a class="btn btn-lg btn-default btn-block btn-minwidth-180" ng-disabled="!canDelete" ng-click="canDelete && SetPrimary()" data-trigger="hover"><i class="icon icon-pencil"></i>SET AS PRIMARY</a>
+      <p ng-if="imageset && permissions.CanSetPrimary">
+        <a class="btn btn-lg btn-default btn-block btn-minwidth-180" ng-click="permissions.CanSetPrimary && SetPrimary()" data-trigger="hover"><i class="icon icon-pencil"></i>SET AS PRIMARY</a>
       </p>
     </div>
   </div>

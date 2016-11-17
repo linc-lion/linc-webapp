@@ -51,11 +51,16 @@ angular.module('linc.cvrequest.controller', ['linc.cvrequest.directive'])
   }
 
   $scope.user = AuthService.user;
+
+  var get_permissions = function (user,lion){
+    var permissions = {};
+    var lion_ismine  = user.organization_id == lion.organization_id;
+    permissions['canLocate'] = (!lion.geopos_private || user.admin || lion_ismine);
+    return permissions;
+  }
   $scope.lions = _.map(lions, function(element, index) {
 
-    element.canShow = ($scope.user.admin || $scope.user.organization_id == element.organization_id);
-
-    element['canLocate'] = (!element.geopos_private || element.canShow);
+    element['permissions'] = get_permissions($scope.user, element);
 
     var elem = {};
     var TAGS = [];
