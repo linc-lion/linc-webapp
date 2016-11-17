@@ -41,6 +41,10 @@ For more information or to contact visit linclion.org or email tech@linclion.org
           <span class="dead-icon"></span>
         </div>
       </div>
+      <div class="meta-info" ng-if="imageset.is_primary">
+        <h4 class="h4inline">Primary Image Set:</h4>
+        <h4 class="h4data">Yes</h4>
+      </div>
       <div class="meta-info" ng-show="canDisassociate">
         <button type="button" class="btn btn-primary btn-sm btn-minwidth-100" ng-click="Disassociate(imageset.id)">Disassociate</button>
       </div>
@@ -128,7 +132,10 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         </p>
       </div>
       <p ng-if="imageset && canShow">
-        <a class="btn btn-lg btn-default btn-block btn-minwidth-180" ng-disabled="!canDelete" ng-click="canDelete && Delete()" data-placement="auto top" data-trigger="hover" data-animation="am-fade-and-scale" data-html=true bs-tooltip="title_tooltip"><i class="icon icon-trash"></i> DELETE IMAGE SET</a>
+        <a class="btn btn-lg btn-default btn-block btn-minwidth-180" ng-disabled="!canDelete" ng-click="canDelete && Delete()" data-placement="auto top" data-trigger="hover" data-animation="am-fade-and-scale" data-html=true bs-tooltip="tooltip" bs-enabled="tooltip.checked"><i class="icon icon-trash"></i> DELETE IMAGE SET</a>
+      </p>
+      <p ng-if="imageset && canShow">
+        <a class="btn btn-lg btn-default btn-block btn-minwidth-180" ng-disabled="!canDelete" ng-click="canDelete && SetPrimary()" data-trigger="hover"><i class="icon icon-pencil"></i>SET AS PRIMARY</a>
       </p>
     </div>
   </div>
