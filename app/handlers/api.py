@@ -497,20 +497,21 @@ class ImagesHandler(BaseHandler):
             resource_url = '/images?download=' + download
             response = yield Task(self.api,url=self.settings['API_URL']+resource_url,method='GET',headers=headers)
             if response and response.code == 200:
-                respdata = loads(response.body)
+                respdata = loads(response.body.decode('utf-8'))
                 links = respdata['data']
                 folder = self.settings['static_path']+'/'+str(uid())
                 mkdir(folder)
                 for link in links:
-                    info('Downloading: '+link)
+                    info('Downloading: '+link['url'])
                     #urllib.urlretrieve(link,folder+'/'+link.split('/')[-1])
                     #r = http.request('GET',link)
                     #with open(folder+'/'+link.split('/')[-1],'wb') as f:
                     #    f.write(r.data)
-                    with open(folder+'/'+link.split('/')[-1], 'wb') as f:
+                    #with open(folder+'/'+link.split('/')[-1], 'wb') as f:
+                    with open(folder+'/'+link['filename'], 'wb') as f:
                         c = pycurl.Curl()
                         c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 6.1; it; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)')
-                        c.setopt(c.URL,link)
+                        c.setopt(c.URL,link['url'])
                         c.setopt(c.WRITEDATA, f)
                         c.perform()
                         c.close()
@@ -519,7 +520,7 @@ class ImagesHandler(BaseHandler):
                 info('Creating zip file: '+folder+'.zip')
                 with ZipFile(folder+'.zip', 'w') as myzip:
                     for link in links:
-                        myzip.write(link.split('/')[-1])
+                        myzip.write(link['filename'])
                 chdir(curpath)
                 rmtree(folder)
                 dtexec = datetime.now() + timedelta(hours=1)
@@ -527,7 +528,7 @@ class ImagesHandler(BaseHandler):
                 self.settings['scheduler'].add_job(remove_file,trigger='date',name='Remove file '+folder+'.zip at '+str(dtexec),run_date=dtexec,args=[self.settings['scheduler'],folder+'.zip',jobid],coalesce=True,id=jobid)
                 self.set_header('Content-Type', 'application/octet-stream')
                 self.set_header('Content-Disposition', 'attachment; filename=' + folder.split('/')[-1]+'.zip')
-                with open(folder+'.zip', 'r') as f:
+                with open(folder+'.zip', 'rb') as f:
                     self.write(f.read())
                 self.finish()
             else:
