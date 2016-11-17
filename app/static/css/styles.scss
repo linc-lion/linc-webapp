@@ -590,12 +590,12 @@ rzslider{
   }
   .disabled-btn {
     background-color: #fff;
-    color: #ddd !important;
+    color: #767676 !important;
     &:active,
     &.active,
     &:focus{
       border-color: #fff;
-      color: #ddd !important;
+      color: #767676 !important;
       &:hover{
         background-color: #fbf7f7;
         border-color: #8c8c8c;
@@ -922,11 +922,63 @@ i.icon-border.active{background: #999 !important;}
 .row-gallery{
   overflow-y: auto;
   max-height: 500px;
-  padding-right: 0px;
   div.caption{
-    min-height: 30px;
+    min-height: 25px;
   }
 }
+
+.row-gallery-order{
+  padding: 0px 10px;
+
+  .gallery-order{
+    .ui-select-container{
+      //display: inline-flex;
+      //margin-left: 5px;
+      .ui-select-match{
+        min-width: 100px;
+      }
+      ul.ui-select-choices{
+        min-width: 100px;
+      }
+    }
+  }
+  ul.tabs-sm>li{
+    min-width: 50%;
+  }
+  .gallery-filter{
+    // margin-bottom: 10px;
+    padding: 5px 15px;
+    .radio{
+      //margin-top: 0px;
+      margin-bottom: 5px;
+      padding-left: 5px;
+    }
+    .checkbox {
+      margin-top: 3px;
+      margin-bottom: 3px;
+     }
+    .checkbox > label{
+      padding-left: 5px;
+    }
+  }
+  .gallery-edit{
+    // margin-bottom: 10px;
+    padding: 5px 15px;
+    .radio{
+      //margin-top: 0px;
+      margin-bottom: 5px;
+      padding-left: 5px;
+    }
+    .checkbox{
+      margin-top: 3px;
+      margin-bottom: 3px;
+    }
+    .checkbox > label{
+      padding-left: 5px;
+    }
+  }
+}
+
 .tooltip-image{
   opacity: 1 !important;
   .tooltip-inner{
@@ -961,44 +1013,6 @@ i.icon-border.active{background: #999 !important;}
     width: 0;
     height: 0;
     border-style: solid;
-  }
-}
-
-.gallery-order{
-  .ui-select-container{
-    display: inline-flex;
-    margin-left: 10px;
-    .ui-select-match{
-      min-width: 100px;
-    }
-    ul.ui-select-choices{
-      min-width: 100px;
-    }
-  }
-
-}
-.gallery-filter{
-  margin-bottom: 10px;
-  .radio{
-    margin-top: 0px;
-    margin-bottom: 0px;
-  }
-  .checkbox {
-    margin-top: 3px;
-    margin-bottom: 3px;
-  }
-  .checkbox > label{
-    padding-left: 5px;
-  }
-}
-.gallery-edit{
-  margin-bottom: 10px;
-  .radio, .checkbox{
-    margin-top: 3px;
-    margin-bottom: 3px;
-  }
-  .checkbox > label{
-    padding-left: 5px;
   }
 }
 
@@ -1238,6 +1252,10 @@ i.icon-border.active{background: #999 !important;}
 
 .font-homenaje{
   font-family: 'Homenaje', sans-serif !important;
+}
+.font-homenaje-1-1{
+  font-family: 'Homenaje', sans-serif !important;
+  font-size: 1.1em;
 }
 .font-homenaje-1-2{
   font-family: 'Homenaje', sans-serif !important;
