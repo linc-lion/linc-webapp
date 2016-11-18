@@ -50,7 +50,7 @@ angular.module('linc.image.gallery.controller', ['linc.image.gallery.directive']
   */
 
   $scope.gallery = _.map(gallery.images, function(element, index) {
-    var name = 'Name: ' + element.name;
+    var name = 'Name: ' + element.filename;
     var data = element.img_date_stamp ? element.img_date_stamp : element.img_updated_at;
     var date = element.img_date_stamp ? 'date stamp: '+ element.img_date_stamp.toLocaleString() : 'updated at: ' + element.img_updated_at.toLocaleString();
     var texto = name + '<br> ' + date; 
