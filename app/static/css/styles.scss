@@ -193,6 +193,9 @@ textarea{font-family: 'Homenaje', sans-serif;}
     margin: 6px 0px 6px 0px;
     padding: 6px 2px 6px 2px;
   }
+  &.btn-verify{
+    width: 100%;
+  }
 }
 
 .btn-primary {
@@ -251,6 +254,8 @@ textarea{font-family: 'Homenaje', sans-serif;}
 }
 .icon-cross{color:#a8180a}
 .icon-check{color:#258f06}
+.icon-clock{padding-right: 6px;}
+.icon-clock-pending{padding-left: 40%;}
 
 .pagination{
   li{
@@ -1266,6 +1271,11 @@ i.icon-border.active{background: #999 !important;}
   padding-right: 6px;
 }
 
+.view-images{
+  div.col-sm-6{
+    padding: 5px;
+  }
+}
 .checkbox-inline{
   padding-left: 5px !important;
 }

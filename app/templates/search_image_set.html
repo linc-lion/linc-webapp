@@ -296,8 +296,8 @@ For more information or to contact visit linclion.org or email tech@linclion.org
               </button>
             </td>
             <td ng-if="imageset.permissions.NeedVerify">
-              <button ng-if="!imageset.is_verified" class="btn btn-primary btn-sm" 
-                data-animation="am-fade-and-slide-top" ng-click="Verify(imageset)" style="width: 100%;">
+              <button ng-if="!imageset.is_verified" class="btn btn-primary btn-sm btn-verify" 
+                data-animation="am-fade-and-slide-top" ng-click="Verify(imageset)">
                 <i class="icon icon-flash"></i>Verify
               </button>
               <button ng-if="imageset.is_verified" class="btn btn-primary btn-sm" 
@@ -314,7 +314,10 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <td ng-if="imageset.permissions.canShow">
               <cvresults use-ctrl="CVResultsCtrl" use-template-url="cvresults.html" form-size="lg" imageset="imageset" cvresults-id="imageset.cvresults" cvrequest-id="imageset.cvrequest" type="search" ng-if="imageset.action == 'cvresults'" cv-result-erased="CVResultsErased(imagesetId)" imageset-updated="UpdateImageset(data, imagesetId)" debug="debug" modal-is-open="is_modal_open"></cvresults>
               <cvrequest use-ctrl="CVRequesCtrl" use-template-url="cvrequest.html" form-size="lg" imageset="imageset" type="search" ng-if="imageset.action == 'cvrequest'" cv-request-success="CVReqSuccess(imageset_Id, request_Obj)" debug="debug" modal-is-open="is_modal_open"></cvrequest>
-              <span ng-if="imageset.action == 'cvpending'"><i class="icon icon-clock"></i> CV Request pending</span>
+              <span ng-if="imageset.action == 'cvpending'">
+                <i class="icon icon-clock icon-clock-pending"></i><br>
+                <span>CV Request pending</span>
+              </span>
             </td>
           </tr>
         </tbody>

@@ -241,7 +241,9 @@ angular.module('linc.image.set.controllers', ['linc.search.image.set.controllers
   };
 
   $scope.CVResultsErased = function (ImagesetId) {
-    $scope.imageset["action"] = 'cvrequest';
+    $scope.imageset.action = 'cvrequest';
+    $scope.imageset.cvresults = null;
+    $scope.imageset.cvrequest = null;
   }
 
   $scope.Disassociate = function (id){
