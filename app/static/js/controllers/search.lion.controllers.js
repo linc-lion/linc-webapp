@@ -48,6 +48,7 @@ angular.module('search.linc.lions.controllers', [])
   $scope.lions = _.map(lions, function(element, index) {
 
     element['permissions'] = get_permissions($scope.user, element);
+    element['age'] = isNaN(parseInt(element['age'])) ? null : element['age'];
     
     var elem = {};
     var TAGS = [];
@@ -64,8 +65,6 @@ angular.module('search.linc.lions.controllers', [])
     elem['need_verifiy_tooltip'] = {'title': 'There are Image sets pending of verification', 'checked': true};
     return _.extend({}, element, elem);
   });
-
-  console.log(lions.length);
 
   $scope.organizations = lion_filters.organizations;
   $scope.genders = lion_filters.genders;

@@ -28,7 +28,11 @@ angular.module('linc.cvresults.controller', ['linc.cvresults.directive'])
   $scope.cvresults = data_cvresults.cvresults;
   $scope.cvresults = _.map(data_cvresults.cvresults, function(element, index) {
     var style = {'background-color': 'green'};
-    if(element.cn < .45)
+  
+    if(element.cn == null){
+      style = {};
+    }
+    else if(element.cn < .45)
       style = {'background-color': 'red'};
     else if(element.cn < .70)
       style = {'background-color': 'yellow', 'color': 'black'};
