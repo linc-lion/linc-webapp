@@ -256,7 +256,8 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             </td>
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.name}}</td>
             <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.lion_id}}</td>
-            <td class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.age}} y/o</td>
+            <td ng-if="imageset.age!=null" class="text-center" ui-sref="imageset({id: imageset.id})">{{!imageset.age}} y/o</td>
+            <td ng-if="imageset.age==null" class="text-center" ui-sref="imageset({id: imageset.id})"></td>
             <td class="text-center">
               <i ng-if="imageset.dead" class="search-icon-dead"></i>
             </td>
@@ -307,7 +308,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             </td>
 
             <td ng-if="imageset.permissions.CanSetPrimary">
-              <button class="btn btn-primary btn-sm" ng-click="SetPrimary(imageset)"
+              <button class="btn btn-default btn-sm" ng-click="SetPrimary(imageset)"
                 data-animation="am-fade-and-slide-top">Set Primary
               </button>
             </td>

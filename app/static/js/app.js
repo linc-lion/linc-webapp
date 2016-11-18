@@ -592,11 +592,6 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         bodyClasses: 'viewimages',
         authorized: 'logged',
         debug: debug
-      },
-      resolve: {
-        conservationists: ['LincServices', function(LincServices) {
-          return LincServices.Conservationists();
-        }]
       }
     })
     // About

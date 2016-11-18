@@ -167,7 +167,7 @@ angular.module('linc.image.set.controllers', ['linc.search.image.set.controllers
     };
     // Metadata Options
     $scope.metadata_options = { type: 'imageset', edit: 'edit', data: $scope.imageset};
-
+    $scope.imageset.age = isNaN(parseInt($scope.imageset.age)) ? null : $scope.imageset.age;
     $scope.imageset.date_of_birth = date_format($scope.imageset.date_of_birth);
   };
 
@@ -272,6 +272,7 @@ angular.module('linc.image.set.controllers', ['linc.search.image.set.controllers
       console.log(error);
     });
   };
+  // Gallery Updated
   $scope.Reload_Page = function () {
     $state.go($state.current, {'id': $scope.imageset.id}, {reload: true});
     $rootScope.remove_history('imageset', $scope.imageset.id);

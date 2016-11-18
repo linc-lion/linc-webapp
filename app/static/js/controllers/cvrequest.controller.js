@@ -20,8 +20,8 @@
 
 angular.module('linc.cvrequest.controller', ['linc.cvrequest.directive'])
 
-.controller('CVRequesCtrl', ['$scope', '$window', '$timeout', '$uibModalInstance', 'LincServices', 'NotificationFactory', 
-  'imageset', 'lions', 'lion_filters', 'AuthService', 'TAG_LABELS', 'TOOL_TITLE', function ($scope, $window, $timeout, 
+.controller('CVRequesCtrl', ['$scope', '$window', '$state', '$timeout', '$uibModalInstance', 'LincServices', 'NotificationFactory', 
+  'imageset', 'lions', 'lion_filters', 'AuthService', 'TAG_LABELS', 'TOOL_TITLE', function ($scope, $window, $state, $timeout, 
   $uibModalInstance, LincServices, NotificationFactory, imageset, lions, lion_filters, AuthService, TAG_LABELS, TOOL_TITLE) {
 
   $scope.title = 'CV Search';

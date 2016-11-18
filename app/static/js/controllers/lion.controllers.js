@@ -70,7 +70,7 @@ angular.module('linc.lions.controllers', ['search.linc.lions.controllers'])
     $scope.gallery_options = { type: 'lion', edit: 'edit', id: $scope.lion.primary_image_set_id};
     // Location History
     $scope.location_options = { type: 'lion', lion_id: $scope.lion.id};
-
+    $scope.lion.age = isNaN(parseInt($scope.lion.age)) ? null : $scope.lion.age;
     $scope.lion.date_of_birth = date_format($scope.lion.date_of_birth);
   };
   

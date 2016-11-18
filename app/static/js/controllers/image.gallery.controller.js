@@ -35,28 +35,19 @@ angular.module('linc.image.gallery.controller', ['linc.image.gallery.directive']
 
   $scope.Order = {by: $scope.ListOfOrderBy[0]};
 
-  /*
-  cover       : false
-  filename      : "noname"
-  icon        : "https://linc-media.linclion.org/linc-api-lions/imageset_14_569b0b5a064d5_icon.jpg"
-  id          : 169
-  img_date_stamp    : null
-  img_updated_at    : "2015-10-16"
-  imgset_date_stamp : null
-  is_public     : true
-  medium        : "https://linc-media.linclion.org/linc-api-lions/imageset_14_56951fad5_medium.jpg"
-  thumbnail       : "https://linc-media.linclion.org/linc-api-lions/imageset_14_569ad5_thumbnail.jpg"
-  type        : "whisker"
-  */
+  var set_gallery = function(set){
+    var ga = _.map(set.images, function(element, index) {
+      var name = 'Name: ' + element.filename;
+      var data = element.img_date_stamp ? element.img_date_stamp : element.img_updated_at;
+      var date = element.img_date_stamp ? 'date stamp: '+ element.img_date_stamp.toLocaleString() : 'updated at: ' + element.img_updated_at.toLocaleString();
+      var texto = name + '<br> ' + date; 
+      var tooltip = {'title': texto, 'checked': true};
+      return _.extend({}, element, {'select': false, 'tooltip': tooltip, 'name': name, 'date': data});
+    });
+    return ga;
+  }
 
-  $scope.gallery = _.map(gallery.images, function(element, index) {
-    var name = 'Name: ' + element.filename;
-    var data = element.img_date_stamp ? element.img_date_stamp : element.img_updated_at;
-    var date = element.img_date_stamp ? 'date stamp: '+ element.img_date_stamp.toLocaleString() : 'updated at: ' + element.img_updated_at.toLocaleString();
-    var texto = name + '<br> ' + date; 
-    var tooltip = {'title': texto, 'checked': true};
-    return _.extend({}, element, {'select': false, 'tooltip': tooltip, 'name': name, 'date': data});
-  });
+  $scope.gallery = set_gallery(gallery);
 
   $scope.imagesetId = optionsSet.id;
 
@@ -486,7 +477,7 @@ angular.module('linc.image.gallery.controller', ['linc.image.gallery.directive']
   $scope.UpdateImages = function () {
     LincServices.getImageGallery($scope.imagesetId).then(function (data) {
       gallery = data;
-      $scope.gallery = gallery.images;
+      $scope.gallery = set_gallery(gallery);
       $scope.imagesetId = optionsSet.id;
       $scope.itemsPerPage = Math.min(100, $scope.gallery.length);
       console.log('updated: ' + $scope.ImagesChanged);

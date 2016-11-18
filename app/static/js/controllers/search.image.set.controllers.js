@@ -123,7 +123,8 @@ angular.module('linc.search.image.set.controllers', [])
     $scope.imagesets = _.map(sets, function(element, index) {
 
       element['permissions'] = get_permissions($scope.user, element);
-
+      element['age'] = isNaN(parseInt(element['age'])) ? null : element['age'];
+      
       var elem = {};
       if(!element.is_primary){
         if(element.lion_id){
@@ -157,7 +158,6 @@ angular.module('linc.search.image.set.controllers', [])
       elem['tooltip'] = {features: {'title': tag_features, 'checked': true}};
       elem['features'] = (tag_features.length > 0) ? true : false;
       elem['tag_features'] = tag_features;
-
       return _.extend({}, element, elem);
     });
   }

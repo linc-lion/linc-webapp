@@ -73,7 +73,8 @@ For more information or to contact visit linclion.org or email tech@linclion.org
       </div>
       <div class="meta-info">
         <h4 class="h4inline">Age:</h4>
-        <h4 class="h4data">{{!imageset.age}}</h4>
+        <h4 class="h4data" ng-if="imageset.age!=null">{{!imageset.age}} y/o</h4>
+        <h4 class="h4data" ng-if="imageset.age==null"></h4>
       </div>
       <div class="meta-info" ng-if="permissions.showGeoPos">
         <h4 class="h4inline">Latitude:</h4>
@@ -133,7 +134,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         </p>
       </div>
       <p ng-if="imageset && permissions.canShow">
-        <a class="btn btn-lg btn-default btn-block btn-minwidth-180" ng-disabled="!canDelete" ng-click="canDelete && Delete()" data-placement="auto top" data-trigger="hover" data-animation="am-fade-and-scale" data-html=true bs-tooltip="tooltip" bs-enabled="tooltip.checked"><i class="icon icon-trash"></i> DELETE IMAGE SET</a>
+        <a class="btn btn-lg btn-default btn-block btn-minwidth-180" ng-click="permissions.canDelete && Delete()" data-placement="auto top" data-trigger="hover" data-animation="am-fade-and-scale" data-html=true bs-tooltip="tooltip" bs-enabled="tooltip.checked"><i class="icon icon-trash"></i> DELETE IMAGE SET</a>
       </p>
       <p ng-if="imageset && permissions.CanSetPrimary">
         <a class="btn btn-lg btn-default btn-block btn-minwidth-180" ng-click="permissions.CanSetPrimary && SetPrimary()" data-trigger="hover"><i class="icon icon-pencil"></i>SET AS PRIMARY</a>
