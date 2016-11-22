@@ -124,8 +124,9 @@ angular.module('linc.data.factory', [])
   };
 }])
 
-.factory('LincApiDataFactory', [ 'LincApiServices',function(LincApiServices) {
+.factory('LincApiDataFactory', [ 'LincApiServices', '$localStorage', function(LincApiServices, $localStorage) {
   var initialized = false;
+  var storage = {'settings': $localStorage.settings};
   var settings = {
       'Selected_tab': 'users',
       'users': {
@@ -173,12 +174,15 @@ angular.module('linc.data.factory', [])
       }
   }
 
+  if(storage.settings)
+    settings = storage.settings;
   return {
     get_settings: function () {
       return (settings);
     },
     set_settings: function (source) {
       settings = source;
+      $localStorage.settings = settings;
     }
   };
 }])

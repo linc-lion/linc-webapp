@@ -23,309 +23,62 @@ var app = angular.module('linc', ['ngStorage', 'ngAnimate', 'ui.bootstrap', 'ngS
 
 'use strict';
 
-// app.constant('TAG_LABELS', {
-//     EYE_DAMAGE_LEFT: 'Eye Damage Left', 
-//     EYE_DAMAGE_RIGHT: 'Eye Damage Right',
-//     EYE_DAMAGE_BOTH: 'Eye Damage Both',
-//     TEETH_BROKEN_CANINE_LEFT: 'Broken Teeth Canine Left', 
-//     TEETH_BROKEN_CANINE_RIGHT: 'Broken Teeth Canine Right', 
-//     TEETH_BROKEN_INCISOR_LEFT: 'Broken Teeth Incisor Left', 
-//     TEETH_BROKEN_INCISOR_RIGHT: 'Broken Teeth Incisor Right',
-//     EAR_MARKING_LEFT: 'Ear Marking Left', 
-//     EAR_MARKING_RIGHT: 'Ear Marking Right',
-//     EAR_MARKING_BOTH: 'Ear Marking Both',
-//     MOUTH_MARKING_BACK: 'Mouth Marking Back', 
-//     MOUTH_MARKING_FRONT: 'Mouth Marking Front', 
-//     MOUTH_MARKING_LEFT: 'Mouth Marking Left', 
-//     MOUTH_MARKING_RIGHT: 'Mouth Marking Right', 
-//     TAIL_MARKING_MISSING_TUFT: 'Tail Marking Missing Tuft', 
-//     NOSE_COLOUR_BLACK: 'Nose Color Black', 
-//     NOSE_COLOUR_PATCHY: 'Nose Color Patchy', 
-//     NOSE_COLOUR_PINK: 'Nose Color Pink',
-//     NOSE_COLOUR_SPOTTED: 'Nose Color Spotted', 
-//     SCARS_BODY_LEFT: 'Scars Body Left', 
-//     SCARS_BODY_RIGHT: 'Scars Body Right', 
-//     SCARS_FACE: 'Scars Face', 
-//     SCARS_TAIL: 'Scars Tail'
-// })
 app.constant('TAG_LABELS', {
-    EYE_DAMAGE_YES: 'Eye Damage',
-    EYE_DAMAGE_NONE: 'No Eye Damage',
-    TEETH_BROKEN_CANINE_LEFT: 'Broken Teeth Canine Left', 
-    TEETH_BROKEN_CANINE_RIGHT: 'Broken Teeth Canine Right', 
-    TEETH_BROKEN_INCISOR_LEFT: 'Broken Teeth Incisor Left', 
-    TEETH_BROKEN_INCISOR_RIGHT: 'Broken Teeth Incisor Right',
-    TEETH_BROKEN_NONE: 'No Broken Teeth',
-    EAR_MARKING_LEFT: 'Ear Marking Left', 
-    EAR_MARKING_RIGHT: 'Ear Marking Right',
-    EAR_MARKING_BOTH: 'Ear Marking Both',
-    EAR_MARKING_NONE:  'No Ear Marking',
-    MOUTH_MARKING_YES: 'Mouth Marking', 
-    MOUTH_MARKING_NONE: 'No Mouth Marking',
-    TAIL_MARKING_MISSING_TUFT_YES: 'Tail Marking Missing Tuft', 
-    TAIL_MARKING_MISSING_TUFT_NONE: 'No Missing Tuft',
-    NOSE_COLOUR_BLACK: 'Nose Color Black', 
-    NOSE_COLOUR_PATCHY: 'Nose Color Patchy', 
-    NOSE_COLOUR_PINK: 'Nose Color Pink',
-    NOSE_COLOUR_SPOTTED: 'Nose Color Spotted', 
-    NOSE_COLOUR_NONE: 'No Nose Colour',
-    SCARS_BODY_LEFT: 'Scars Body Left', 
-    SCARS_BODY_RIGHT: 'Scars Body Right', 
-    SCARS_FACE: 'Scars Face', 
-    SCARS_TAIL: 'Scars Tail',
-    SCARS_NONE: 'No Scars'
+    EYE_DAMAGE_YES:'Eye Damage',EYE_DAMAGE_NONE:'No Eye Damage',TEETH_BROKEN_CANINE_LEFT:'Broken Teeth Canine Left', 
+    TEETH_BROKEN_CANINE_RIGHT:'Broken Teeth Canine Right',TEETH_BROKEN_INCISOR_LEFT:'Broken Teeth Incisor Left', 
+    TEETH_BROKEN_INCISOR_RIGHT:'Broken Teeth Incisor Right',TEETH_BROKEN_NONE:'No Broken Teeth', 
+    EAR_MARKING_LEFT:'Ear Marking Left',EAR_MARKING_RIGHT:'Ear Marking Right',EAR_MARKING_BOTH:'Ear Marking Both',
+    EAR_MARKING_NONE:'No Ear Marking',MOUTH_MARKING_YES:'Mouth Marking',MOUTH_MARKING_NONE:'No Mouth Marking',
+    TAIL_MARKING_MISSING_TUFT_YES:'Tail Marking Missing Tuft',TAIL_MARKING_MISSING_TUFT_NONE:'No Missing Tuft',
+    NOSE_COLOUR_BLACK:'Nose Color Black',NOSE_COLOUR_PATCHY:'Nose Color Patchy',NOSE_COLOUR_PINK:'Nose Color Pink',
+    NOSE_COLOUR_SPOTTED:'Nose Color Spotted',NOSE_COLOUR_NONE:'No Nose Colour',SCARS_BODY_LEFT:'Scars Body Left', 
+    SCARS_BODY_RIGHT:'Scars Body Right',SCARS_FACE:'Scars Face',SCARS_TAIL:'Scars Tail',SCARS_NONE:'No Scars'
 })
 .constant('TAGS_CONST_OLD', {
-  EYE_DAMAGE: [
-    'EYE_DAMAGE_LEFT',
-    'EYE_DAMAGE_RIGHT',
-    'EYE_DAMAGE_BOTH'
-  ],
-  TEETH_BROKEN: [
-    'TEETH_BROKEN_CANINE_LEFT',
-    'TEETH_BROKEN_CANINE_RIGHT',
-    'TEETH_BROKEN_INCISOR_LEFT',
-    'TEETH_BROKEN_INCISOR_RIGHT'
-  ],
-  EAR_MARKING: [
-    'EAR_MARKING_LEFT',
-    'EAR_MARKING_RIGHT',
-    'EAR_MARKING_BOTH'
-  ],
-  MOUTH_MARKING: [
-    'MOUTH_MARKING_BACK',
-    'MOUTH_MARKING_FRONT',
-    'MOUTH_MARKING_LEFT',
-    'MOUTH_MARKING_RIGHT'
-  ],
-  TAIL_MARKING_MISSING_TUFT:[
-    'TAIL_MARKING_MISSING_TUFT'
-  ],
-  NOSE_COLOUR:[
-    'NOSE_COLOUR_BLACK',
-    'NOSE_COLOUR_PATCHY',
-    'NOSE_COLOUR_PINK',
-    'NOSE_COLOUR_SPOTTED'
-  ],
-  SCARS:[
-    'SCARS_BODY_LEFT',
-    'SCARS_BODY_RIGHT',
-    'SCARS_FACE',
-    'SCARS_TAIL'
-  ]
+  EYE_DAMAGE:['EYE_DAMAGE_LEFT','EYE_DAMAGE_RIGHT','EYE_DAMAGE_BOTH'],
+  TEETH_BROKEN:['TEETH_BROKEN_CANINE_LEFT','TEETH_BROKEN_CANINE_RIGHT','TEETH_BROKEN_INCISOR_LEFT','TEETH_BROKEN_INCISOR_RIGHT'],
+  EAR_MARKING:['EAR_MARKING_LEFT','EAR_MARKING_RIGHT','EAR_MARKING_BOTH'],
+  MOUTH_MARKING:['MOUTH_MARKING_BACK','MOUTH_MARKING_FRONT','MOUTH_MARKING_LEFT','MOUTH_MARKING_RIGHT'],
+  TAIL_MARKING_MISSING_TUFT:['TAIL_MARKING_MISSING_TUFT'],
+  NOSE_COLOUR:['NOSE_COLOUR_BLACK','NOSE_COLOUR_PATCHY','NOSE_COLOUR_PINK','NOSE_COLOUR_SPOTTED'],
+  SCARS:['SCARS_BODY_LEFT','SCARS_BODY_RIGHT','SCARS_FACE','SCARS_TAIL']
 })
 .constant('TAGS_CONST', {
-  EYE_DAMAGE: [
-    'EYE_DAMAGE_YES',
-    'EYE_DAMAGE_NONE'
-  ],
-  TEETH_BROKEN: [
-    'TEETH_BROKEN_CANINE_LEFT',
-    'TEETH_BROKEN_CANINE_RIGHT',
-    'TEETH_BROKEN_INCISOR_LEFT',
-    'TEETH_BROKEN_INCISOR_RIGHT',
-    'TEETH_BROKEN_NONE'
-  ],
-  EAR_MARKING: [
-    'EAR_MARKING_LEFT',
-    'EAR_MARKING_RIGHT',
-    'EAR_MARKING_BOTH',
-    'EAR_MARKING_NONE'
-  ],
-  MOUTH_MARKING: [
-    'MOUTH_MARKING_YES',
-    'MOUTH_MARKING_NONE'
-  ],
-  TAIL_MARKING_MISSING_TUFT:[
-    'TAIL_MARKING_MISSING_TUFT_YES',
-    'TAIL_MARKING_MISSING_TUFT_NONE'
-  ],
-  NOSE_COLOUR:[
-    'NOSE_COLOUR_BLACK',
-    'NOSE_COLOUR_PATCHY',
-    'NOSE_COLOUR_PINK',
-    'NOSE_COLOUR_SPOTTED',
-    'NOSE_COLOUR_NONE'
-  ],
-  SCARS:[
-    'SCARS_BODY_LEFT',
-    'SCARS_BODY_RIGHT',
-    'SCARS_FACE',
-    'SCARS_TAIL',
-    'SCARS_NONE'
-  ]
+  EYE_DAMAGE:['EYE_DAMAGE_YES','EYE_DAMAGE_NONE'],
+  TEETH_BROKEN:['TEETH_BROKEN_CANINE_LEFT','TEETH_BROKEN_CANINE_RIGHT','TEETH_BROKEN_INCISOR_LEFT','TEETH_BROKEN_INCISOR_RIGHT','TEETH_BROKEN_NONE'],
+  EAR_MARKING:['EAR_MARKING_LEFT','EAR_MARKING_RIGHT','EAR_MARKING_BOTH','EAR_MARKING_NONE'],
+  MOUTH_MARKING:['MOUTH_MARKING_YES','MOUTH_MARKING_NONE'],
+  TAIL_MARKING_MISSING_TUFT:['TAIL_MARKING_MISSING_TUFT_YES','TAIL_MARKING_MISSING_TUFT_NONE'],
+  NOSE_COLOUR:['NOSE_COLOUR_BLACK','NOSE_COLOUR_PATCHY','NOSE_COLOUR_PINK','NOSE_COLOUR_SPOTTED','NOSE_COLOUR_NONE'],
+  SCARS:['SCARS_BODY_LEFT','SCARS_BODY_RIGHT','SCARS_FACE','SCARS_TAIL','SCARS_NONE']
 })
-.constant('TOOL_TITLE',"Eye Damage: Left, Right or Both; Broken Teeth: Canine Left/Right and Incisor Left/Right; \n Ear Marking: Left, Right, or Both; Mouth Marking: Back, Front, Left and Right; \n Tail Marking: Missing Tuft; Nose Color: Black, Patchy, Pink, or Spotted; Scars: Body Left/Right, Face and Tail")
-// .constant('TAGS_BY_TYPE', {
-//   EYE_DAMAGE: {
-//     EYE_DAMAGE_LEFT: 'Left', 
-//     EYE_DAMAGE_RIGHT: 'Right', 
-//     EYE_DAMAGE_BOTH: 'Both'
-//   },
-//   TEETH_BROKEN: {
-//     TEETH_BROKEN_CANINE_LEFT: 'Canine Left', 
-//     TEETH_BROKEN_CANINE_RIGHT: 'Canine Right', 
-//     TEETH_BROKEN_INCISOR_LEFT: 'Incisor Left', 
-//     TEETH_BROKEN_INCISOR_RIGHT: 'Incisor Right'
-//   },
-//   EAR_MARKING: {
-//     EAR_MARKING_LEFT: 'Left', 
-//     EAR_MARKING_RIGHT: 'Right',
-//     EAR_MARKING_BOTH: 'Both'
-//   },
-//   MOUTH_MARKING: {
-//     MOUTH_MARKING_BACK: 'Back', 
-//     MOUTH_MARKING_FRONT: 'Front', 
-//     MOUTH_MARKING_LEFT: 'Left', 
-//     MOUTH_MARKING_RIGHT: 'Right'
-//   },
-//   TAIL_MARKING_MISSING_TUFT:{
-//     TAIL_MARKING_MISSING_TUFT: 'Missing Tuft'
-//   },
-//   NOSE_COLOUR:{
-//     NOSE_COLOUR_BLACK: 'Black', 
-//     NOSE_COLOUR_PATCHY: 'Patchy', 
-//     NOSE_COLOUR_PINK: 'Pink',
-//     NOSE_COLOUR_SPOTTED: 'Spotted'
-//   },
-//   SCARS:{
-//     SCARS_BODY_LEFT: 'Body Left', 
-//     SCARS_BODY_RIGHT: 'Body Right', 
-//     SCARS_FACE: 'Face', 
-//     SCARS_TAIL: 'Tail'
-//   }
-// })
+.constant('TOOL_TITLE',"Eye Damage: Left, Right or Both; Broken Teeth: Canine Left/Right and Incisor Left/Right; \n"+
+  "Ear Marking: Left, Right, or Both; Mouth Marking: Back, Front, Left and Right; \n"+
+  "Tail Marking: Missing Tuft; Nose Color: Black, Patchy, Pink, or Spotted; Scars: Body Left/Right, Face and Tail")
 .constant('TAGS_BY_TYPE', {
-  EYE_DAMAGE: {
-    EYE_DAMAGE_YES: 'Yes',
-    EYE_DAMAGE_NONE: 'None'
-  },
-  TEETH_BROKEN: {
-    TEETH_BROKEN_CANINE_LEFT: 'Canine Left', 
-    TEETH_BROKEN_CANINE_RIGHT: 'Canine Right', 
-    TEETH_BROKEN_INCISOR_LEFT: 'Incisor Left', 
-    TEETH_BROKEN_INCISOR_RIGHT: 'Incisor Right',
-    TEETH_BROKEN_NONE: 'None'
-  },
-  EAR_MARKING: {
-    EAR_MARKING_LEFT: 'Left', 
-    EAR_MARKING_RIGHT: 'Right',
-    EAR_MARKING_BOTH: 'Both',
-    EAR_MARKING_NONE:  'None'
-  },
-  MOUTH_MARKING: {
-    MOUTH_MARKING_YES: 'Yes',
-    MOUTH_MARKING_NONE: 'None'
-  },
-  TAIL_MARKING_MISSING_TUFT:{
-    TAIL_MARKING_MISSING_TUFT_YES: 'Yes',
-    TAIL_MARKING_MISSING_TUFT_NONE: 'None'
-  },
-  NOSE_COLOUR:{
-    NOSE_COLOUR_BLACK: 'Black', 
-    NOSE_COLOUR_PATCHY: 'Patchy', 
-    NOSE_COLOUR_PINK: 'Pink',
-    NOSE_COLOUR_SPOTTED: 'Spotted',
-    NOSE_COLOUR_NONE: 'None'
-  },
-  SCARS:{
-    SCARS_BODY_LEFT: 'Body Left', 
-    SCARS_BODY_RIGHT: 'Body Right', 
-    SCARS_FACE: 'Face', 
-    SCARS_TAIL: 'Tail',
-    SCARS_NONE: 'None'
-  }
+  EYE_DAMAGE:{EYE_DAMAGE_YES:'Yes',EYE_DAMAGE_NONE:'None'},
+  TEETH_BROKEN:{TEETH_BROKEN_CANINE_LEFT:'Canine Left',TEETH_BROKEN_CANINE_RIGHT:'Canine Right', 
+    TEETH_BROKEN_INCISOR_LEFT:'Incisor Left',TEETH_BROKEN_INCISOR_RIGHT:'Incisor Right',TEETH_BROKEN_NONE:'None'},
+  EAR_MARKING:{EAR_MARKING_LEFT:'Left',EAR_MARKING_RIGHT:'Right',EAR_MARKING_BOTH:'Both',EAR_MARKING_NONE:'None'},
+  MOUTH_MARKING:{MOUTH_MARKING_YES:'Yes',MOUTH_MARKING_NONE:'None'},
+  TAIL_MARKING_MISSING_TUFT:{TAIL_MARKING_MISSING_TUFT_YES:'Yes',TAIL_MARKING_MISSING_TUFT_NONE:'None'},
+  NOSE_COLOUR:{NOSE_COLOUR_BLACK:'Black',NOSE_COLOUR_PATCHY:'Patchy',NOSE_COLOUR_PINK:'Pink',NOSE_COLOUR_SPOTTED:'Spotted',NOSE_COLOUR_NONE:'None'},
+  SCARS:{SCARS_BODY_LEFT:'Body Left',SCARS_BODY_RIGHT:'Body Right',SCARS_FACE:'Face',SCARS_TAIL:'Tail',SCARS_NONE:'None'}
 })
-
-// .constant('CONST_LIST', {
-//   GENDERS: [
-//     {value: 'male',  label: 'Male'}, 
-//     {value: 'female',label: 'Female'}, 
-//     {value:  null,   label: 'Unknown'}
-//   ],
-//   EAR_MARKING: [
-//     {value: 'EAR_MARKING_LEFT',  label: 'Left'},
-//     {value: 'EAR_MARKING_RIGHT', label: 'Right'}
-//   ],
-//   MOUTH_MARKING: [ 
-//       {value: 'MOUTH_MARKING_BACK',  label: 'Back'},
-//       {value: 'MOUTH_MARKING_FRONT', label: 'Front'},
-//       {value: 'MOUTH_MARKING_LEFT',  label: 'Left'},
-//       {value: 'MOUTH_MARKING_RIGHT', label: 'Right'}
-//   ],
-//   TAIL_MARKING: [
-//     {value: 'TAIL_MARKING_MISSING_TUFT', label: 'Missing Tuft'}
-//   ],
-//   EYE_DAMAGE: [
-//     {value: 'EYE_DAMAGE_LEFT',  label: 'Left'}, 
-//     {value: 'EYE_DAMAGE_RIGHT', label: 'Right'}
-//   ],
-//   NOSE_COLOUR: [
-//     {value: undefined, label: 'NONE'}, 
-//     {value: 'NOSE_COLOUR_BLACK', label: 'Black'},
-//     {value: 'NOSE_COLOUR_PATCHY',  label: 'Patchy'}, 
-//     {value: 'NOSE_COLOUR_PINK', label: 'Pink'},
-//     {value: 'NOSE_COLOUR_SPOTTED', label: 'Spotted'}
-//   ],
-//   TEETH_BROKEN: [
-//     {value: 'TEETH_BROKEN_CANINE_LEFT', label: 'Canine Left'},
-//     {value: 'TEETH_BROKEN_CANINE_RIGHT', label: 'Canine Right'}, 
-//     {value: 'TEETH_BROKEN_INCISOR_LEFT', label: 'Incisor Left'}, 
-//     {value: 'TEETH_BROKEN_INCISOR_RIGHT', label: 'Incisor Right'}
-//   ],
-//   SCARS: [
-//     {value: 'SCARS_BODY_LEFT', label: 'Body Left'}, 
-//     {value: 'SCARS_BODY_RIGHT', label: 'Body Right'}, 
-//     {value: 'SCARS_FACE', label: 'Face'}, 
-//     {value: 'SCARS_TAIL', label: 'Tail'}
-//   ]
-// })
-
 .constant('CONST_LIST', {
-  GENDERS: [
-    {value: 'male',  label: 'Male'}, 
-    {value: 'female',label: 'Female'}, 
-    {value:  null,   label: 'Unknown'}
-  ],
-  EAR_MARKING: [
-    {value: 'EAR_MARKING_LEFT',  label: 'Left' , chekall: true},
-    {value: 'EAR_MARKING_RIGHT', label: 'Right', chekall: true},
-    {value: 'NONE', label: 'None', chekall: false}
-  ],
-  MOUTH_MARKING: [ 
-      {value: 'MOUTH_MARKING_YES', label: 'Yes', chekall: true},
-      {value: 'NONE', label: 'None', chekall: false}
-  ],
-  TAIL_MARKING: [
-    {value: 'TAIL_MARKING_MISSING_TUFT_YES', label: 'Yes', chekall: true},
-    {value: 'NONE', label: 'None', chekall: false}
-  ],
-  EYE_DAMAGE: [
-    {value: 'EYE_DAMAGE_YES',  label: 'Yes', chekall: true}, 
-    {value: 'NONE', label: 'None', chekall: false}
-  ],
-  NOSE_COLOUR: [
-    {value: undefined, label: 'Unknown'}, 
-    {value: 'NOSE_COLOUR_BLACK', label: 'Black'},
-    {value: 'NOSE_COLOUR_PATCHY',  label: 'Patchy'}, 
-    {value: 'NOSE_COLOUR_PINK', label: 'Pink'},
-    {value: 'NOSE_COLOUR_SPOTTED', label: 'Spotted'},
-    {value: 'NOSE_COLOUR_NONE', label: 'None'}
-  ],
-  TEETH_BROKEN: [
-    {value: 'TEETH_BROKEN_CANINE_LEFT', label: 'Canine Left', chekall: true},
-    {value: 'TEETH_BROKEN_CANINE_RIGHT', label: 'Canine Right', chekall: true}, 
-    {value: 'TEETH_BROKEN_INCISOR_LEFT', label: 'Incisor Left', chekall: true}, 
-    {value: 'TEETH_BROKEN_INCISOR_RIGHT', label: 'Incisor Right', chekall: true},
-    {value: 'NONE', label: 'None', chekall: false}
-  ],
-  SCARS: [
-    {value: 'SCARS_BODY_LEFT', label: 'Body Left', chekall: true}, 
-    {value: 'SCARS_BODY_RIGHT', label: 'Body Right', chekall: true}, 
-    {value: 'SCARS_FACE', label: 'Face', chekall: true}, 
-    {value: 'SCARS_TAIL', label: 'Tail', chekall: true},
-    {value: 'NONE', label: 'None', chekall: false}
-  ]
+  GENDERS:[{value:'male',label:'Male'},{value:'female',label:'Female'},{value:null,label:'Unknown'}],
+  EAR_MARKING:[{value:'EAR_MARKING_LEFT',label:'Left',chekall:true},{value:'EAR_MARKING_RIGHT',label:'Right',chekall:true},{value:'NONE',label:'None',chekall:false}],
+  MOUTH_MARKING:[{value:'MOUTH_MARKING_YES',label:'Yes',chekall:true},{value:'NONE',label:'None',chekall:false}],
+  TAIL_MARKING:[{value:'TAIL_MARKING_MISSING_TUFT_YES',label:'Yes',chekall:true},{value:'NONE',label:'None',chekall:false}],
+  EYE_DAMAGE:[{value:'EYE_DAMAGE_YES',label:'Yes',chekall:true},{value:'NONE',label:'None',chekall:false}],
+  NOSE_COLOUR:[{value:undefined,label:'Unknown'}, {value:'NOSE_COLOUR_BLACK',label:'Black'},{value:'NOSE_COLOUR_PATCHY',label:'Patchy'}, 
+    {value:'NOSE_COLOUR_PINK',label:'Pink'},{value:'NOSE_COLOUR_SPOTTED',label:'Spotted'},{value:'NOSE_COLOUR_NONE',label:'None'}],
+  TEETH_BROKEN: [{value:'TEETH_BROKEN_CANINE_LEFT',label:'Canine Left',chekall:true},{value:'TEETH_BROKEN_CANINE_RIGHT',label:'Canine Right',chekall:true}, 
+    {value:'TEETH_BROKEN_INCISOR_LEFT',label:'Incisor Left',chekall:true},{value:'TEETH_BROKEN_INCISOR_RIGHT',label:'Incisor Right',chekall:true},
+    {value:'NONE',label:'None',chekall:false}],
+  SCARS:[{value:'SCARS_BODY_LEFT',label:'Body Left',chekall:true},{value:'SCARS_BODY_RIGHT',label:'Body Right',chekall:true}, 
+    {value:'SCARS_FACE',label:'Face',chekall:true},{value:'SCARS_TAIL',label: 'Tail',chekall:true},
+    {value:'NONE',label:'None',chekall:false}]
 })
 
 app.run(['$rootScope', '$state', '$stateParams', 'AuthService', function ($rootScope, $state, $stateParams, AuthService) {

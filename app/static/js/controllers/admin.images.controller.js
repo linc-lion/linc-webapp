@@ -93,7 +93,7 @@ angular.module('linc.admin.images.controller', [])
 
     modalScope.edit = {'image_url': false};
 
-    modalScope.organizations = angular.copy($scope.$parent.organizations);
+    modalScope.imagesets = angular.copy($scope.$parent.imagesets);
     modalScope.image = {
       'url': '', 
       'image_type': 'cv', 

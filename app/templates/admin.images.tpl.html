@@ -34,13 +34,16 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <label for="image_url">Image url:</label>
         <input type="url" readonly class="form-control" name="image_url" ng-model="image.url" 
           ng-dblclick="image.url.length && !edit.image_url && CopyTextToClipBoard(image.url,'image url')">
-<!--         <div class="input-group"> 
+        <!--
+        <div class="input-group"> 
           <input type="url" ng-readonly="!edit.image_url" class="form-control" name="image_url" ng-model="image.url" 
             ng-dblclick="image.url.length && !edit.image_url && CopyTextToClipBoard(image.url,'image url')">
           <span class="input-group-addon icon icon-pencil2" ng-click="edit.image_url=!edit.image_url">Edit</span>
-        </div> -->
+        </div> 
+        -->
       </div>
       <div class="form-group">
+        <label for="image_type">Image Type:</label>
         <ui-select ng-model="image.image_type" theme="bootstrap">
           <ui-select-match placeholder="Select a image type">{{!$select.selected.label}}</ui-select-match>
           <ui-select-choices repeat="item.type as item in TypesLabel | filter: {'label' : $select.search}">
@@ -51,9 +54,12 @@ For more information or to contact visit linclion.org or email tech@linclion.org
       <div class="form-group">
         <label for="image_imageset_id">Image Set:</label>
         <ui-select ng-model="image.image_set_id" theme="bootstrap">
-          <ui-select-match placeholder="Select a image set">Image Set {{!$select.selected.id}}</ui-select-match>
+          <ui-select-match placeholder="Select a image set">Image Set {{!$select.selected.id}} &nbsp &nbsp ({{!$select.selected.owner_organization}})</ui-select-match>
           <ui-select-choices repeat="imageset.id as imageset in imagesets | filter: {'id': $select.search}">
-            <small>Image Set <div class="display-inline" ng-bind-html="imageset.id | highlight: $select.search"></div></small>
+            <small>Image Set 
+              <div class="display-inline" ng-bind-html="imageset.id | highlight: $select.search" style="padding-right: 5px"></div>
+              (<div class="display-inline" ng-bind-html="imageset.owner_organization | highlight: $select.search"></div>)
+            </small>
           </ui-select-choices>
         </ui-select>
       </div>
