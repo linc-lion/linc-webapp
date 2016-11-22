@@ -90,7 +90,7 @@ angular.module('linc.controllers', ['linc.admin.controller',
           modalScope.dataSending = true;
           var data = {
             'user_id' : modalScope.user.id, 
-            'data': {'password': modalScope.user.password.password}
+            'data': {'new_password': modalScope.user.password.password}
           };
           AuthService.ChangePassword(data).then(function(response){
             NotificationFactory.success({

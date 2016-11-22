@@ -85,9 +85,9 @@ angular.module('linc.auth.services', [])
   authService.ChangePassword = function(data){
     var deferred = $q.defer();
     var xsrfcookie = $cookies.get('_xsrf');
-    var url = '/users/' + data['user_id'];
+    var url = '/auth/changepassword';
     var req = { 
-      method: 'PUT', 
+      method: 'POST', 
       url: url, 
       data: data['data'],
       headers: { 'Content-Type': 'application/json','X-XSRFToken' : xsrfcookie}, 

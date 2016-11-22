@@ -118,8 +118,8 @@ angular.module('linc.login.controller', [])
     }
     var ShowInfo = function (data){
       var modalScope = $scope.$new();
-      modalScope.title = 'Verification email';
-      modalScope.modalMessage = "An email with password reset instructions has been sent to "+ 
+      modalScope.title = 'New Password';
+      modalScope.modalMessage = "An email with new password has been sent to "+ 
                             data.username + ", if it exists on our system.";
       var modalInstance = $uibModal.open({
           templateUrl: 'ForgetSended.tmpl.html',
