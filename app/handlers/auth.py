@@ -123,3 +123,18 @@ class ResetPassword(BaseHandler):
             self.response(response.code,rbody['message'])
         else:
             self.response(400,'An email is required to restart user\'s passwords.')
+
+class ChangePassword(BaseHandler):
+    @asynchronous
+    @coroutine
+    @web_authenticated
+    def post(self):
+        if 'new_password' in self.input_data.keys():
+            url = self.settings['API_URL']+'/auth/changepassword'
+            body = {'new_password': self.input_data['new_password']}
+            headers = {'Linc-Api-AuthToken':self.current_user['token']}
+            response = yield Task(self.api,url=url,method='POST',body=self.json_encode(body),headers=headers)
+            rbody = loads(response.body.decode('utf-8'))
+            self.response(response.code,rbody['message'])
+        else:
+            self.response(400,'Fail to change passwords.')
