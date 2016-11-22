@@ -22,7 +22,7 @@
 
 from handlers.base import VersionHandler
 from handlers.error import ErrorHandler
-from handlers.auth import LogoutHandler,LoginHandler, CheckAuthHandler, ResetPassword
+from handlers.auth import LogoutHandler,LoginHandler, CheckAuthHandler, ResetPassword, ChangePassword
 from handlers.main import MainHandler,LoginMainHandler,HomeHandler,SideMenuHandler,\
     LionMainHandler,SearchLionHandler,ImageSetMainHandler,SearchImageSetHandler,\
     ConservationistsHandler,ImageGalleryHandler,LocationHistoryHandler,ViewImagesHandler,\
@@ -93,6 +93,7 @@ url_patterns = [
     (r"/logout", LogoutHandler),
     (r"/auth/check", CheckAuthHandler),
     (r"/auth/recover", ResetPassword),
+    (r"/auth/changepassword", ChangePassword),
     (r"/users/?$", UsersHandler),
     (r"/users/(.*)$", UsersHandler)
 ]
