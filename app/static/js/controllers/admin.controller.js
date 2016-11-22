@@ -26,9 +26,9 @@ angular.module('linc.admin.controller', [ 'linc.admin.users.controller',
                                           'linc.admin.cvrequests.controller',
                                           'linc.admin.cvresults.controller'])
 
-.controller('AdminCtrl', ['$scope', '$state', '$q', '$uibModal', 'LincApiServices', 'NotificationFactory', 'toClipboard',
+.controller('AdminCtrl', ['$scope', '$state', '$q', '$uibModal', 'LincApiServices', 'LincApiDataFactory', 'NotificationFactory', 'toClipboard',
   'organizations', 'users', 'lions', 'imagesets', 'images', 'cvrequests', 'cvresults', 'settings', 
-  function ($scope, $state, $q, $uibModal, LincApiServices, NotificationFactory, toClipboard,
+  function ($scope, $state, $q, $uibModal, LincApiServices, LincApiDataFactory, NotificationFactory, toClipboard,
     organizations, users, lions, imagesets, images, cvrequests, cvresults, settings) {
 
   //$scope.debug = $state.current.data.debug;
@@ -57,6 +57,7 @@ angular.module('linc.admin.controller', [ 'linc.admin.users.controller',
 
   $scope.onTabClick = function (tab){
     settings.Selected_tab = tab.name;
+    LincApiDataFactory.set_settings(settings);
   }
 
   $scope.DialogDelete = function (title){

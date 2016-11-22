@@ -32,11 +32,12 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <label for="imageset_lion_id">Lion:</label>
             <ui-select ng-model="imageset.lion_id" theme="bootstrap">
               <ui-select-match placeholder="Select a lion" class="ui-select-class" allow-clear="true">
-                {{!$select.selected.id}} - {{!$select.selected.name}}
+                {{!$select.selected.id}} - {{!$select.selected.name}} &nbsp &nbsp ({{!$select.selected.organization}})
               </ui-select-match>
               <ui-select-choices repeat="lion.id as lion in lions | propsFilter: {name: $select.search, id: $select.search}">
                 <small>{{!lion.id}} - 
-                  <div class="display-inline" ng-bind-html="lion.name | highlight: $select.search"></div>
+                  <div class="display-inline" ng-bind-html="lion.name | highlight: $select.search" style="padding-right: 5px"></div>
+                  (<div class="display-inline" ng-bind-html="lion.organization | highlight: $select.search"></div>)
                 </small>
               </ui-select-choices>
             </ui-select>
@@ -47,7 +48,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
               <img ng-src="{{!imageset.main_image || '//:0' }}"  width="80" height="80">
             </div>
             <ui-select ng-model="imageset.image" theme="bootstrap" title="Choose a main image" on-select="onSelected($item, $model)">
-              <ui-select-match placeholder="Select a main image" class="ui-select-class" allow-clear="true">Image Set {{!$select.selected.id}}</ui-select-match>
+              <ui-select-match placeholder="Select a main image" class="ui-select-class" allow-clear="true">Image {{!$select.selected.id}} &nbsp ({{!$select.selected.image_type}})</ui-select-match>
               <ui-select-choices position="auto" all-choices="images"  refresh-delay="0"
                   repeat="image in $select.pageOptions | propsFilter: {id: $select.search}">
                 <div ng-bind-html="image.id | highlight: $select.search"></div>
@@ -67,6 +68,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             </ui-select>
           </div>
           <div class="form-group">
+            <label for="imageset_notes">Notes:</label>
             <textarea class="form-control" rows="5" ng-model="imageset.notes"></textarea>
           </div>
           <div class="form-group checkbox adm-checkbox">
@@ -121,6 +123,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <label class="control-label"><i class="fa fa-calendar"></i>Date of Birth: </label>
             <input type="text" class="form-control" ng-model="imageset.date_of_birth"  data-date-format="yyyy-MM-dd" data-date-type="string" data-max-date="today" data-autoclose="1" name="date_of_birth" bs-datepicker placement="top-right">
           </div>
+          <br>
           <div class="form-group checkbox adm-checkbox">
             <label for="geopos_private">
             <input name="geopos_private" id="geopos_private" type="checkbox" ng-model="imageset.geopos_private" ng-checked="imageset.geopos_private">

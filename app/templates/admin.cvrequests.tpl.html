@@ -38,9 +38,12 @@ For more information or to contact visit linclion.org or email tech@linclion.org
       <div class="form-group">
         <label for="req_imageset_id">Image Set Id:</label>
         <ui-select ng-model="cvrequest.image_set_id" theme="bootstrap">
-          <ui-select-match placeholder="Select a image set">Image Set {{!$select.selected.id}}</ui-select-match>
+          <ui-select-match placeholder="Select a image set">Image Set {{!$select.selected.id}} &nbsp &nbsp ({{!$select.selected.owner_organization}})</ui-select-match>
           <ui-select-choices repeat="imageset.id as imageset in imagesets | filter: {'id': $select.search}">
-            <small>Image Set <div class="display-inline" ng-bind-html="imageset.id | highlight: $select.search"></div></small>
+            <small>Image Set 
+              <div class="display-inline" ng-bind-html="imageset.id | highlight: $select.search" style="padding-right: 5px"></div>
+              (<div class="display-inline" ng-bind-html="imageset.owner_organization | highlight: $select.search"></div>)
+            </small>
           </ui-select-choices>
         </ui-select>
       </div>

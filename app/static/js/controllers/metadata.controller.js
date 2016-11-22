@@ -56,25 +56,25 @@ angular.module('linc.metadata.controller', ['linc.metadata.directive'])
   $scope.lion_association = {'show': false, 'label': 'Associate'};
   $scope.set_lion_list = function(val){
     $scope.selected.new_lion = undefined;
-    var org = $scope.user.organization_id;
     $scope.ListLions = [];
     $scope.lion_association.label = 'Wait. Loading...'
-    LincServices.Lions(org).then(function(lions){
+    LincServices.Lions().then(function(lions){
       console.log("loaded");
       _.forEach(lions, function(lion, index) {
-        if(lion.organization_id === $scope.user.organization_id){
-          var label = '<span>' + lion.id + ' - ' + lion.name ;
-          if(lion.dead)
-            label += '<i class="lion-list-icon-dead"></i>';
-          label += '</span>'
-          $scope.ListLions.push({
-            'index': index, 
-            'id': lion.id, 
-            'name': lion.name, 
-            'label': label,
-            'organization_id': lion.organization_id
-          });
-        }
+        var label = '<span>' + lion.id + ' - ' + lion.name;
+        var icon='';
+        if(lion.dead)
+          icon = '<i class="lion-list-icon-dead"></i>';
+        label += icon;
+        var choice = icon + '<span>' +lion.id + ' - ' + lion.name  + '&nbsp &nbsp(<small>' + lion.organization + '</small>)</span>';
+        $scope.ListLions.push({
+          'index': index, 
+          'id': lion.id, 
+          'name': lion.name, 
+          'label': label,
+          'choice' : choice,
+          'organization_id': lion.organization_id
+        });
       });
       $scope.lion_association.show = val;
     });

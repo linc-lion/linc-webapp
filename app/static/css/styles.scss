@@ -723,7 +723,21 @@ hr.style-line {
 .upload-name {color: #333;}
 
 .lion-ui-select {display:inline-block; vertical-align:middle; min-width:150px !important;}
-
+.lion-ui-select { 
+  span.ui-select-choices-row-inner{ 
+    padding: 3px 10px; 
+    i.lion-list-icon-dead{
+      left: -3px;
+    }
+  }
+  // span.ui-select-match-text{
+  //     padding: 3px 10px; 
+  //    i.lion-list-icon-dead{
+  //     left: -10px;
+  //     top: -2px;
+  //   }
+  // }
+}
 .notify-icon, .pnotify-icon span { display: block; float: left; margin-right: .2em; }
 .notify-title { display: block; margin-bottom: .4em; margin-top: 0;}
 .notify-text { display: block; margin: 10px;}

@@ -169,7 +169,7 @@ angular.module('linc.admin.imagesets.controller', [])
         var longitude = isNaN(parseFloat(modalScope.imageset.longitude)) ? null : parseFloat(modalScope.imageset.longitude);
 
         var data = {
-          'lion_id': modalScope.imageset.lion_id,
+          'lion_id': (modalScope.imageset.lion_id != undefined) ? modalScope.imageset.lion_id : null,
           'main_image_id': modalScope.imageset.main_image_id,
           'gender': modalScope.imageset.gender,
           'notes': modalScope.imageset.notes,
@@ -183,6 +183,13 @@ angular.module('linc.admin.imagesets.controller', [])
           'is_verified': modalScope.imageset.is_verified,
           'geopos_private': modalScope.imageset.geopos_private
         };
+        if(data.lion_id){
+          if(data.owner_organization_id == _.result(_.findWhere(modalScope.lions, {'id': data.lion_id}),'organization_id')){
+            data['is_verified'] = true;
+          }
+        }else{
+          data['is_verified'] = false;
+        }
         modalScope.dataSending = true;
         $scope.LincApiServices.ImageSets({'method': 'post', 'data': data}).then(function(response){
           $scope.Notification.success({
@@ -320,7 +327,7 @@ angular.module('linc.admin.imagesets.controller', [])
           var longitude = isNaN(parseFloat(modalScope.imageset.longitude)) ? null : parseFloat(modalScope.imageset.longitude);
 
           var data = {
-            'lion_id': modalScope.imageset.lion_id,
+            'lion_id': (modalScope.imageset.lion_id != undefined) ? modalScope.imageset.lion_id : null,
             'main_image_id': modalScope.imageset.main_image_id,
             'gender': modalScope.imageset.gender,
             'notes': modalScope.imageset.notes,
@@ -334,6 +341,13 @@ angular.module('linc.admin.imagesets.controller', [])
             'is_verified': modalScope.imageset.is_verified,
             'geopos_private': modalScope.imageset.geopos_private
           };
+          if(data.lion_id){
+            if(data.owner_organization_id == _.result(_.findWhere(modalScope.lions, {'id': data.lion_id}),'organization_id')){
+              data['is_verified'] = true;
+            }
+          }else{
+            data['is_verified'] = false;
+          }
           modalScope.dataSending = true;
           $scope.LincApiServices.ImageSets({'method': 'put', 'imageset_id' : modalScope.imageset.id, 'data': data}).then(function(response){
             $scope.Notification.success({

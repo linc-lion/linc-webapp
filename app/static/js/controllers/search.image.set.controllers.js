@@ -110,13 +110,14 @@ angular.module('linc.search.image.set.controllers', [])
       permissions['canShow'] = (user.admin || imageset_ismine);
       permissions['canLocate'] = (!imageset.geopos_private || user.admin || imageset_ismine);
 
-      permissions['canDisassociate'] = (imageset_ismine && !imageset.is_primary && lion_exist && imageset.is_verified);
-      permissions['NeedVerify'] = (!imageset_ismine && !imageset.is_primary && lion_exist && lion_ismy);
+      permissions['canDisassociate'] = (!user.admin && (imageset_ismine && !imageset.is_primary && lion_exist && imageset.is_verified));
+      permissions['NeedVerify'] = ((user.admin || (!imageset_ismine && lion_ismy)) && !imageset.is_primary && lion_exist);
+
       permissions['CanSetPrimary'] = (!imageset.is_primary && lion_exist && imageset.is_verified) &&
                                      (user.admin || imageset_ismine && imageset.lions_org_id==user.organization_id);
     
-      permissions['showGeoPos'] = (user.admin || imageset_ismine) || !imageset.geopos_private;
-      permissions['canDelete'] = ((user.admin || imageset_ismine) && !imageset.is_primary);
+      //permissions['showGeoPos'] = (user.admin || imageset_ismine) || !imageset.geopos_private;
+      //permissions['canDelete'] = ((user.admin || imageset_ismine) && !imageset.is_primary);
       return permissions;
     }
 

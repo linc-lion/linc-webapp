@@ -29,9 +29,13 @@ For more information or to contact visit linclion.org or email tech@linclion.org
       <div class="form-group">
         <label for="cvresult_cvrequest_id">CV Request Id:</label>
         <ui-select ng-model="cvresult.cvrequest_id" theme="bootstrap">
-          <ui-select-match placeholder="Select a cv request id">{{!$select.selected.id}}</ui-select-match>
+          <ui-select-match placeholder="Select a cv request id">{{!$select.selected.id}}&nbsp &nbsp (Image Set {{!$select.selected.image_set_id}})
+          </ui-select-match>
           <ui-select-choices repeat="cvreq.id as cvreq in cvrequests | filter: {'id': $select.search}">
-            <div ng-bind-html="cvreq.id | highlight: $select.search"></div>
+            <small>
+            <div ng-bind-html="cvreq.id | highlight: $select.search" style="padding-right: 5px"></div>
+            (Image Set <div class="display-inline" ng-bind-html="cvreq.image_set_id | highlight: $select.search"></div>)
+            </small>
           </ui-select-choices>
         </ui-select>
       </div>

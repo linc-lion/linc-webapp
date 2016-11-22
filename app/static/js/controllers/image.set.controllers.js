@@ -87,8 +87,9 @@ angular.module('linc.image.set.controllers', ['linc.search.image.set.controllers
     var lion_exist= imageset.lion_id!=undefined ;
 
     permissions['canShow'] = (user.admin || imageset_ismine);
-    permissions['canDisassociate'] = (imageset_ismine && !imageset.is_primary && lion_exist && imageset.is_verified);
-    permissions['NeedVerify'] = (!imageset_ismine && !imageset.is_primary && lion_exist && lion_ismy);
+    permissions['canDisassociate'] = (!user.admin && (imageset_ismine && !imageset.is_primary && lion_exist && imageset.is_verified));
+    permissions['NeedVerify'] = ((user.admin || (!imageset_ismine && lion_ismy)) && !imageset.is_primary && lion_exist);
+  
     permissions['CanSetPrimary'] = (!imageset.is_primary && lion_exist && imageset.is_verified) && 
                                    (user.admin || (imageset_ismine && imageset.lions_org_id==user.organization_id));
   

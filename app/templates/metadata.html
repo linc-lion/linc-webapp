@@ -118,10 +118,6 @@ For more information or to contact visit linclion.org or email tech@linclion.org
               <!-- Show only Edit -->
               <div ng-show="!isNew">
                 <!--Has Lion-->
-                <!-- <div ng-if="selected.lion_id !== null" class="form-inline group-input-center">
-                  <label class="meta_label" for="lion_name2">Lion: </label>
-                  <a ui-sref="lion({id: selected.lion_id})" target="_blank" name="lion_name2" data-animation="am-flip-x" placement="bottom-right" bs-tooltip="tooltip">{{!selected.lion_id}}-{{!selected.name}}</a>
-                </div> -->
                 <div ng-if="selected.lion_id !== null" class="form-inline group-input">
                   <label class="meta_label" for="lion_name2">Lion: </label>
                   <a ui-sref="lion({id: selected.lion_id})" target="_blank" name="lion_name2" data-animation="am-flip-x" placement="bottom-right" bs-tooltip="tooltip">
@@ -144,7 +140,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
                         <div ng-bind-html="$select.selected.label | highlight: $select.search"></div>
                       </ui-select-match>
                       <ui-select-choices repeat="item in (ListLions | filter: $select.search) track by item.index">
-                        <div ng-bind-html="item.label | highlight: $select.search"></div>
+                        <div ng-bind-html="item.choice | highlight: $select.search"></div>
                       </ui-select-choices>
                     </ui-select>
                   </div>
