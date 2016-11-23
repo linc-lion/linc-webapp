@@ -98,11 +98,11 @@ config['scheduler'] = TornadoScheduler()
 config['scheduler'].start()
 
 # Setting URL
-#appurl = "https://linc-website.herokuapp.com/"
-appurl = 'http://localhost:5080'
+appurl = "https://linc-website.herokuapp.com/"
+#appurl = 'http://localhost:5080'
 config['url'] = appurl
 
 # Setting linc-api URL
-#config['API_URL'] = 'https://linc-api.herokuapp.com'
+config['API_URL'] = 'https://linc-api.herokuapp.com'
 # for development purpose
-config['API_URL'] = 'http://192.168.100.10:5050'
+#config['API_URL'] = 'http://192.168.100.10:5050'
