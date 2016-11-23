@@ -68,20 +68,21 @@ For more information or to contact visit linclion.org or email tech@linclion.org
   <div class="modal-body" ng-show="content">
     <div ng-if="show" class="row">
       <div class="col-sm-3 text-center">
-        <div class="btn-group show-arrow">
-          <button type="button" class="btn btn-default" ng-class="{'disabled-btn':!arrow.show}" 
-            ng-model="arrow.show" uib-btn-checkbox ng-click="show_arrow()">
-            <span ng-if="arrow.show">Click to Hide </span>
-            <span ng-if="!arrow.show">Click to Show </span>
-            <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-          </button>
-        </div>
         <div class="list-group list-locations">
           <div class="form-group location-group" ng-repeat="location in locations">
            <button ng-class="{'btn btn-default': !location.selected, 'btn btn-primary': location.selected}" 
              ng-style="location.selected && location.style" ng-model="location.selected" ng-click="animate(location)" ng-dblclick="open_imageset(location.id)">{{!location.label}} - <span class="badge" ng-class="{update_at: !location.date_stamp}" data-animation="am-flip-x" data-html="true" data-type="info" placement="auto" bs-tooltip="location.tooltip" bs-enabled="location.tooltip.checked">{{!location.date}}</span>
             </button>
           </div>
+        </div>
+        <div class="btn-group show-arrow" ng-show="locations.length>1">
+          <button type="button" class="btn btn-default" ng-class="{'disabled-btn':!arrow.show}" 
+            ng-model="arrow.show" uib-btn-checkbox ng-click="show_arrow()"
+            ng-disabled="coord.length<2">
+            <span ng-if="arrow.show">Click to Hide </span>
+            <span ng-if="!arrow.show">Click to Show </span>
+            <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+          </button>
         </div>
       </div>
       <div class="map-container col-sm-9">
