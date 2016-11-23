@@ -103,6 +103,9 @@ angular.module('linc.admin.imagesets.controller', [])
     modalScope.organizations = angular.copy($scope.$parent.organizations);
     modalScope.lions = angular.copy($scope.$parent.lions);
     modalScope.images = angular.copy($scope.$parent.images);
+    //modalScope.images = _.filter($scope.$parent.images, function(image){
+    //  return (image.imageset_id == modalScope.imageset.id);
+    //});
 
     modalScope.imageset = { 
       'lion_id': undefined, 
@@ -256,10 +259,14 @@ angular.module('linc.admin.imagesets.controller', [])
 
       modalScope.organizations = angular.copy($scope.$parent.organizations);
       modalScope.lions = angular.copy($scope.$parent.lions);
-      modalScope.images = angular.copy($scope.$parent.images);
+      //modalScope.images = angular.copy($scope.$parent.images);
 
       modalScope.imageset = angular.copy($scope.Selecteds[0]);
       modalScope.imageset.main_image = '';
+
+      modalScope.images = _.filter($scope.$parent.images, function(image){
+        return (image.image_set_id == modalScope.imageset.id);
+      });
 
       if(modalScope.imageset.main_image_id){
         var main_image = _.find(modalScope.images, {'id': modalScope.imageset.main_image_id});
