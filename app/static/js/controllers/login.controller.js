@@ -20,7 +20,7 @@
 
 angular.module('linc.login.controller', [])
 // Login
-.controller('LoginCtrl', ['$scope', '$state', '$timeout', '$uibModal', 'AuthService', 'NotificationFactory', 
+.controller('LoginCtrl', ['$scope', '$state', '$timeout', '$uibModal', 'AuthService', 'NotificationFactory',
   function ($scope, $state, $timeout, $uibModal, AuthService, NotificationFactory) {
 
     $scope.loginData = { username : '' , password : '', _xsrf: ''};
@@ -90,8 +90,8 @@ angular.module('linc.login.controller', [])
             $scope.loginData.username = modalScope.forgot.username;
             // NotificationFactory.success({
             //   title: 'Change Password', message: 'Password of '+ modalScope.forgot.username +' successfully updated',
-            //   position: "right", 
-            //   duration: 2000 
+            //   position: "right",
+            //   duration: 2000
             // });
             modalInstance.close(modalScope.forgot);
           },
@@ -119,8 +119,7 @@ angular.module('linc.login.controller', [])
     var ShowInfo = function (data){
       var modalScope = $scope.$new();
       modalScope.title = 'New Password';
-      modalScope.modalMessage = "An email with new password has been sent to "+ 
-                            data.username + ", if it exists on our system.";
+      modalScope.modalMessage = "A new password was sent to "+data.username;
       var modalInstance = $uibModal.open({
           templateUrl: 'ForgetSended.tmpl.html',
           scope: modalScope,
