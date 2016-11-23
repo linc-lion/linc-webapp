@@ -1,6 +1,6 @@
 
-from PILLOW import Image
-from PILLOW.ExifTags import TAGS, GPSTAGS
+from PIL import Image
+from PIL.ExifTags import TAGS, GPSTAGS
 from logging import info
 from datetime import datetime
 

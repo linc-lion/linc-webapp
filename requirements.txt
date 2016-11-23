@@ -2,3 +2,4 @@ pycurl==7.19.5.1
 tornado==4.2
 APScheduler
 git+https://github.com/venidera/tornadoist.git
+Pillow
