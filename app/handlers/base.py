@@ -130,4 +130,4 @@ class BaseHandler(RequestHandler):
 
 class VersionHandler(BaseHandler):
     def get(self):
-        self.response(message=self.settings['version'])
+        self.response(200,message=self.settings['version'])
