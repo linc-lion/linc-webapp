@@ -162,7 +162,9 @@ angular.module('linc.image.set.controllers', ['linc.search.image.set.controllers
           updated_at: date, 
           date_stamp: $scope.imageset.date_stamp,
           longitude: $scope.imageset.longitude, 
-          latitude: $scope.imageset.latitude 
+          latitude: $scope.imageset.latitude ,
+          geopos_private: $scope.imageset.geopos_private,
+          organization_id: $scope.imageset.organization_id
         }]
       }
     };
