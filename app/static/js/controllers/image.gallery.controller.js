@@ -156,27 +156,34 @@ angular.module('linc.image.gallery.controller', ['linc.image.gallery.directive']
       });
     }
     else {
+      var modalScope = $scope.$new();
+      var message = {};
       if($scope.delete_items.length==1){
-        $scope.modalTitle = 'Delete Lion Image';
-        $scope.modalMessage = 'Are you sure you want to delete the image?';
-        $scope.SucessMessage = 'Image was successfully deleted.';
-        $scope.ErrorMessage = 'Unable to delete the image.';
+        modalScope.title = 'Delete Lion Image';
+        modalScope.message = 'Are you sure you want to delete the image?';
+        message = { 
+          Sucess: 'Image was successfully deleted.',
+          Error: 'Unable to delete the image.'
+        };
       }
       else{
-        $scope.modalTitle = 'Delete Lions Images';
-        $scope.modalMessage = 'Are you sure you want to delete the images?';
-        $scope.SucessMessage = 'Images were successfully deleted.';
-        $scope.ErrorMessage = 'Unable to delete the images.';
+        modalScope.title = 'Delete Lions Images';
+        modalScope.message = 'Are you sure you want to delete the images?';
+        message = { 
+          Sucess: 'Images were successfully deleted.',
+          Error: 'Unable to delete the images.'
+        };
       }
-      $scope.modalContent = 'Form';
-      $scope.modalInstance = $uibModal.open({
-          templateUrl: 'Dialog.Delete.tmpl.html',
-          scope:$scope
+      var modalInstance = $uibModal.open({
+        templateUrl: 'Dialog.Delete.tmpl.html',
+        scope: modalScope
       });
-      $scope.modalInstance.result.then(function (result) {
+
+      modalInstance.result.then(function (result) {
         LincServices.DeleteImages($scope.delete_items, function(result){
           NotificationFactory.success({
-            title: "Delete", message: $scope.SucessMessage,
+            title: 'Delete', 
+            message: message.Sucess,
             position: "right", // right, left, center
             duration: 2000     // milisecond
           });
@@ -186,21 +193,21 @@ angular.module('linc.image.gallery.controller', ['linc.image.gallery.directive']
         function(error){
           if($scope.debug || (error.status != 401 && error.status != 403)){
             NotificationFactory.error({
-              title: "Error", message: $scope.ErrorMessage,
-              position: 'right', // right, left, center
-              duration: 5000   // milisecond
+              title: "Fail: "+modalScope.title, 
+              message: message.Error,
+              position: 'right',
+              duration: 5000
             });
           }
         });
       }, function () {
         console.log('Modal dismissed at: ' + new Date());
       });
-
-      $scope.ok = function (){
-        $scope.modalInstance.close();
+      modalScope.ok = function (){
+        modalInstance.close();
       }
-      $scope.cancel = function(){
-        $scope.modalInstance.dismiss();
+      modalScope.cancel = function(){
+        modalInstance.dismiss();
       }
     }
   }

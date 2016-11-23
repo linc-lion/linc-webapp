@@ -147,26 +147,42 @@ angular.module('linc.image.set.controllers', ['linc.search.image.set.controllers
     // Location History
     var label = 'Image Set ' + $scope.imageset.id;
     var date = (new Date($scope.imageset.updated_at)).toLocaleDateString();
+    var has_position = ($scope.imageset.longitude!=null && $scope.imageset.latitude!=null);
+    var location = [{
+      id: $scope.imageset.id, 
+      label: label, 
+      name: $scope.imageset.name,
+      updated_at: date, 
+      date_stamp: $scope.imageset.date_stamp,
+      longitude: $scope.imageset.longitude, 
+      latitude: $scope.imageset.latitude ,
+      geopos_private: $scope.imageset.geopos_private,
+      organization_id: $scope.imageset.organization_id
+    }];
 
     $scope.location_options = { 
       type: 'imageset', 
       id: $scope.imageset.id,
       is_primary: $scope.imageset.is_primary, 
-      lion_id: $scope.imageset.lion_id, 
-      history: { 
-        count: 1,
-        locations: [{
-          id: $scope.imageset.id, 
-          label: label, 
-          name: $scope.imageset.name,
-          updated_at: date, 
-          date_stamp: $scope.imageset.date_stamp,
-          longitude: $scope.imageset.longitude, 
-          latitude: $scope.imageset.latitude ,
-          geopos_private: $scope.imageset.geopos_private,
-          organization_id: $scope.imageset.organization_id
-        }]
+      lion_id: $scope.imageset.lion_id,
+      history: {
+        count: has_position ? 1 : 0,
+        locations: has_position ? location : []
       }
+      // history: { 
+      //   count: 1,
+      //   locations: [{
+      //     id: $scope.imageset.id, 
+      //     label: label, 
+      //     name: $scope.imageset.name,
+      //     updated_at: date, 
+      //     date_stamp: $scope.imageset.date_stamp,
+      //     longitude: $scope.imageset.longitude, 
+      //     latitude: $scope.imageset.latitude ,
+      //     geopos_private: $scope.imageset.geopos_private,
+      //     organization_id: $scope.imageset.organization_id
+      //   }]
+      // }
     };
     // Metadata Options
     $scope.metadata_options = { type: 'imageset', edit: 'edit', data: $scope.imageset};
