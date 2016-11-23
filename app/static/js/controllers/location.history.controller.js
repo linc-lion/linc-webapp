@@ -21,8 +21,9 @@
 angular.module('linc.location.history.controller', ['linc.location.history.directive'])
 
 .controller('LocationHistoryCtrl', ['$scope', '$state', '$timeout', '$uibModal', '$q', '$uibModalInstance', 
-  'LincServices', 'options', 'history',
-  function ($scope, $state, $timeout, $uibModal, $q, $uibModalInstance, LincServices, options, history) {
+  'LincServices', 'AuthService', 'options', 'history',
+  function ($scope, $state, $timeout, $uibModal, $q, $uibModalInstance, LincServices, AuthService, options, history) {
+    var user = AuthService.user;
     $scope.title = 'Location History';
     $scope.content = 'Map';
 
@@ -32,28 +33,27 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
  
     $scope.show = (options.type == 'lion' || ((options.type == 'imageset') && options.is_primary));
 
-    _.forEach(history.locations, function(hist){
-      var title;
-      var checked = false;
-      if(hist.date_stamp){
-        hist.date = hist.date_stamp;
-        title = 'Date Stamp';
-      }else{
-        hist.date = hist.updated_at;
-        title = 'No stamp date.<br>Using the update date.';
-        checked = true;
-      }
-      hist.date = hist.date_stamp ? hist.date_stamp : hist.updated_at;
-      hist.tooltip = {title: title, checked: checked};
-    });
-
     function compare(a,b) {
       if (a.date < b.date) return -1;
       if (a.date > b.date) return 1;
       return 0;
     };
 
-    $scope.locations = history.locations.sort(compare);
+    $scope.locations = (_.filter(_.map(history.locations, function(element, index){
+      var elem = {};
+      elem['date'] = element['date_stamp'] ? element['date_stamp'] : element['updated_at'];
+      var title = element['date_stamp'] ? 'Date Stamp' : 'No stamp date.<br>Using the update date.';
+      var checked = element['date_stamp'] ? false : true;
+      elem['tooltip'] = {title: title, checked: checked};
+      return _.extend({}, element, elem);
+    }), function(hist){
+      if(!hist.geopos_private) 
+        return true;
+      else
+        return (user.admin || (user.organization_id == hist.organization_id));
+    })).sort(compare);
+
+    $scope.count = $scope.locations.length;
     
     // Close Location History
     $scope.Cancel = function () {
@@ -196,7 +196,7 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
           show_label(marker,false);
         });
 
-        var delta = (0.9-0.3)/(history.count-1);
+        var delta = (0.9-0.3)/($scope.count-1);
         var opacity = 0.3 + i*delta;
         var colour = {stroke: '#9f3d0e', fill: "rgba( 217, 82, 16, " + opacity + ")"};
         var stroke = {color: colour.stroke, opacity: 0.7};
@@ -227,7 +227,7 @@ angular.module('linc.location.history.controller', ['linc.location.history.direc
         var center = $scope.bounds.getCenter();
         $scope.map.setCenter(center);
         // One Imageset
-        if(history.count == 1){
+        if($scope.count == 1){
           $scope.bounds = CircleBounds(center, $scope.radius);
         }
         else{
