@@ -117,12 +117,8 @@ class ResetPassword(BaseHandler):
     def post(self):
         if 'email' in self.input_data.keys():
             url = self.settings['API_URL']+'/auth/recover'
-            info(url)
             body = {'email': self.input_data['email']}
             response = yield Task(self.api,url=url,method='POST',body=self.json_encode(body))
-            info(response)
-            info(dir(response))
-            info(type(response))
             rbody = loads(response.body.decode('utf-8'))
             self.response(response.code,rbody['message'])
         else:
