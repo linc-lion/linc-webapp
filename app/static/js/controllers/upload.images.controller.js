@@ -48,7 +48,7 @@ angular.module('linc.upload.images.controller', [])
 
   var UpdateTags = function (Tags, ListOfTags){
     var disabled_tag = _.difference(['whisker', 'whisker-left','whisker-right'],
-      _.intersection(_.map(Tags,'value'), 
+      _.intersection(_.map(Tags,'value'),
           ['whisker', 'whisker-left','whisker-right']));
     if (disabled_tag.length == 3)
       disabled_tag = [];
@@ -84,7 +84,7 @@ angular.module('linc.upload.images.controller', [])
     name: 'imageFilter',
     fn: function(item /*{File|FileLikeObject}*/, options) {
       var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
-      return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+      return '|jpg|png|jpeg|bmp|gif|xml|'.indexOf(type) !== -1;
     }
   });
   // CALLBACKS
