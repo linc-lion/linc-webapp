@@ -92,11 +92,11 @@ def get_exif_data(filename):
     return output
 
 
-def _get_if_exist(data, key):
-    if key in data:
-        return data[key]
+# def _get_if_exist(data, key):
+#     if key in data:
+#         return data[key]
 
-    return None
+#     return None
 
 
 def _convert_to_degress(value):
@@ -125,10 +125,15 @@ def get_lat_lon(exif_data):
     if "GPSInfo" in exif_data:
         gps_info = exif_data["GPSInfo"]
 
-        gps_latitude = _get_if_exist(gps_info, "GPSLatitude")
-        gps_latitude_ref = _get_if_exist(gps_info, 'GPSLatitudeRef')
-        gps_longitude = _get_if_exist(gps_info, 'GPSLongitude')
-        gps_longitude_ref = _get_if_exist(gps_info, 'GPSLongitudeRef')
+        # gps_latitude = _get_if_exist(gps_info, "GPSLatitude")
+        # gps_latitude_ref = _get_if_exist(gps_info, 'GPSLatitudeRef')
+        # gps_longitude = _get_if_exist(gps_info, 'GPSLongitude')
+        # gps_longitude_ref = _get_if_exist(gps_info, 'GPSLongitudeRef')
+
+        gps_latitude = gps_info.get("GPSLatitude", None)
+        gps_latitude_ref = gps_info.get('GPSLatitudeRef', None)
+        gps_longitude = gps_info.get('GPSLongitude', None)
+        gps_longitude_ref = gps_info.get('GPSLongitudeRef', None)
 
         if gps_latitude and gps_latitude_ref and gps_longitude and gps_longitude_ref:
             lat = _convert_to_degress(gps_latitude)
