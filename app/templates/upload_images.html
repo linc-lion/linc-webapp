@@ -16,144 +16,295 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 For more information or to contact visit linclion.org or email tech@linclion.org -->
-<div name="UpLoadImages" class="upload-images font-homenaje-1-1">
+<div name="UpLoadImages" class="upload-images font-homenaje-1-1" ng-init="tabselector = 'images'">
   <div class="modal-header" ng-show="title">
     <button type="button" class="close" ng-click="Finish()">&times;</button>
     <h4 class="modal-title" ng-bind-html="title"></h4>
   </div>
-  <div class="modal-body" nv-file-drop="" uploader="uploader" class="ng-scope">
-    <h3>Select files</h3>
-    <div ng-show="uploader.isHTML5">
-      <div class="well my-drop-zone" nv-file-over="" uploader="uploader">
-        <span class="btn btn-default btn-file">
-           Drag &#38; Drop Images here OR click to Select<input type="file" class="uploader" nv-file-select="" uploader="uploader" multiple/>
-        </span>
-      </div>
+  <ul class="nav nav-tabs" id="tabContent">
+    <li ng-class="{'active' : tabselector == 'images'}"><a ng-click="tabselector = 'images'">Images Only</a></li>
+    <li ng-class="{'active' : tabselector == 'vocs'}"><a ng-click="tabselector = 'vocs'">Images and VOCs</a></li>
+  </ul>
+
+  <div ng-if="tabselector == 'images'">
+    <div class="modal-body" nv-file-drop="" uploader="uploader" class="ng-scope">
+        <h3>Select files</h3>
+        <div ng-show="uploader.isHTML5">
+        <div class="well my-drop-zone" nv-file-over="" uploader="uploader">
+            <span class="btn btn-default btn-file">
+            Drag &#38; Drop Images here OR click to Select<input type="file" class="uploader" nv-file-select="" uploader="uploader" multiple/>
+            </span>
+        </div>
+        </div>
+        <h3>Upload queue</h3>
+        <table class="table">
+        <thead>
+            <tr>
+            <th width="12%" class="text-left"><p>Queue length: {{! uploader.queue.length }}</p></th>
+            <th width="5%" class="text-right"><p>Tags:</p></th>
+            <th width="30%" class="wrap-withespace text-center">
+                <ui-select class="select-tags" multiple ng-model="Default.Tags" theme="bootstrap" sortable="true"
+                ng-disabled="uploader.isUploading" close-on-select="false"
+                search-enabled="false"
+                on-select="OnSelect($item, Default.Tags, ListOfTags)" on-remove="OnRemove($item, Default.Tags, ListOfTags)"
+                remove-selected="false">
+                <ui-select-match placeholder="Select Image Tags...">
+                    {{! $item.label}}
+                </ui-select-match>
+                <ui-select-choices repeat="tag in ListOfTags | filter: $select.search" ui-disable-choice="tag.disabled">
+                    <div ng-bind-html="tag.label | highlight: $select.search"></div>
+                </ui-select-choices>
+                </ui-select>
+            </th>
+            <th width="10%" class="properties text-center">
+                Propertie:
+            </th>
+            <th width="10%" class="text-center">
+                <button type="button" class="btn btn-default btn-action" ng-model="Default.isPublic"
+                ng-disabled="uploader.isUploading" ng-init="Default.isPublic = true" data-html="1"
+                bs-options="property.value as property.label for property in Properties" bs-select>
+                Action <span class="caret"></span>
+                </button>
+            </th>
+            <th width="65%" class="text-center"></th>
+            </tr>
+        </thead>
+        </table>
+        <table class="table">
+        <thead>
+            <tr>
+            <th width="8%" class="text-center">Image</th>
+            <th width="20%" class="text-center">Name</th>
+            <th width="10%" class="text-center">Image Tags</th>
+            <th width="10%" class="text-center">Properties</th>
+            <th width="10%" class="text-center">Cover Image</th>
+            <th width="8%" ng-show="uploader.isHTML5">Size</th>
+            <th width="8%" ng-show="uploader.isHTML5">Progress</th>
+            <th width="3%" class="text-center">Status</th>
+            <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="(key, item) in uploader.queue">
+            <td class="text-center">
+                <div class="div-name-limited" ng-show="uploader.isHTML5" ng-thumb="{ file: item._file, height: 50 }"></div>
+            </td>
+            <td ng-show="item.show_name" class="text-center">
+                <strong>{{! item.file.name }}</strong>
+            </td>
+            <td ng-show="!item.show_name" class="text-center">
+                <strong><a class="upload-name" data-animation="am-flip-x" placement="top-left"
+                bs-tooltip="item.tooltip">{{! item.nickname}}</a></strong>
+            </td>
+
+            <td class="text-center">
+                <ui-select class="select-tags" multiple ng-model="item.Tags" theme="bootstrap" sortable="true"
+                ng-disabled="item.isSuccess || uploader.isUploading" close-on-select="false" search-enabled="false"
+                on-select="OnSelect($item, item.Tags, item.ListOfTags)" on-remove="OnSelect($item, item.Tags, item.ListOfTags)"
+                remove-selected="false">
+                <ui-select-match placeholder="Select Image Tags...">
+                    {{! $item.label}}
+                </ui-select-match>
+                <ui-select-choices repeat="tag in item.ListOfTags | filter: $select.search" ui-disable-choice="tag.disabled">
+                    <div ng-bind-html="tag.label | highlight: $select.search"></div>
+                </ui-select-choices>
+                </ui-select>
+            </td>
+
+            <td class="text-center">
+                <button type="button" class="btn btn-default" ng-model="item.isPublic"
+                ng-init="item.isPublic = Default.isPublic" data-html="1"
+                bs-options="property.value as property.label for property in Properties" bs-select
+                ng-disabled="item.isSuccess || uploader.isUploading">
+                Action <span class="caret"></span>
+                </button>
+            </td>
+            <td class="text-center">
+                <input type="radio" ng-disabled="item.isPublic==false || item.isSuccess || uploader.isUploading"
+                ng-checked="!(item.isPublic==false) && 0" ng-model="Default.isCover" name="radio-cover"
+                ng-value="item.$$hashKey"/>
+            </td>
+
+            <td ng-show="uploader.isHTML5" nowrap>{{! item.file.size/1024/1024|number:2 }} MB</td>
+            <td ng-show="uploader.isHTML5">
+                <div class="progress margin-bottom-0">
+                <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                </div>
+            </td>
+            <td class="text-center">
+                <span ng-show="item.isSuccess"><i class="icon icon-check"></i></span>
+                <span ng-show="item.isCancel"><i class="icon icon-circle-slash"></i></span>
+                <span ng-show="item.isError"><i class="icon icon-trash"></i></span>
+            </td>
+            <td nowrap class="text-center">
+                <button type="button" class="btn btn-default btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading" ng-show="!item.isSuccess">
+                <span class="icon icon-circle-slash"></span> Cancel
+                </button>
+                <button type="button" class="btn btn-default btn-xs" ng-click="remove_item(item)" ng-disabled="item.isUploading" ng-show="!item.isSuccess">
+                <span class="icon icon-trash"></span> Remove
+                </button>
+            </td>
+            </tr>
+        </tbody>
+        </table>
     </div>
-    <h3>Upload queue</h3>
-    <table class="table">
-      <thead>
-        <tr>
-          <th width="12%" class="text-left"><p>Queue length: {{! uploader.queue.length }}</p></th>
-          <th width="5%" class="text-right"><p>Tags:</p></th>
-          <th width="30%" class="wrap-withespace text-center">
-            <ui-select class="select-tags" multiple ng-model="Default.Tags" theme="bootstrap" sortable="true" 
-              ng-disabled="uploader.isUploading" close-on-select="false" 
-              search-enabled="false"
-              on-select="OnSelect($item, Default.Tags, ListOfTags)" on-remove="OnRemove($item, Default.Tags, ListOfTags)"
-              remove-selected="false">
-              <ui-select-match placeholder="Select Image Tags...">
-                {{! $item.label}}
-              </ui-select-match>
-              <ui-select-choices repeat="tag in ListOfTags | filter: $select.search" ui-disable-choice="tag.disabled">
-                <div ng-bind-html="tag.label | highlight: $select.search"></div>
-              </ui-select-choices>
-            </ui-select>
-          </th>
-          <th width="10%" class="properties text-center">
-            Propertie:
-          </th>
-          <th width="10%" class="text-center">
-            <button type="button" class="btn btn-default btn-action" ng-model="Default.isPublic" 
-              ng-disabled="uploader.isUploading" ng-init="Default.isPublic = true" data-html="1" 
-              bs-options="property.value as property.label for property in Properties" bs-select>
-              Action <span class="caret"></span>
-            </button>
-          </th>
-          <th width="65%" class="text-center"></th>
-        </tr>
-      </thead>
-    </table>
-    <table class="table">
-      <thead>
-        <tr>
-          <th width="8%" class="text-center">Image</th>
-          <th width="20%" class="text-center">Name</th>
-          <th width="10%" class="text-center">Image Tags</th>
-          <th width="10%" class="text-center">Properties</th>
-          <th width="10%" class="text-center">Cover Image</th>
-          <th width="8%" ng-show="uploader.isHTML5">Size</th>
-          <th width="8%" ng-show="uploader.isHTML5">Progress</th>
-          <th width="3%" class="text-center">Status</th>
-          <th class="text-center">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="(key, item) in uploader.queue">
-          <td class="text-center">
-            <div class="div-name-limited" ng-show="uploader.isHTML5" ng-thumb="{ file: item._file, height: 50 }"></div>
-          </td>
-          <td ng-show="item.show_name" class="text-center">
-            <strong>{{! item.file.name }}</strong>
-          </td>
-          <td ng-show="!item.show_name" class="text-center">
-            <strong><a class="upload-name" data-animation="am-flip-x" placement="top-left" 
-              bs-tooltip="item.tooltip">{{! item.nickname}}</a></strong>
-          </td>
-          
-          <td class="text-center">
-            <ui-select class="select-tags" multiple ng-model="item.Tags" theme="bootstrap" sortable="true" 
-              ng-disabled="item.isSuccess || uploader.isUploading" close-on-select="false" search-enabled="false"
-              on-select="OnSelect($item, item.Tags, item.ListOfTags)" on-remove="OnSelect($item, item.Tags, item.ListOfTags)"
-              remove-selected="false">
-              <ui-select-match placeholder="Select Image Tags...">
-                {{! $item.label}}
-              </ui-select-match>
-              <ui-select-choices repeat="tag in item.ListOfTags | filter: $select.search" ui-disable-choice="tag.disabled">
-                <div ng-bind-html="tag.label | highlight: $select.search"></div>
-              </ui-select-choices>
-            </ui-select>
-          </td>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+        <span class="icon icon-circle-slash"></span> Cancel all
+        </button>
+        <button type="button" class="btn btn-default btn-s" ng-click="remove_all_items();" ng-disabled="!uploader.queue.length || uploader.isUploading">
+        <span class="icon icon-trash"></span> Remove all
+        </button>
+        <button type="button" class="btn btn-primary btn-s" ng-click="uploader.uploadAll()" ng-disabled="!enable_Upload">
+        <span class="icon icon-cloud_upload"></span> Upload Images
+        </button>
+        <!--<button ng-show="isNew" ng-show="!uploader.queue.length" type="button" class="btn btn-default" ng-click="GoBack()">Go Back</button>-->
+        <!--<button ng-show="uploader.queue.length" type="button" class="btn btn-default" ng-click="Cancel()">Close</button>-->
+        <!--<button ng-show="isNew" type="button" class="btn btn-default" ng-click="Finish()">Finish</button>-->
+    </div>
+  </div>
 
-          <td class="text-center">
-            <button type="button" class="btn btn-default" ng-model="item.isPublic" 
-              ng-init="item.isPublic = Default.isPublic" data-html="1" 
-              bs-options="property.value as property.label for property in Properties" bs-select 
-              ng-disabled="item.isSuccess || uploader.isUploading">
-              Action <span class="caret"></span>
-            </button>
-          </td>
-          <td class="text-center">
-            <input type="radio" ng-disabled="item.isPublic==false || item.isSuccess || uploader.isUploading"  
-              ng-checked="!(item.isPublic==false) && 0" ng-model="Default.isCover" name="radio-cover" 
-              ng-value="item.$$hashKey"/>
-          </td>
-
-          <td ng-show="uploader.isHTML5" nowrap>{{! item.file.size/1024/1024|number:2 }} MB</td>
-          <td ng-show="uploader.isHTML5">
-            <div class="progress margin-bottom-0">
-              <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+  <div ng-if="tabselector == 'vocs'">
+    <div class="modal-body" nv-file-drop="" uploader="uploader_voc" class="ng-scope">
+            <h3>Select files</h3>
+            <div ng-show="uploader_voc.isHTML5">
+            <div class="well my-drop-zone" nv-file-over="" uploader="uploader_voc">
+                <span class="btn btn-default btn-file">
+                Drag &#38; Drop Images here OR click to Select<input type="file" class="uploader" nv-file-select="" uploader="uploader_voc" multiple/>
+                </span>
             </div>
-          </td>
-          <td class="text-center">
-            <span ng-show="item.isSuccess"><i class="icon icon-check"></i></span>
-            <span ng-show="item.isCancel"><i class="icon icon-circle-slash"></i></span>
-            <span ng-show="item.isError"><i class="icon icon-trash"></i></span>
-          </td>
-          <td nowrap class="text-center">
-            <button type="button" class="btn btn-default btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading" ng-show="!item.isSuccess">
-              <span class="icon icon-circle-slash"></span> Cancel
-            </button>
-            <button type="button" class="btn btn-default btn-xs" ng-click="remove_item(item)" ng-disabled="item.isUploading" ng-show="!item.isSuccess">
-              <span class="icon icon-trash"></span> Remove
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            </div>
+            <h3>Upload queue</h3>
+            <table class="table">
+            <thead>
+                <tr>
+                <th width="8%" class="text-center">Image/VOC</th>
+                <th width="40%" class="text-center">Name</th>
+                <th width="10%" class="text-center" ng-show="uploader_voc.isHTML5">Size</th>
+                <th width="20%" class="text-center" ng-show="uploader_voc.isHTML5">Progress</th>
+                <th width="3%" class="text-center">Status</th>
+                <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="(key, item) in uploader_voc.queue| filter: ImgFilter">
+                    <td class="text-center">
+                        <div class="div-name-limited" ng-show="uploader_voc.isHTML5" ng-thumb="{ file: item._file, height: 50 }"></div>
+                    </td>
+                    <td ng-show="item.show_name" class="text-center">
+                        <strong>{{! item.file.name }}</strong>
+                    </td>
+                    <td ng-show="!item.show_name" class="text-center">
+                        <strong><a class="upload-name" data-animation="am-flip-x" placement="top-left"
+                        bs-tooltip="item.tooltip">{{! item.nickname}}</a></strong>
+                    </td>
+                    <td ng-show="uploader_voc.isHTML5" class="text-center" nowrap>{{! item.file.size/1024/1024|number:2 }} MB</td>
+                    <td ng-show="uploader_voc.isHTML5" class="text-center">
+                        <div class="progress margin-bottom-0">
+                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <span ng-show="item.isSuccess"><i class="icon icon-check"></i></span>
+                        <span ng-show="item.isCancel"><i class="icon icon-circle-slash"></i></span>
+                        <span ng-show="item.isError"><i class="icon icon-trash"></i></span>
+                    </td>
+                    <td nowrap class="text-center">
+                        <button type="button" class="btn btn-default btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading" ng-show="!item.isSuccess">
+                        <span class="icon icon-circle-slash"></span> Cancel
+                        </button>
+                        <button type="button" class="btn btn-default btn-xs" ng-click="remove_item(item)" ng-disabled="item.isUploading" ng-show="!item.isSuccess">
+                        <span class="icon icon-trash"></span> Remove
+                        </button>
+                    </td>
+                </tr>
+                <tr ng-repeat="(key, item) in uploader_voc.queue | filter: XmlFilter">
+                    <td class="text-center">
+                        <div class="div-name-limited" ng-show="uploader_voc.isHTML5"><i class="fa fa-file-text fa-3x"></i></div>
+                    </td>
+                    <td ng-show="item.show_name" class="text-center">
+                        <strong>{{! item.file.name }}</strong>
+                    </td>
+                    <td ng-show="!item.show_name" class="text-center">
+                    <strong><a class="upload-name" data-animation="am-flip-x" placement="top-left"
+                        bs-tooltip="item.tooltip">{{! item.nickname}}</a></strong>
+                    </td>
+
+                    <td ng-show="uploader_voc.isHTML5" class="text-center" nowrap>{{! item.file.size/1024|number:3 }} KB</td>
+                    <td ng-show="uploader_voc.isHTML5" class="text-center">
+                        <div class="progress margin-bottom-0">
+                          <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                        </div>
+                    </td>
+                    </td>
+                    <td class="text-center">
+                    <span ng-show="item.isSuccess"><i class="icon icon-check"></i></span>
+                    <span ng-show="item.isCancel"><i class="icon icon-circle-slash"></i></span>
+                    <span ng-show="item.isError"><i class="icon icon-trash"></i></span>
+                    </td>
+                    <td nowrap class="text-center">
+                    <button type="button" class="btn btn-default btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading" ng-show="!item.isSuccess">
+                        <span class="icon icon-circle-slash"></span> Cancel
+                    </button>
+                    <button type="button" class="btn btn-default btn-xs" ng-click="remove_item(item)" ng-disabled="item.isUploading" ng-show="!item.isSuccess">
+                        <span class="icon icon-trash"></span> Remove
+                    </button>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-s" ng-click="uploader_voc.cancelAll()" ng-disabled="!uploader_voc.isUploading">
+        <span class="icon icon-circle-slash"></span> Cancel all
+        </button>
+        <button type="button" class="btn btn-default btn-s" ng-click="remove_all_items();" ng-disabled="!uploader_voc.queue.length || uploader_voc.isUploading">
+        <span class="icon icon-trash"></span> Remove all
+        </button>
+        <button type="button" class="btn btn-primary btn-s" ng-click="uploader_voc.uploadAll()" ng-disabled="!enable_Upload_voc">
+        <span class="icon icon-cloud_upload"></span> Upload Images
+        </button>
+        <!--<button ng-show="isNew" ng-show="!uploader.queue.length" type="button" class="btn btn-default" ng-click="GoBack()">Go Back</button>-->
+        <!--<button ng-show="uploader.queue.length" type="button" class="btn btn-default" ng-click="Cancel()">Close</button>-->
+        <!--<button ng-show="isNew" type="button" class="btn btn-default" ng-click="Finish()">Finish</button>-->
+    </div>
   </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-default btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
-      <span class="icon icon-circle-slash"></span> Cancel all
-    </button>
-    <button type="button" class="btn btn-default btn-s" ng-click="remove_all_items();" ng-disabled="!uploader.queue.length || uploader.isUploading">
-      <span class="icon icon-trash"></span> Remove all
-    </button>
-    <button type="button" class="btn btn-primary btn-s" ng-click="uploader.uploadAll()" ng-disabled="!enable_Upload">
-      <span class="icon icon-cloud_upload"></span> Upload Images
-    </button>
-    <!--<button ng-show="isNew" ng-show="!uploader.queue.length" type="button" class="btn btn-default" ng-click="GoBack()">Go Back</button>-->
-    <!--<button ng-show="uploader.queue.length" type="button" class="btn btn-default" ng-click="Cancel()">Close</button>-->
-    <!--<button ng-show="isNew" type="button" class="btn btn-default" ng-click="Finish()">Finish</button>-->
-  </div>
+
 </div>
+
+
+
+
+
+<!-- <tr ng-repeat="(key, item) in uploader.queue | filter: XmlFilter">
+        <td class="text-center">
+        <div class="div-name-limited" ng-show="uploader.isHTML5"><i class="fa fa-file-text fa-3x"></i></div>
+        </td>
+        <td colspan="4" ng-show="item.show_name" class="text-center">
+        <strong>{{! item.file.name }}</strong>
+        </td>
+        <td colspan="4" ng-show="!item.show_name" class="text-center">
+        <strong><a class="upload-name" data-animation="am-flip-x" placement="top-left"
+            bs-tooltip="item.tooltip">{{! item.nickname}}</a></strong>
+        </td>
+
+        <td ng-show="uploader.isHTML5" nowrap>{{! item.file.size/1024|number:3 }} KB</td>
+        <td ng-show="uploader.isHTML5">
+        <div class="progress margin-bottom-0">
+            <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+        </div>
+        </td>
+        <td class="text-center">
+        <span ng-show="item.isSuccess"><i class="icon icon-check"></i></span>
+        <span ng-show="item.isCancel"><i class="icon icon-circle-slash"></i></span>
+        <span ng-show="item.isError"><i class="icon icon-trash"></i></span>
+        </td>
+        <td nowrap class="text-center">
+        <button type="button" class="btn btn-default btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading" ng-show="!item.isSuccess">
+            <span class="icon icon-circle-slash"></span> Cancel
+        </button>
+        <button type="button" class="btn btn-default btn-xs" ng-click="remove_item(item)" ng-disabled="item.isUploading" ng-show="!item.isSuccess">
+            <span class="icon icon-trash"></span> Remove
+        </button>
+        </td>
+</tr> -->
