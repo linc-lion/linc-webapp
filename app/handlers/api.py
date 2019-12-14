@@ -20,6 +20,7 @@
 #
 # For more information or to contact visit linclion.org or email tech@linclion.org
 
+import os
 from tornado.web import asynchronous
 from lib.authentication import web_authenticated
 from tornado.gen import engine, coroutine, Task
@@ -28,7 +29,7 @@ from os.path import realpath, dirname
 from os import remove, mkdir, chdir, curdir
 from base64 import b64encode
 from json import loads, dumps
-from logging import info
+from logging import info, exception
 from uuid import uuid4 as uid
 from zipfile import ZipFile
 from shutil import rmtree
@@ -36,7 +37,12 @@ from datetime import datetime, timedelta
 from utils.rolecheck import allowedRole
 from tornadoist import ProcessMixin
 import pycurl
+# from functools import partial
+# from concurrent.futures import ThreadPoolExecutor
 from lib.exif import get_exif_data
+# from lib.voc_routines import process_voc
+from settings import appdir
+from os.path import splitext
 
 
 class RelativesHandler(BaseHandler):
@@ -716,7 +722,9 @@ class ImagesUploadHandler(BaseHandler, ProcessMixin):
             fileinfo = self.request.files['file'][0]
             body = fileinfo['body']
             fname = fileinfo['filename']
+            info(fname)
             dirfs = dirname(realpath(__file__))
+            info(dirfs)
             fh = open(dirfs + '/' + fname, 'wb')
             fh.write(body)
             fh.close()
@@ -763,6 +771,286 @@ class ImagesUploadHandler(BaseHandler, ProcessMixin):
                     self.response(400, 'The data or file sent is invalid.')
                 else:
                     self.response(500, 'Fail to upload image.')
+        else:
+            self.response(400, 'Please send a file to upload.')
+
+
+class ImagesUploadVOCHandler(BaseHandler, ProcessMixin):
+    @asynchronous
+    @engine
+    @web_authenticated
+    def post(self, process=False):
+        info(process)
+        uploaded_files = appdir + "/lib/uploaded_files"
+        def send_to_api(list_bodies):
+            for body in list_bodies:
+                self.api_call(url=self.settings['API_URL'] + '/images/upload',
+                                method='POST',
+                                body=dumps(body))
+        if process == 'start' and not self.request.files:
+            if os.path.exists(uploaded_files):
+                try:
+                    info("Launching ThreadPoolExecutor")
+                    EXECUTOR = ThreadPoolExecutor(max_workers=2)
+                    try:
+                        future = EXECUTOR.submit(process_voc, uploaded_files)
+                        # future.add_done_callback(lambda future: info("Processing has been done.))
+                        future.add_done_callback(lambda future: send_to_api(future.result()))
+                    except Exception as e:
+                        exception(e)
+                    # ret = yield future
+                    dirfs = dirname(realpath(__file__))
+                    info(dirfs)
+                    self.response(200, 'Process successfuly started.'
+                                    ' You must wait the processing'
+                                    ' phase for your image.')
+                except Exception as e:
+                    info(e)
+                    self.response(500, 'An error occurred when starting processing.')
+            else:
+                self.response(500, 'No files have been found to processing.')
+        else:
+            if self.request.files:
+                for _file in self.request.files['file']:
+                    # fileinfo = self.request.files['file'][0]
+                    fileinfo = _file
+                    body = fileinfo['body']
+                    fname = fileinfo['filename']
+                    if not os.path.exists(uploaded_files):
+                        info("Folder uploaded_files does not exists, creating it.")
+                        try:
+                            os.mkdir(uploaded_files)
+                        except FileExistsError as error:
+                            info("Folder uploaded_files already exists")
+
+                    # if splitext(fname)[1] == ".jpg":
+                    #     image_type = self.get_argument("image_type", "cv")
+                    #     tagsl = self.get_argument("image_tags", [])
+                    #     is_public = self.get_argument("is_public", '')
+                    #     image_set_id = self.get_argument("image_set_id")
+                    #     iscover = self.get_argument("iscover", '')
+                    #     iscover = (iscover.lower() == 'true')
+                    #     if ',' in tagsl and not isinstance(tagsl, list):
+                    #         tagsl = [x for x in tagsl.split(',') if x.strip() != '']
+                    #     elif tagsl:
+                    #         tagsl = [tagsl]
+                    #     else:
+                    #         tagsl = []
+                    #     info(tagsl)
+                    #     image_tags = tagsl
+                    #     metadata = {"image_type": image_type,
+                    #                 "image_tags": image_tags,
+                    #                 "is_public": is_public,
+                    #                 "image_set_id": int(image_set_id),
+                    #                 "iscover": iscover
+                    #                 # "_xsrf": self.xsrf_token
+                    #                 }
+                    #     fh = open(uploaded_files + '/' + fname[:-4] + ".json", 'w')
+                    #     fh.write(dumps(metadata))
+                    #     fh.close()
+                    info(fname)
+                    fh = open(uploaded_files + '/' + fname, 'wb')
+                    fh.write(body)
+                    fh.close()
+                self.response(200, 'File successfully uploaded.')
+                # response = yield Task(
+                #         self.api_call,
+                #         url=self.settings['API_URL'] + '/images/upload',
+                #         method='POST',
+                #         body=dumps(body))
+                # if response.code in [200, 201]:
+                #     self.response(200, 'File successfully uploaded. You must wait the processing phase for your image.')
+                # elif response.code == 409:
+                #     self.response(409, 'The file already exists in the system.')
+                # elif response.code == 400:
+                #     self.response(400, 'The data or file sent is invalid.')
+                # else:
+                #     self.response(500, 'Fail to upload image.')
+            else:
+                self.response(400, 'Please send a file to upload.')
+
+
+class ImagesVocHandler(BaseHandler, ProcessMixin):
+    @asynchronous
+    @engine
+    @web_authenticated
+    def post(self, process=False):
+        if process == 'start' and not self.request.files:
+            pass
+        # Receive files and send to API.
+        elif self.request.files:
+                files_names = []
+                # Save all files received.
+                for fileinfo in self.request.files['file']:
+                    body = fileinfo['body']
+                    filename = fileinfo['filename']
+                    dirfs = dirname(realpath(__file__))
+                    info(dirfs)
+                    fh = open(dirfs + '/' + filename, 'wb')
+                    fh.write(body)
+                    fh.close()
+                    files_names.append(filename)
+                responses = []
+                for fname in files_names:
+                    # Check whether file is image.
+                    if splitext(fname)[1].lower() in [".jpg", ".png", ".jpeg",
+                                                    ".bmp", ".gif"]:
+                        info(splitext(fname)[1].lower())
+                        exif_data = get_exif_data(dirfs + '/' + fname)
+                        with open(dirfs + '/' + fname, "rb") as imageFile:
+                            fileencoded = b64encode(imageFile.read())
+                        os.remove(dirfs + '/' + fname)
+                        if fileencoded:
+                            is_public = self.get_argument("is_public", '')
+                            is_public = (is_public.lower() == 'true')
+                            image_set_id = self.get_argument("image_set_id")
+                            iscover = self.get_argument("iscover", '')
+                            iscover = (iscover.lower() == 'true')
+                            body = {
+                                "image_type": None,
+                                "image_tags": [],
+                                "is_public": is_public,
+                                "image_set_id": int(image_set_id),
+                                "iscover": iscover,
+                                "filename": fname,
+                                "exif_data": exif_data
+                            }
+                            body["image"] = fileencoded.decode('utf-8')
+                            body = {'image_file': body}
+                            response = yield Task(
+                                self.api_call,
+                                url=self.settings['API_URL'] + '/imagesvoc',
+                                method='POST',
+                                body=dumps(body))
+                            responses.append(response)
+                    # Check whether file is xml.
+                    elif splitext(fname)[1].lower() in [".xml"]:
+                        with open(dirfs + '/' + fname, "rb") as xmlFile:
+                            fileencoded = b64encode(xmlFile.read())
+                        os.remove(dirfs + '/' + fname)
+                        body = {'xml_file': {'name':fname, 'content':fileencoded.decode('utf-8')}}
+                        response = yield Task(
+                            self.api_call,
+                            url=self.settings['API_URL'] + '/imagesvoc',
+                            method='POST',
+                            body=dumps(body))
+                        responses.append(response)
+                    # If file isn't image or xml.
+                    else:
+                        self.response(400, 'The data or file sent is invalid.')
+                        return
+                if all(res.code in [200,201] for res in responses):
+                    self.response(200, 'File successfully uploaded. You must wait the processing phase for your image.')
+                    return
+                elif all(res.code in [400] for res in responses):
+                    self.response(400, 'The data or file sent is invalid.')
+                    return
+                else:
+                    self.response(500, 'Fail to upload image.')
+                    return
+                # if response.code in [200, 201]:
+                #     self.response(200, 'File successfully uploaded. You must wait the processing phase for your image.')
+                # elif response.code == 400:
+                #     self.response(400, 'The data or file sent is invalid.')
+                # else:
+                #     self.response(500, 'Fail to upload image.')
+        else:
+            self.response(400, 'Please send a file to upload.')
+
+
+class VocHandler(BaseHandler, ProcessMixin):
+    @asynchronous
+    @engine
+    @web_authenticated
+    def post(self, process=False):
+        info(process)
+        # Send request to start processing of received files.
+        if process == 'start' and not self.request.files:
+            response = yield Task(
+                        self.api_call,
+                        url=self.settings['API_URL'] + '/imagesvoc/start',
+                        method='POST',
+                        body=dumps({'API_URL':self.settings['API_URL'], 'Linc-Api-Authtoken':self.current_user.get('token', '')}))
+            if response.code in [200, 201]:
+                self.response(200, 'Processing voc files, you must wait the log email.')
+            elif response.code == 400:
+                self.response(400, 'The data or file sent is invalid.')
+            else:
+                self.response(500, 'Fail to start processing of voc files.')
+        # Receive file and send to API.
+        elif self.request.files['file'][0]:
+                fileinfo = self.request.files['file'][0]
+                body = fileinfo['body']
+                fname = fileinfo['filename']
+                dirfs = dirname(realpath(__file__))
+                info(dirfs)
+                # Save file received.
+                fh = open(dirfs + '/' + fname, 'wb')
+                fh.write(body)
+                fh.close()
+                # Check whether file is image.
+                if splitext(fname)[1].lower() in [".jpg", ".png", ".jpeg",
+                                                ".bmp", ".gif"]:
+                    info(splitext(fname)[1].lower())
+                    exif_data = get_exif_data(dirfs + '/' + fname)
+                    with open(dirfs + '/' + fname, "rb") as imageFile:
+                        fileencoded = b64encode(imageFile.read())
+                    remove(dirfs + '/' + fname)
+                    if fileencoded:
+                        is_public = self.get_argument("is_public", '')
+                        is_public = (is_public.lower() == 'true')
+                        image_set_id = self.get_argument("image_set_id")
+                        iscover = self.get_argument("iscover", '')
+                        iscover = (iscover.lower() == 'true')
+                        body = {
+                            "image_type": None,
+                            "image_tags": [],
+                            "is_public": is_public,
+                            "image_set_id": int(image_set_id),
+                            "iscover": iscover,
+                            "filename": fname,
+                            "exif_data": exif_data
+                        }
+                        body["image"] = fileencoded.decode('utf-8')
+                        body = {'image_file': body}
+                        response = yield Task(
+                            self.api_call,
+                            url=self.settings['API_URL'] + '/imagesvoc',
+                            method='POST',
+                            body=dumps(body))
+                        if response.code in [200, 201]:
+                            self.response(200, 'File successfully uploaded. You must wait the processing phase for your image.')
+                        elif response.code == 400:
+                            self.response(400, 'The data or file sent is invalid.')
+                        else:
+                            self.response(500, 'Fail to upload image.')
+                    else:
+                        self.response(400, 'The data or file could not be encoded.')
+                # Check whether file is xml.
+                elif splitext(fname)[1].lower() in [".xml"]:
+                    with open(dirfs + '/' + fname, "rb") as xmlFile:
+                        fileencoded = b64encode(xmlFile.read())
+                    remove(dirfs + '/' + fname)
+                    body = {
+                        'filename':fname,
+                        'content':fileencoded.decode('utf-8')
+                    }
+                    body = {'xml_file': body}
+                    response = yield Task(
+                        self.api_call,
+                        url=self.settings['API_URL'] + '/imagesvoc',
+                        method='POST',
+                        body=dumps(body))
+                    if response.code in [200, 201]:
+                        self.response(200, 'File successfully uploaded. You must wait the processing phase for your image.')
+                    elif response.code == 400:
+                        self.response(400, 'The data or file sent is invalid.')
+                    else:
+                        self.response(500, 'Fail to upload image.')
+                # If not image or xml file returns error.
+                else:
+                    self.response(400, 'The data or file sent is invalid.')
+                    return
         else:
             self.response(400, 'Please send a file to upload.')
 

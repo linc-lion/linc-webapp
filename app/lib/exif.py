@@ -20,6 +20,7 @@
 #
 # For more information or to contact visit linclion.org or email tech@linclion.org
 
+import imghdr
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 from logging import info
@@ -30,6 +31,7 @@ tags_skip = ['MakerNote', 'UserComment']
 
 def get_exif_data(filename):
     """ Returns a dictionary from the exif data of an PIL Image item. Also converts the GPS Tags """
+    info(imghdr.what(filename))
     try:
         image = Image.open(filename)
     except OSError as e:
