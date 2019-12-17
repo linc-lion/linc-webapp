@@ -311,16 +311,16 @@ angular.module('linc.upload.images.controller', [])
   };
   uploader_voc.onAfterAddingFile = function(fileItem) {
 
-    var maxtam = 20
-    if(fileItem.file.name.match(".xml")){
-        console.log("Arquivo xml inserido na lista: " + fileItem.file.name)
-        maxtam=100
-    }
-    else{
-        fileItem.Tags = angular.copy($scope.Default.Tags);
-        fileItem.ListOfTags = angular.copy($scope.ListOfTags);
-        console.info('onAfterAddingFile', fileItem);
-    }
+    var maxtam = 50
+    // if(fileItem.file.name.match(".xml")){
+    //     console.log("Arquivo xml inserido na lista: " + fileItem.file.name)
+    //     maxtam=100
+    // }
+    // else{
+    //     fileItem.Tags = angular.copy($scope.Default.Tags);
+    //     fileItem.ListOfTags = angular.copy($scope.ListOfTags);
+    //     console.info('onAfterAddingFile', fileItem);
+    // }
     if(fileItem.file.name.length>maxtam){
         fileItem.nickname = (fileItem.file.name || "").substring(1, 10) + ' ... '  +  (fileItem.file.name || "").substring(fileItem.file.name.length-8, fileItem.file.name.length)
         fileItem.show_name = false;
