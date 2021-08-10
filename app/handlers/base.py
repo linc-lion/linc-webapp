@@ -50,7 +50,8 @@ class BaseHandler(RequestHandler):
                 for k, v in self.request.arguments.items():
                     if str(k) != str(self.request.body.decode("utf-8")):
                         self.input_data[k] = v[0].decode("utf-8")
-            except ValueError:
+            except ValueError as e:
+                info(e)
                 self.response(400, 'Fail to parse input data.')
 
     @asynchronous

@@ -27,11 +27,13 @@ import sys
 import tornado
 import tornado.template
 import socket
+import logging
 from sys import executable as pythonbin
 from tornado.options import define, options
 from handlers.base import BaseHandler
 from apscheduler.schedulers.tornado import TornadoScheduler
 from logging import info
+# from lib.voc_routines import process_voc
 
 
 # make filepaths relative to settings.
@@ -44,6 +46,7 @@ for npath in paths:
     if isdir(npath):
         site.addsitedir(npath)
         sys.path.append(npath)
+
 
 # port defined as heroku deploy
 define("port", default=5080, type=int, help=("Server port"))
@@ -77,8 +80,10 @@ config['template_path'] = join(appdir, "templates")
 config['autoescape'] = None
 config['default_handler_class'] = BaseHandler
 
-config['scheduler'] = TornadoScheduler()
-config['scheduler'].start()
+# config['scheduler'] = TornadoScheduler()
+# config['scheduler'].start()
+# Check uploaded files to process - every 30 seconds
+# config['scheduler'].add_job(process_voc, 'interval', seconds=30, args=[paths])
 
 # Setting URL
 # appurl = "https://linc-website.herokuapp.com/"

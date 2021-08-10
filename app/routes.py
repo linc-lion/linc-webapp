@@ -33,6 +33,7 @@ from handlers.main import RequestAccessHandler, MetadataBatchHandler, LocationOn
 from handlers.main import ClassifierGraphHandler, AgreementHandler, TermsOfUseHandler, PrivacyPolicyHandler
 from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler, ImageSetsReqHandler
 from handlers.api import ImagesUploadHandler, ImagesHandler, LionsHandler, ImageSetsHandler
+from handlers.api import ImagesUploadVOCHandler, ImagesVocHandler, VocHandler
 from handlers.api import OrganizationsHandler, CVResultsHandler, CVRequestHandler, UsersHandler, RelativesHandler
 from handlers.data_export import DataExportHandler
 
@@ -87,6 +88,12 @@ url_patterns = [
 
     (r"/images/list/?$", ImagesListHandler),
     (r"/images/upload/?$", ImagesUploadHandler),
+    # (r"/images/uploadvoc/?$", ImagesUploadVOCHandler),
+    # (r"/images/uploadvoc/(\w+)/?$", ImagesUploadVOCHandler),
+    # (r"/images/uploadvoc/?$", ImagesVocHandler),
+    # (r"/images/uploadvoc/(\w+)/?$", ImagesVocHandler),
+    (r"/images/uploadvoc/?$", VocHandler),
+    (r"/images/uploadvoc/(\w+)/?$", VocHandler),
 
     (r"/images/?$", ImagesHandler),
     (r"/images/(.*)/?$", ImagesHandler),
