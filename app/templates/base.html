@@ -1,0 +1,145 @@
+<!-- LINC is an open source shared database and facial recognition
+system that allows for collaboration in wildlife monitoring.
+Copyright (C) 2016  Wildlifeguardians
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+For more information or to contact visit linclion.org or email tech@linclion.org -->
+<!DOCTYPE html>
+<html lang="en-US" ng-app="linc">
+  <head>
+    <base href="/"></base>
+    <meta charset="utf-8">
+    <title>LINC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    {% block head %}
+    {% end %}
+
+    <!-- <link href="{{ static_url("lib/font-awesome/css/font-awesome.min.css") }}" rel="stylesheet"> -->
+    <link href="{{ static_url("lib/font-awesome-v5.15/css/all.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("lib/angular-notify/angular-notify.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("lib/bootstrap/css/bootstrap.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("lib/angular-motion/angular-motion.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("lib/angular-motion/libs.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("lib/angular-slider/rzslider.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("lib/angular-loading-bar/loading-bar.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("lib/angular-ui-select/select.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("lib/angular-pan-zoom/panzoomwidget.min.css") }}" rel="stylesheet">
+
+    <link href="{{ static_url("css/styles.min.css") }}" rel="stylesheet">
+    <!--https://linc.linclion.org-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=API_KEY&libraries=geometry,drawing"></script>
+    <style type="text/css">
+      {% block css %}
+      {% end %}
+    </style>
+
+    <link rel="shortcut icon" href="{{ static_url("icons/favicon.ico") }}">
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ static_url("icons/apple-touch-icon-57x57.png") }}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{{ static_url("icons/apple-touch-icon-60x60.png") }}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ static_url("icons/apple-touch-icon-72x72.png") }}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ static_url("icons/apple-touch-icon-76x76.png") }}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ static_url("icons/apple-touch-icon-114x114.png") }}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ static_url("icons/apple-touch-icon-120x120.png") }}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ static_url("icons/apple-touch-icon-144x144.png") }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ static_url("icons/apple-touch-icon-152x152.png") }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ static_url("icons/apple-touch-icon-180x180.png") }}">
+    <link rel="icon" type="image/png" href="{{ static_url("icons/favicon-32x32.png") }}"  sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ static_url("icons/favicon-194x194.png" ) }}" sizes="194x194">
+    <link rel="icon" type="image/png" href="{{ static_url("icons/favicon-96x96.png") }}"  sizes="96x96">
+    <link rel="icon" type="image/png" href="{{ static_url("icons/android-chrome-192x192.png") }}"  sizes="192x192">
+    <link rel="icon" type="image/png" href="{{ static_url("icons/favicon-16x16.png") }}"  sizes="16x16">
+    <link rel="manifest" href="{{ static_url("icons/manifest.json") }}">
+    <link rel="shortcut icon" href="{{ static_url("icons/favicon.ico") }}">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-TileImage" content="{{ static_url("icons/mstile-144x144.png") }}">
+    <meta name="msapplication-config" content="{{ static_url("icons/browserconfig.xml") }}">
+    <meta name="theme-color" content="#ffffff">
+
+    {% block js %}
+    {% end %}
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  {% block tag_body %}
+  <body>
+  {% end %}
+
+    <!-- alert box -->
+    {% block alertbox %}
+    {% end %}
+    <div id="content" class="container">
+      {% block content %}
+      {% end %}
+    </div>
+
+    <footer>
+     </footer>
+
+  {% block bootstrap_load %}
+      <!-- Le javascript
+      ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+      <script type="text/javascript" src="{{ static_url("lib/angular-pan-zoom/jquery.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular/angular.min.js") }}" ></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-ui-router/angular-ui-router.min.js") }}" ></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-ui-router/stateEvents.min.js") }}" ></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-animate/angular-animate.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-sanitize/angular-sanitize.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-slider/rzslider.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-strap/angular-strap-modified.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-strap/angular-strap.tpl.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-bootstrap/ui-bootstrap-tpls.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/ngmap/ng-map.min.js") }}" ></script>
+      <script type="text/javascript" src="{{ static_url("lib/ngstorage/ngStorage.min.js") }}" ></script>
+      <script type="text/javascript" src="{{ static_url("lib/lodash/lodash.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-file-upload/angular-file-upload.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-notify/angular-notify.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-cookies/angular-cookies.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-loading-bar/loading-bar.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-input-modified/angular-input-modified.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/FileSaver/FileSaver.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-file-saver/angular-file-saver.bundle.min.js") }}" ></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-messages/angular-messages.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-ui-select/select.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-pan-zoom/hamster.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-pan-zoom/mousewheel.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/angular-pan-zoom/panzoom.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/markerlabel/markerlabel.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/maplabel/maplabel.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/color-spectrum/color-spectrum.min.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/OverlappingMarkerSpiderfier/oms.min.js") }}" ></script>
+      <script type="text/javascript" src="{{ static_url("lib/jsts/jsts.min.js") }}" ></script>
+      <script type="text/javascript" src="{{ static_url("lib/google.maps.prototypes/google.maps.prototypes.min.js") }}" ></script>
+      <script type="text/javascript" src="{{ static_url("lib/ContextMenu/ContextMenu.min.js") }}" ></script>
+
+      <script type="text/javascript" src="{{ static_url("lib/highcharts/adapters/standalone-framework.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/highcharts/highcharts.js") }}" ></script>
+      <script type="text/javascript" src="{{ static_url("lib/highcharts/modules/exporting.js") }}" ></script>
+      <script type="text/javascript" src="{{ static_url("lib/highcharts/modules/offline-exporting.js") }}"></script>
+      <script type="text/javascript" src="{{ static_url("lib/ngInfiniteScroll/ng-infinite-scroll.min.js") }}"></script>
+
+  {% end %}
+
+    {% block include_js %}
+    {%end%}
+
+  </body>
+</html>
