@@ -80,8 +80,8 @@ config['template_path'] = join(appdir, "templates")
 config['autoescape'] = None
 config['default_handler_class'] = BaseHandler
 
-# config['scheduler'] = TornadoScheduler()
-# config['scheduler'].start()
+config['scheduler'] = TornadoScheduler()
+config['scheduler'].start()
 # Check uploaded files to process - every 30 seconds
 # config['scheduler'].add_job(process_voc, 'interval', seconds=30, args=[paths])
 
@@ -93,3 +93,5 @@ config['login_url'] = config['APP_URL'] + '/#/login'
 
 # Setting linc-api URL
 config['API_URL'] = environ.get('API_URL', 'http://localhost:5050')
+
+config['GOOGLE_API_KEY'] = environ.get('GOOGLE_API_KEY', '')
