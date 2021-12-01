@@ -62,6 +62,7 @@ target/
 # Vagrant
 .vagrant
 
+# Git
 .DS_Store
 
 #temporary files
@@ -75,3 +76,10 @@ app/bower_components/*
 
 #others
 ssh
+
+# Heroku
+.env
+
+# Pycharm
+.idea
+

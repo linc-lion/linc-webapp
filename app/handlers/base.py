@@ -38,6 +38,13 @@ class BaseHandler(RequestHandler):
         if cookieinfo:
             cookieinfo = loads(cookieinfo.decode('utf-8'))
         return cookieinfo
+    
+    def get_template_namespace(self):
+        namespace = super(BaseHandler, self).get_template_namespace()
+        namespace.update({
+            'GOOGLE_API_KEY': self.settings['GOOGLE_API_KEY']
+        })
+        return namespace
 
     def prepare(self):
         self.input_data = dict()
