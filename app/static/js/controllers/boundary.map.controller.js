@@ -786,6 +786,7 @@ angular.module('linc.boundary.map.controller',[])
 		var name = name;
 		return (name + '\n (' + lat + ',' + lng + ')');
 	};
+	var descripionInfo = null;
 	// Set Lion/Imageset Marker on Map
 	var SetLocationOnMap = function (entities) {
 		$scope.markers = _.map(entities, function(entity, i){
@@ -800,6 +801,19 @@ angular.module('linc.boundary.map.controller',[])
 				labelClass: "hide_markerlabel",
 				labelContent: MarkerlabelContent(position, name),
 				labelAnchor: new google.maps.Point(30, 50)
+			});
+
+			marker.description = new google.maps.InfoWindow({
+				content: `${name}<br><a tabindex="-1" href="/#!/lion/${entity.id}" target="_blank">View Details</a>`
+			});
+
+			marker.addListener("click", function() {
+				if (descripionInfo) {
+					descripionInfo.close();
+				}
+				this.description.setPosition(this.getPosition());
+				this.description.open($scope.map);
+				descripionInfo = this.description;
 			});
 
 			var mouseover = google.maps.event.addListener(marker, 'mouseover', function (event) {

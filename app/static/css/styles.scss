@@ -2829,3 +2829,12 @@ div[title="Add a marker"], div[title="Add Lion Location"] {
 	font-weight: bold;
 	fill: white;
 }
+
+.sticky {
+	position: sticky;
+	background: #F9F9F9;
+	z-index: 1;
+	&.top {
+		top: -1px;
+	}
+}
