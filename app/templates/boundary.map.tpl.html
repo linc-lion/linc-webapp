@@ -116,8 +116,9 @@ For more information or to contact visit linclion.org or email tech@linclion.org
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-class="{'tag-location': marker.tag_location}" class="link" ng-click="AnimateMarker(marker.marker);"
-								ng-dblclick="CenterMarker(marker.marker);"
+							<tr ng-class="{'tag-location': marker.tag_location}" class="link" 
+								ng-click="CenterMarker(marker.marker); AnimateMarker(marker.marker);"
+								ng-dblclick="goto_entity(marker)"
 								ng-repeat="marker in filtered_markers = ( markers | geographical2: GeoBounds | orderBy : orderby.predicate : orderby.reverse)">
 								<td class="text-center p15">{{!marker.id}}</td>
 								<td class="text-center p20">

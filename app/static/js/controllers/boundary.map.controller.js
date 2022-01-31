@@ -21,9 +21,9 @@
 
 angular.module('linc.boundary.map.controller',[])
 
-.controller('BoundaryMapCtrl', ['$scope', '$compile', '$q', '$timeout', '$transitions', '$uibModalInstance',
+.controller('BoundaryMapCtrl', ['$scope', '$state', '$compile', '$q', '$timeout', '$transitions', '$uibModalInstance',
 	'NgMap', 'FileSaver', 'inputdata', 'AuthService', '$uibModal', '$ModalPage', 'NotificationFactory',
-	function ($scope, $compile, $q, $timeout, $transitions, $uibModalInstance, NgMap, FileSaver, inputdata,
+	function ($scope, $state, $compile, $q, $timeout, $transitions, $uibModalInstance, NgMap, FileSaver, inputdata,
 	AuthService, $uibModal, $ModalPage, NotificationFactory){
 
 	// Global
@@ -573,7 +573,7 @@ angular.module('linc.boundary.map.controller',[])
 			mspider.clearMarkers();
 		}
 		if(inputdata.entities)
-			SetLocationOnMap(inputdata.entities);
+			SetLocationOnMap(inputdata.entities, inputdata.animals);
 		Create_Intesections();
 		google.maps.event.trigger(map,'resize');
 
@@ -779,6 +779,12 @@ angular.module('linc.boundary.map.controller',[])
 		marker.labelClass = status ? "show_markerlabel" : "hide_markerlabel";
 		marker.label.draw();
 	};
+	$scope.goto_entity = function (marker) {
+		$state.go(marker.isAnimal ? "lion" : "imageset", { id: marker.id }).then(function() {
+			$scope.Cancel();
+		});
+	}
+	
 	// Marker Label Content
 	var MarkerlabelContent = function(position, name){
 		var lat = position.lat().toFixed(6).toString();
@@ -788,7 +794,7 @@ angular.module('linc.boundary.map.controller',[])
 	};
 	var descripionInfo = null;
 	// Set Lion/Imageset Marker on Map
-	var SetLocationOnMap = function (entities) {
+	var SetLocationOnMap = function (entities, animals) {
 		$scope.markers = _.map(entities, function(entity, i){
 			var position = new google.maps.LatLng(entity.latitude, entity.longitude);
 			$scope.bounds.extend(position);
@@ -851,6 +857,7 @@ angular.module('linc.boundary.map.controller',[])
 				circle: entity.circle,
 				name: entity.name,
 				id: entity.id,
+				isAnimal: !!animals,
 				thumbnail: entity.thumbnail,
 				tooltip: { title: title, enabled: true }
 			};
