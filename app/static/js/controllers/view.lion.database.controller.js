@@ -369,7 +369,7 @@ angular.module('linc.view.lion.database.controller', [])
 
 	$scope.SetBoundarys = function(){
 		var entities = _.reject($scope.filtered_lions,{'location': null});
-		$ModalPage({ inputdata: {entities: entities, boundarys: $scope.filters.Boundarys}},
+		$ModalPage({ inputdata: {entities: entities, animals: true, boundarys: $scope.filters.Boundarys}},
 		{
 			templateUrl: 'boundary.map.tpl.html',
 			controller: 'BoundaryMapCtrl',
