@@ -810,7 +810,7 @@ angular.module('linc.boundary.map.controller',[])
 			});
 
 			marker.description = new google.maps.InfoWindow({
-				content: `${name}<br><a tabindex="-1" href="/#!/lion/${entity.id}" target="_blank">View Details</a>`
+				content: `${name}<br><a tabindex="-1" href="/#!/${ animals ? 'lion' : 'imageset' }/${entity.id}" target="_blank">View Details</a>`
 			});
 
 			marker.addListener("click", function() {
