@@ -82,7 +82,7 @@ app.constant('TAG_LABELS', {
 })
 
 .constant('DOC_URLS',{
-	USER_MANUAL: 'http://linclion.com/linc/linc-manual/',
+	USER_MANUAL: '/static/linc/LINC manual_2018.pdf',
 	TERMS_OF_USE: 'http://linc.linclion.org/Terms-Of-Use',
 	PRIVACY_POLICY: 'http://linc.linclion.org/Privacy-Policy'
 })

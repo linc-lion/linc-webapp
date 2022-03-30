@@ -58,6 +58,7 @@ class DataExportHandler(BaseHandler):
         fieldnames = ['"{}"'.format(x) for x in data['fnames']]
         try:
             with open(fn, 'w+') as f:
+                f.write("sep=;\n")
                 f.write(';'.join(fieldnames) + '\n')
                 for v in lines:
                     f.write(';'.join(['"{}"'.format(str(x).replace('"',"'").replace('\n', ' ')) if x else '' for x in v]) + '\n')
