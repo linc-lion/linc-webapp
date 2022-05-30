@@ -1,0 +1,82 @@
+<form
+  name="form"
+  class="form-recovery font-homenaje-1-1"
+  ng-submit="resetPassword()"
+>
+  <input
+    type="hidden"
+    name="_xsrf"
+    ng-init="recoveryData._xsrf='{{xsrf}}'"
+    ng-model="recoveryData._xsrf"
+  />
+  <h2 class="form-signin-heading">Please enter your new password</h2>
+  <p>
+    <small
+      ><b
+        >Choose a "strong password" using uppercase, lowercase letters, numbers
+        and symbols. Password must be at least 8 characters.</b
+      >
+    </small>
+  </p>
+  <div class="form-group">
+    <label for="password">New Password:</label>
+    <input type="password" name="password_fake" value="" class="display-none" />
+    <input
+      class="form-control"
+      type="password"
+      name="password"
+      ng-model="recoveryData.password"
+      minlength="8"
+      placeholder="enter the new password"
+      ng-required="true"
+      oninput="setCustomValidity('')"
+      oninvalid="
+            if (validity.valueMissing){
+                this.setCustomValidity('please fill out this field with Password ');
+            }
+            else if (validity.tooShort){
+                this.setCustomValidity('Please enter a password of at least 8 characters');
+            }
+        "
+    />
+  </div>
+  <div
+    class="form-group confirm-password"
+    ng-model-options="{ allowInvalid: true}"
+  >
+    <label for="confirm_password">Confirm Password:</label>
+    <input type="password" name="password_fake" value="" class="display-none" />
+    <input
+      class="form-control"
+      type="password"
+      name="confirm_password"
+      ng-model="recoveryData.confirm_password"
+      placeholder="confirm the new password"
+      ng-required="true"
+      oninput="setCustomValidity('')"
+      oninvalid="this.setCustomValidity('please repeat the Password in this field')"
+      nx-equal-exq="recoveryData.password"
+      data-animation="am-flip-x"
+      data-html="true"
+      data-type="info"
+      placement="bottom"
+      bs-tooltip="tooltip"
+      data-template-url="tooltip.password.tpl.html"
+      data-trigger="manual"
+      data-bs-show="showValidationMessages && (form.confirm_password.$error.nxEqualExq!=undefined)"
+    />
+  </div>
+  <div class="form-actions">
+    <p>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">
+        Reset Password
+      </button>
+    </p>
+    <p class="text-center" ng-if="dataLoading">
+      <img src="/static/images/loading.gif" /> Loading&hellip;
+    </p>
+  </div>
+  <div class="forgotPasswordContainer">
+    <a ng-click="goToLogin()" target="_top" class="login">Go to Login</a>
+  </div>
+</form>
