@@ -34,6 +34,9 @@ class LoginMainHandler(BaseHandler):
     def get(self):
         self.render('login.html', xsrf=self.xsrf_token)
 
+class RecoveryMainHandler(BaseHandler):
+    def get(self):
+        self.render('recovery.html', xsrf=self.xsrf_token)
 
 class RequestAccessHandler(BaseHandler):
     def get(self):
