@@ -87,9 +87,6 @@ def get_exif_data(filename):
     # Adjusting the output
     output = dict()
     output['tags'] = exif_data
-    coords = get_lat_lon(exif_data)
-    output['latitude'] = coords[0]
-    output['longitude'] = coords[1]
     edkeys = exif_data.keys()
     if 'DateTimeOriginal' in edkeys and ['DateTimeOriginal'] != '':
         output['date_stamp'] = datetime.strptime(exif_data['DateTimeOriginal'], '%Y/%m/%d %H:%M:%S').isoformat()
@@ -100,13 +97,6 @@ def get_exif_data(filename):
     else:
         output['date_stamp'] = None
     return output
-
-
-# def _get_if_exist(data, key):
-#     if key in data:
-#         return data[key]
-
-#     return None
 
 
 def _convert_to_degress(value):
@@ -126,6 +116,7 @@ def _convert_to_degress(value):
     return d + (m / 60.0) + (s / 3600.0)
 
 
+# Excerpted from https://gist.github.com/erans/983821/e30bd051e1b1ae3cb07650f24184aa15c0037ce8
 def get_lat_lon(exif_data):
     """ Returns the latitude and longitude, if available, from the
        provided exif_data (obtained through get_exif_data above) """
@@ -134,11 +125,6 @@ def get_lat_lon(exif_data):
 
     if "GPSInfo" in exif_data:
         gps_info = exif_data["GPSInfo"]
-
-        # gps_latitude = _get_if_exist(gps_info, "GPSLatitude")
-        # gps_latitude_ref = _get_if_exist(gps_info, 'GPSLatitudeRef')
-        # gps_longitude = _get_if_exist(gps_info, 'GPSLongitude')
-        # gps_longitude_ref = _get_if_exist(gps_info, 'GPSLongitudeRef')
 
         gps_latitude = gps_info.get("GPSLatitude", None)
         gps_latitude_ref = gps_info.get('GPSLatitudeRef', None)
