@@ -119,6 +119,12 @@ class CVRequestMainHandler(BaseHandler):
         self.render('cv_request.html')
 
 
+class UploadImagesOptionsHandler(BaseHandler):
+    @web_authenticated
+    def get(self):
+        self.render('upload_image_options.html')
+
+
 class UploadImagesHandler(BaseHandler):
     @web_authenticated
     def get(self):

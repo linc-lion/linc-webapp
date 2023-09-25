@@ -403,8 +403,8 @@ For more information or to contact visit linclion.org or email tech@linclion.org
 					class="btn btn-primary btn-min-120" ng-click="submit(vm.form) && vm.form.$valid && CreateClose()">Create
 				</button>
 
-				<upload-images disable-upload="!vm.form.modified" btn-submit="submit(vm.form)" ng-show="isNew"
-					use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new"
+                <upload-images disable-upload="!vm.form.modified" btn-submit="submit(vm.form)" ng-show="isNew"
+					use-ctrl="UploadImagesCtrl" use-template-url="uploadimagesoptions.html" form-size="lg" type="new"
 					save-metadata-action="CreateUpload()" close-action="Close()" debug="debug">
 				</upload-images>
 
@@ -416,8 +416,9 @@ For more information or to contact visit linclion.org or email tech@linclion.org
 					ng-click="submit(vm.form) &&  vm.form.$valid && CreateClose()">Create
 				</button>
 
-				<upload-images disable-upload="!vm.form.modified" btn-submit="submit(vm.form)" ng-show="isNew"
-					use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg" type="new"
+
+                <upload-images disable-upload="!vm.form.modified" btn-submit="submit(vm.form)" ng-show="isNew"
+					use-ctrl="UploadImagesCtrl" use-template-url="uploadimagesoptions.html" form-size="lg" type="new"
 					save-metadata-action="CreateUpload()" close-action="Close()" debug="debug">
 				</upload-images>
 

@@ -4091,3 +4091,17 @@ div[title="Add Lion Location"] {
 		top: -1px;
 	}
 }
+
+.image-options {
+	&.button{
+		height: fit-content;
+	}
+
+	&.modal-alignment{
+		min-height: 50vh;
+		display: flex;
+		justify-content: space-evenly;
+		align-items: center;
+	}
+
+}
