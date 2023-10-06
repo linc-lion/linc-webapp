@@ -125,6 +125,17 @@ class UploadImagesOptionsHandler(BaseHandler):
         self.render('upload_image_options.html')
 
 
+class AutoUploadImagesHandler(BaseHandler):
+    @web_authenticated
+    def get(self):
+        self.render('upload_images_cropper.html')
+
+class EditImagesCropperHandler(BaseHandler):
+    @web_authenticated
+    def get(self):
+        self.render('edit_autocropper_image.html')
+
+
 class UploadImagesHandler(BaseHandler):
     @web_authenticated
     def get(self):
