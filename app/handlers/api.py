@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.6
 # -*- coding: utf-8 -*-
-
+import base64
 # LINC is an open source shared database and facial recognition
 # system that allows for collaboration in wildlife monitoring.
 # Copyright (C) 2016  Wildlifeguardians
@@ -45,46 +45,93 @@ from settings import appdir
 from os.path import splitext
 
 
+class AutoCropperHandler(BaseHandler):
+    SUPPORTED_METHODS = ("GET", "POST")
+
+    @asynchronous
+    @engine
+    @web_authenticated
+    def get(self,):
+        response = yield Task(
+            self.api_call,
+            url=self.settings['API_URL'] + '/autocropper',
+            method='GET')
+        self.set_json_output()
+        if response.code == 404:
+            body = loads(response.body.decode("utf-8"))
+            self.finish(self.json_encode({
+                        'status': 'success',
+                        'message': body['message'],
+                        'data': []}))
+        else:
+            self.set_status(response.code)
+            self.finish(response.body)
+
+    @asynchronous
+    @engine
+    @web_authenticated
+    def post(self):
+
+
+        if self.request.files:
+            fileinfo = self.request.files['file'][0]
+            body = fileinfo['body']
+            fname = fileinfo['filename']
+            fileencoded = base64.b64encode(body).decode('utf-8')
+
+            body = {
+                "filename": fname,
+                "image": fileencoded,
+                'content_type': fileinfo['content_type']
+            }
+
+            response = yield Task(
+                self.api_call,
+                url=self.settings['API_URL'] + '/autocropper',
+                method='POST',
+                body=self.json_encode(body))
+            self.set_json_output()
+            self.set_status(response.code)
+            self.finish(response.body)
+
+
 class RelativesHandler(BaseHandler):
     SUPPORTED_METHODS = ("GET", "PUT", "POST", "DELETE")
 
     @asynchronous
     @engine
-    @web_authenticated
-    def get(self, lion_id=''):
-        if lion_id:
-            response = yield Task(
-                self.api_call,
-                url=self.settings['API_URL'] + '/lions/{}/relatives'.format(lion_id),
-                method='GET')
-            self.set_json_output()
-            if response.code == 404:
-                body = loads(response.body.decode("utf-8"))
-                self.finish(self.json_encode({
-                            'status': 'success',
-                            'message': body['message'],
-                            'data': []}))
-            else:
-                self.set_status(response.code)
-                self.finish(response.body)
+    def get(self):
+
+        response = yield Task(
+            self.api_call,
+            url=self.settings['API_URL'] + '/autocropper',
+            method='GET')
+        self.set_json_output()
+        if response.code == 404:
+            body = loads(response.body.decode("utf-8"))
+            self.finish(self.json_encode({
+                        'status': 'success',
+                        'message': body['message'],
+                        'data': []}))
         else:
-            self.response(401, 'Invalid request, you must provide lion id.')
+            self.set_status(response.code)
+            self.finish(response.body)
+
 
     @asynchronous
     @engine
     @web_authenticated
-    def post(self, lion_id=''):
-        if lion_id:
-            response = yield Task(
-                self.api_call,
-                url=self.settings['API_URL'] + '/lions/{}/relatives'.format(lion_id),
-                method='POST',
-                body=self.json_encode(self.input_data))
-            self.set_json_output()
-            self.set_status(response.code)
-            self.finish(response.body)
-        else:
-            self.response(401, 'Invalid request, you must provide lion id.')
+    def post(self):
+
+        response = yield Task(
+            self.api_call,
+            url=self.settings['API_URL'] + '/lions/{}/relatives'.format(lion_id),
+            method='POST',
+            body=self.json_encode(self.input_data))
+        self.set_json_output()
+        self.set_status(response.code)
+        self.finish(response.body)
+
 
     @asynchronous
     @coroutine

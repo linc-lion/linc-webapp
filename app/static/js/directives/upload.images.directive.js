@@ -28,8 +28,12 @@ angular.module('linc.upload.images.directive', [])
       switch (attrs.type) {
         case 'new':
           return '<button ng-disabled="disableUpload" type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="btnSubmit(metadataForm) && showNew()"><i class="icon icon-camera"> </i>Create & Add Images</button>';
+
         case 'precropped':
           return '<button ng-disabled="disableUpload" type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showOnly()"><i class="icon icon-camera"> </i>UPLOAD PRE-CROPPED PHOTOS</button>';
+
+        case 'autocropper':
+          return '<button ng-disabled="disableUpload" type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showOnly()"><i class="icon icon-camera"> </i>PROCESS PHOTOS WITH AUTO-CROPPER</button>';
 
 
         default:

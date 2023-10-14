@@ -24,7 +24,7 @@ angular.module('linc.upload.autoimages.directive', [])
   return {
     transclude: true,
     restrict: 'EA',
-    template:  '<button type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showOnly()"><i class="icon icon-camera"> </i>UPLOAD PRE-CROPPED PHOTOS</button>',
+    template:  '<button type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showOnly()"><i class="icon icon-camera"> </i>PROCESS PHOTOS WITH AUTO-CROPPER</button>',
     scope: {
       useTemplateUrl: '@',
       useCtrl: '@',
@@ -39,42 +39,6 @@ angular.module('linc.upload.autoimages.directive', [])
     },
     link: function(scope, element, attrs) {
 
-
-      //
-      // scope.showCropper = function(file, coordinates){
-      //
-      //   scope.image = file._file;
-      //    var modalScope = scope.$new();
-      //     modalScope.debug = scope.debug;
-      //     var modalInstance = $uibModal.open({
-      //       animation: true,
-      //       backdrop  : 'static',
-      //       templateUrl: 'editimagescropper.html',
-      //       controller:  scope.useCtrl,
-      //       size: scope.formSize,
-      //       scope: modalScope,
-      //       resolve: {
-      //         options: function () {
-      //           return ({'item': file, 'coordinates': coordinates});
-      //         }
-      //       }
-      //     });
-      //
-      //     modalInstance.opened.then(function () {
-      //
-      //         setTimeout(function () {
-      //               scope.addimage();
-      //         }, 100); // Adjust the delay as needed
-      //     });
-      //
-      //
-      //     modalInstance.result.then(function (result) {
-      //        scope.closeAction();
-      //       console.log(result);
-      //     }, function (result) {
-      //       scope.closeAction();
-      //     });
-      // }
 
       scope.showOnly = function(){
 

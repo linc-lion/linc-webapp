@@ -33,72 +33,74 @@ angular.module('linc.services', [
 	var debug = ($state.current.data == undefined) ? false : ($state.current.data.debug || false);
 
 	var databases = {};
-	databases['autocropper'] =  {label: 'AutoCropper', url: 'http://linc-detector-api-env.eba-fn6zvvit.us-east-1.elasticbeanstalk.com/v1/annotate'};
+	databases['autocropper'] =  {label: 'AutoCropper', url: '/autocropper'};
 
 	var HTTP = function (method, url, data, config, success, error) {
+
+		var xsrfcookie = $cookies.get('_xsrf');
 
 		var req = {
 					method: method, url: url,
 					data: data,
-					headers: { 'Content-Type': 'application/json','Authorization' : 'Bearer ***REMOVED***'},
+					headers: { 'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie},
 					config: config
 		};
 
-		success({
-    "bounding_box_coords": {
-        "cv-f": [
-            349.5794677734375,
-            130.30332946777344,
-            535.4444580078125,
-            336.35369873046875
-        ],
-        "ear-fl": [
-            474.60906982421875,
-            158.63465881347656,
-            532.2391357421875,
-            220.20724487304688
-        ],
-        "ear-fr": [
-            364.96044921875,
-            157.52996826171875,
-            409.79364013671875,
-            209.707763671875
-        ],
-        "eye-fl": [
-            454.74017333984375,
-            216.75216674804688,
-            481.7913818359375,
-            245.72027587890625
-        ],
-        "eye-fr": [
-            400.30755615234375,
-            214.90196228027344,
-            429.5855712890625,
-            244.32879638671875
-        ],
-        "nose-f": [
-            418.10040283203125,
-            265.6445617675781,
-            459.19012451171875,
-            288.81982421875
-        ],
-        "whisker-f": [
-            403.8759765625,
-            269.67987060546875,
-            475.021240234375,
-            299.63922119140625
-        ]
-    },
-    "input_image": "static/uploads/zzz.jpg"
-})
+// 		success({
+//     "bounding_box_coords": {
+//         "cv-f": [
+//             349.5794677734375,
+//             130.30332946777344,
+//             535.4444580078125,
+//             336.35369873046875
+//         ],
+//         "ear-fl": [
+//             474.60906982421875,
+//             158.63465881347656,
+//             532.2391357421875,
+//             220.20724487304688
+//         ],
+//         "ear-fr": [
+//             364.96044921875,
+//             157.52996826171875,
+//             409.79364013671875,
+//             209.707763671875
+//         ],
+//         "eye-fl": [
+//             454.74017333984375,
+//             216.75216674804688,
+//             481.7913818359375,
+//             245.72027587890625
+//         ],
+//         "eye-fr": [
+//             400.30755615234375,
+//             214.90196228027344,
+//             429.5855712890625,
+//             244.32879638671875
+//         ],
+//         "nose-f": [
+//             418.10040283203125,
+//             265.6445617675781,
+//             459.19012451171875,
+//             288.81982421875
+//         ],
+//         "whisker-f": [
+//             403.8759765625,
+//             269.67987060546875,
+//             475.021240234375,
+//             299.63922119140625
+//         ]
+//     },
+//     "input_image": "static/uploads/zzz.jpg"
+// })
 
-		// $http(req).then(success, error);
+		$http(req).then(success, error);
 
 	};
 
 	var AutoCropper = function(data, success, error){
 
-		return HTTP('POST', databases['autocropper']['url'], data, {}, success, error)
+		return HTTP('post', databases['autocropper']['url'], data, {}, success, error)
 	}
 
 	var dataFactory = {};

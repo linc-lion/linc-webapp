@@ -24,7 +24,8 @@ from handlers.base import VersionHandler
 from handlers.auth import LogoutHandler, LoginHandler, CheckAuthHandler, ChangePassword, AgreementAuthHandler,\
     RequestAccessEmailHandler, RecoveryHandler
 from handlers.main import MainHandler, RecoveryMainHandler, LoginMainHandler, HomeHandler, SideMenuHandler, \
-    RelativesTplHandler, CarouselGalleryHandler, AutoUploadImagesHandler, EditImagesCropperHandler
+    RelativesTplHandler, CarouselGalleryHandler, AutoUploadImagesHandler, EditImagesCropperHandler, \
+    EditImagesCropperDisplayHandler
 from handlers.main import LionMainHandler, ViewLionDatabaseHandler, ImageSetMainHandler, ViewImageSetsHandler, BoundaryMapHandler
 from handlers.main import ConservationistsHandler, ImageGalleryHandler, LocationHistoryHandler, ViewImagesHandler, CompareImagesHandler
 from handlers.main import EditMetadataHandler, CVResultsMainHandler, CVRequestMainHandler, UploadImagesHandler,UploadImagesOptionsHandler, VerifyImageSetHandler
@@ -32,7 +33,8 @@ from handlers.main import PageAdminHandler, PageAdminUsersHandler, PageAdminOrga
 from handlers.main import PageAdminImageSetsHandler, PageAdminImagesHandler, PageAdminCVRequestsHandler, PageAdminCVResultsHandler
 from handlers.main import RequestAccessHandler, MetadataBatchHandler, LocationOnMapHandler, DeleteBatchHandler, SelectBoundarysHandler
 from handlers.main import ClassifierGraphHandler, AgreementHandler, TermsOfUseHandler, PrivacyPolicyHandler
-from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler, ImageSetsReqHandler
+from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler, \
+    ImageSetsReqHandler, AutoCropperHandler
 from handlers.api import ImagesUploadHandler, ImagesHandler, LionsHandler, ImageSetsHandler
 from handlers.api import ImagesUploadVOCHandler, ImagesVocHandler, VocHandler
 from handlers.api import OrganizationsHandler, CVResultsHandler, CVRequestHandler, UsersHandler, RelativesHandler
@@ -70,6 +72,7 @@ url_patterns = [
     (r"/uploadimagesoptions.html", UploadImagesOptionsHandler),
     (r"/uploadimagescropper.html", AutoUploadImagesHandler),
     (r"/editimagescropper.html", EditImagesCropperHandler),
+    (r"/uploadimagescropperdisplay.html", EditImagesCropperDisplayHandler),
 
     (r"/verify_imageset.tpl.html", VerifyImageSetHandler),
     (r"/view.images.html", ViewImagesHandler),
@@ -136,5 +139,7 @@ url_patterns = [
     (r"/auth/requestaccess/?$", RequestAccessEmailHandler),
     (r"/auth/changepassword/?$", ChangePassword),
     (r"/users/?$", UsersHandler),
-    (r"/users/(.*)/?$", UsersHandler)
+    (r"/users/(.*)/?$", UsersHandler),
+    (r"/autocropper", AutoCropperHandler),
+
 ]

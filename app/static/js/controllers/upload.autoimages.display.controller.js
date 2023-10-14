@@ -18,14 +18,15 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('linc.upload.autoimages.controller', [])
+angular.module('linc.upload.autoimages.display.controller', [])
 
-.controller('AutoUploadImagesCtrl', ['$http', '$scope', '$window', '$cookies', '$uibModalInstance', 'AutoCropperServices', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($http, $scope, $window, $cookies, $uibModalInstance, AutoCropperServices, $bsTooltip, FileUploader, NotificationFactory, options) {
+.controller('AutoUploadImagesDisplayCtrl', ['$http', '$scope', '$window', '$cookies', '$uibModalInstance', 'AutoCropperServices', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($http, $scope, $window, $cookies, $uibModalInstance, AutoCropperServices, $bsTooltip, FileUploader, NotificationFactory, options) {
 
 	$scope.imagesetId = options.imagesetId;
 	$scope.isNew = options.isNew;
 
-    $scope.image_coords = {};
+    $scope.image_coords = options.imageCoords;
+    $scope.imagesQueue = options.imagesQueue;
 
 	var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
 	$scope.title = 'Upload Images';
@@ -36,19 +37,6 @@ angular.module('linc.upload.autoimages.controller', [])
       $scope.image_coords[item.nickname] = result;
     }
 
-  $scope.RunAutoCropper = function (item, onSuccess) {
-    $scope.onSucess = onSuccess;
-
-
-    if ( !(item.nickname in $scope.image_coords) ) {
-      uploader.uploadItem(item);
-    }
-    else{
-      $scope.onSucess();
-    }
-
-
-  }
 
 	$scope.GoBack = function () {
 	 	$uibModalInstance.dismiss('cancel');
@@ -60,25 +48,36 @@ angular.module('linc.upload.autoimages.controller', [])
 	 	$uibModalInstance.close('finish');
 	};
 
+	$scope.OnSelect = function($item, Tags,listOfTags) {
+		UpdateTags(Tags, listOfTags);
+	};
+	$scope.OnRemove = function($item, Tags,listOfTags) {
+		UpdateTags(Tags, listOfTags);
+	};
+
+  var UpdateTags = function (Tags, ListOfTags){
+    var disabled_tag = _.difference(['whisker', 'whisker-left','whisker-right'],
+      _.intersection(_.map(Tags,'value'),
+          ['whisker', 'whisker-left','whisker-right']));
+    if (disabled_tag.length == 3)
+      disabled_tag = [];
+    _.forEach(ListOfTags, function(tag){
+        tag.disabled = _.includes(disabled_tag, tag.value);
+    });
+  };
+
+
+	$scope.Properties = [
+		{ value: true, label: "Public" },
+		{ value: false, label: "Private" }
+	];
 
 	$scope.Default = {isPublic: true, Tags: [], isCover: ''};
 
 	var uploader = $scope.uploader = new FileUploader({
-		url: '/autocropper',
+		url: '/images/upload',
+		removeAfterUpload: true
 	});
-
-  uploader.onSuccessItem = function (fileItem, response, status, headers) {
-    console.info('onSuccessItem', fileItem, response, status, headers);
-    $scope.UpdateCoords(response.data.bounding_box_coords, fileItem);
-    fileItem.progress = 200;
-    $scope.onSucess();
-
-    // var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
-    // $scope.SucessItems.push(photo);
-
-
-    //fileItem.remove();
-  };
 
   // FILTERS
   uploader.filters.push({
@@ -108,7 +107,11 @@ angular.module('linc.upload.autoimages.controller', [])
         console.log("Arquivo xml inserido na lista: " + fileItem.file.name)
         maxtam=100
     }
-
+    else{
+        fileItem.Tags = angular.copy($scope.Default.Tags);
+        fileItem.ListOfTags = angular.copy($scope.ListOfTags);
+        console.info('onAfterAddingFile', fileItem);
+    }
     if(fileItem.file.name.length>maxtam){
         fileItem.nickname = (fileItem.file.name || "").substring(1, 10) + ' ... '  +  (fileItem.file.name || "").substring(fileItem.file.name.length-8, fileItem.file.name.length)
         fileItem.show_name = false;
@@ -148,7 +151,12 @@ angular.module('linc.upload.autoimages.controller', [])
   };
   $scope.SucessItems = [];  $scope.Duplicateds = [];
   $scope.InvalidData = [];  $scope.ErrorItems = [];
-
+  uploader.onSuccessItem = function(fileItem, response, status, headers) {
+      console.info('onSuccessItem', fileItem, response, status, headers);
+      var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
+      $scope.SucessItems.push(photo);
+      //fileItem.remove();
+  };
   uploader.onErrorItem = function(fileItem, response, status, headers) {
       console.info('onErrorItem', fileItem, response, status, headers);
       var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
@@ -271,24 +279,22 @@ angular.module('linc.upload.autoimages.controller', [])
   };
 
   $scope.enable_Upload = false;
-  $scope.remove_item = function(item){
-    item.remove();
+  $scope.remove_item = function(item)
+  {
 
-    if (item.nickname in $scope.image_coords)
-    {
-        delete $scope.image_coords[item.nickname];
+    let index = $scope.imagesQueue.indexOf(item);
+    if (index > -1) {
+        $scope.imagesQueue.splice(index, 1);
     }
 
-    if(!uploader.getNotUploadedItems().length)
-      $scope.enable_Upload = false;
+    // if(!uploader.getNotUploadedItems().length)
+    //   $scope.enable_Upload = false;
   };
-  $scope.remove_all_items = function(item){
-    uploader.clearQueue();
 
-    Object.keys($scope.image_coords).forEach(key => delete $scope.image_coords[key]);
+  $scope.remove_all_items = function(){
 
-
-    if(!uploader.getNotUploadedItems().length)
+    $scope.imagesQueue.length = 0;
+    if(!$scope.imagesQueue.length)
       $scope.enable_Upload = false;
   };
 

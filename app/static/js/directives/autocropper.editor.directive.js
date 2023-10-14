@@ -25,8 +25,10 @@ angular.module('linc.autocropper.editor.directive', [])
         return {
             transclude: true,
             restrict: 'EA',
-            template: function () {
-                return '<button class="btn btn-primary btn-block" ng-click="showOnly()">Run AutoCropper & Edit</button>';
+            template: function (element, attrs) {
+
+                return '<button class="btn btn-primary" ng-disabled="item.isUploading" ng-click="initCropper()">{{ buttonText }}</button>';
+
             },
             scope: {
                 useTemplateUrl: '@',
@@ -35,13 +37,18 @@ angular.module('linc.autocropper.editor.directive', [])
                 imagesetId: '=',
                 saveMetadataAction: '&',
                 closeAction: '&',
+                updateCoords: "&",
+                runCropper: '&',
                 btnSubmit: '&',
                 imageUpdated: '&',
                 debug: '=',
                 disableUpload: '=',
+                imageCoords: "=",
                 item: "="
             },
             link: function (scope, element, attrs) {
+
+                scope.buttonText = 'Run AutoCropper & Edit';
 
                 const canvas_size = {
                     width: 0,
@@ -52,12 +59,14 @@ angular.module('linc.autocropper.editor.directive', [])
                     height: 0
                 }
 
+                const rect_details = [];
+
                 const old_image = {
                     width: 0,
                     height: 0
                 }
 
-                const img_coords_details = {
+                 scope.img_coords_details = {
                     'auto_cropper_coords': {},
                     'manual_coords': {},
                     'new_rect_coords' : []
@@ -111,6 +120,7 @@ angular.module('linc.autocropper.editor.directive', [])
                     };
 
 
+                let dropdown = null;
                 let dropdownoptions = `
                  <option value="cv">CV Image</option>
                  <option value="full-body">Full Body</option>
@@ -140,24 +150,35 @@ angular.module('linc.autocropper.editor.directive', [])
                     // setup background image
                     scope.addimage();
 
-                    img_coords_details['auto_cropper_coords'] = coordinates;
+                    // image is open for edit
+                    if ('auto_cropper_coords' in coordinates) {
+                        scope.img_coords_details = coordinates;
 
-                    for (let key in coordinates) {
-                        img_coords_details['manual_coords'][key] = {};
-                        img_coords_details['manual_coords'][key]['coords'] = coordinates[key];
-                        img_coords_details['manual_coords'][key]['mapped'] = tags_mapping[key]
+                    } else {
+
+                        scope.img_coords_details['auto_cropper_coords'] = coordinates;
+                        for (let key in coordinates) {
+                            scope.img_coords_details['manual_coords'][key] = {};
+                            scope.img_coords_details['manual_coords'][key]['coords'] = coordinates[key];
+                            scope.img_coords_details['manual_coords'][key]['mapped'] = tags_mapping[key]
+                        }
+
                     }
 
-                    //original coordiantes
-                    scope.coordinates = coordinates;
 
                 }
 
                 scope.setup_bound_box = function () {
 
-                    for (let key in img_coords_details['manual_coords']) {
-                        scope.addRectangle(img_coords_details['manual_coords'][key]);
+                    for (let key in scope.img_coords_details['manual_coords']) {
+                        scope.addRectangle(scope.img_coords_details['manual_coords'][key]);
                     }
+
+                    for (let key in scope.img_coords_details['new_rect_coords']) {
+                        scope.addRectangle(scope.img_coords_details['new_rect_coords'][key]);
+                    }
+
+
                 }
 
 
@@ -169,8 +190,7 @@ angular.module('linc.autocropper.editor.directive', [])
                     const modalBody = document.querySelector('#canvasmodal');
                     canvas_size.width = modalBody.clientWidth * 0.9;
                     canvas_size.height = window.screen.height * 0.6;
-                    scope.canvas.setHeight(canvas_size.height);
-                    scope.canvas.setWidth(canvas_size.width); // Set canvas width to match image width
+
 
                     var reader = new FileReader();
 
@@ -189,100 +209,74 @@ angular.module('linc.autocropper.editor.directive', [])
                             new_image.height = imageHeight;
 
 
+                            scope.canvas.setHeight(canvas_size.height);
+                            scope.canvas.setWidth(canvas_size.width); // Set canvas width to match image width
+
+
+
                             var fabricImg = new fabric.Image(img, {
                                 left: 0,
                                 top: 0,
-                                width: new_image.width,
-                                height: new_image.height,
-                                selectable: false,
                             });
+
+                            scope.canvas.setDimensions({ width: canvas_size.width, height: canvas_size.height });
+
+                            // Calculate the scaling factor to fit the canvas size
+                            var scaleFactor = Math.min(
+                                scope.canvas.width / old_image.width,
+                                scope.canvas.height / old_image.height
+                            );
+
+                            // Scale the image to fit the canvas
+                            fabricImg.scale(scaleFactor);
 
                             scope.canvas.setBackgroundImage(fabricImg, scope.canvas.renderAll.bind(scope.canvas));
 
 
+                            scope.canvas.on('mouse:wheel', function(opt) {
 
-                            // scope.canvas.on('mouse:wheel', function(opt) {
-                            //
-                            //     var delta = opt.e.deltaY;
-                            //     var zoom = scope.canvas.getZoom();
-                            //     zoom *= 0.999 ** delta;
-                            //     if (zoom > 20) zoom = 20;
-                            //     if (zoom < 1) zoom = 1;
-                            //     scope.canvas.zoomToPoint({x: opt.e.offsetX, y: opt.e.offsetY}, zoom);
-                            //     opt.e.preventDefault();
-                            //     opt.e.stopPropagation();
-                            //     var vpt = this.viewportTransform;
-                            //     if (zoom < 400 / 1000) {
-                            //         vpt[4] = 200 - 1000 * zoom / 2;
-                            //         vpt[5] = 200 - 1000 * zoom / 2;
-                            //     } else {
-                            //         if (vpt[4] >= 0) {
-                            //             vpt[4] = 0;
-                            //         } else if (vpt[4] < scope.canvas.getWidth() - 1000 * zoom) {
-                            //             vpt[4] = scope.canvas.getWidth() - 1000 * zoom;
-                            //         }
-                            //         if (vpt[5] >= 0) {
-                            //             vpt[5] = 0;
-                            //         } else if (vpt[5] < scope.canvas.getHeight() - 1000 * zoom) {
-                            //             vpt[5] = scope.canvas.getHeight() - 1000 * zoom;
-                            //         }
-                            //     }
-                            //
-                            //
-                            //  });
+                                var delta = opt.e.deltaY;
+                                var zoom = scope.canvas.getZoom();
+                                zoom *= 0.999 ** delta;
+                                if (zoom > 20) zoom = 20;
+                                if (zoom < 1) zoom = 1;
+                                scope.canvas.zoomToPoint({x: opt.e.offsetX, y: opt.e.offsetY}, zoom);
+                                opt.e.preventDefault();
+                                opt.e.stopPropagation();
+                                var vpt = this.viewportTransform;
+                                if (zoom < 400 / 1000) {
+                                    vpt[4] = 200 - 1000 * zoom / 2;
+                                    vpt[5] = 200 - 1000 * zoom / 2;
+                                } else {
+                                    if (vpt[4] >= 0) {
+                                        vpt[4] = 0;
+                                    } else if (vpt[4] < scope.canvas.getWidth() - 1000 * zoom) {
+                                        vpt[4] = scope.canvas.getWidth() - 1000 * zoom;
+                                    }
+                                    if (vpt[5] >= 0) {
+                                        vpt[5] = 0;
+                                    } else if (vpt[5] < scope.canvas.getHeight() - 1000 * zoom) {
+                                        vpt[5] = scope.canvas.getHeight() - 1000 * zoom;
+                                    }
+                                }
 
-                            var clickableMargin = 15;
 
-                            // scope.canvas.on('object:moved', function (options) {
-                            //     var movedObject = options.target; // Get the object that has been moved
-                            //     console.log("Object has been moved:", movedObject);
-                            //     scope.onbjectchange(movedObject);
-                            //
-                            // });
+                             });
 
-                            // scope.canvas.on('object:scaled', function (options) {
-                            //     var scaledObject = options.target;
-                            //     console.log("Object is being resized:", scaledObject);
-                            //     scope.onbjectchange(movedObject);
-                            //
-                            // });
 
-                            // fabric.Canvas.prototype._checkTarget = function (pointer, obj, globalPointer) {
-                            //     if (obj &&
-                            //         obj.visible &&
-                            //         obj.evented &&
-                            //         this.containsPoint(null, obj, pointer)) {
-                            //         if ((this.perPixelTargetFind || obj.perPixelTargetFind) && !obj.isEditing) {
-                            //             var isTransparent = this.isTargetTransparent(obj, globalPointer.x, globalPointer.y);
-                            //             if (!isTransparent) {
-                            //                 return true;
-                            //             }
-                            //         } else {
-                            //             var isInsideBorder = this.isInsideBorder(obj);
-                            //             if (!isInsideBorder) {
-                            //                 return true;
-                            //             }
-                            //         }
-                            //     }
-                            // }
-                            //
-                            // fabric.Canvas.prototype.isInsideBorder = function (target)
-                            // {
-                            //     try {
-                            //
-                            //         var pointerCoords = target.getLocalPointer();
-                            //         if (pointerCoords.x > clickableMargin && pointerCoords.x < target.getScaledWidth() - clickableMargin &&
-                            //             pointerCoords.y > clickableMargin &&
-                            //             pointerCoords.y < target.getScaledHeight() - clickableMargin) {
-                            //             return true;
-                            //         }
-                            //     }
-                            //     catch (e) {
-                            //         console.log(e);
-                            //         return false;
-                            //     }
-                            //
-                            // }
+
+                            scope.canvas.on('object:moved', function (options) {
+                                var movedObject = options.target; // Get the object that has been moved
+                                scope.onbjectchange(movedObject);
+
+                            });
+
+                            scope.canvas.on('object:scaled', function (options) {
+                                var scaledObject = options.target;
+                                scope.onbjectchange(scaledObject);
+
+                            });
+
 
                             scope.setup_bound_box();
                         };
@@ -308,6 +302,8 @@ angular.module('linc.autocropper.editor.directive', [])
                         perPixelTargetFind: true,
                         strokeUniform: true,
                         noScaleCache: false,
+                        hasControls: true, // Enable scaling controls for the rectangle
+                        lockUniScaling: false, // Allow non-uniform scaling for the rectangle
                     });
 
                     let name = new fabric.Text(details['mapped'], {
@@ -318,18 +314,14 @@ angular.module('linc.autocropper.editor.directive', [])
                         fontSize: 10,
                         fill: '#fff',
                         overflow: 'hidden',
+                        hasControls: false,
+                        lockScalingX: true,
+                        lockScalingY: true
                     });
 
-                    const group = new fabric.Group([rect, name], {
-                        // subTargetCheck: true,
-                        // hasControls: false, // Disable scaling controls
-                    })
-
-                    details['group'] = group;
-
-                    let dropdown = null;
-
                     name.on('mousedown', function (options) {
+
+                        console.log('working');
 
                         if (dropdown) {
                             return;
@@ -356,20 +348,25 @@ angular.module('linc.autocropper.editor.directive', [])
 
                     });
 
-                    scope.canvas.add(group);
+                    const current_elements = {
+                            'rect': rect,
+                            'name': name,
+                        }
 
-                    rect.set({
-                        hasControls: true, // Enable scaling controls for the rectangle
-                        lockUniScaling: false, // Allow non-uniform scaling for the rectangle
-                    });
+                    rect_details.push(current_elements);
+                    details['current_elements'] = current_elements
 
-                    name.set({
-                        hasControls: false,
-                        lockScalingX: true,
-                        lockScalingY: true,
-                    });
+                    scope.canvas.add(rect);
+                    scope.canvas.add(name);
 
 
+
+
+
+                }
+
+                scope.initCropper = function () {
+                    scope.runCropper({item: scope.item, onSuccess: scope.showOnly});
                 }
 
                 scope.showOnly = function () {
@@ -390,13 +387,16 @@ angular.module('linc.autocropper.editor.directive', [])
                                     'isNew': true,
                                     'item': scope.item,
                                     'imagesetId': scope.imagesetId,
+                                    'coords': scope.imageCoords[scope.item.nickname]
                                 });
                             }
                         }
                     });
 
                     modalInstance.result.then(function (result) {
-                        scope.closeAction();
+                        // scope.updateCoords();
+                        scope.updateCoords({ result: result, item: scope.item });
+                        scope.buttonText = 'Edit';
                         console.log(result);
                     }, function (result) {
                         scope.closeAction();
@@ -407,55 +407,89 @@ angular.module('linc.autocropper.editor.directive', [])
 
                 scope.addRectanglefunc = function () {
                     const new_rect = {
-                        'coords': [50, 50, 100, 100],
+                        'coords': [50, 200, 200, 300],
                         'mapped': 'marking',
                     }
-                    img_coords_details['new_rect_coords'].push(new_rect);
+                    scope.img_coords_details['new_rect_coords'].push(new_rect);
                     scope.addRectangle(new_rect);
                 }
 
                 scope.deleteRectanglefunc = function () {
                     var selectedObject = scope.canvas.getActiveObject();
-                    for (let key in img_coords_details['manual_coords']) {
-                        if (img_coords_details['manual_coords'][key]['group'] == selectedObject) {
-                            delete img_coords_details['manual_coords'][key];
-                            scope.canvas.remove(selectedObject);
+                    for (let key in scope.img_coords_details['manual_coords']) {
+                        const current = scope.img_coords_details['manual_coords'][key]['current_elements'];
+                        if (current['name'] == selectedObject || current['rect'] == selectedObject)
+                        {
+                            delete scope.img_coords_details['manual_coords'][key];
+                            scope.canvas.remove(current['name']);
+                            scope.canvas.remove(current['rect']);
                             scope.canvas.renderAll();
                         }
                     }
 
-                    for (let rect in img_coords_details['new_rect_coords']) {
-                        if (rect['group'] == selectedObject) {
-                            img_coords_details['new_rect_coords'].splice(rect, 1);
-                            scope.canvas.remove(selectedObject);
+                    for (let rect in scope.img_coords_details['new_rect_coords']) {
+
+                        const current = scope.img_coords_details['new_rect_coords'][rect]['current_elements'];
+                        if (current['name'] == selectedObject || current['rect'] == selectedObject)
+                        {
+                            scope.canvas.remove(current['name']);
+                            scope.canvas.remove(current['rect']);
+                            scope.img_coords_details['new_rect_coords'].splice(rect, 1);
                             scope.canvas.renderAll();
+
                         }
+
+
                     }
                 }
 
-                scope.onbjectchange = function (scaledObject) {
-                    for (let key in img_coords_details['manual_coords']) {
-                        if (img_coords_details['manual_coords'][key]['group'] == scaledObject) {
+
+                scope.onbjectchange = function (scaledObject)
+                {
+
+                    for (let rect in rect_details)
+                    {
+                        if (rect_details[rect]['rect'] == scaledObject)
+                        {
+
+                            rect_details[rect]['name'].left = scaledObject.left + 5;
+                            rect_details[rect]['name'].top = scaledObject.top + 5;
+                            rect_details[rect]['name'].width = scaledObject.width -10;
+                            rect_details[rect]['name'].setCoords();
+                        }
+                    }
+
+
+
+                    for (let key in scope.img_coords_details['manual_coords'])
+                    {
+
+                        const current_obj = scope.img_coords_details['manual_coords'][key]['current_elements'];
+                        if (current_obj['rect'] == scaledObject)
+                        {
                             console.log(key)
                             const coordinates = scaledObject.getBoundingRect();
                             var x1 = coordinates.left;
                             var y1 = coordinates.top;
                             var x2 = coordinates.left + coordinates.width;
                             var y2 = coordinates.top + coordinates.height;
-                            img_coords_details['manual_coords'][key]['coords'] = [x1, y1, x2, y2];
+                            scope.img_coords_details['manual_coords'][key]['coords'] = [x1, y1, x2, y2];
                         }
                     }
 
-                    for (let rect in img_coords_details['new_rect_coords']) {
+                    for (let key in scope.img_coords_details['new_rect_coords'])
+                    {
 
-                        if (rect['group'] == scaledObject) {
-                            console.log(rect)
+                        const current_obj = scope.img_coords_details['new_rect_coords'][key]['current_elements']
+
+                        if (current_obj['rect'] == scaledObject) {
+                            console.log(key)
                             const coordinates = scaledObject.getBoundingRect();
                             var x1 = coordinates.left;
                             var y1 = coordinates.top;
                             var x2 = coordinates.left + coordinates.width;
                             var y2 = coordinates.top + coordinates.height;
-                            rect['coords'] = [x1, y1, x2, y2];
+                            scope.img_coords_details['new_rect_coords'][key]['coords'] = [x1, y1, x2, y2];
                         }
 
                     }
