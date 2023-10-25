@@ -18,14 +18,15 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('linc.upload.autoimages.controller', [])
+angular.module('linc.upload.autoimages.display.controller', [])
 
-.controller('AutoUploadImagesCtrl', ['$http', '$scope', '$window', '$cookies', '$uibModalInstance', 'AutoCropperServices', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($http, $scope, $window, $cookies, $uibModalInstance, AutoCropperServices, $bsTooltip, FileUploader, NotificationFactory, options) {
+.controller('AutoUploadImagesDisplayCtrl', ['$http', '$scope', '$state', '$window', '$cookies', '$uibModalInstance', 'AutoCropperServices', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($http, $scope, $state ,$window, $cookies, $uibModalInstance, AutoCropperServices, $bsTooltip, FileUploader, NotificationFactory, options) {
 
 	$scope.imagesetId = options.imagesetId;
 	$scope.isNew = options.isNew;
 
-    $scope.image_coords = {};
+    $scope.image_coords = options.imageCoords;
+    $scope.imagesData = options.imagesData;
 
 	var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
 	$scope.title = 'Upload Images';
@@ -36,19 +37,6 @@ angular.module('linc.upload.autoimages.controller', [])
       $scope.image_coords[item.nickname] = result;
     }
 
-  $scope.RunAutoCropper = function (item, onSuccess) {
-    $scope.onSucess = onSuccess;
-
-
-    if ( !(item.nickname in $scope.image_coords) ) {
-      uploader.uploadItem(item);
-    }
-    else{
-      $scope.onSucess();
-    }
-
-
-  }
 
 	$scope.GoBack = function () {
 	 	$uibModalInstance.dismiss('cancel');
@@ -60,82 +48,91 @@ angular.module('linc.upload.autoimages.controller', [])
 	 	$uibModalInstance.close('finish');
 	};
 
+	$scope.OnSelect = function($item, Tags,listOfTags) {
+		UpdateTags(Tags, listOfTags);
+	};
+	$scope.OnRemove = function($item, Tags,listOfTags) {
+		UpdateTags(Tags, listOfTags);
+	};
+
+  var UpdateTags = function (Tags, ListOfTags){
+    var disabled_tag = _.difference(['whisker', 'whisker-left','whisker-right'],
+      _.intersection(_.map(Tags,'value'),
+          ['whisker', 'whisker-left','whisker-right']));
+    if (disabled_tag.length == 3)
+      disabled_tag = [];
+    _.forEach(ListOfTags, function(tag){
+        tag.disabled = _.includes(disabled_tag, tag.value);
+    });
+  };
+
+
+	$scope.Properties = [
+		{ value: true, label: "Public" },
+		{ value: false, label: "Private" }
+	];
 
 	$scope.Default = {isPublic: true, Tags: [], isCover: ''};
 
 	var uploader = $scope.uploader = new FileUploader({
-		url: '/autocropper',
+		url: '/autocropper/upload',
+		removeAfterUpload: false
 	});
 
-  uploader.onSuccessItem = function (fileItem, response, status, headers) {
-    console.info('onSuccessItem', fileItem, response, status, headers);
-    $scope.UpdateCoords(response.data.bounding_box_coords, fileItem);
-    fileItem.progress = 200;
-    $scope.onSucess();
-
-    // var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
-    // $scope.SucessItems.push(photo);
+    $scope.enable_Upload = false;
 
 
-    //fileItem.remove();
-  };
-
-  // FILTERS
-  uploader.filters.push({
-    name: 'imageFilter',
-    fn: function(item /*{File|FileLikeObject}*/, options) {
-      var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
-      return '|jpg|png|jpeg|bmp|gif'.indexOf(type) !== -1;
-    }
-  });
-
-  $scope.ImgFilter = function (item) {
-    return !item.file.name.match(".xml");
-  };
-
-  $scope.XmlFilter = function (item) {
-    return item.file.name.match(".xml");
-  };
 
   // CALLBACKS
   uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
     console.info('onWhenAddingFileFailed', item, filter, options);
   };
-  uploader.onAfterAddingFile = function(fileItem) {
 
-    var maxtam = 20
-    if(fileItem.file.name.match(".xml")){
-        console.log("Arquivo xml inserido na lista: " + fileItem.file.name)
-        maxtam=100
-    }
-
-    if(fileItem.file.name.length>maxtam){
-        fileItem.nickname = (fileItem.file.name || "").substring(1, 10) + ' ... '  +  (fileItem.file.name || "").substring(fileItem.file.name.length-8, fileItem.file.name.length)
-        fileItem.show_name = false;
-        fileItem.tooltip = {'title': 'filename: ' + fileItem.file.name, 'checked': true};
-    }
-    else{
-        fileItem.nickname = fileItem.file.name;
-        fileItem.show_name = true;
-        fileItem.tooltip = {'title': '', 'checked': true};
-    }
-};
-  $scope.enable_Upload = false;
-  uploader.onAfterAddingAll = function(addedFileItems) {
-    console.info('onAfterAddingAll', addedFileItems);
-    if(this.getNotUploadedItems().length)
-      $scope.enable_Upload = true;
-  };
-  uploader.onBeforeUploadItem = function(item) {
+  uploader.onBeforeUploadItem = function(item)
+  {
     console.info('onBeforeUploadItem', item);
+
+    // get original coordinates
+    let current_item = $scope.imagesData.images_details[item.index - 1];
+    // item.formData.push.apply(item.formData, [{'auto_cropper_coords' : JSON.stringify(current_item['auto_cropper_coords'])}]);
+
+
+    let image_info = {
+      'new_rect': [],
+      'manual_coords': {},
+      'auto_cropper_coords': current_item['auto_cropper_coords']
+
+    };
+
+    for (let image of $scope.imagesData.cropped_images) {
+      if (image.item.file.name === current_item['item'].file.name) {
+        if (image.actual_tags) {
+          image_info['manual_coords'][image.actual_tags] = {
+            'coords': image.coords,
+            'image_tags': _.map(image.tags, 'value'),
+            'actual_tags': image.actual_tags,
+            'is_public': image.is_public,
+            'iscover': ($scope.Default.isCover === image.$$hashKey)
+          };
+        } else {
+          image_info['new_rect'].push({
+            'coords': image.coords,
+            'image_tags': _.map(image.tags, 'value'),
+            'actual_tags': image.actual_tags,
+            'is_public': image.is_public,
+            'iscover': ($scope.Default.isCover === image.$$hashKey),
+          })
+        }
+
+        }
+    }
+
+    item.formData.push.apply(item.formData, [{'manual_coords': JSON.stringify(image_info)}]);
 
     var xsrfcookie = $cookies.get('_xsrf');
     item.headers = {'X-XSRFToken' : xsrfcookie};
 
-    var formData = [{'image_tags' : _.map(item.Tags,'value')},
-                    {'is_public': item.isPublic},
-                    {'image_set_id': $scope.imagesetId},
-                    {'iscover': ($scope.Default.isCover == item.$$hashKey)}];
+    var formData = [{'image_set_id': $scope.imagesetId},];
 
     Array.prototype.push.apply(item.formData, formData);
 
@@ -148,7 +145,13 @@ angular.module('linc.upload.autoimages.controller', [])
   };
   $scope.SucessItems = [];  $scope.Duplicateds = [];
   $scope.InvalidData = [];  $scope.ErrorItems = [];
-
+  uploader.onSuccessItem = function(fileItem, response, status, headers) {
+      console.info('onSuccessItem', fileItem, response, status, headers);
+      var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
+      fileItem.progress = 200;
+      $scope.SucessItems.push(photo);
+      //fileItem.remove();
+  };
   uploader.onErrorItem = function(fileItem, response, status, headers) {
       console.info('onErrorItem', fileItem, response, status, headers);
       var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
@@ -173,10 +176,12 @@ angular.module('linc.upload.autoimages.controller', [])
     if(!uploader.getNotUploadedItems().length)
       $scope.enable_Upload = false;
 
+
     var message = '';
-    if($scope.SucessItems.length>0){
+    if($scope.SucessItems.length>0)
+    {
       if($scope.SucessItems.length==1){
-        message = "Image (" + $scope.SucessItems[0].name + ") uploaded with success.<br>";
+        message = "Images uploaded with success.<br>";
         message += "It's being processed now."
       }
       else{
@@ -194,6 +199,19 @@ angular.module('linc.upload.autoimages.controller', [])
         position: "right", // right, left, center
         duration: 5000     // milisecond
       });
+
+      if ($state.current.name === 'imageset')
+      {
+        // $state.go($state.current, { id: $scope.imagesetId } , {reload: true});
+        $state.reload();
+
+      }
+      else {
+        $state.go("imageset", { id: $scope.imagesetId });
+
+      }
+
+
     }
     if($scope.Duplicateds.length>0){
       var title = "Duplicate image"
@@ -267,28 +285,66 @@ angular.module('linc.upload.autoimages.controller', [])
           duration: 5000   // milisecond
         });
       }
-    }
-  };
 
-  $scope.enable_Upload = false;
-  $scope.remove_item = function(item){
-    item.remove();
 
-    if (item.nickname in $scope.image_coords)
-    {
-        delete $scope.image_coords[item.nickname];
     }
 
-    if(!uploader.getNotUploadedItems().length)
-      $scope.enable_Upload = false;
   };
-  $scope.remove_all_items = function(item){
+
+  $scope.calculateProgressBarWidth = function(imagesData, current) {
+    let currentItemId = current.item;
+    let filteredItems = imagesData.images_details.filter(function(current_item) {
+        return current_item.item === currentItemId;
+    });
+
+    if (filteredItems.length > 0) {
+        let index = imagesData.images_details.indexOf(filteredItems[0]);
+        if (uploader.queue.length > 0){
+          return uploader.queue[index].progress / 2;
+        }
+        return 0;
+
+    }
+
+    return 0; // Default width if no match is found
+};
+
+
+  $scope.upload_images = function (){
+
+    console.log("uploading images");
+
     uploader.clearQueue();
 
-    Object.keys($scope.image_coords).forEach(key => delete $scope.image_coords[key]);
+    // add files to uploader queue
+    for (let current_image of $scope.imagesData.images_details)
+    {
+       uploader.addToQueue(current_image.item._file);
+    }
+
+    // upload all files
+    uploader.uploadAll();
 
 
-    if(!uploader.getNotUploadedItems().length)
+  }
+
+  $scope.enable_Upload = true;
+  $scope.remove_item = function(item)
+  {
+
+    let index = $scope.imagesData.cropped_images.indexOf(item);
+    if (index > -1) {
+        $scope.imagesData.cropped_images.splice(index, 1);
+    }
+
+    if(!$scope.imagesData.cropped_images.length)
+      $scope.enable_Upload = false;
+  };
+
+  $scope.remove_all_items = function(){
+
+    $scope.imagesData.cropped_images.length = 0;
+    if(!$scope.imagesData.cropped_images.length)
       $scope.enable_Upload = false;
   };
 

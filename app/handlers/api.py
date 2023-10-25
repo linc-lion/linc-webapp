@@ -95,6 +95,60 @@ class AutoCropperHandler(BaseHandler):
             self.finish(response.body)
 
 
+class AutoCropperUploaderHandler(BaseHandler):
+    SUPPORTED_METHODS = ("POST",)
+
+
+    @asynchronous
+    @engine
+    @web_authenticated
+    def post(self):
+
+
+        if self.request.files:
+            fileinfo = self.request.files['file'][0]
+            body = fileinfo['body']
+            fname = fileinfo['filename']
+            info(fname)
+            dirfs = dirname(realpath(__file__))
+            info(dirfs)
+            fh = open(dirfs + '/' + fname, 'wb')
+            fh.write(body)
+            fh.close()
+            exif_data = get_exif_data(dirfs + '/' + fname)
+            with open(dirfs + '/' + fname, "rb") as imageFile:
+                fileencoded = b64encode(imageFile.read())
+            if fileencoded:
+                remove(dirfs + '/' + fname)
+                manual_coords = self.get_argument('manual_coords')
+                image_set_id = self.get_argument("image_set_id")
+
+                body = {
+                    "image_set_id": int(image_set_id),
+                    'manual_coords': manual_coords,
+                    "filename": fname,
+                    "exif_data": exif_data,
+                    'content_type': fileinfo['content_type'],
+                    "image": fileencoded.decode('utf-8')
+                }
+                response = yield Task(
+                    self.api_call,
+                    url=self.settings['API_URL'] + '/autocropper/upload',
+                    method='POST',
+                    body=self.json_encode(body))
+                if response.code in [200, 201]:
+                    self.response(200, 'File successfully uploaded. You must wait the processing phase for your image.')
+                elif response.code == 409:
+                    self.response(409, 'The file already exists in the system.')
+                elif response.code == 400:
+                    self.response(400, 'The data or file sent is invalid.')
+                else:
+                    self.response(500, 'Fail to upload image.')
+        else:
+            self.response(400, 'Please send a file to upload.')
+
+
+
 class RelativesHandler(BaseHandler):
     SUPPORTED_METHODS = ("GET", "PUT", "POST", "DELETE")
 

@@ -18,13 +18,13 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('linc.upload.autoimages.directive', [])
+angular.module('linc.autocropper.uploadimages.directive', [])
 
-.directive('uploadAutoImages', ['$uibModal', function($uibModal) {
+.directive('autoCropperUploadImages', ['$uibModal', function($uibModal) {
   return {
     transclude: true,
     restrict: 'EA',
-    template:  '<button type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showOnly()"><i class="icon icon-camera"> </i>PROCESS PHOTOS WITH AUTO-CROPPER</button>',
+    template:  '<button type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showModal()"><i class="icon icon-camera"> </i>PROCESS PHOTOS WITH AUTO-CROPPER</button>',
     scope: {
       useTemplateUrl: '@',
       useCtrl: '@',
@@ -33,14 +33,12 @@ angular.module('linc.upload.autoimages.directive', [])
       saveMetadataAction:'&',
       closeAction:'&',
       btnSubmit: '&',
-      imageUpdated:'&',
       debug: '=',
-      disableUpload: '='
     },
     link: function(scope, element, attrs) {
 
 
-      scope.showOnly = function(){
+      scope.showModal = function(){
 
         var modalScope = scope.$new();
           modalScope.debug = scope.debug;

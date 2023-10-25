@@ -18,13 +18,13 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('linc.upload.autoimages.display.directive', [])
+angular.module('linc.autocropper.display.directive', [])
 
-.directive('uploadAutoImagesDisplay', ['$uibModal', function($uibModal) {
+.directive('autoCropperDisplay', ['$uibModal', function($uibModal) {
   return {
     transclude: true,
     restrict: 'EA',
-    template:  '<button type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showOnly()"><i class="icon icon-camera"> </i>Finish & Display All Cropped</button>',
+    template:  '<button type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showModal()"><i class="icon icon-camera"> </i>Finish & Display All Cropped</button>',
     scope: {
       useTemplateUrl: '@',
       useCtrl: '@',
@@ -41,7 +41,13 @@ angular.module('linc.upload.autoimages.display.directive', [])
     },
     link: function(scope, element, attrs) {
 
-      	scope.ListOfTags = [
+      //we need to create images queue for cropper
+      const imagesData = {};
+
+      scope.setup_cropped_images = function()
+      {
+
+        let ListOfTags = [
 		{ disabled: false, id: 0, value: "cv", label: "CV Image" },
 		{ disabled: false, id: 1, value: "main-id", label: "Main Id" },
 		{ disabled: false, id: 3, value: "whisker-left", label: "Whisker Left" },
@@ -52,51 +58,62 @@ angular.module('linc.upload.autoimages.display.directive', [])
 	];
 
 
+        // all original image and its coordinates will be stored in this array
+        imagesData['images_details'] = [];
 
+        // all cropped images will be stored in this array
+        imagesData['cropped_images'] = [];
 
-      scope.showOnly = function(){
-
-        //we need to create images queue for cropper
-        const cropped_images = []
-
-
-
-        for (var i = 0; i < scope.imagesQueue.length; i++)
+        for (let i = 0; i < scope.imagesQueue.length; i++)
         {
           let image = scope.imagesQueue[i];
-          image.coordinates = scope.imageCoords[image.nickname];
+
+          imagesData['images_details'].push({
+            'item': image,
+            'auto_cropper_coords': scope.imageCoords[image.file.name]['auto_cropper_coords'],
+          });
 
           // push same image to queue for each crop
-            for (let key in scope.imageCoords[image.nickname]['manual_coords']) {
+            for (let key in scope.imageCoords[image.file.name]['manual_coords']) {
 
-              let tags = angular.copy(scope.ListOfTags)
-              const existingTag = scope.ListOfTags.find(tag => tag.value === scope.imageCoords[image.nickname]['manual_coords'][key]['mapped']);
+              let tags = angular.copy(ListOfTags)
+              const existingTag = ListOfTags.find(tag => tag.value === scope.imageCoords[image.file.name]['manual_coords'][key]['mapped']);
 
-                cropped_images.push({
-                  'coords': scope.imageCoords[image.nickname]['manual_coords'][key]['coords'],
+                imagesData['cropped_images'].push({
+                  'coords': scope.imageCoords[image.file.name]['manual_coords'][key]['coords'],
                   'tags': [existingTag],
                   'item': image,
+                  'is_public': false,
                   'listOfTags': tags,
                   'actual_tags': key
                 });
             }
 
-            let count = scope.imageCoords[image.nickname]['new_rect_coords'].length;
+            let count = scope.imageCoords[image.file.name]['new_rect_coords'].length;
 
             for (let j = 0; j < count; j++) {
-              let tags = angular.copy(scope.ListOfTags)
-              const existingTag = scope.ListOfTags.find(tag => tag.value === scope.imageCoords[image.nickname]['new_rect_coords'][j]['mapped']);
+              let tags = angular.copy(ListOfTags)
+              const existingTag = ListOfTags.find(tag => tag.value === scope.imageCoords[image.file.name]['new_rect_coords'][j]['mapped']);
 
 
-                cropped_images.push({
-                  'coords' : scope.imageCoords[image.nickname]['new_rect_coords'][j]['coords'],
+                imagesData['cropped_images'].push({
+                  'coords' : scope.imageCoords[image.file.name]['new_rect_coords'][j]['coords'],
                   'tags': [existingTag],
                   'item': image,
+                  'is_public': false,
                   'listOfTags': tags
                 });
             }
 
         }
+
+      }
+
+
+      scope.showModal = function(){
+
+
+        scope.setup_cropped_images();
 
         var modalScope = scope.$new();
           modalScope.debug = scope.debug;
@@ -113,7 +130,7 @@ angular.module('linc.upload.autoimages.display.directive', [])
                   'isNew': true,
                   'imagesetId': scope.imagesetId,
                   'imageCoords': scope.imageCoords,
-                  'imagesQueue': cropped_images
+                  'imagesData': imagesData
                 });
               }
             }

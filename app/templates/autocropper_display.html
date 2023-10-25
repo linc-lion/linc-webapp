@@ -39,7 +39,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="current in imagesQueue">
+            <tr ng-repeat="current in imagesData.cropped_images">
             <td class="text-center">
                 <div class="div-name-limited" ng-show="uploader.isHTML5" ng-thumb="{ file: current.item._file, height: 50, coords: current.coords }"></div>
             </td>
@@ -66,22 +66,23 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             </td>
 
             <td class="text-center">
-                <button type="button" class="btn btn-default" ng-model="current.item.isPublic"
-                ng-init="current.item.isPublic = Default.isPublic" data-html="1"
+                <button type="button" class="btn btn-default" ng-model="current.is_public"
+                ng-init="current.is_public = Default.isPublic" data-html="1"
                 bs-options="property.value as property.label for property in Properties" bs-select
-                ng-disabled="current.item.isSuccess || uploader.isUploading">
+                ng-disabled="uploader.isUploading">
                 Action <span class="caret"></span>
                 </button>
             </td>
             <td class="text-center">
-                <input type="radio" ng-disabled="current.item.isPublic==false || current.item.isSuccess || uploader.isUploading"
-                ng-checked="!(current.item.isPublic==false) && 0" ng-model="Default.isCover" name="radio-cover"
-                ng-value="item.$$hashKey"/>
+                <input type="radio" ng-disabled="current.is_public==false || uploader.isUploading"
+                ng-checked="!(current.is_public==false) && 0" ng-model="Default.isCover" name="radio-cover"
+                ng-value="current.$$hashKey"/>
+
             </td>
 
             <td ng-show="uploader.isHTML5">
                 <div class="progress margin-bottom-0">
-                <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                <div class="progress-bar" role="progressbar" ng-style="{ 'width': calculateProgressBarWidth(imagesData, current) + '%' }"></div>
                 </div>
             </td>
             <td class="text-center">
@@ -105,7 +106,7 @@ For more information or to contact visit linclion.org or email tech@linclion.org
         <button type="button" class="btn btn-default btn-s" ng-click="remove_all_items();" ng-disabled="!imagesQueue.length || uploader.isUploading">
         <span class="icon icon-trash"></span> Remove all
         </button>
-        <button type="button" class="btn btn-primary btn-s" ng-click="uploader.uploadAll()" ng-disabled="!enable_Upload">
+        <button type="button" class="btn btn-primary btn-s" ng-click="upload_images()" ng-disabled="uploader.isUploading">
         <span class="icon icon-cloud_upload"></span> Upload Images
         </button>
         <!--<button ng-show="isNew" ng-show="!uploader.queue.length" type="button" class="btn btn-default" ng-click="GoBack()">Go Back</button>-->

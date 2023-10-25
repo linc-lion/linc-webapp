@@ -18,15 +18,14 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('linc.upload.autoimages.display.controller', [])
+angular.module('linc.autocropper.uploadimages.controller', [])
 
-.controller('AutoUploadImagesDisplayCtrl', ['$http', '$scope', '$window', '$cookies', '$uibModalInstance', 'AutoCropperServices', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($http, $scope, $window, $cookies, $uibModalInstance, AutoCropperServices, $bsTooltip, FileUploader, NotificationFactory, options) {
+.controller('AutoCropperUploadImagesCtrl', ['$http', '$scope', '$window', '$cookies', '$uibModalInstance', 'AutoCropperServices', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($http, $scope, $window, $cookies, $uibModalInstance, AutoCropperServices, $bsTooltip, FileUploader, NotificationFactory, options) {
 
 	$scope.imagesetId = options.imagesetId;
 	$scope.isNew = options.isNew;
 
-    $scope.image_coords = options.imageCoords;
-    $scope.imagesQueue = options.imagesQueue;
+    $scope.image_coords = {};
 
 	var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
 	$scope.title = 'Upload Images';
@@ -34,9 +33,22 @@ angular.module('linc.upload.autoimages.display.controller', [])
 
     $scope.UpdateCoords = function(result, item)
     {
-      $scope.image_coords[item.nickname] = result;
+      $scope.image_coords[item.file.name] = result;
     }
 
+  $scope.RunAutoCropper = function (item, onSuccess) {
+    $scope.onSucess = onSuccess;
+
+
+    if ( !(item.file.name in $scope.image_coords) ) {
+      uploader.uploadItem(item);
+    }
+    else{
+      $scope.onSucess();
+    }
+
+
+  }
 
 	$scope.GoBack = function () {
 	 	$uibModalInstance.dismiss('cancel');
@@ -48,36 +60,25 @@ angular.module('linc.upload.autoimages.display.controller', [])
 	 	$uibModalInstance.close('finish');
 	};
 
-	$scope.OnSelect = function($item, Tags,listOfTags) {
-		UpdateTags(Tags, listOfTags);
-	};
-	$scope.OnRemove = function($item, Tags,listOfTags) {
-		UpdateTags(Tags, listOfTags);
-	};
-
-  var UpdateTags = function (Tags, ListOfTags){
-    var disabled_tag = _.difference(['whisker', 'whisker-left','whisker-right'],
-      _.intersection(_.map(Tags,'value'),
-          ['whisker', 'whisker-left','whisker-right']));
-    if (disabled_tag.length == 3)
-      disabled_tag = [];
-    _.forEach(ListOfTags, function(tag){
-        tag.disabled = _.includes(disabled_tag, tag.value);
-    });
-  };
-
-
-	$scope.Properties = [
-		{ value: true, label: "Public" },
-		{ value: false, label: "Private" }
-	];
 
 	$scope.Default = {isPublic: true, Tags: [], isCover: ''};
 
 	var uploader = $scope.uploader = new FileUploader({
-		url: '/images/upload',
-		removeAfterUpload: true
+		url: '/autocropper',
 	});
+
+  uploader.onSuccessItem = function (fileItem, response, status, headers) {
+    console.info('onSuccessItem', fileItem, response, status, headers);
+    $scope.UpdateCoords(response.data.bounding_box_coords, fileItem);
+    fileItem.progress = 200;
+    $scope.onSucess();
+
+    // var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
+    // $scope.SucessItems.push(photo);
+
+
+    //fileItem.remove();
+  };
 
   // FILTERS
   uploader.filters.push({
@@ -88,13 +89,6 @@ angular.module('linc.upload.autoimages.display.controller', [])
     }
   });
 
-  $scope.ImgFilter = function (item) {
-    return !item.file.name.match(".xml");
-  };
-
-  $scope.XmlFilter = function (item) {
-    return item.file.name.match(".xml");
-  };
 
   // CALLBACKS
   uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
@@ -102,23 +96,24 @@ angular.module('linc.upload.autoimages.display.controller', [])
   };
   uploader.onAfterAddingFile = function(fileItem) {
 
+    //make filename unique with date
+    let date = new Date().getTime();
+    let filename = fileItem.file.name;
+    fileItem.file.name = date + '_' + filename;
+
     var maxtam = 20
     if(fileItem.file.name.match(".xml")){
         console.log("Arquivo xml inserido na lista: " + fileItem.file.name)
         maxtam=100
     }
-    else{
-        fileItem.Tags = angular.copy($scope.Default.Tags);
-        fileItem.ListOfTags = angular.copy($scope.ListOfTags);
-        console.info('onAfterAddingFile', fileItem);
-    }
-    if(fileItem.file.name.length>maxtam){
-        fileItem.nickname = (fileItem.file.name || "").substring(1, 10) + ' ... '  +  (fileItem.file.name || "").substring(fileItem.file.name.length-8, fileItem.file.name.length)
+
+    if(filename.length>maxtam){
+        fileItem.nickname = (filename || "").substring(1, 10) + ' ... '  +  (filename || "").substring(filename.length-8, filename.length)
         fileItem.show_name = false;
-        fileItem.tooltip = {'title': 'filename: ' + fileItem.file.name, 'checked': true};
+        fileItem.tooltip = {'title': 'filename: ' + filename, 'checked': true};
     }
     else{
-        fileItem.nickname = fileItem.file.name;
+        fileItem.nickname = filename;
         fileItem.show_name = true;
         fileItem.tooltip = {'title': '', 'checked': true};
     }
@@ -129,6 +124,7 @@ angular.module('linc.upload.autoimages.display.controller', [])
     if(this.getNotUploadedItems().length)
       $scope.enable_Upload = true;
   };
+
   uploader.onBeforeUploadItem = function(item) {
     console.info('onBeforeUploadItem', item);
 
@@ -143,20 +139,17 @@ angular.module('linc.upload.autoimages.display.controller', [])
     Array.prototype.push.apply(item.formData, formData);
 
   };
+
   uploader.onProgressItem = function(fileItem, progress) {
       console.info('onProgressItem', fileItem, progress);
   };
+
   uploader.onProgressAll = function(progress) {
       console.info('onProgressAll', progress);
   };
   $scope.SucessItems = [];  $scope.Duplicateds = [];
   $scope.InvalidData = [];  $scope.ErrorItems = [];
-  uploader.onSuccessItem = function(fileItem, response, status, headers) {
-      console.info('onSuccessItem', fileItem, response, status, headers);
-      var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
-      $scope.SucessItems.push(photo);
-      //fileItem.remove();
-  };
+
   uploader.onErrorItem = function(fileItem, response, status, headers) {
       console.info('onErrorItem', fileItem, response, status, headers);
       var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
@@ -169,14 +162,17 @@ angular.module('linc.upload.autoimages.display.controller', [])
       else
         $scope.ErrorItems.push(photo);
   };
+
   uploader.onCancelItem = function(fileItem, response, status, headers) {
       console.info('onCancelItem', fileItem, response, status, headers);
   };
+
   uploader.onCompleteItem = function(fileItem, response, status, headers) {
       console.info('onCompleteItem', fileItem, response, status, headers);
       if(!$scope.isNew)
         $scope.Update();
   };
+
   uploader.onCompleteAll = function() {
     if(!uploader.getNotUploadedItems().length)
       $scope.enable_Upload = false;
@@ -279,33 +275,26 @@ angular.module('linc.upload.autoimages.display.controller', [])
   };
 
   $scope.enable_Upload = false;
-  $scope.remove_item = function(item)
-  {
 
-    let index = $scope.imagesQueue.indexOf(item);
-    if (index > -1) {
-        $scope.imagesQueue.splice(index, 1);
+  $scope.remove_item = function(item){
+    item.remove();
+
+    if (item.nickname in $scope.image_coords)
+    {
+        delete $scope.image_coords[item.nickname];
     }
 
-    // if(!uploader.getNotUploadedItems().length)
-    //   $scope.enable_Upload = false;
+    if(!uploader.getNotUploadedItems().length)
+      $scope.enable_Upload = false;
   };
+  $scope.remove_all_items = function(item){
+    uploader.clearQueue();
 
-  $scope.remove_all_items = function(){
+    Object.keys($scope.image_coords).forEach(key => delete $scope.image_coords[key]);
 
-    $scope.imagesQueue.length = 0;
-    if(!$scope.imagesQueue.length)
+    if(!uploader.getNotUploadedItems().length)
       $scope.enable_Upload = false;
   };
 
 
 }])
-
-.filter('tag_filter', function(){
-	return function(input, organizations) {
-		var filtered = _.filter(input, function(value){
-				return (_.result(_.find(organizations, {'name': value.organization}), 'checked'));
-		});
-		return filtered;
-	};
-})
