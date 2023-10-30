@@ -177,7 +177,17 @@ angular.module('linc.autocropper.editor.controller', [])
             org_img_res.height = img.height;
             org_img_res.width = img.width;
 
-            //setting up height of scaled image
+            if (img.height < canvas_size.height)
+            {
+                canvas_size.height = img.height;
+
+            }
+
+            if (img.width < canvas_size.width)
+            {
+                canvas_size.width = img.width;
+            }
+
             scaled_img_res.height = canvas_size.height;
 
             //find the aspect ratio of the image
@@ -185,7 +195,6 @@ angular.module('linc.autocropper.editor.controller', [])
 
             //calculate the width of the image according to the height of the canvas
             const imageWidth = canvas_size.height * aspect_ratio
-
 
             scaled_img_res.width = imageWidth;
             canvas_size.width = imageWidth;
@@ -396,11 +405,11 @@ angular.module('linc.autocropper.editor.controller', [])
                 const current_obj = $scope.img_coords_details['manual_coords'][key]['current_elements'];
                 if (current_obj['rect'] == scaledObject) {
                     console.log(key)
-                    const coordinates = scaledObject.getBoundingRect();
-                    var x1 = coordinates.left;
-                    var y1 = coordinates.top;
-                    var x2 = coordinates.left + coordinates.width;
-                    var y2 = coordinates.top + coordinates.height;
+                    // const coordinates = scaledObject.getBoundingRect();
+                    let x1 = scaledObject.left;
+                    let y1 = scaledObject.top;
+                    let x2 = scaledObject.left + (scaledObject.width * scaledObject.scaleX);
+                    let y2 = scaledObject.top + (scaledObject.height * scaledObject.scaleY);
                     $scope.img_coords_details['manual_coords'][key]['coords'] = [x1, y1, x2, y2];
                 }
             }
@@ -411,11 +420,10 @@ angular.module('linc.autocropper.editor.controller', [])
 
                 if (current_obj['rect'] == scaledObject) {
                     console.log(key)
-                    const coordinates = scaledObject.getBoundingRect();
-                    var x1 = coordinates.left;
-                    var y1 = coordinates.top;
-                    var x2 = coordinates.left + coordinates.width;
-                    var y2 = coordinates.top + coordinates.height;
+                    let x1 = scaledObject.left;
+                    let y1 = scaledObject.top;
+                    let x2 = scaledObject.left + (scaledObject.width * scaledObject.scaleX);
+                    let y2 = scaledObject.top + (scaledObject.height * scaledObject.scaleY);
                     $scope.img_coords_details['new_rect_coords'][key]['coords'] = [x1, y1, x2, y2];
                 }
 
@@ -476,22 +484,22 @@ angular.module('linc.autocropper.editor.controller', [])
                 $scope.canvas.zoomToPoint({x: opt.e.offsetX, y: opt.e.offsetY}, zoom);
                 opt.e.preventDefault();
                 opt.e.stopPropagation();
-                var vpt = this.viewportTransform;
-                if (zoom < 400 / 1000) {
-                    vpt[4] = 200 - 1000 * zoom / 2;
-                    vpt[5] = 200 - 1000 * zoom / 2;
-                } else {
-                    if (vpt[4] >= 0) {
-                        vpt[4] = 0;
-                    } else if (vpt[4] < $scope.canvas.getWidth() - 1000 * zoom) {
-                        vpt[4] = $scope.canvas.getWidth() - 1000 * zoom;
-                    }
-                    if (vpt[5] >= 0) {
-                        vpt[5] = 0;
-                    } else if (vpt[5] < $scope.canvas.getHeight() - 1000 * zoom) {
-                        vpt[5] = $scope.canvas.getHeight() - 1000 * zoom;
-                    }
-                }
+                // var vpt = this.viewportTransform;
+                // if (zoom < 400 / 1000) {
+                //     vpt[4] = 200 - 1000 * zoom / 2;
+                //     vpt[5] = 200 - 1000 * zoom / 2;
+                // } else {
+                //     if (vpt[4] >= 0) {
+                //         vpt[4] = 0;
+                //     } else if (vpt[4] < $scope.canvas.getWidth() - 1000 * zoom) {
+                //         vpt[4] = $scope.canvas.getWidth() - 1000 * zoom;
+                //     }
+                //     if (vpt[5] >= 0) {
+                //         vpt[5] = 0;
+                //     } else if (vpt[5] < $scope.canvas.getHeight() - 1000 * zoom) {
+                //         vpt[5] = $scope.canvas.getHeight() - 1000 * zoom;
+                //     }
+                // }
 
 
             });
@@ -504,8 +512,14 @@ angular.module('linc.autocropper.editor.controller', [])
             });
 
             $scope.canvas.on('object:scaled', function (options) {
-                var scaledObject = options.target;
-                $scope.onObjectChange(scaledObject);
+
+
+                setTimeout(function () {
+                    var scaledObject = options.target;
+                    $scope.onObjectChange(scaledObject);
+                }, 0);
+
+
 
             });
 
