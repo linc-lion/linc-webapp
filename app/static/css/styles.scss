@@ -4105,3 +4105,15 @@ div[title="Add Lion Location"] {
 	}
 
 }
+
+.autocropper{
+	&.modal-footer{
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	&.space-margin{
+		margin: 0px 10px;
+	}
+
+}

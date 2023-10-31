@@ -27,6 +27,8 @@ angular.module('linc.autocropper.editor.controller', [])
         $scope.isNew = options.isNew;
         $scope.existing_coords = options.coords;
 
+
+
         var titles = {};
         titles['lions'] = 'Lion';
         titles['imagesets'] = 'Image Set';
@@ -91,18 +93,6 @@ angular.module('linc.autocropper.editor.controller', [])
             };
 
 
-        let dropdown = null;
-
-        let dropdownoptions = `
-                 <option value="cv">CV Image</option>
-                 <option value="full-body">Full Body</option>
-                 <option value="main-id">Main Id</option>
-                 <option value="marking">Marking</option>
-                 <option value="whisker">Whisker (Do not use in Algorithm)</option>
-                 <option value="whisker-left">Whisker Left</option>
-                 <option value="whisker-right">Whisker Right</option>
-                `;
-
         $scope.GoBack = function () {
             $uibModalInstance.dismiss('cancel');
         };
@@ -155,7 +145,19 @@ angular.module('linc.autocropper.editor.controller', [])
 
         }
 
-        $scope.setup_bound_box = function () {
+        $scope.setup_bound_box = function ()
+        {
+            //initialization of dropdown menu
+            $scope.dropdown = document.getElementById('tag-dropdown');
+
+            $scope.dropdown.addEventListener('change', function () {
+
+                let selected_rect = $scope.canvas.getActiveObject();
+                $scope.onObjectChange(selected_rect, this.value);
+                $scope.canvas.renderAll();
+                $scope.dropdown.style.display = 'none';
+            });
+
 
             // rescale the coordinates before adding the rectangles to canvas
             $scope.rescale_coords(org_img_res, scaled_img_res);
@@ -212,6 +214,31 @@ angular.module('linc.autocropper.editor.controller', [])
 
             //setup canvas and its size according to window screen
             $scope.canvas = new fabric.Canvas('canvas', {selection: false});
+
+            $scope.canvas.selection = false; // disable group selection
+
+
+
+            // fabric.Object.prototype._drawControl = controlHandles
+            // fabric.Object.prototype.cornerSize = 20
+            //
+            // function controlHandles(control, ctx, methodName, left, top) {
+            //     if (!this.isControlVisible(control)) {
+            //         return
+            //     }
+            //     var size = this.cornerSize
+            //
+            //     // Note 1: These are standard HTML5 canvas properties, not fabric.js.
+            //     // Note 2: Order matters, for instance putting stroke() before strokeStyle may result in undesired effects.
+            //     ctx.beginPath()
+            //     ctx.arc(left + size / 4, top + size / 4, size / 4, 0, 2 * Math.PI, false);
+            //     ctx.fillStyle = "pink"
+            //     ctx.fill()
+            //     ctx.lineWidth = 3
+            //     ctx.strokeStyle = "red"
+            //     ctx.stroke()
+            // }
+
             const modalBody = document.querySelector('#canvasmodal');
             canvas_size.width = modalBody.clientWidth * 0.9;
             canvas_size.height = window.screen.height * 0.6;
@@ -252,6 +279,9 @@ angular.module('linc.autocropper.editor.controller', [])
 
 
                     $scope.setup_bound_box();
+
+
+
                 };
             };
 
@@ -284,10 +314,10 @@ angular.module('linc.autocropper.editor.controller', [])
 
             // Create a text object with coordinates and options
             let name = new fabric.Text(details['mapped'], {
-                left: rect.left + 5,
-                top: rect.top + 5,
+                left: rect.left,
+                top: rect.top,
                 selectable: false,
-                width: rect.width - 10,
+                // width: rect.width - 10,
                 fontSize: 10,
                 fill: '#fff',
                 overflow: 'hidden',
@@ -300,29 +330,29 @@ angular.module('linc.autocropper.editor.controller', [])
             // to open tags dropdown menu
             // and update the tag name
 
-            name.on('mousedown', function (options) {
+            rect.on('deselected', function (options) {
 
-                if (dropdown) {
-                    return;
+                    rect.set({ stroke: 'red' });
+                    $scope.dropdown.style.display = 'none';
+            });
+
+            rect.on('mousedown', function (options) {
+
+                rect.set({ stroke: 'blue' });
+
+                let scaledObject = $scope.canvas.getActiveObject();
+
+                for (let rect in rect_details) {
+
+                    if (rect_details[rect]['rect'] === scaledObject) {
+
+                        $scope.dropdown.value = rect_details[rect]['name'].text;
+                        $scope.dropdown.style.display = 'block';
+
+                        rect_details[rect]['name'].bringToFront();
+                        break;
+                    }
                 }
-
-                dropdown = document.createElement('select');
-
-                dropdown.innerHTML = dropdownoptions;
-                dropdown.style.position = 'absolute';
-                dropdown.style.left = options.target.left + 'px';
-                dropdown.style.top = (options.target.top + 30) + 'px';
-                $scope.canvas.wrapperEl.appendChild(dropdown);
-                dropdown.value = details['mapped'];
-
-                dropdown.addEventListener('change', function () {
-                    name.set({text: this.value});
-                    dropdown.remove();
-                    dropdown = null;
-                    details['mapped'] = this.value;
-                    $scope.canvas.renderAll();
-
-                });
 
 
             });
@@ -383,17 +413,23 @@ angular.module('linc.autocropper.editor.controller', [])
             }
         }
 
-        $scope.onObjectChange = function (scaledObject) {
+        $scope.onObjectChange = function (scaledObject, selected_text) {
+
+            let updated_text_element = null;
 
             for (let rect in rect_details) {
 
                 //find the resized rect and update the text position
-                if (rect_details[rect]['rect'] == scaledObject) {
+                if (rect_details[rect]['rect'] === scaledObject) {
 
-                    rect_details[rect]['name'].left = scaledObject.left + 5;
-                    rect_details[rect]['name'].top = scaledObject.top + 5;
-                    rect_details[rect]['name'].width = scaledObject.width - 10;
+                    rect_details[rect]['name'].left = scaledObject.left + 3;
+                    rect_details[rect]['name'].top = scaledObject.top;
                     rect_details[rect]['name'].setCoords();
+                    if (selected_text) {
+                        updated_text_element = rect_details[rect]['name'];
+                        rect_details[rect]['name'].set({text: selected_text});
+
+                    }
                 }
             }
 
@@ -402,29 +438,36 @@ angular.module('linc.autocropper.editor.controller', [])
 
             for (let key in $scope.img_coords_details['manual_coords']) {
 
-                const current_obj = $scope.img_coords_details['manual_coords'][key]['current_elements'];
-                if (current_obj['rect'] == scaledObject) {
-                    console.log(key)
-                    // const coordinates = scaledObject.getBoundingRect();
+                const current_obj = $scope.img_coords_details['manual_coords'][key];
+                if (current_obj['current_elements']['rect'] === scaledObject) {
                     let x1 = scaledObject.left;
                     let y1 = scaledObject.top;
                     let x2 = scaledObject.left + (scaledObject.width * scaledObject.scaleX);
                     let y2 = scaledObject.top + (scaledObject.height * scaledObject.scaleY);
                     $scope.img_coords_details['manual_coords'][key]['coords'] = [x1, y1, x2, y2];
                 }
+
+                if (current_obj['current_elements']['name'] === updated_text_element) {
+                    current_obj['mapped'] = selected_text;
+                }
+
             }
 
             for (let key in $scope.img_coords_details['new_rect_coords']) {
 
-                const current_obj = $scope.img_coords_details['new_rect_coords'][key]['current_elements']
+                const current_obj = $scope.img_coords_details['new_rect_coords'][key]
 
-                if (current_obj['rect'] == scaledObject) {
+                if (current_obj['current_elements']['rect'] === scaledObject) {
                     console.log(key)
                     let x1 = scaledObject.left;
                     let y1 = scaledObject.top;
                     let x2 = scaledObject.left + (scaledObject.width * scaledObject.scaleX);
                     let y2 = scaledObject.top + (scaledObject.height * scaledObject.scaleY);
                     $scope.img_coords_details['new_rect_coords'][key]['coords'] = [x1, y1, x2, y2];
+                }
+
+                if (current_obj['current_elements']['name'] == updated_text_element) {
+                    current_obj['mapped'] = selected_text;
                 }
 
             }
@@ -480,27 +523,14 @@ angular.module('linc.autocropper.editor.controller', [])
                 var zoom = $scope.canvas.getZoom();
                 zoom *= 0.999 ** delta;
                 if (zoom > 20) zoom = 20;
-                if (zoom < 1) zoom = 1;
+                if (zoom < 1)
+                {
+                    zoom = 1;
+                    $scope.canvas.setViewportTransform([1,0,0,1,0,0]);
+                }
                 $scope.canvas.zoomToPoint({x: opt.e.offsetX, y: opt.e.offsetY}, zoom);
                 opt.e.preventDefault();
                 opt.e.stopPropagation();
-                // var vpt = this.viewportTransform;
-                // if (zoom < 400 / 1000) {
-                //     vpt[4] = 200 - 1000 * zoom / 2;
-                //     vpt[5] = 200 - 1000 * zoom / 2;
-                // } else {
-                //     if (vpt[4] >= 0) {
-                //         vpt[4] = 0;
-                //     } else if (vpt[4] < $scope.canvas.getWidth() - 1000 * zoom) {
-                //         vpt[4] = $scope.canvas.getWidth() - 1000 * zoom;
-                //     }
-                //     if (vpt[5] >= 0) {
-                //         vpt[5] = 0;
-                //     } else if (vpt[5] < $scope.canvas.getHeight() - 1000 * zoom) {
-                //         vpt[5] = $scope.canvas.getHeight() - 1000 * zoom;
-                //     }
-                // }
-
 
             });
 
