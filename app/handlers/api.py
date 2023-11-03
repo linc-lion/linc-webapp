@@ -147,45 +147,46 @@ class AutoCropperUploaderHandler(BaseHandler):
         else:
             self.response(400, 'Please send a file to upload.')
 
-
-
 class RelativesHandler(BaseHandler):
     SUPPORTED_METHODS = ("GET", "PUT", "POST", "DELETE")
 
     @asynchronous
     @engine
-    def get(self):
-
-        response = yield Task(
-            self.api_call,
-            url=self.settings['API_URL'] + '/autocropper',
-            method='GET')
-        self.set_json_output()
-        if response.code == 404:
-            body = loads(response.body.decode("utf-8"))
-            self.finish(self.json_encode({
-                        'status': 'success',
-                        'message': body['message'],
-                        'data': []}))
+    @web_authenticated
+    def get(self, lion_id=''):
+        if lion_id:
+            response = yield Task(
+                self.api_call,
+                url=self.settings['API_URL'] + '/lions/{}/relatives'.format(lion_id),
+                method='GET')
+            self.set_json_output()
+            if response.code == 404:
+                body = loads(response.body.decode("utf-8"))
+                self.finish(self.json_encode({
+                            'status': 'success',
+                            'message': body['message'],
+                            'data': []}))
+            else:
+                self.set_status(response.code)
+                self.finish(response.body)
         else:
-            self.set_status(response.code)
-            self.finish(response.body)
-
+            self.response(401, 'Invalid request, you must provide lion id.')
 
     @asynchronous
     @engine
     @web_authenticated
-    def post(self):
-
-        response = yield Task(
-            self.api_call,
-            url=self.settings['API_URL'] + '/lions/{}/relatives'.format(lion_id),
-            method='POST',
-            body=self.json_encode(self.input_data))
-        self.set_json_output()
-        self.set_status(response.code)
-        self.finish(response.body)
-
+    def post(self, lion_id=''):
+        if lion_id:
+            response = yield Task(
+                self.api_call,
+                url=self.settings['API_URL'] + '/lions/{}/relatives'.format(lion_id),
+                method='POST',
+                body=self.json_encode(self.input_data))
+            self.set_json_output()
+            self.set_status(response.code)
+            self.finish(response.body)
+        else:
+            self.response(401, 'Invalid request, you must provide lion id.')
 
     @asynchronous
     @coroutine
@@ -221,7 +222,6 @@ class RelativesHandler(BaseHandler):
             self.response(401, 'Invalid request, you must provide a lion id.')
         else:
             self.response(401, 'Invalid request, you must provide a relative lion id.')
-
 
 class ImageSetsReqHandler(BaseHandler):
     SUPPORTED_METHODS = ('GET')

@@ -302,7 +302,7 @@ angular.module('linc.autocropper.editor.controller', [])
                 width: coordinate[2] - coordinate[0],
                 height: coordinate[3] - coordinate[1],
                 stroke: 'red',
-                strokeWidth: 3,
+                strokeWidth: 1,
                 opacity: 1,
                 perPixelTargetFind: true,
                 strokeUniform: true,
@@ -311,10 +311,12 @@ angular.module('linc.autocropper.editor.controller', [])
                 lockUniScaling: false,
             });
 
+            rect.setControlsVisibility({ mtr: false })
+
 
             // Create a text object with coordinates and options
             let name = new fabric.Text(details['mapped'], {
-                left: rect.left,
+                left: rect.left+3,
                 top: rect.top,
                 selectable: false,
                 // width: rect.width - 10,
