@@ -303,7 +303,7 @@ angular.module('linc.autocropper.editor.controller', [])
                 height: coordinate[3] - coordinate[1],
                 stroke: 'red',
                 strokeWidth: 1,
-                opacity: 1,
+                opacity: 0.6,
                 perPixelTargetFind: true,
                 strokeUniform: true,
                 noScaleCache: false,
