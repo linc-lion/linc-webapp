@@ -24,7 +24,7 @@ angular.module('linc.autocropper.display.directive', [])
   return {
     transclude: true,
     restrict: 'EA',
-    template:  '<button type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showModal()"><i class="icon icon-camera"> </i>Finish & Display All Cropped</button>',
+    template:  '<button type="submit" ng-disabled="enable_display_cropper()" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showModal()"><i class="icon icon-camera"> </i>Finish & Display All Cropped</button>',
     scope: {
       useTemplateUrl: '@',
       useCtrl: '@',
@@ -43,6 +43,29 @@ angular.module('linc.autocropper.display.directive', [])
 
       //we need to create images queue for cropper
       const imagesData = {};
+
+      scope.enable_display_cropper = function(){
+
+
+        if (!scope.imagesQueue || scope.imagesQueue.length <=0)
+        {
+          return true;
+        }
+
+        let count = 0;
+        for (let i = 0; i < scope.imagesQueue.length; i++)
+        {
+            let image = scope.imagesQueue[i];
+            if (image.file.name in scope.imageCoords && 'auto_cropper_coords' in scope.imageCoords[image.file.name])
+            {
+              count += 1;
+            }
+
+        }
+
+        return count !== scope.imagesQueue.length;
+
+      }
 
       scope.setup_cropped_images = function()
       {

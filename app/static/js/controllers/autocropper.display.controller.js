@@ -341,12 +341,12 @@ angular.module('linc.upload.autoimages.display.controller', [])
       $scope.enable_Upload = false;
   };
 
-  $scope.remove_all_items = function(){
-
-    $scope.imagesData.cropped_images.length = 0;
-    if(!$scope.imagesData.cropped_images.length)
-      $scope.enable_Upload = false;
-  };
+  // $scope.remove_all_items = function(){
+  //
+  //   $scope.imagesData.cropped_images.length = 0;
+  //   if(!$scope.imagesData.cropped_images.length)
+  //     $scope.enable_Upload = false;
+  // };
 
 
 }])
