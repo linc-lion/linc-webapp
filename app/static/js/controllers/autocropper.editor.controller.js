@@ -27,6 +27,7 @@ angular.module('linc.autocropper.editor.controller', [])
         $scope.isNew = options.isNew;
         $scope.existing_coords = options.coords;
         $scope.isEdit = false;
+        $scope.enablePan = false;
 
 
         let titles = {};
@@ -226,7 +227,7 @@ angular.module('linc.autocropper.editor.controller', [])
 
             $scope.canvas.off('object:modified');
             $scope.canvas.off('object:added');
-            $scope.canvas.off('object:removed');
+            // $scope.canvas.off('object:removed');
 
 
             // Load the canvas from the JSON string
@@ -256,12 +257,12 @@ angular.module('linc.autocropper.editor.controller', [])
         $scope.shouldDisable = function(){
             console.log($scope.CurrentStateIndex);
 
-            if($scope.isEdit && $scope.CurrentStateIndex > 0)
+            if($scope.isEdit && $scope.CurrentStateIndex <= (Object.keys($scope.img_coords_details['manual_coords']).length + $scope.img_coords_details['new_rect_coords'].length ) -1)
             {
-                return false;
+                return true;
             }
 
-            if ($scope.CurrentStateIndex <= (Object.keys($scope.img_coords_details['auto_cropper_coords']).length * 2) -1) {
+            if ($scope.CurrentStateIndex <= (Object.keys($scope.img_coords_details['auto_cropper_coords']).length) -1) {
                 return true; // No states to revert to
             }
             return false;
@@ -287,32 +288,31 @@ angular.module('linc.autocropper.editor.controller', [])
 
             $scope.CurrentStateIndex++;
             $scope.state.splice($scope.CurrentStateIndex, deleteCount, json);
-            console.log($scope.CurrentStateIndex);
-
-            // $scope.$apply(
-            //     function () {
-            //
-            //     }
-            // );
-
+            $scope.$apply();
 
         }
 
 
          $scope.reapplyEventListeners = function() {
-            $scope.canvas.on('object:modified', function () {
-                $scope.updateCanvasState();
+            $scope.canvas.on('object:modified', function (options) {
+               if (options.target.type !== 'text') {
+                    $scope.updateCanvasState();
+                }
             });
 
-            $scope.canvas.on('object:removed', function (options) {
+            // $scope.canvas.on('object:removed', function (options) {
+            //     if (options.target.type !== 'text') {
+            //         $scope.updateCanvasState();
+            //     }
+            //
+            // });
+
+            $scope.canvas.on('object:added', function (options) {
+
                 if (options.target.type !== 'text') {
                     $scope.updateCanvasState();
                 }
 
-            });
-
-            $scope.canvas.on('object:added', function () {
-                $scope.updateCanvasState();
             });
         }
 
@@ -419,13 +419,11 @@ angular.module('linc.autocropper.editor.controller', [])
                 height: coordinate[3] - coordinate[1],
                 stroke: 'red',
                 strokeWidth: 1,
-                opacity: 0.6,
+                opacity: 1,
                 perPixelTargetFind: true,
-                targetFindTolerance: 4,
+                targetFindTolerance: 100,
                 strokeUniform: true,
-                noScaleCache: false,
                 hasControls: true,
-                lockUniScaling: false,
                 hasRotatingPoint: false
             });
 
@@ -469,8 +467,9 @@ angular.module('linc.autocropper.editor.controller', [])
             details['current_elements'] = rect_uuid
 
             // Add the rect and text objects to canvas
-            $scope.canvas.add(rect);
             $scope.canvas.add(name);
+            $scope.canvas.add(rect);
+
 
 
         }
@@ -487,14 +486,28 @@ angular.module('linc.autocropper.editor.controller', [])
             let selectedObject = $scope.canvas.getActiveObject();
 
             if (selectedObject._objects) {
-                for (let object of selectedObject._objects) {
-                    $scope.removeObject(object);
+                // $scope.canvas.off('object:removed');
+
+                for (let i = 0; i < selectedObject._objects.length; i++){
+
+                    $scope.removeObject(selectedObject._objects[i]);
+                    if(i === selectedObject._objects.length-1){
+                        $scope.updateCanvasState();
+                        $scope.canvas.discardActiveGroup();
+                        $scope.canvas.renderAll();
+
+                    }
+
                 }
+
             } else {
                 $scope.removeObject(selectedObject);
+                $scope.updateCanvasState();
+                $scope.canvas.discardActiveObject();
+                $scope.canvas.renderAll();
             }
 
-            $scope.canvas.discardActiveObject().renderAll();
+
 
         }
 
@@ -521,46 +534,6 @@ angular.module('linc.autocropper.editor.controller', [])
                 name_object.set({text: selected_text});
             }
 
-
-            //check if the resized rect is in the manual_coords or new_rect_coords
-            //and update the coordinates
-
-            // for (let key in $scope.img_coords_details['manual_coords']) {
-            //
-            //     const current_obj = $scope.img_coords_details['manual_coords'][key];
-            //     if (current_obj['current_elements']['rect'].uniqueId === scaledObject.uniqueId) {
-            //         let x1 = coordinates.left;
-            //         let y1 = coordinates.top;
-            //         let x2 = x1 + (scaledObject.width * scaledObject.scaleX);
-            //         let y2 = y1 + (scaledObject.height * scaledObject.scaleY);
-            //         $scope.img_coords_details['manual_coords'][key]['coords'] = [x1, y1, x2, y2];
-            //     }
-            //
-            //     if (current_obj['current_elements']['name'] === updated_text_element) {
-            //         current_obj['mapped'] = selected_text;
-            //     }
-            //
-            // }
-
-            // for (let key in $scope.img_coords_details['new_rect_coords']) {
-            //
-            //     const current_obj = $scope.img_coords_details['new_rect_coords'][key]
-            //
-            //     if (current_obj['current_elements']['rect'].uniqueId === scaledObject.uniqueId) {
-            //         let x1 = coordinates.left;
-            //         let y1 = coordinates.top;
-            //         let x2 = x1 + (scaledObject.width * scaledObject.scaleX);
-            //         let y2 = y1 + (scaledObject.height * scaledObject.scaleY);
-            //         $scope.img_coords_details['new_rect_coords'][key]['coords'] = [x1, y1, x2, y2];
-            //     }
-            //
-            //     if (current_obj['current_elements']['name'] == updated_text_element) {
-            //         current_obj['mapped'] = selected_text;
-            //     }
-            //
-            // }
-
-
         }
 
         $scope.adjust_coordinates = function (coordinates, org_img_res, scaled_img_res) {
@@ -573,11 +546,29 @@ angular.module('linc.autocropper.editor.controller', [])
             return [newX1, newY1, newX2, newY2];
         }
 
+        $scope.togglePan = function(item){
+
+            if (item.textContent === 'Enable Pan')
+            {
+                item.textContent = 'Disable Pan';
+                $scope.enablePan = true;
+                $scope.canvas.defaultCursor = 'grab';
+
+            }
+            else{
+                item.textContent = 'Enable Pan';
+                $scope.enablePan = false;
+                $scope.canvas.defaultCursor = 'default';
+
+
+            }
+        }
+
         $scope.setup_canvas_callbacks = function () {
 
             $scope.canvas.on('mouse:down', function (opt) {
                 let evt = opt.e;
-                if (evt.altKey === true) {
+                if ($scope.enablePan) {
                     this.isDragging = true;
                     this.selection = false;
                     this.lastPosX = evt.clientX;

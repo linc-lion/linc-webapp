@@ -44,7 +44,8 @@ For more information or to contact visit linclion.org or email tech@linclion.org
             <option value="whisker-right">Whisker Right</option>
         </select>
 
-        <button class="btn btn-default" ng-disabled="shouldDisable()" ng-click="undo()">Undo</button>
+        <button class="btn btn-default" ng-click="togglePan($event.target)">Enable Pan</button>
+        <button class="btn btn-default"ng-disabled="shouldDisable()" ng-click="undo()">Undo</button>
 
         <button class="btn btn-default" ng-click="deleteRectanglefunc()">Delete Rectangle</button>
         <button class="btn btn-default" ng-click="addRectanglefunc()">Add Rectangle</button>
