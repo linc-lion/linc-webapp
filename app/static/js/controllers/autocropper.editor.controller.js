@@ -262,7 +262,7 @@ angular.module('linc.autocropper.editor.controller', [])
                 return true;
             }
 
-            else if ($scope.CurrentStateIndex <= (Object.keys($scope.img_coords_details['auto_cropper_coords']).length) -1) {
+            else if (! $scope.isEdit && $scope.CurrentStateIndex <= (Object.keys($scope.img_coords_details['auto_cropper_coords']).length) -1) {
                 return true; // No states to revert to
             }
             return false;
