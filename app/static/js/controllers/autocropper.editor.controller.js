@@ -262,7 +262,7 @@ angular.module('linc.autocropper.editor.controller', [])
                 return true;
             }
 
-            if ($scope.CurrentStateIndex <= (Object.keys($scope.img_coords_details['auto_cropper_coords']).length) -1) {
+            else if ($scope.CurrentStateIndex <= (Object.keys($scope.img_coords_details['auto_cropper_coords']).length) -1) {
                 return true; // No states to revert to
             }
             return false;
@@ -383,6 +383,7 @@ angular.module('linc.autocropper.editor.controller', [])
         $scope.addObjectListner = function(object) {
             if (object.type === 'rect') {
 
+                object.set({stroke: 'red'});
 
                 object.on('deselected', function (options) {
                     $scope.dropdown.style.display = 'none';
