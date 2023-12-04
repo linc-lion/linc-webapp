@@ -94,7 +94,6 @@ angular.module('linc.upload.autoimages.display.controller', [])
 
     // get original coordinates
     let current_item = $scope.imagesData.images_details[item.index - 1];
-    // item.formData.push.apply(item.formData, [{'auto_cropper_coords' : JSON.stringify(current_item['auto_cropper_coords'])}]);
 
 
     let image_info = {
@@ -150,7 +149,6 @@ angular.module('linc.upload.autoimages.display.controller', [])
       var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
       fileItem.progress = 200;
       $scope.SucessItems.push(photo);
-      //fileItem.remove();
   };
   uploader.onErrorItem = function(fileItem, response, status, headers) {
       console.info('onErrorItem', fileItem, response, status, headers);
@@ -202,7 +200,6 @@ angular.module('linc.upload.autoimages.display.controller', [])
 
       if ($state.current.name === 'imageset')
       {
-        // $state.go($state.current, { id: $scope.imagesetId } , {reload: true});
         $state.reload();
 
       }
@@ -340,13 +337,6 @@ angular.module('linc.upload.autoimages.display.controller', [])
     if(!$scope.imagesData.cropped_images.length)
       $scope.enable_Upload = false;
   };
-
-  // $scope.remove_all_items = function(){
-  //
-  //   $scope.imagesData.cropped_images.length = 0;
-  //   if(!$scope.imagesData.cropped_images.length)
-  //     $scope.enable_Upload = false;
-  // };
 
 
 }])

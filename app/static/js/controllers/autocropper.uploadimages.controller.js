@@ -72,12 +72,6 @@ angular.module('linc.autocropper.uploadimages.controller', [])
     $scope.UpdateCoords(response.data.bounding_box_coords, fileItem);
     fileItem.progress = 200;
     $scope.onSucess();
-
-    // var photo = {'name': fileItem.file.name, 'status' : status, 'response': response}
-    // $scope.SucessItems.push(photo);
-
-
-    //fileItem.remove();
   };
 
   // FILTERS

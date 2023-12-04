@@ -130,20 +130,17 @@ class AutoUploadImagesHandler(BaseHandler):
     def get(self):
         self.render('autocropper_upload_images.html')
 
+
 class AutoCropperEditorHandler(BaseHandler):
     @web_authenticated
     def get(self):
         self.render('autocropper_editor.html')
 
 
-
-
 class AutoCropperDisplay(BaseHandler):
     @web_authenticated
     def get(self):
         self.render('autocropper_display.html')
-
-
 
 
 class UploadImagesHandler(BaseHandler):

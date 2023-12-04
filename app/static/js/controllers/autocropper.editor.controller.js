@@ -300,13 +300,6 @@ angular.module('linc.autocropper.editor.controller', [])
                 }
             });
 
-            // $scope.canvas.on('object:removed', function (options) {
-            //     if (options.target.type !== 'text') {
-            //         $scope.updateCanvasState();
-            //     }
-            //
-            // });
-
             $scope.canvas.on('object:added', function (options) {
 
                 if (options.target.type !== 'text') {
@@ -439,7 +432,6 @@ angular.module('linc.autocropper.editor.controller', [])
                 left: rect.left + 3,
                 top: rect.top,
                 selectable: false,
-                // width: rect.width - 10,
                 fontSize: 10,
                 fill: '#fff',
                 overflow: 'hidden',
@@ -487,7 +479,6 @@ angular.module('linc.autocropper.editor.controller', [])
             let selectedObject = $scope.canvas.getActiveObject();
 
             if (selectedObject._objects) {
-                // $scope.canvas.off('object:removed');
 
                 for (let i = 0; i < selectedObject._objects.length; i++){
 
