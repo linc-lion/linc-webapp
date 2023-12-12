@@ -46,43 +46,21 @@ from os.path import splitext
 
 
 class AutoCropperHandler(BaseHandler):
-    SUPPORTED_METHODS = ("GET", "POST")
-
-    @asynchronous
-    @engine
-    @web_authenticated
-    def get(self,):
-        response = yield Task(
-            self.api_call,
-            url=self.settings['API_URL'] + '/autocropper',
-            method='GET')
-        self.set_json_output()
-        if response.code == 404:
-            body = loads(response.body.decode("utf-8"))
-            self.finish(self.json_encode({
-                        'status': 'success',
-                        'message': body['message'],
-                        'data': []}))
-        else:
-            self.set_status(response.code)
-            self.finish(response.body)
+    SUPPORTED_METHODS = ("POST",)
 
     @asynchronous
     @engine
     @web_authenticated
     def post(self):
 
+        image_details = get_b64_encoded_file(self.request)
 
-        if self.request.files:
-            fileinfo = self.request.files['file'][0]
-            body = fileinfo['body']
-            fname = fileinfo['filename']
-            fileencoded = base64.b64encode(body).decode('utf-8')
+        if image_details:
 
             body = {
-                "filename": fname,
-                "image": fileencoded,
-                'content_type': fileinfo['content_type']
+                "filename": image_details['fname'],
+                "image": image_details['fileencoded'].decode('utf-8'),
+                'content_type': image_details['content_type']
             }
 
             response = yield Task(
@@ -104,31 +82,31 @@ class AutoCropperUploaderHandler(BaseHandler):
     @web_authenticated
     def post(self):
 
+        image_details = get_b64_encoded_file(self.request)
 
-        if self.request.files:
-            fileinfo = self.request.files['file'][0]
-            body = fileinfo['body']
-            fname = fileinfo['filename']
-            info(fname)
+        if image_details:
+
             dirfs = dirname(realpath(__file__))
-            info(dirfs)
-            fh = open(dirfs + '/' + fname, 'wb')
-            fh.write(body)
+            file_path = os.path.join(dirfs, image_details['fname'])
+
+            fh = open(file_path, 'wb')
+            fh.write(image_details['body'])
             fh.close()
-            exif_data = get_exif_data(dirfs + '/' + fname)
-            with open(dirfs + '/' + fname, "rb") as imageFile:
-                fileencoded = b64encode(imageFile.read())
+
+            exif_data = get_exif_data(file_path)
+            fileencoded = image_details['fileencoded']
+
             if fileencoded:
-                remove(dirfs + '/' + fname)
+                remove(file_path)
                 manual_coords = self.get_argument('manual_coords')
                 image_set_id = self.get_argument("image_set_id")
 
                 body = {
                     "image_set_id": int(image_set_id),
                     'manual_coords': manual_coords,
-                    "filename": fname,
+                    "filename": image_details['fname'],
                     "exif_data": exif_data,
-                    'content_type': fileinfo['content_type'],
+                    'content_type': image_details['content_type'],
                     "image": fileencoded.decode('utf-8')
                 }
                 response = yield Task(
@@ -1186,3 +1164,18 @@ class VocHandler(BaseHandler, ProcessMixin):
 
 def remove_file(sched, fn, jid):
     remove(fn)
+
+
+def get_b64_encoded_file(request):
+    if request.files:
+        fileinfo = request.files['file'][0]
+        body = fileinfo['body']
+        fname = fileinfo['filename']
+        fileencoded = b64encode(body)
+        return {
+            'fileencoded' : fileencoded,
+            'fname': fname,
+            'body': body,
+            'content_type': fileinfo['content_type']
+        }
+    return None
