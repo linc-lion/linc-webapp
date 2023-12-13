@@ -96,7 +96,7 @@ class AutoCropperUploaderHandler(BaseHandler):
             exif_data = get_exif_data(file_path)
             fileencoded = image_details['fileencoded']
 
-            if fileencoded:
+            if fileencoded and os.path.exists(file_path):
                 remove(file_path)
                 manual_coords = self.get_argument('manual_coords')
                 image_set_id = self.get_argument("image_set_id")
@@ -1173,7 +1173,7 @@ def get_b64_encoded_file(request):
         fname = fileinfo['filename']
         fileencoded = b64encode(body)
         return {
-            'fileencoded' : fileencoded,
+            'fileencoded': fileencoded,
             'fname': fname,
             'body': body,
             'content_type': fileinfo['content_type']
