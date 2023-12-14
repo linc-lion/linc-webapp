@@ -27,6 +27,42 @@ angular.module('linc.services', [
 	'modal.page.service'
 ])
 
+.factory('AutoCropperServices',['$rootScope', '$http', '$state', '$q', '$cookies', '$localStorage', '$interval', 'AuthService', 'PollerService', 'NotificationFactory',
+  function($rootScope, $http, $state, $q, $cookies, $localStorage, $interval, AuthService, PollerService, NotificationFactory) {
+
+	var debug = ($state.current.data == undefined) ? false : ($state.current.data.debug || false);
+
+	var databases = {};
+	databases['autocropper'] =  {label: 'AutoCropper', url: '/autocropper'};
+
+	var HTTP = function (method, url, data, config, success, error) {
+
+		var xsrfcookie = $cookies.get('_xsrf');
+
+		var req = {
+					method: method, url: url,
+					data: data,
+					headers: { 'Content-Type': 'application/json', 'X-XSRFToken' : xsrfcookie},
+					config: config
+		};
+
+		$http(req).then(success, error);
+
+	};
+
+	var AutoCropper = function(data, success, error){
+
+		return HTTP('post', databases['autocropper']['url'], data, {}, success, error)
+	}
+
+	var dataFactory = {};
+
+	dataFactory.AutoCropper = AutoCropper;
+
+	return dataFactory;
+
+}])
+
 .factory('LincServices', ['$rootScope', '$http', '$state', '$q', '$cookies', '$localStorage', '$interval', 'AuthService', 'PollerService', 'NotificationFactory',
   function($rootScope, $http, $state, $q, $cookies, $localStorage, $interval, AuthService, PollerService, NotificationFactory) {
 

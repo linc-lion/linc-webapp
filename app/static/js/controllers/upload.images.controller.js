@@ -20,7 +20,7 @@
 
 angular.module('linc.upload.images.controller', [])
 
-.controller('UploadImagesCtrl', ['$http', '$scope', '$window', '$cookies', '$uibModalInstance', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($http, $scope, $window, $cookies, $uibModalInstance, $bsTooltip, FileUploader, NotificationFactory, options) {
+.controller('UploadImagesCtrl', ['$http', '$scope','$state' ,'$window', '$cookies', '$uibModalInstance', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($http, $scope, $state,$window, $cookies, $uibModalInstance, $bsTooltip, FileUploader, NotificationFactory, options) {
 
 	$scope.imagesetId = options.imagesetId;
 	$scope.isNew = options.isNew;
@@ -202,6 +202,15 @@ angular.module('linc.upload.images.controller', [])
         position: "right", // right, left, center
         duration: 5000     // milisecond
       });
+
+      if ($state.current.name === 'imageset')
+      {
+        $state.reload();
+
+      }
+      else {
+        $state.go("imageset", { id: $scope.imagesetId });
+      }
     }
     if($scope.Duplicateds.length>0){
       var title = "Duplicate image"
@@ -276,6 +285,7 @@ angular.module('linc.upload.images.controller', [])
         });
       }
     }
+
   };
 
   $scope.enable_Upload = false;

@@ -119,6 +119,30 @@ class CVRequestMainHandler(BaseHandler):
         self.render('cv_request.html')
 
 
+class UploadImagesOptionsHandler(BaseHandler):
+    @web_authenticated
+    def get(self):
+        self.render('upload_image_options.html')
+
+
+class AutoUploadImagesHandler(BaseHandler):
+    @web_authenticated
+    def get(self):
+        self.render('autocropper_upload_images.html')
+
+
+class AutoCropperEditorHandler(BaseHandler):
+    @web_authenticated
+    def get(self):
+        self.render('autocropper_editor.html')
+
+
+class AutoCropperDisplay(BaseHandler):
+    @web_authenticated
+    def get(self):
+        self.render('autocropper_display.html')
+
+
 class UploadImagesHandler(BaseHandler):
     @web_authenticated
     def get(self):

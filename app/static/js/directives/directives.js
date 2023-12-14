@@ -20,8 +20,8 @@
 
 angular.module('linc.directives', ['linc.cvrequest.directive', 'linc.cvresults.directive',
 	'linc.image.gallery.directive', 'linc.location.history.directive', 'linc.metadata.directive',
-	'linc.side.menu.directive', 'linc.thumbnail.directive', 'linc.upload.images.directive',
-	'linc.relatives.directive', 'linc.request.access.directive', 'linc.metadata.batch.directive',
+	'linc.side.menu.directive', 'linc.thumbnail.directive', 'linc.upload.images.directive', 'linc.autocropper.uploadimages.directive',
+	'linc.autocropper.editor.directive', 'linc.autocropper.display.directive', 'linc.relatives.directive', 'linc.request.access.directive', 'linc.metadata.batch.directive',
 	'linc.location.on.map.directive'])
 
 .directive('limlatlng', function() {

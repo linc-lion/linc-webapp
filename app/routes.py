@@ -23,15 +23,18 @@
 from handlers.base import VersionHandler
 from handlers.auth import LogoutHandler, LoginHandler, CheckAuthHandler, ChangePassword, AgreementAuthHandler,\
     RequestAccessEmailHandler, RecoveryHandler
-from handlers.main import MainHandler, RecoveryMainHandler, LoginMainHandler, HomeHandler, SideMenuHandler, RelativesTplHandler, CarouselGalleryHandler
+from handlers.main import MainHandler, RecoveryMainHandler, LoginMainHandler, HomeHandler, SideMenuHandler, \
+    RelativesTplHandler, CarouselGalleryHandler, AutoUploadImagesHandler, AutoCropperEditorHandler, \
+    AutoCropperDisplay
 from handlers.main import LionMainHandler, ViewLionDatabaseHandler, ImageSetMainHandler, ViewImageSetsHandler, BoundaryMapHandler
 from handlers.main import ConservationistsHandler, ImageGalleryHandler, LocationHistoryHandler, ViewImagesHandler, CompareImagesHandler
-from handlers.main import EditMetadataHandler, CVResultsMainHandler, CVRequestMainHandler, UploadImagesHandler, VerifyImageSetHandler
+from handlers.main import EditMetadataHandler, CVResultsMainHandler, CVRequestMainHandler, UploadImagesHandler,UploadImagesOptionsHandler, VerifyImageSetHandler
 from handlers.main import PageAdminHandler, PageAdminUsersHandler, PageAdminOrganizationsHandler, PageAdminLionsHandler
 from handlers.main import PageAdminImageSetsHandler, PageAdminImagesHandler, PageAdminCVRequestsHandler, PageAdminCVResultsHandler
 from handlers.main import RequestAccessHandler, MetadataBatchHandler, LocationOnMapHandler, DeleteBatchHandler, SelectBoundarysHandler
 from handlers.main import ClassifierGraphHandler, AgreementHandler, TermsOfUseHandler, PrivacyPolicyHandler
-from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler, ImageSetsReqHandler
+from handlers.api import LionsListHandler, ImagesListHandler, ImageSetsListHandler, OrganizationsListHandler, \
+    ImageSetsReqHandler, AutoCropperHandler, AutoCropperUploaderHandler
 from handlers.api import ImagesUploadHandler, ImagesHandler, LionsHandler, ImageSetsHandler
 from handlers.api import ImagesUploadVOCHandler, ImagesVocHandler, VocHandler
 from handlers.api import OrganizationsHandler, CVResultsHandler, CVRequestHandler, UsersHandler, RelativesHandler
@@ -66,6 +69,11 @@ url_patterns = [
     (r"/cvresults.html", CVResultsMainHandler),
     (r"/cvrequest.html", CVRequestMainHandler),
     (r"/uploadimages.html", UploadImagesHandler),
+    (r"/uploadimagesoptions.html", UploadImagesOptionsHandler),
+    (r"/autocropperuploadimages.html", AutoUploadImagesHandler),
+    (r"/autocroppereditor.html", AutoCropperEditorHandler),
+    (r"/autocropperdisplay.html", AutoCropperDisplay),
+
     (r"/verify_imageset.tpl.html", VerifyImageSetHandler),
     (r"/view.images.html", ViewImagesHandler),
     (r"/compare.images.html", CompareImagesHandler),
@@ -131,5 +139,8 @@ url_patterns = [
     (r"/auth/requestaccess/?$", RequestAccessEmailHandler),
     (r"/auth/changepassword/?$", ChangePassword),
     (r"/users/?$", UsersHandler),
-    (r"/users/(.*)/?$", UsersHandler)
+    (r"/users/(.*)/?$", UsersHandler),
+    (r"/autocropper", AutoCropperHandler),
+    (r"/autocropper/upload/?$", AutoCropperUploaderHandler),
+
 ]

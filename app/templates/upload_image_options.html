@@ -1,0 +1,31 @@
+<div name="UpLoadImages" class="upload-images font-homenaje-1-1" ng-init="tabselector = 'images'">
+  <div class="modal-header" ng-show="title">
+    <button type="button" class="close" ng-click="Finish()">&times;</button>
+    <h4 class="modal-title" ng-bind-html="title"></h4>
+  </div>
+
+    <div class="modal-body " >
+
+        <div class="image-options modal-alignment">
+
+
+             <upload-images type="precropped" imageset-id="imagesetId"
+					use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg"
+					close-action="Close()" debug="debug">
+             </upload-images>
+
+            <auto-cropper-upload-images type="autocropper" imageset-id="imagesetId"
+					use-ctrl="AutoCropperUploadImagesCtrl" use-template-url="autocropperuploadimages.html" form-size="lg"
+                                close-action="Close()" debug="debug">
+            </auto-cropper-upload-images>
+
+
+        </div>
+
+
+
+
+    </div>
+
+</div>
+
