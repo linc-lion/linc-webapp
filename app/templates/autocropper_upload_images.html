@@ -1,0 +1,143 @@
+<!-- LINC is an open source shared database and facial recognition
+system that allows for collaboration in wildlife monitoring.
+Copyright (C) 2016  Wildlifeguardians
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+For more information or to contact visit linclion.org or email tech@linclion.org -->
+<div name="UpLoadImages" class="upload-images font-homenaje-1-1" ng-init="tabselector = 'images'">
+    <div class="modal-header" ng-show="title">
+        <button type="button" class="close" ng-click="Finish()">&times;</button>
+        <h4 class="modal-title" ng-bind-html="title"></h4>
+    </div>
+    <ul class="nav nav-tabs" id="tabContent">
+        <li ng-class="{'active' : tabselector == 'images'}"><a ng-click="tabselector = 'images'">Images Only</a></li>
+    </ul>
+
+    <div ng-if="tabselector == 'images'">
+        <div class="modal-body" nv-file-drop="" uploader="uploader" class="ng-scope">
+            <h3>Select files</h3>
+            <div ng-show="uploader.isHTML5">
+                <div class="well my-drop-zone" nv-file-over="" uploader="uploader">
+            <span class="btn btn-default btn-file">
+            Drag &#38; Drop Images here OR click to Select<input type="file" class="uploader" nv-file-select=""
+                                                                 uploader="uploader" multiple/>
+            </span>
+                </div>
+            </div>
+            <h3>Upload queue</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th width="12%" class="text-left"><p>Queue length: {{! uploader.queue.length }}</p></th>
+
+                    <th width="65%" class="text-center"></th>
+                </tr>
+                </thead>
+            </table>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th width=8%" class="text-center">Image</th>
+                    <th width="20%" class="text-center">Name</th>
+                    <th width="8%" ng-show="uploader.isHTML5">Size</th>
+                    <th class="text-center">Actions</th>
+                    <th width="20%" ng-show="uploader.isHTML5">Progress</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="(key, item) in uploader.queue">
+                    <td class="text-center">
+                        <div class="div-name-limited" ng-show="uploader.isHTML5"
+                             ng-thumb="{ file: item._file, height: 50 }"></div>
+                    </td>
+                    <td ng-show="item.show_name" class="text-center">
+                        <strong>{{! item.nickname }}</strong>
+                    </td>
+                    <td ng-show="!item.show_name" class="text-center">
+                        <strong><a class="upload-name" data-animation="am-flip-x" placement="top-left"
+                                   bs-tooltip="item.tooltip">{{! item.nickname}}</a></strong>
+                    </td>
+
+
+
+                    <td ng-show="uploader.isHTML5" nowrap>{{! item.file.size/1024/1024|number:2 }} MB</td>
+
+
+
+
+                    <td nowrap class="text-center">
+
+                        <auto-cropper-editor
+
+                                use-ctrl="AutoCropperEditorCtrl"
+                                use-template-url="autocroppereditor.html"
+                                form-size="lg"
+                                close-action="Close()"
+                                item="item"
+                                update-coords="UpdateCoords(result, item)"
+                                image-coords="image_coords"
+                                run-cropper="RunAutoCropper(item, onSuccess)"
+                        ></auto-cropper-editor>
+
+                    </td>
+
+                    <td ng-show="uploader.isHTML5">
+                        <div class="progress margin-bottom-0">
+                            <div class="progress-bar" role="progressbar"
+                                 ng-style="{ 'width': item.progress/2 + '%' }"></div>
+                        </div>
+                    </td>
+
+                    <td nowrap class="text-center">
+                        <button type="button" class="btn btn-default btn-xs" ng-click="remove_item(item)"
+                                ng-disabled="item.isUploading">
+                            <span class="icon icon-trash"></span> Remove
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-s" ng-click="uploader.cancelAll()"
+                    ng-disabled="!uploader.isUploading">
+                <span class="icon icon-circle-slash"></span> Cancel all
+            </button>
+            <button type="button" class="btn btn-default btn-s" ng-click="remove_all_items();"
+                    ng-disabled="!uploader.queue.length || uploader.isUploading">
+                <span class="icon icon-trash"></span> Remove all
+            </button>
+            <auto-cropper-display imageset-id="imagesetId"
+                                        use-ctrl="AutoUploadImagesDisplayCtrl"
+                                        use-template-url="autocropperdisplay.html"
+                                        form-size="lg"
+                                        close-action="Close()"
+                                        debug="debug"
+                                        image-coords="image_coords"
+                                        images-queue="uploader.queue"
+
+            >
+
+            </auto-cropper-display>
+
+
+        </div>
+    </div>
+
+
+</div>
+
+

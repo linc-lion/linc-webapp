@@ -23,7 +23,7 @@ angular.module('linc.controllers', ['linc.admin.controllers', 'linc.compare.imag
 	'linc.home.controller', 'linc.image.gallery.controller', 'linc.imageset.controller',
 	'linc.lion.controller', 'linc.location.history.controller', 'linc.login.controller', 'linc.recovery.controller',
 	'linc.metadata.controller', 'linc.view.imagesets.controller', 'linc.view.lion.database.controller',
-	'linc.side.menu.controller', 'linc.upload.images.controller', 'linc.boundary.map.controller',
+	'linc.side.menu.controller', 'linc.upload.images.controller', 'linc.upload.autoimages.display.controller', 'linc.autocropper.uploadimages.controller', 'linc.autocropper.editor.controller', 'linc.boundary.map.controller',
 	'linc.relatives.controller', 'request.access.controller', 'linc.metadata.batch.controller',
 	'linc.delete.batch.controller', 'linc.location.on.map.controller', 'linc.classifier.graph.controller'])
 

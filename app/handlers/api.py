@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.6
 # -*- coding: utf-8 -*-
-
+import base64
 # LINC is an open source shared database and facial recognition
 # system that allows for collaboration in wildlife monitoring.
 # Copyright (C) 2016  Wildlifeguardians
@@ -44,6 +44,86 @@ from lib.exif import get_exif_data
 from settings import appdir
 from os.path import splitext
 
+
+class AutoCropperHandler(BaseHandler):
+    SUPPORTED_METHODS = ("POST",)
+
+    @asynchronous
+    @engine
+    @web_authenticated
+    def post(self):
+
+        image_details = get_b64_encoded_file(self.request)
+
+        if image_details:
+
+            body = {
+                "filename": image_details['fname'],
+                "image": image_details['fileencoded'].decode('utf-8'),
+                'content_type': image_details['content_type']
+            }
+
+            response = yield Task(
+                self.api_call,
+                url=self.settings['API_URL'] + '/autocropper',
+                method='POST',
+                body=self.json_encode(body))
+            self.set_json_output()
+            self.set_status(response.code)
+            self.finish(response.body)
+
+
+class AutoCropperUploaderHandler(BaseHandler):
+    SUPPORTED_METHODS = ("POST",)
+
+
+    @asynchronous
+    @engine
+    @web_authenticated
+    def post(self):
+
+        image_details = get_b64_encoded_file(self.request)
+
+        if image_details:
+
+            dirfs = dirname(realpath(__file__))
+            file_path = os.path.join(dirfs, image_details['fname'])
+
+            fh = open(file_path, 'wb')
+            fh.write(image_details['body'])
+            fh.close()
+
+            exif_data = get_exif_data(file_path)
+            fileencoded = image_details['fileencoded']
+
+            if fileencoded and os.path.exists(file_path):
+                remove(file_path)
+                manual_coords = self.get_argument('manual_coords')
+                image_set_id = self.get_argument("image_set_id")
+
+                body = {
+                    "image_set_id": int(image_set_id),
+                    'manual_coords': manual_coords,
+                    "filename": image_details['fname'],
+                    "exif_data": exif_data,
+                    'content_type': image_details['content_type'],
+                    "image": fileencoded.decode('utf-8')
+                }
+                response = yield Task(
+                    self.api_call,
+                    url=self.settings['API_URL'] + '/autocropper/upload',
+                    method='POST',
+                    body=self.json_encode(body))
+                if response.code in [200, 201]:
+                    self.response(200, 'File successfully uploaded. You must wait the processing phase for your image.')
+                elif response.code == 409:
+                    self.response(409, 'The file already exists in the system.')
+                elif response.code == 400:
+                    self.response(400, 'The data or file sent is invalid.')
+                else:
+                    self.response(500, 'Fail to upload image.')
+        else:
+            self.response(400, 'Please send a file to upload.')
 
 class RelativesHandler(BaseHandler):
     SUPPORTED_METHODS = ("GET", "PUT", "POST", "DELETE")
@@ -120,7 +200,6 @@ class RelativesHandler(BaseHandler):
             self.response(401, 'Invalid request, you must provide a lion id.')
         else:
             self.response(401, 'Invalid request, you must provide a relative lion id.')
-
 
 class ImageSetsReqHandler(BaseHandler):
     SUPPORTED_METHODS = ('GET')
@@ -1085,3 +1164,18 @@ class VocHandler(BaseHandler, ProcessMixin):
 
 def remove_file(sched, fn, jid):
     remove(fn)
+
+
+def get_b64_encoded_file(request):
+    if request.files:
+        fileinfo = request.files['file'][0]
+        body = fileinfo['body']
+        fname = fileinfo['filename']
+        fileencoded = b64encode(body)
+        return {
+            'fileencoded': fileencoded,
+            'fname': fname,
+            'body': body,
+            'content_type': fileinfo['content_type']
+        }
+    return None

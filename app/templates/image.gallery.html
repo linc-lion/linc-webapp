@@ -183,8 +183,11 @@ For more information or to contact visit linclion.org or email tech@linclion.org
 						class="btn btn-default btn-block btn-img-gallery" ng-click="Delete()">Delete</button>
 					<button ng-disabled="!Selecteds.length" class="btn btn-default btn-block btn-img-gallery"
 						ng-click="Download()">Download original</button>
-					<upload-images use-ctrl="UploadImagesCtrl" use-template-url="uploadimages.html" form-size="lg"
-						type="edit" imageset-id="imagesetId" image-updated="UpdateImages()" debug="debug"></upload-images>
+
+                     <upload-images
+					    use-ctrl="UploadImagesCtrl" use-template-url="uploadimagesoptions.html" form-size="lg"
+                        type="edit" imageset-id="imagesetId" image-updated="UpdateImages()" debug="debug">
+				    </upload-images>
 				</p>
 			</div>
 		</div>

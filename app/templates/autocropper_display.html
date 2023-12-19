@@ -1,0 +1,119 @@
+<!-- LINC is an open source shared database and facial recognition
+system that allows for collaboration in wildlife monitoring.
+Copyright (C) 2016  Wildlifeguardians
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+For more information or to contact visit linclion.org or email tech@linclion.org -->
+<div name="UpLoadImages" class="upload-images font-homenaje-1-1">
+  <div class="modal-header" ng-show="title">
+    <button type="button" class="close" ng-click="Finish()">&times;</button>
+    <h4 class="modal-title" ng-bind-html="title"></h4>
+  </div>
+
+  <div>
+    <div class="modal-body" class="ng-scope">
+
+        <table class="table">
+        <thead>
+            <tr>
+            <th width="8%" class="text-center">Image</th>
+            <th width="20%" class="text-center">Name</th>
+            <th width="10%" class="text-center">Image Tags</th>
+            <th width="10%" class="text-center">Properties</th>
+            <th width="10%" class="text-center">Cover Image</th>
+            <th width="8%" ng-show="uploader.isHTML5">Progress</th>
+            <th width="3%" class="text-center">Status</th>
+            <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="current in imagesData.cropped_images">
+            <td class="text-center">
+                <div class="div-name-limited" ng-show="uploader.isHTML5" ng-thumb="{ file: current.item._file, height: 50, coords: current.coords }"></div>
+            </td>
+            <td ng-show="item.show_name" class="text-center">
+                <strong>{{! current.item.file.name }}</strong>
+            </td>
+            <td ng-show="!item.show_name" class="text-center">
+                <strong><a class="upload-name" data-animation="am-flip-x" placement="top-left"
+                bs-tooltip="current.item.tooltip">{{! current.item.nickname}}</a></strong>
+            </td>
+
+            <td class="text-center">
+                <ui-select class="select-tags" multiple ng-model="current.tags" theme="bootstrap" sortable="true"
+                 close-on-select="false" search-enabled="false"
+                on-select="OnSelect($item, current.tags, current.listOfTags)" on-remove="OnSelect($item, current.tags, current.listOfTags)"
+                remove-selected="false">
+                <ui-select-match placeholder="Select Image Tags...">
+                    {{! $item.label}}
+                </ui-select-match>
+                <ui-select-choices repeat="tag in current.listOfTags | filter: $select.search" ui-disable-choice="tag.disabled">
+                    <div ng-bind-html="tag.label | highlight: $select.search"></div>
+                </ui-select-choices>
+                </ui-select>
+            </td>
+
+            <td class="text-center">
+                <button type="button" class="btn btn-default" ng-model="current.is_public"
+                ng-init="current.is_public = Default.isPublic" data-html="1"
+                bs-options="property.value as property.label for property in Properties" bs-select
+                ng-disabled="uploader.isUploading">
+                Action <span class="caret"></span>
+                </button>
+            </td>
+            <td class="text-center">
+                <input type="radio" ng-disabled="current.is_public==false || uploader.isUploading"
+                ng-checked="!(current.is_public==false) && 0" ng-model="Default.isCover" name="radio-cover"
+                ng-value="current.$$hashKey"/>
+
+            </td>
+
+            <td ng-show="uploader.isHTML5">
+                <div class="progress margin-bottom-0">
+                <div class="progress-bar" role="progressbar" ng-style="{ 'width': calculateProgressBarWidth(imagesData, current) + '%' }"></div>
+                </div>
+            </td>
+            <td class="text-center">
+                <span ng-show="item.isSuccess"><i class="icon icon-check"></i></span>
+                <span ng-show="item.isCancel"><i class="icon icon-circle-slash"></i></span>
+                <span ng-show="item.isError"><i class="icon icon-trash"></i></span>
+            </td>
+            <td nowrap class="text-center">
+                <button type="button" class="btn btn-default btn-xs" ng-click="remove_item(current)" ng-disabled="item.isUploading" ng-show="!item.isSuccess">
+                <span class="icon icon-trash"></span> Remove
+                </button>
+            </td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+
+         <button type="button" class="btn btn-default btn-s" ng-click="GoBack()" ng-disabled="uploader.isUploading">
+        <span class="icon icon-arrow-left"></span> Go Back
+        </button>
+
+        <button type="button" class="btn btn-default btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+        <span class="icon icon-circle-slash"></span> Cancel all
+        </button>
+
+        <button type="button" class="btn btn-primary btn-s" ng-click="upload_images()" ng-disabled="uploader.isUploading">
+        <span class="icon icon-cloud_upload"></span> Upload Images
+        </button>
+    </div>
+  </div>
+
+</div>
+

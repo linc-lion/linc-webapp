@@ -28,6 +28,10 @@ angular.module('linc.upload.images.directive', [])
       switch (attrs.type) {
         case 'new':
           return '<button ng-disabled="disableUpload" type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="btnSubmit(metadataForm) && showNew()"><i class="icon icon-camera"> </i>Create & Add Images</button>';
+
+        case 'precropped':
+          return '<button ng-disabled="disableUpload" type="submit" class="btn btn-primary" data-animation="am-fade-and-slide-top" ng-click="showOnly()"><i class="icon icon-camera"> </i>UPLOAD PRE-CROPPED PHOTOS</button>';
+
         default:
           return '<button class="btn btn-primary btn-block" ng-click="ShowOpen()">Upload images</button>';
       }
@@ -45,9 +49,37 @@ angular.module('linc.upload.images.directive', [])
       disableUpload: '='
     },
     link: function(scope, element, attrs) {
+
+      scope.showOnly = function(){
+
+        console.log(scope);
+        var modalScope = scope.$new();
+          modalScope.debug = scope.debug;
+          var modalInstance = $uibModal.open({
+            animation: true,
+            backdrop  : 'static',
+            templateUrl: scope.useTemplateUrl,
+            controller:  scope.useCtrl,
+            size: scope.formSize,
+            scope: modalScope,
+            resolve: {
+              options: function () {
+                return ({'isNew': true, 'imagesetId': scope.imagesetId});
+              }
+            }
+          });
+          modalInstance.result.then(function (result) {
+             scope.closeAction();
+            console.log(result);
+          }, function (result) {
+            scope.closeAction();
+          });
+      }
+
       scope.showNew = function(){
         scope.saveMetadataAction().then(function (result) {
           var modalScope = scope.$new();
+          modalScope.result = result;
           modalScope.debug = scope.debug;
           var modalInstance = $uibModal.open({
             animation: true,
