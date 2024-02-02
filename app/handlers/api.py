@@ -1165,12 +1165,31 @@ class VocHandler(BaseHandler, ProcessMixin):
 def remove_file(sched, fn, jid):
     remove(fn)
 
+import math
+from PIL import Image
+import io
+MAXIMUM_IMAGE_PIXEL_COUNT = 10000
 
 def get_b64_encoded_file(request):
     if request.files:
         fileinfo = request.files['file'][0]
         body = fileinfo['body']
         fname = fileinfo['filename']
+        image = Image.open(io.BytesIO(body))
+        info("******")
+        info(image.format)
+        pixel_count = image.width * image.height
+        if pixel_count > MAXIMUM_IMAGE_PIXEL_COUNT:
+            resize_side_ratio = math.sqrt(MAXIMUM_IMAGE_PIXEL_COUNT / pixel_count)
+            new_width = int(image.width * resize_side_ratio)
+            new_height = int(image.height * resize_side_ratio)
+            image = image.resize((new_width, new_height))     # , Image.ANTIALIAS)
+            image_byte_array = io.BytesIO()
+            # image.save expects a file-like as a argument
+            image.save(image_byte_array, "JPEG") # format=image.format)
+            # Turn the BytesIO object back into a bytes object
+            body = image_byte_array.getvalue()
+
         fileencoded = b64encode(body)
         return {
             'fileencoded': fileencoded,
