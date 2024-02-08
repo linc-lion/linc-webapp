@@ -88,51 +88,7 @@ angular.module('linc.autocropper.uploadimages.controller', [])
   uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
     console.info('onWhenAddingFileFailed', item, filter, options);
   };
-	/*uploader.onBeforeUploadItem = function(fileItem) {
-    // Perform actions before the file is uploaded
-    // For example, you can resize the image here
-		var reader = new FileReader();
-		console.info("line 96 of upload images controller")
-		reader.onload = function(event) {
-			console.info("Made it into read onload callback")
-				var img = new Image();
-				const maxSize = 8;
-				img.onload = function() {
-						// Check if the image needs resizing
-						if (img.width > maxSize || img.height > maxSize) {
-								// Resize the image
-								var canvas = document.createElement('canvas');
-								var ctx = canvas.getContext('2d');
-								var width = img.width;
-								var height = img.height;
-								if (width > height) {
-										if (width > maxSize) {
-												height *= maxSize / width;
-												width = maxSize;
-										}
-								} else {
-										if (height > maxSize) {
-												width *= maxSize / height;
-												height = maxSize;
-										}
-								}
-								canvas.width = width;
-								canvas.height = height;
-								ctx.drawImage(img, 0, 0, width, height);
-								// Convert the resized image back to a Blob
-								canvas.toBlob(function(blob) {
-										fileItem._file = blob;
-								}, fileItem.file.type);
-								$scope.ResizedItems.push({
-									name: fileItem.file.name,
-									resized: true
-								});
-							}
-					};
-			img.src = event.target.result;
-			};
-	reader.readAsDataURL(fileItem._file || fileItem.file);
-};*/
+
   uploader.onAfterAddingFile = function(fileItem) {
     console.info('onAfterAddingFile');
     //make filename unique with date
@@ -143,7 +99,7 @@ angular.module('linc.autocropper.uploadimages.controller', [])
     if (fileItem.file.size > maxSizeInBytes) {
         // Display an error message to the user
 				NotificationFactory.error({
-					title: "Upload", message: "File " + fileItem.file.name + " exceeds maximum allowable file size of " + maxSizeInMB + " MB",
+					title: "Upload Error", message: "File " + fileItem.file.name + " exceeds maximum allowable file size of " + maxSizeInMB + " MB",
 					position: 'right', // right, left, center
 					duration: 10000   // milisecond
 				});
