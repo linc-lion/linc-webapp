@@ -136,6 +136,24 @@ angular.module('linc.autocropper.uploadimages.controller', [])
   uploader.onAfterAddingFile = function(fileItem) {
     console.info('onAfterAddingFile');
     //make filename unique with date
+
+		var maxSizeInMB = 5;
+		var maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+
+    if (fileItem.file.size > maxSizeInBytes) {
+        // Display an error message to the user
+				NotificationFactory.error({
+					title: "Upload", message: "File " + fileItem.file.name + " exceeds maximum allowable file size of " + maxSizeInMB + " MB",
+					position: 'right', // right, left, center
+					duration: 10000   // milisecond
+				});
+        // Remove the file from the queue
+        uploader.removeFromQueue(fileItem);
+				return;
+    } else {
+        // Proceed with the upload
+        console.log('File added successfully:', fileItem.file.name);
+    }
     let date = new Date().getTime();
     let filename = fileItem.file.name;
     fileItem.file.name = date + '_' + filename;
