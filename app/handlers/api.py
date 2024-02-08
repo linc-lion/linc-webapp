@@ -45,6 +45,12 @@ from settings import appdir
 from os.path import splitext
 
 
+import math
+from PIL import Image, ImageOps
+import io
+MAXIMUM_IMAGE_PIXEL_COUNT = 10000
+
+
 class AutoCropperHandler(BaseHandler):
     SUPPORTED_METHODS = ("POST",)
 
@@ -68,9 +74,12 @@ class AutoCropperHandler(BaseHandler):
                 url=self.settings['API_URL'] + '/autocropper',
                 method='POST',
                 body=self.json_encode(body))
-            self.set_json_output()
+
             self.set_status(response.code)
             self.finish(response.body)
+            print("@*@#*$@*#$*@#$*")
+            print(response.code)
+            print(response.body)
 
 
 class AutoCropperUploaderHandler(BaseHandler):
@@ -1023,6 +1032,21 @@ class ImagesVocHandler(BaseHandler, ProcessMixin):
                                 "exif_data": exif_data
                             }
                             body["image"] = fileencoded.decode('utf-8')
+                            image = Image.open(io.BytesIO(body))
+                            info("******googoo")
+                            info(image.format)
+                            pixel_count = image.width * image.height
+                            if pixel_count > MAXIMUM_IMAGE_PIXEL_COUNT:
+                                resize_side_ratio = math.sqrt(MAXIMUM_IMAGE_PIXEL_COUNT / pixel_count)
+                                new_width = int(image.width * resize_side_ratio)
+                                new_height = int(image.height * resize_side_ratio)
+                                image = image.resize((new_width, new_height))     # , Image.ANTIALIAS)
+                                image_byte_array = io.BytesIO()
+                                # image.save expects a file-like as a argument
+                                image.save(image_byte_array, "JPEG") # format=image.format)
+                                # Turn the BytesIO object back into a bytes object
+                                body = image_byte_array.getvalue()
+
                             body = {'image_file': body}
                             response = yield Task(
                                 self.api_call,
@@ -1165,18 +1189,15 @@ class VocHandler(BaseHandler, ProcessMixin):
 def remove_file(sched, fn, jid):
     remove(fn)
 
-import math
-from PIL import Image
-import io
-MAXIMUM_IMAGE_PIXEL_COUNT = 10000
 
 def get_b64_encoded_file(request):
     if request.files:
         fileinfo = request.files['file'][0]
         body = fileinfo['body']
         fname = fileinfo['filename']
-        image = Image.open(io.BytesIO(body))
-        info("******")
+
+        """image = Image.open(io.BytesIO(body))
+        info("******in b64 encoded file function")
         info(image.format)
         pixel_count = image.width * image.height
         if pixel_count > MAXIMUM_IMAGE_PIXEL_COUNT:
@@ -1184,12 +1205,13 @@ def get_b64_encoded_file(request):
             new_width = int(image.width * resize_side_ratio)
             new_height = int(image.height * resize_side_ratio)
             image = image.resize((new_width, new_height))     # , Image.ANTIALIAS)
+            # image = ImageOps.invert(image)
             image_byte_array = io.BytesIO()
             # image.save expects a file-like as a argument
             image.save(image_byte_array, "JPEG") # format=image.format)
             # Turn the BytesIO object back into a bytes object
             body = image_byte_array.getvalue()
-
+        """
         fileencoded = b64encode(body)
         return {
             'fileencoded': fileencoded,

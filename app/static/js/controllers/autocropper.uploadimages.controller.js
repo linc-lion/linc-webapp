@@ -24,8 +24,9 @@ angular.module('linc.autocropper.uploadimages.controller', [])
 
 	$scope.imagesetId = options.imagesetId;
 	$scope.isNew = options.isNew;
+	$scope.ResizedItems = [];
 
-    $scope.image_coords = {};
+  $scope.image_coords = {};
 
 	var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
 	$scope.title = 'Upload Images';
@@ -37,14 +38,14 @@ angular.module('linc.autocropper.uploadimages.controller', [])
     }
 
   $scope.RunAutoCropper = function (item, onSuccess) {
-    $scope.onSucess = onSuccess;
+    $scope.onSuccess = onSuccess;
 
 
     if ( !(item.file.name in $scope.image_coords) ) {
       uploader.uploadItem(item);
     }
     else{
-      $scope.onSucess();
+      $scope.onSuccess();
     }
 
 
@@ -71,7 +72,7 @@ angular.module('linc.autocropper.uploadimages.controller', [])
     console.info('onSuccessItem', fileItem, response, status, headers);
     $scope.UpdateCoords(response.data.bounding_box_coords, fileItem);
     fileItem.progress = 200;
-    $scope.onSucess();
+    $scope.onSuccess();
   };
 
   // FILTERS
@@ -88,12 +89,59 @@ angular.module('linc.autocropper.uploadimages.controller', [])
   uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
     console.info('onWhenAddingFileFailed', item, filter, options);
   };
+	/*uploader.onBeforeUploadItem = function(fileItem) {
+    // Perform actions before the file is uploaded
+    // For example, you can resize the image here
+		var reader = new FileReader();
+		console.info("line 96 of upload images controller")
+		reader.onload = function(event) {
+			console.info("Made it into read onload callback")
+				var img = new Image();
+				const maxSize = 8;
+				img.onload = function() {
+						// Check if the image needs resizing
+						if (img.width > maxSize || img.height > maxSize) {
+								// Resize the image
+								var canvas = document.createElement('canvas');
+								var ctx = canvas.getContext('2d');
+								var width = img.width;
+								var height = img.height;
+								if (width > height) {
+										if (width > maxSize) {
+												height *= maxSize / width;
+												width = maxSize;
+										}
+								} else {
+										if (height > maxSize) {
+												width *= maxSize / height;
+												height = maxSize;
+										}
+								}
+								canvas.width = width;
+								canvas.height = height;
+								ctx.drawImage(img, 0, 0, width, height);
+								// Convert the resized image back to a Blob
+								canvas.toBlob(function(blob) {
+										fileItem._file = blob;
+								}, fileItem.file.type);
+								$scope.ResizedItems.push({
+									name: fileItem.file.name,
+									resized: true
+								});
+							}
+					};
+			img.src = event.target.result;
+			};
+	reader.readAsDataURL(fileItem._file || fileItem.file);
+};*/
   uploader.onAfterAddingFile = function(fileItem) {
-
+    console.info('onAfterAddingFile');
     //make filename unique with date
     let date = new Date().getTime();
     let filename = fileItem.file.name;
     fileItem.file.name = date + '_' + filename;
+		console.info(filename);
+		console.info("*************woo**********");
 
     var maxtam = 20
     if(fileItem.file.name.match(".xml")){
@@ -111,6 +159,47 @@ angular.module('linc.autocropper.uploadimages.controller', [])
         fileItem.show_name = true;
         fileItem.tooltip = {'title': '', 'checked': true};
     }
+		var reader = new FileReader();
+		console.info("line 117 of upload images controller")
+		reader.onload = function(event) {
+			console.info("Made it into read onload callback")
+				var img = new Image();
+				const maxSize = 100;
+				img.onload = function() {
+						// Check if the image needs resizing
+						if (img.width > maxSize || img.height > maxSize) {
+								// Resize the image
+								var canvas = document.createElement('canvas');
+								var ctx = canvas.getContext('2d');
+								var width = img.width;
+								var height = img.height;
+								if (width > height) {
+										if (width > maxSize) {
+												height *= maxSize / width;
+												width = maxSize;
+										}
+								} else {
+										if (height > maxSize) {
+												width *= maxSize / height;
+												height = maxSize;
+										}
+								}
+								canvas.width = width;
+								canvas.height = height;
+								ctx.drawImage(img, 0, 0, width, height);
+								// Convert the resized image back to a Blob
+								canvas.toBlob(function(blob) {
+										fileItem._file = blob;
+								}, fileItem.file.type);
+								$scope.ResizedItems.push({
+			            name: fileItem.file.name,
+			            resized: true
+	              });
+							}
+					};
+			img.src = event.target.result;
+			};
+	reader.readAsDataURL(fileItem._file || fileItem.file);
 };
   $scope.enable_Upload = false;
   uploader.onAfterAddingAll = function(addedFileItems) {
@@ -193,6 +282,23 @@ angular.module('linc.autocropper.uploadimages.controller', [])
         duration: 5000     // milisecond
       });
     }
+
+		if ($scope.ResizedItems.length > 0) {
+			var resizeMessage = '';
+			if ($scope.ResizedItems.length == 1) {
+					resizeMessage = "Image (" + $scope.ResizedItems[0].name + ") was resized successfully.";
+			} else {
+					var resizeItems = 'Images (';
+					_.forEach($scope.ResizedItems, function(photo, i) {
+							resizeItems += photo.name;
+							if (i + 1 < $scope.ResizedItems.length)
+									resizeItems += ', ';
+					});
+					resizeMessage = resizeItems + ") were resized successfully.";
+			}
+			alert(resizeMessage);
+    }
+
     if($scope.Duplicateds.length>0){
       var title = "Duplicate image"
       if($scope.Duplicateds.length==1){
