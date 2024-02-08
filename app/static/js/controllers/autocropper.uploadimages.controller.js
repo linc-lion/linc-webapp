@@ -25,7 +25,7 @@ angular.module('linc.autocropper.uploadimages.controller', [])
 	$scope.imagesetId = options.imagesetId;
 	$scope.isNew = options.isNew;
 
-  $scope.image_coords = {};
+$scope.image_coords = {};
 
 	var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
 	$scope.title = 'Upload Images';
@@ -37,14 +37,14 @@ angular.module('linc.autocropper.uploadimages.controller', [])
     }
 
   $scope.RunAutoCropper = function (item, onSuccess) {
-    $scope.onSuccess = onSuccess;
+    $scope.onSucess = onSuccess;
 
 
     if ( !(item.file.name in $scope.image_coords) ) {
       uploader.uploadItem(item);
     }
     else{
-      $scope.onSuccess();
+      $scope.onSucess();
     }
 
 
@@ -71,7 +71,7 @@ angular.module('linc.autocropper.uploadimages.controller', [])
     console.info('onSuccessItem', fileItem, response, status, headers);
     $scope.UpdateCoords(response.data.bounding_box_coords, fileItem);
     fileItem.progress = 200;
-    $scope.onSuccess();
+    $scope.onSucess();
   };
 
   // FILTERS
@@ -96,6 +96,7 @@ angular.module('linc.autocropper.uploadimages.controller', [])
 		var maxSizeInMB = 5;
 		var maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
+		// TODO: pull this into separate function
     if (fileItem.file.size > maxSizeInBytes) {
         // Display an error message to the user
 				NotificationFactory.error({
@@ -106,15 +107,11 @@ angular.module('linc.autocropper.uploadimages.controller', [])
         // Remove the file from the queue
         uploader.removeFromQueue(fileItem);
 				return;
-    } else {
-        // Proceed with the upload
-        console.log('File added successfully:', fileItem.file.name);
     }
+
     let date = new Date().getTime();
     let filename = fileItem.file.name;
     fileItem.file.name = date + '_' + filename;
-		console.info(filename);
-		console.info("*************woo**********");
 
     var maxtam = 20
     if(fileItem.file.name.match(".xml")){
@@ -132,6 +129,8 @@ angular.module('linc.autocropper.uploadimages.controller', [])
         fileItem.show_name = true;
         fileItem.tooltip = {'title': '', 'checked': true};
     }
+
+		// TODO pull resizing into separate function
 		var reader = new FileReader();
 		console.info("line 117 of upload images controller")
 		reader.onload = function(event) {
@@ -258,7 +257,6 @@ angular.module('linc.autocropper.uploadimages.controller', [])
         duration: 5000     // milisecond
       });
     }
-
     if($scope.Duplicateds.length>0){
       var title = "Duplicate image"
       if($scope.Duplicateds.length==1){
