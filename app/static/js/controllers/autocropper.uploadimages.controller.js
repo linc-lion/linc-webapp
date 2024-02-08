@@ -24,7 +24,6 @@ angular.module('linc.autocropper.uploadimages.controller', [])
 
 	$scope.imagesetId = options.imagesetId;
 	$scope.isNew = options.isNew;
-	$scope.ResizedItems = [];
 
   $scope.image_coords = {};
 
@@ -167,20 +166,21 @@ angular.module('linc.autocropper.uploadimages.controller', [])
 				const maxSize = 100;
 				img.onload = function() {
 						// Check if the image needs resizing
-						if (img.width > maxSize || img.height > maxSize) {
+						console.info("Made it into img.onload")
+						var width = img.width;
+						var height = img.height;
+						if (width > maxSize || height > maxSize) {
 								// Resize the image
 								var canvas = document.createElement('canvas');
 								var ctx = canvas.getContext('2d');
-								var width = img.width;
-								var height = img.height;
 								if (width > height) {
 										if (width > maxSize) {
-												height *= maxSize / width;
+												height = Math.round(height * maxSize / width);
 												width = maxSize;
 										}
 								} else {
 										if (height > maxSize) {
-												width *= maxSize / height;
+												width = Math.round(width * maxSize / height);
 												height = maxSize;
 										}
 								}
@@ -190,17 +190,19 @@ angular.module('linc.autocropper.uploadimages.controller', [])
 								// Convert the resized image back to a Blob
 								canvas.toBlob(function(blob) {
 										fileItem._file = blob;
+										fileItem.file.size = blob.size;
 								}, fileItem.file.type);
-								$scope.ResizedItems.push({
-			            name: fileItem.file.name,
-			            resized: true
-	              });
+							NotificationFactory.info({
+									title: "Upload", message: "To stay within image size limit of " + maxSize + "px per side, image was resized to " + width + " by " + height,
+									position: "right", // right, left, center
+									duration: 10000     // milisecond
+							});
 							}
 					};
 			img.src = event.target.result;
 			};
 	reader.readAsDataURL(fileItem._file || fileItem.file);
-};
+  };
   $scope.enable_Upload = false;
   uploader.onAfterAddingAll = function(addedFileItems) {
     console.info('onAfterAddingAll', addedFileItems);
@@ -281,22 +283,6 @@ angular.module('linc.autocropper.uploadimages.controller', [])
         position: "right", // right, left, center
         duration: 5000     // milisecond
       });
-    }
-
-		if ($scope.ResizedItems.length > 0) {
-			var resizeMessage = '';
-			if ($scope.ResizedItems.length == 1) {
-					resizeMessage = "Image (" + $scope.ResizedItems[0].name + ") was resized successfully.";
-			} else {
-					var resizeItems = 'Images (';
-					_.forEach($scope.ResizedItems, function(photo, i) {
-							resizeItems += photo.name;
-							if (i + 1 < $scope.ResizedItems.length)
-									resizeItems += ', ';
-					});
-					resizeMessage = resizeItems + ") were resized successfully.";
-			}
-			alert(resizeMessage);
     }
 
     if($scope.Duplicateds.length>0){
