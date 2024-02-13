@@ -147,7 +147,7 @@ function resizeImage(fileItem, maxSizeInPixels) {
 				return;
     }
 
-		// make filename unique with date
+    // make filename unique with date
     let date = new Date().getTime();
     let filename = fileItem.file.name;
     fileItem.file.name = date + '_' + filename;
