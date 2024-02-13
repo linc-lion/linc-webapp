@@ -18,8 +18,6 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 'use strict';
 
-angular.module('linc.autocropper.uploadimages.controller', [])
-
 function resizeImage(fileItem, maxSizeInPixels) {
 	var reader = new FileReader();
 	reader.onload = function(event) {
@@ -48,7 +46,7 @@ function resizeImage(fileItem, maxSizeInPixels) {
 					fileItem.file.size = blob.size;
 				}, fileItem.file.type);
 				NotificationFactory.info({
-				  title: "Upload", message: "To stay within image size limit of " + maxSize + "px per side, image was resized to " + width + " by " + height,
+				  title: "Upload", message: "To stay within image size limit of " + maxSizeInPixels + "px per side, image was resized to " + width + " by " + height,
 					position: "right", // right, left, center
 					duration: 10000     // milisecond
 				});
@@ -59,7 +57,8 @@ function resizeImage(fileItem, maxSizeInPixels) {
   reader.readAsDataURL(fileItem._file || fileItem.file);
 }
 
-.controller('AutoCropperUploadImagesCtrl', ['$http', '$scope', '$window', '$cookies', '$uibModalInstance', 'AutoCropperServices', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($http, $scope, $window, $cookies, $uibModalInstance, AutoCropperServices, $bsTooltip, FileUploader, NotificationFactory, options) {
+angular.module('linc.autocropper.uploadimages.controller', []).controller(
+'AutoCropperUploadImagesCtrl', ['$http', '$scope', '$window', '$cookies', '$uibModalInstance', 'AutoCropperServices', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($http, $scope, $window, $cookies, $uibModalInstance, AutoCropperServices, $bsTooltip, FileUploader, NotificationFactory, options) {
 
 	$scope.imagesetId = options.imagesetId;
 	$scope.isNew = options.isNew;
