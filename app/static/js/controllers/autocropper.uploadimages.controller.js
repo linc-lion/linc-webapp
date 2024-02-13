@@ -131,7 +131,7 @@ function resizeImage(fileItem, maxSizeInPixels) {
   uploader.onAfterAddingFile = function(fileItem) {
     // check if file exceeds max allowed size
 
-		var maxSizeInMB = 5;
+		var maxSizeInMB = 20;
 		var maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
     if (fileItem.file.size > maxSizeInBytes) {
@@ -169,7 +169,7 @@ function resizeImage(fileItem, maxSizeInPixels) {
         fileItem.tooltip = {'title': '', 'checked': true};
     }
 
-		// Resize file if needed
+		// Resize image dimensions if needed
 		const maxSizeInPixels = 100;
 		resizeImage(fileItem, maxSizeInPixels);
   };
