@@ -49,7 +49,7 @@ angular.module('linc.autocropper.uploadimages.controller', []).controller(
 						fileItem.file.size = blob.size;
 					}, fileItem.file.type);
 					NotificationFactory.info({
-					  title: "Upload", message: "To stay within image size limit of " + maxSizeInPixels + "px per side, image was resized to " + width + " by " + height,
+					  title: "Upload", message: `To stay within image size limit of ${maxSizeInPixels}px per side, image was resized from ${img.width}px by ${img.height}px to ${width}px + by ${height}px`,
 						position: "right", // right, left, center
 						duration: 10000     // milisecond
 					});
