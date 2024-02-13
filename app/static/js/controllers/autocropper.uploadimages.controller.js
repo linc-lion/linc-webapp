@@ -21,53 +21,53 @@
 angular.module('linc.autocropper.uploadimages.controller', []).controller(
 'AutoCropperUploadImagesCtrl', ['$http', '$scope', '$window', '$cookies', '$uibModalInstance', 'AutoCropperServices', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($http, $scope, $window, $cookies, $uibModalInstance, AutoCropperServices, $bsTooltip, FileUploader, NotificationFactory, options) {
 
-	function resizeImage(fileItem, maxSizeInPixels) {
-		var reader = new FileReader();
-		reader.onload = function(event) {
-			var img = new Image();
-			img.onload = function() {
-			  // Check if the image needs resizing
-				var width = img.width;
-				var height = img.height;
-				if (width > maxSizeInPixels || height > maxSizeInPixels) {
-				  // Resize the image
-					var canvas = document.createElement('canvas');
-					var ctx = canvas.getContext('2d');
-					if (width > height) {
-					  height = Math.round(height * maxSizeInPixels / width);
-						width = maxSizeInPixels;
-					} else {
-						width = Math.round(width * maxSizeInPixels / height);
-						height = maxSizeInPixels;
-					}
-					canvas.width = width;
-					canvas.height = height;
-					ctx.drawImage(img, 0, 0, width, height);
-					// Convert the resized image back to a Blob
-					canvas.toBlob(function(blob) {
-					  fileItem._file = blob;
-						fileItem.file.size = blob.size;
-					}, fileItem.file.type);
-					NotificationFactory.info({
-					  title: "Upload", message: `To stay within image size limit of ${maxSizeInPixels}px per side, image was resized from ${img.width}px by ${img.height}px to ${width}px + by ${height}px`,
-						position: "right", // right, left, center
-						duration: 10000     // milisecond
-					});
-				}
-			};
-			img.src = event.target.result;
-		};
-	  reader.readAsDataURL(fileItem._file || fileItem.file);
-	}
+  function resizeImage(fileItem, maxSizeInPixels) {
+    var reader = new FileReader();
+    reader.onload = function(event) {
+      var img = new Image();
+      img.onload = function() {
+        // Check if the image needs resizing
+        var width = img.width;
+        var height = img.height;
+        if (width > maxSizeInPixels || height > maxSizeInPixels) {
+          // Resize the image
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext('2d');
+          if (width > height) {
+            height = Math.round(height * maxSizeInPixels / width);
+            width = maxSizeInPixels;
+          } else {
+            width = Math.round(width * maxSizeInPixels / height);
+            height = maxSizeInPixels;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          // Convert the resized image back to a Blob
+          canvas.toBlob(function(blob) {
+            fileItem._file = blob;
+            fileItem.file.size = blob.size;
+          }, fileItem.file.type);
+          NotificationFactory.info({
+            title: "Upload", message: `To stay within image size limit of ${maxSizeInPixels}px per side, image was resized from ${img.width}px by ${img.height}px to ${width}px + by ${height}px`,
+            position: "right", // right, left, center
+            duration: 10000     // milisecond
+          });
+        }
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(fileItem._file || fileItem.file);
+  }
 
-	$scope.imagesetId = options.imagesetId;
-	$scope.isNew = options.isNew;
+  $scope.imagesetId = options.imagesetId;
+  $scope.isNew = options.isNew;
 
   $scope.image_coords = {};
 
-	var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
-	$scope.title = 'Upload Images';
-	$scope.content = 'Upload Images<br />Contents!';
+  var titles = {}; titles['lions'] = 'Lion'; titles['imagesets'] = 'Image Set';
+  $scope.title = 'Upload Images';
+  $scope.content = 'Upload Images<br />Contents!';
 
     $scope.UpdateCoords = function(result, item)
     {
@@ -88,22 +88,22 @@ angular.module('linc.autocropper.uploadimages.controller', []).controller(
 
   }
 
-	$scope.GoBack = function () {
-	 	$uibModalInstance.dismiss('cancel');
-	};
-	$scope.Cancel = function () {
-	 	$uibModalInstance.dismiss('cancel');
-	};
-	$scope.Finish = function () {
-	 	$uibModalInstance.close('finish');
-	};
+  $scope.GoBack = function () {
+     $uibModalInstance.dismiss('cancel');
+  };
+  $scope.Cancel = function () {
+     $uibModalInstance.dismiss('cancel');
+  };
+  $scope.Finish = function () {
+     $uibModalInstance.close('finish');
+  };
 
 
-	$scope.Default = {isPublic: true, Tags: [], isCover: ''};
+  $scope.Default = {isPublic: true, Tags: [], isCover: ''};
 
-	var uploader = $scope.uploader = new FileUploader({
-		url: '/autocropper',
-	});
+  var uploader = $scope.uploader = new FileUploader({
+    url: '/autocropper',
+  });
 
   uploader.onSuccessItem = function (fileItem, response, status, headers) {
     console.info('onSuccessItem', fileItem, response, status, headers);
@@ -130,20 +130,20 @@ angular.module('linc.autocropper.uploadimages.controller', []).controller(
   uploader.onAfterAddingFile = function(fileItem) {
     // check if file exceeds max allowed size
 
-		var maxSizeInMB = 20;
-		var maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+    var maxSizeInMB = 20;
+    var maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
     if (fileItem.file.size > maxSizeInBytes) {
         // Display an error message to the user
-				NotificationFactory.error({
-					title: "Upload Error",
-					message: `File ${fileItem.file.name} exceeds maximum allowable file size of ${maxSizeInMB} MB. Please modify image quality, format, or dimensions to reduce size.`,
-					position: 'right', // right, left, center
-					duration: 10000   // milisecond
-				});
+        NotificationFactory.error({
+          title: "Upload Error",
+          message: `File ${fileItem.file.name} exceeds maximum allowable file size of ${maxSizeInMB} MB. Please modify image quality, format, or dimensions to reduce size.`,
+          position: 'right', // right, left, center
+          duration: 10000   // milisecond
+        });
         // Remove the file from the queue
         uploader.removeFromQueue(fileItem);
-				return;
+        return;
     }
 
     // make filename unique with date
@@ -168,9 +168,9 @@ angular.module('linc.autocropper.uploadimages.controller', []).controller(
         fileItem.tooltip = {'title': '', 'checked': true};
     }
 
-		// Resize image dimensions if needed
-		const maxSizeInPixels = 5000;
-		resizeImage(fileItem, maxSizeInPixels);
+    // Resize image dimensions if needed
+    const maxSizeInPixels = 5000;
+    resizeImage(fileItem, maxSizeInPixels);
   };
   $scope.enable_Upload = false;
   uploader.onAfterAddingAll = function(addedFileItems) {
