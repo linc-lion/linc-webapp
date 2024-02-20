@@ -22,6 +22,8 @@ angular.module('linc.autocropper.uploadimages.controller', []).controller(
 'AutoCropperUploadImagesCtrl', ['$http', '$scope', '$window', '$cookies', '$uibModalInstance', 'AutoCropperServices', '$bsTooltip', 'FileUploader', 'NotificationFactory', 'options', function ($http, $scope, $window, $cookies, $uibModalInstance, AutoCropperServices, $bsTooltip, FileUploader, NotificationFactory, options) {
 
   function resizeImage(fileItem, maxSizeInPixels) {
+		console.info("fileItem before resize:");
+		console.info({ ...fileItem });
     var reader = new FileReader();
     reader.onload = function(event) {
       var img = new Image();
@@ -43,13 +45,22 @@ angular.module('linc.autocropper.uploadimages.controller', []).controller(
           canvas.width = width;
           canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
-          // Convert the resized image back to a Blob
+
+	        // Convert the resized image back to a File object
           canvas.toBlob(function(blob) {
-            fileItem._file = blob;
-            fileItem.file.size = blob.size;
-          }, fileItem.file.type);
+            var resizedFile = new File([blob], fileItem.name, {
+              type: fileItem.type,
+              lastModified: Date.now()
+            });
+
+            // Update the fileItem with the resized file
+            fileItem._file = resizedFile;
+            fileItem.file = resizedFile;
+          }, fileItem.type);
+
           NotificationFactory.info({
-            title: "Upload", message: `To stay within image size limit of ${maxSizeInPixels}px per side, image was resized from ${img.width}px by ${img.height}px to ${width}px + by ${height}px`,
+            title: "Upload",
+            message: `To stay within image size limit of ${maxSizeInPixels}px per side, image was resized from ${img.width}px by ${img.height}px to ${width}px by ${height}px`,
             position: "right", // right, left, center
             duration: 10000     // milisecond
           });
@@ -58,6 +69,8 @@ angular.module('linc.autocropper.uploadimages.controller', []).controller(
       img.src = event.target.result;
     };
     reader.readAsDataURL(fileItem._file || fileItem.file);
+		console.info("fileItem after resize:");
+		console.info(fileItem);
   }
 
   $scope.imagesetId = options.imagesetId;
