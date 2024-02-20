@@ -87,8 +87,6 @@ angular.module('linc.autocropper.display.directive', [])
         // all cropped images will be stored in this array
         imagesData['cropped_images'] = [];
 
-        console.info("in editor display directive, about to start displaying...");
-
         for (let i = 0; i < scope.imagesQueue.length; i++)
         {
           let image = scope.imagesQueue[i];
@@ -97,15 +95,13 @@ angular.module('linc.autocropper.display.directive', [])
             'item': image,
             'auto_cropper_coords': scope.imageCoords[image.file.name]['auto_cropper_coords'],
           });
-          console.info(image.file.name);
-          console.info(scope.imageCoords[image.file.name]['auto_cropper_coords']);
 
           // push same image to queue for each crop
             for (let key in scope.imageCoords[image.file.name]['manual_coords']) {
 
               let tags = angular.copy(ListOfTags)
               const existingTag = ListOfTags.find(tag => tag.value === scope.imageCoords[image.file.name]['manual_coords'][key]['mapped']);
-              console.info(image);
+
                 imagesData['cropped_images'].push({
                   'coords': scope.imageCoords[image.file.name]['manual_coords'][key]['coords'],
                   'tags': [existingTag],
