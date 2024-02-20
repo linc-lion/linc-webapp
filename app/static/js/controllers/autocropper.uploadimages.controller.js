@@ -43,7 +43,7 @@ angular.module('linc.autocropper.uploadimages.controller', []).controller(
           canvas.width = width;
           canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
-          // Reassign the resized image to the file object
+          // Make a new File with the resized image and assign that to fileItem
           canvas.toBlob(function(blob) {
             var newFile = new File([blob], fileItem.file.name, { type: blob.type });
             fileItem._file = newFile;
