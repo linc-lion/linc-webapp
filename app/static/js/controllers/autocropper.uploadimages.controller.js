@@ -43,13 +43,14 @@ angular.module('linc.autocropper.uploadimages.controller', []).controller(
           canvas.width = width;
           canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
-          // Convert the resized image back to a Blob
+          // Make a new File with the resized image and assign that to fileItem
           canvas.toBlob(function(blob) {
-            fileItem._file = blob;
-            fileItem.file.size = blob.size;
+            var newFile = new File([blob], fileItem.file.name, { type: blob.type });
+            fileItem._file = newFile;
+            fileItem.file.size = newFile.size;
           }, fileItem.file.type);
           NotificationFactory.info({
-            title: "Upload", message: `To stay within image size limit of ${maxSizeInPixels}px per side, image was resized from ${img.width}px by ${img.height}px to ${width}px + by ${height}px`,
+            title: "Upload", message: `To stay within image size limit of ${maxSizeInPixels}px per side, image was resized from ${img.width}px by ${img.height}px to ${width}px by ${height}px`,
             position: "right", // right, left, center
             duration: 10000     // milisecond
           });
