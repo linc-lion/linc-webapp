@@ -75,22 +75,23 @@ angular.module('linc.data.factory', [])
 		}
 	};
 
-	function refreshOrganizationFilters() {
-			LincServices.Organizations().then(function (organizations) {
-					var updatedOrgs = _.map(organizations, function(element) {
-							return _.extend({}, element, {checked: true});
-					});
-					options.lions.filters.Organizations = angular.copy(updatedOrgs);
-					options.imagesets.filters.Organizations = angular.copy(updatedOrgs);
-					options.cvrequests.filters.Organizations = angular.copy(updatedOrgs);
-					options.relatives.filters.Organizations = angular.copy(updatedOrgs);
-					// Optionally update localStorage if needed
-					$localStorage.options = options;
-			});
-	}
+  function refreshOrganizationFilters() {
+    console.log("Performing organization filters refresh...");
+    LincServices.Organizations().then(function (organizations) {
+      var updatedOrgs = _.map(organizations, function(element) {
+        return _.extend({}, element, {checked: true});
+      });
+      options.lions.filters.Organizations = angular.copy(updatedOrgs);
+      options.imagesets.filters.Organizations = angular.copy(updatedOrgs);
+      options.cvrequests.filters.Organizations = angular.copy(updatedOrgs);
+      options.relatives.filters.Organizations = angular.copy(updatedOrgs);
+      // Optionally update localStorage if needed
+      $localStorage.options = options;
+    });
+  }
 
 	// Initialize or expose the refresh function
-	$rootScope.$on('organizationsUpdated', refreshOrganizationFilters);
+	$rootScope.$on('refreshOrganizations', refreshOrganizationFilters);
 
 	var default_organizations =[];
 	var init_organizations = function(type){

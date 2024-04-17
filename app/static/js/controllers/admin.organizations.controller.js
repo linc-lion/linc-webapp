@@ -20,7 +20,7 @@
 
 angular.module('linc.admin.organizations.controller', [])
 
-.controller('AdminOrganizationsCtrl', ['$scope', '$rootScope', '$uibModal', function ($scope, $rootScope, $uibModal) {
+.controller('AdminOrganizationsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
   $scope.Org_Mode  =  $scope.settings.organizations.Mode;
 
@@ -125,7 +125,7 @@ angular.module('linc.admin.organizations.controller', [])
           organization.selected = true;
           $scope.$parent.organizations.push(organization);
           $scope.Selecteds.push(organization);
-          $rootScope.$broadcast('organizationsUpdated');
+          $scope.$parent.OrganizationsUpdated();
           modalInstance.close();
         },
         function(error){

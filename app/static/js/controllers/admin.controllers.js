@@ -22,9 +22,9 @@ angular.module('linc.admin.controllers', [ 'linc.admin.cvrequests.controller', '
   'linc.admin.images.controller', 'linc.admin.imagesets.controller', 'linc.admin.lions.controller',
   'linc.admin.organizations.controller', 'linc.admin.users.controller'])
 
-.controller('AdminCtrl', ['$scope', '$state', '$q', '$uibModal', 'LincApiServices', 'LincApiDataFactory', 'NotificationFactory', 'toClipboard',
-  'organizations', 'users', 'lions', 'imagesets', 'images', 'cvrequests', 'cvresults', 'settings', 
-  function ($scope, $state, $q, $uibModal, LincApiServices, LincApiDataFactory, NotificationFactory, toClipboard,
+.controller('AdminCtrl', ['$scope', '$rootScope', '$state', '$q', '$uibModal', 'LincApiServices', 'LincApiDataFactory', 'NotificationFactory', 'toClipboard',
+  'organizations', 'users', 'lions', 'imagesets', 'images', 'cvrequests', 'cvresults', 'settings',
+  function ($scope, $rootScope, $state, $q, $uibModal, LincApiServices, LincApiDataFactory, NotificationFactory, toClipboard,
     organizations, users, lions, imagesets, images, cvrequests, cvresults, settings) {
 
   //$scope.debug = $state.current.data.debug;
@@ -103,6 +103,8 @@ angular.module('linc.admin.controllers', [ 'linc.admin.cvrequests.controller', '
   };
 
   $scope.OrganizationsUpdated = function(){
+    console.log("Performing update to organizations data...");
+    $rootScope.$broadcast('refreshOrganizations');
     var deferred = $q.defer();
     LincApiServices.Users({'method': 'get', 'organizations': $scope.organizations}).then(function(users){
       $scope.users = users;
@@ -182,7 +184,7 @@ angular.module('linc.admin.controllers', [ 'linc.admin.cvrequests.controller', '
     else
       alert(count.toString() + ' items have been copied to the clipboard');
   }
-  
+
 }])
 
 ;
