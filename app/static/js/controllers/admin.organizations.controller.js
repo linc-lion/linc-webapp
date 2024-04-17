@@ -20,7 +20,7 @@
 
 angular.module('linc.admin.organizations.controller', [])
 
-.controller('AdminOrganizationsCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+.controller('AdminOrganizationsCtrl', ['$scope', '$rootScope', '$uibModal', function ($scope, $rootScope, $uibModal) {
 
   $scope.Org_Mode  =  $scope.settings.organizations.Mode;
 
@@ -89,10 +89,10 @@ angular.module('linc.admin.organizations.controller', [])
     modalScope.showValidationMessages = false;
 
     modalScope.organization = {
-      'name' : '', 
+      'name' : '',
       'selected': true
     };
-    
+
     var modalInstance = $uibModal.open({
         templateUrl: 'Edit_Organization.tpl.html',
         scope: modalScope
@@ -114,10 +114,10 @@ angular.module('linc.admin.organizations.controller', [])
         modalScope.dataSending = true;
         $scope.LincApiServices.Organizations({'method': 'post', 'data': data}).then(function(response){
           $scope.Notification.success({
-            title: 'Organization Info', 
+            title: 'Organization Info',
             message: 'New Organization successfully created',
-            position: "right", 
-            duration: 2000 
+            position: "right",
+            duration: 2000
           });
           var organization = response.data;
           organization.created_at = (organization.created_at || "").substring(0,19);
@@ -125,11 +125,12 @@ angular.module('linc.admin.organizations.controller', [])
           organization.selected = true;
           $scope.$parent.organizations.push(organization);
           $scope.Selecteds.push(organization);
+          $rootScope.$broadcast('organizationsUpdated');
           modalInstance.close();
         },
         function(error){
           $scope.Notification.error({
-            title: "Fail", 
+            title: "Fail",
             message: 'Fail to create new Organization',
             position: 'right',
             duration: 5000
@@ -170,7 +171,7 @@ angular.module('linc.admin.organizations.controller', [])
         $scope.Org_Mode = '';
         modalScope.dataSending = false;
       });
-      
+
       modalScope.submit = function (valid){
         if(valid){
           var data = {
@@ -179,7 +180,7 @@ angular.module('linc.admin.organizations.controller', [])
           modalScope.dataSending = true;
           $scope.LincApiServices.Organizations({'method': 'put', 'organization_id' : modalScope.organization.id, 'data': data}).then(function(response){
             $scope.Notification.success({
-              title: 'Organization Info', 
+              title: 'Organization Info',
               message: 'Organization data successfully updated',
               position: "right",
               duration: 2000
@@ -193,13 +194,13 @@ angular.module('linc.admin.organizations.controller', [])
           },
           function(error){
             $scope.Notification.error({
-              title: "Fail", 
+              title: "Fail",
               message: 'Fail to change Organization data',
-              position: 'right', 
-              duration: 5000 
+              position: 'right',
+              duration: 5000
             });
             modalInstance.dismiss();
-          }); 
+          });
         }
         else {
           modalScope.showValidationMessages = true;
@@ -221,19 +222,19 @@ angular.module('linc.admin.organizations.controller', [])
           var data = _.map(response.error, 'id');
           var msg = (data.length>1) ? 'Unable to delete organizations ' + data : 'Unable to delete organization ' + data;
           $scope.Notification.error({
-            title: "Delete", 
+            title: "Delete",
             message: msg,
             position: "right",
-            duration: 2000 
+            duration: 2000
           });
         }
         else if(response.success.length>0){
           var msg = (response.success.length>1) ? 'Organizations successfully deleted' : 'Organization successfully deleted';
           $scope.Notification.success({
-            title: "Delete", 
+            title: "Delete",
             message: msg,
             position: "right",
-            duration: 2000 
+            duration: 2000
           });
         }
         _.forEach(response.success, function(item, i){
@@ -247,10 +248,10 @@ angular.module('linc.admin.organizations.controller', [])
       });
     }, function () {
       $scope.Notification.info({
-        title: "Cancel", 
+        title: "Cancel",
         message: 'Delete canceled',
-        position: 'right', 
-        duration: 2000 
+        position: 'right',
+        duration: 2000
       });
     });
   }
