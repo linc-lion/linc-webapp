@@ -85,12 +85,10 @@ angular.module('linc.data.factory', [])
       options.imagesets.filters.Organizations = angular.copy(updatedOrgs);
       options.cvrequests.filters.Organizations = angular.copy(updatedOrgs);
       options.relatives.filters.Organizations = angular.copy(updatedOrgs);
-      // Optionally update localStorage if needed
       $localStorage.options = options;
     });
   }
 
-	// Initialize or expose the refresh function
 	$rootScope.$on('refreshOrganizations', refreshOrganizationFilters);
 
 	var default_organizations =[];
