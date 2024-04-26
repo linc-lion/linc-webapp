@@ -18,8 +18,8 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 angular.module('linc.auth.services', [])
 
-.factory('AuthService', ['$http', '$q', '$localStorage', '$cookies',
-  function ($http, $q, $localStorage, $cookies) {
+.factory('AuthService', ['$http', '$q', '$localStorage', '$cookies', '$rootScope',
+  function ($http, $q, $localStorage, $cookies, $rootScope) {
 	var authService = {'user': $localStorage.user};
 
 	authService.Login = function (data, success, error){
@@ -41,6 +41,7 @@ angular.module('linc.auth.services', [])
 			}
 			$localStorage.user = auth_user;
 			authService.user = auth_user;
+      $rootScope.$broadcast('refreshOrganizations');  // avoid problems with stale orgs
 			success(auth_user.logged);
 		}, function(response){
 			var data = response.data;

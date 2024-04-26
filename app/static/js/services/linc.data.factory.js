@@ -18,7 +18,7 @@
 // For more information or to contact visit linclion.org or email tech@linclion.org
 angular.module('linc.data.factory', [])
 
-.factory('LincDataFactory', [ 'LincServices', '$q', '$localStorage', function(LincServices, $q, $localStorage) {
+.factory('LincDataFactory', [ 'LincServices', '$q', '$rootScope', '$localStorage', function(LincServices, $q, $rootScope, $localStorage) {
 	var initialized = false;
 	var default_options = {
 		orderby : {
@@ -74,6 +74,22 @@ angular.module('linc.data.factory', [])
 			}
 		}
 	};
+
+  function refreshOrganizationFilters() {
+    console.log("Performing organization filters refresh...");
+    LincServices.Organizations().then(function (organizations) {
+      var updatedOrgs = _.map(organizations, function(element) {
+        return _.extend({}, element, {checked: true});
+      });
+      options.lions.filters.Organizations = angular.copy(updatedOrgs);
+      options.imagesets.filters.Organizations = angular.copy(updatedOrgs);
+      options.cvrequests.filters.Organizations = angular.copy(updatedOrgs);
+      options.relatives.filters.Organizations = angular.copy(updatedOrgs);
+      $localStorage.options = options;
+    });
+  }
+
+	$rootScope.$on('refreshOrganizations', refreshOrganizationFilters);
 
 	var default_organizations =[];
 	var init_organizations = function(type){
@@ -183,8 +199,8 @@ angular.module('linc.data.factory', [])
 		set_relatives: function (opt) {
 			options.relatives = opt;
 			$localStorage.relatives = opt;
-		}
-
+		},
+		refreshOrganizationFilters: refreshOrganizationFilters
 	};
 }])
 
