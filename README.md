@@ -1,6 +1,12 @@
 # linc-webapp
 LINC-webapp is a website that allows Lion Guardians to identify lions in Africa.
 
+## Deployment
+
+The GHA [workflow](https://github.com/linc-lion/linc-webapp/actions/workflows/deploy.yml) (deployment.yml) 
+automates the deployment of the Linc Detector service to Heroku. The inputs required for deployment include 
+the environment and branch configuration. 
+
 # License
 
 LINC is an open source shared database and facial recognition
