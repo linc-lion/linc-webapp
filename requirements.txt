@@ -1,4 +1,4 @@
 pycurl==7.19.5.1
-tornado==
+tornado
 git+https://github.com/venidera/tornadoist.git@d932965
 Pillow==11.1.0
