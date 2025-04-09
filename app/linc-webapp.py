@@ -27,12 +27,12 @@
 import tornado
 import tornado.web
 import tornado.httpserver
-import tornado.ioloop
-from tornado.options import options
 import logging
 from settings import config as settings
 from routes import url_patterns
 import os
+import asyncio
+from tornado.options import options
 
 logger = logging.getLogger()
 
@@ -43,24 +43,33 @@ class Application(tornado.web.Application):
         tornado.web.Application.__init__(self, url_patterns, **settings)
 
 
-# Run server
-def main():
+async def app_main():
     app = Application()
-    if (len(logger.handlers) > 0):
+    if len(logger.handlers) > 0:
         formatter = logging.Formatter(
-            "[%(levelname).1s %(asctime)s %(module)s:%(lineno)s] %(message)s", datefmt='%y%m%d %H:%M:%S')
+            "[%(levelname).1s %(asctime)s %(module)s:%(lineno)s] %(message)s",
+            datefmt='%y%m%d %H:%M:%S'
+        )
         logger.handlers[0].setFormatter(formatter)
+
     if options.debug:
         logging.info('== Tornado in DEBUG mode ==============================')
         for key, cfg in settings.items():
             logging.info(key + ' = ' + str(cfg))
         logging.info('=======================================================')
+
     logging.info('Web App handlers:')
     for h in url_patterns:
         logging.info(str(h))
-    httpserver = tornado.httpserver.HTTPServer(app, xheaders=True)
-    httpserver.listen(int(os.environ.get('PORT', options.port)))
-    tornado.ioloop.IOLoop.instance().start()
+
+    server = tornado.httpserver.HTTPServer(app, xheaders=True)
+    server.bind(int(os.environ.get('PORT', options.port)))
+    server.start(1)  # 1 = single process. Use >1 or 0 for multi-process
+    await asyncio.Event().wait()  # Keeps the server running
+
+
+def main():
+    asyncio.run(app_main())
 
 
 if __name__ == "__main__":

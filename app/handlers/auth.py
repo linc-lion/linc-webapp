@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3.10
 # -*- coding: utf-8 -*-
 
 # LINC is an open source shared database and facial recognition
@@ -20,10 +20,7 @@
 #
 # For more information or to contact visit linclion.org or email tech@linclion.org
 
-from tornado.web import asynchronous
-from tornado.gen import coroutine
 from lib.authentication import web_authenticated
-from tornado.gen import engine, Task
 from handlers.base import BaseHandler
 from json import dumps, loads
 from logging import info
@@ -32,17 +29,15 @@ from logging import info
 class CheckAuthHandler(BaseHandler):
     SUPPORTED_METHODS = ("GET")
 
-    @asynchronous
-    @engine
     @web_authenticated
-    def get(self):
+    async def get(self):
         resource_url = self.settings['API_URL'] + '/auth/check'
-        response = yield Task(self.api_call, url=resource_url, method='GET')
+        response = await self.api_call(url=resource_url, method='GET')
         self.set_json_output()
         if response.code != 200:
             resource_url = self.settings['API_URL'] + '/auth/login'
             body = self.json_encode({'username': self.current_user['username']})
-            response = yield Task(self.api_call, url=resource_url, method='POST', body=body)
+            response = await self.api_call(url=resource_url, method='POST', body=body)
             if response and response.code == 200:
                 data = loads(response.body.decode('utf-8'))['data']
                 obj = {
@@ -65,16 +60,14 @@ class CheckAuthHandler(BaseHandler):
 class LoginHandler(BaseHandler):
     SUPPORTED_METHODS = ("POST")
 
-    @asynchronous
-    @engine
-    def post(self):
+    async def post(self):
         if 'username' in self.input_data.keys() and \
            'password' in self.input_data.keys():
             # Check authentication with the API
             body = {'username': self.input_data['username'],
                     'password': self.input_data['password']}
             url = self.settings['API_URL'] + '/auth/login'
-            response = yield Task(self.api_call, url=url, method='POST', body=self.json_encode(body))
+            response = await self.api_call(url=url, method='POST', body=self.json_encode(body))
             resp = loads(response.body.decode('utf-8'))
             if 200 <= response.code < 300:
                 data = resp['data']
@@ -107,9 +100,7 @@ class LoginHandler(BaseHandler):
 class AgreementAuthHandler(BaseHandler):
     SUPPORTED_METHODS = ("POST", "DELETE")
 
-    @asynchronous
-    @engine
-    def post(self):
+    async def post(self):
         if 'username' in self.input_data.keys() and \
            'agree_code' in self.input_data.keys():
 
@@ -118,8 +109,7 @@ class AgreementAuthHandler(BaseHandler):
                 'username': self.input_data['username'],
                 'agree_code': self.input_data['agree_code']
             }
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/auth/agree',
                 method='POST',
                 body=self.json_encode(body))
@@ -151,12 +141,9 @@ class AgreementAuthHandler(BaseHandler):
         else:
             self.response(401, 'Invalid request, you must provide username and password to login.')
 
-    @asynchronous
-    @engine
     @web_authenticated
-    def delete(self, user_id=''):
-        response = yield Task(
-            self.api_call,
+    async def delete(self, user_id=''):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/auth/agree/{}'.format(user_id),
             method='DELETE')
         self.set_status(response.code)
@@ -169,13 +156,10 @@ class AgreementAuthHandler(BaseHandler):
 class LogoutHandler(BaseHandler):
     SUPPORTED_METHODS = ("POST")
 
-    @asynchronous
-    @engine
     @web_authenticated
-    def post(self):
+    async def post(self):
         info(self.current_user)
-        response = yield Task(
-            self.api_call,
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/auth/logout',
             method='POST',
             body='{}')
@@ -185,23 +169,17 @@ class LogoutHandler(BaseHandler):
         else:
             self.response(500, 'Fail to logout.')
 
+
 class RecoveryHandler(BaseHandler):
     # SUPPORTED_METHODS = ("GET", "POST")
     SUPPORTED_METHODS = ("POST")
 
-    # @asynchronous
-    # @coroutine
-    # def get(self, code=None):
-    #     info("&*&*&*&***&***")
-    #     info(code)
-    #     self.render('recovery.html', code=code)
-    #     return 
+    # async def get(self, code=None):
     #     self.set_default_headers()
     #     title = 'Invalid request'
     #     msg = 'A code is required to use this resource.'
     #     if code:
-    #         response = yield Task(
-    #             self.api_call,
+    #         response = await self.api_call(
     #             url=self.settings['API_URL'] + '/auth/recovery/' + code,
     #             method='GET')
     #         if hasattr(response, 'message'):
@@ -219,25 +197,20 @@ class RecoveryHandler(BaseHandler):
     #             msg = message
     #     redirect = "5;url=" + self.settings['login_url']
     #     self.render('message.html', message=msg, title=title, redirect=redirect)
-    #     return
 
-    @asynchronous
-    @coroutine
-    def post(self):
+    async def post(self):
         data_keys = self.input_data.keys()
         if 'code' in data_keys:
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/auth/recovery/{}'.format(self.input_data['code']),
                 method='POST',
-                body=self.json_encode(
-                    {'code': self.input_data['code'],
-                        'password': self.input_data['password']}))
+                body=self.json_encode({
+                    'code': self.input_data['code'],
+                    'password': self.input_data['password']}))
             body = loads(response.body.decode('utf-8'))
             self.response(response.code, body['message'])
         elif 'email' in data_keys:
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/auth/recovery',
                 method='POST',
                 body=self.json_encode({'email': self.input_data['email']}))
@@ -250,13 +223,10 @@ class RecoveryHandler(BaseHandler):
 class ChangePassword(BaseHandler):
     SUPPORTED_METHODS = ("POST")
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def post(self):
+    async def post(self):
         if 'new_password' in self.input_data.keys():
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/auth/changepassword',
                 method='POST',
                 body=self.json_encode({'new_password': self.input_data['new_password']}))
@@ -269,9 +239,7 @@ class ChangePassword(BaseHandler):
 class RequestAccessEmailHandler(BaseHandler):
     SUPPORTED_METHODS = ("POST")
 
-    @asynchronous
-    @coroutine
-    def post(self):
+    async def post(self):
         if 'email' in self.input_data.keys():
             url = self.settings['API_URL'] + '/auth/requestaccess'
             body = {
@@ -281,8 +249,8 @@ class RequestAccessEmailHandler(BaseHandler):
                 'geographical': self.input_data['geographical']}
             info(url)
             info(body)
-            response = yield Task(self.api_call, url=url, method='POST', body=self.json_encode(body))
+            response = await self.api_call(url=url, method='POST', body=self.json_encode(body))
             resp = loads(response.body.decode('utf-8'))
             self.response(response.code, resp['message'])
         else:
-            self.response(400, resp['message'])
+            self.response(400, 'Missing email field in request.')
