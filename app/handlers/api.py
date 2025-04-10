@@ -21,9 +21,7 @@ import base64
 # For more information or to contact visit linclion.org or email tech@linclion.org
 
 import os
-from tornado.web import asynchronous
 from lib.authentication import web_authenticated
-from tornado.gen import engine, coroutine, Task
 from handlers.base import BaseHandler
 from os.path import realpath, dirname
 from os import remove, mkdir, chdir, curdir
@@ -48,23 +46,18 @@ from os.path import splitext
 class AutoCropperHandler(BaseHandler):
     SUPPORTED_METHODS = ("POST",)
 
-    @asynchronous
-    @engine
     @web_authenticated
-    def post(self):
-
+    async def post(self):
         image_details = get_b64_encoded_file(self.request)
 
         if image_details:
-
             body = {
                 "filename": image_details['fname'],
                 "image": image_details['fileencoded'].decode('utf-8'),
                 'content_type': image_details['content_type']
             }
 
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/autocropper',
                 method='POST',
                 body=self.json_encode(body))
@@ -76,16 +69,11 @@ class AutoCropperHandler(BaseHandler):
 class AutoCropperUploaderHandler(BaseHandler):
     SUPPORTED_METHODS = ("POST",)
 
-
-    @asynchronous
-    @engine
     @web_authenticated
-    def post(self):
-
+    async def post(self):
         image_details = get_b64_encoded_file(self.request)
 
         if image_details:
-
             dirfs = dirname(realpath(__file__))
             file_path = os.path.join(dirfs, image_details['fname'])
 
@@ -109,8 +97,7 @@ class AutoCropperUploaderHandler(BaseHandler):
                     'content_type': image_details['content_type'],
                     "image": fileencoded.decode('utf-8')
                 }
-                response = yield Task(
-                    self.api_call,
+                response = await self.api_call(
                     url=self.settings['API_URL'] + '/autocropper/upload',
                     method='POST',
                     body=self.json_encode(body))
@@ -125,38 +112,33 @@ class AutoCropperUploaderHandler(BaseHandler):
         else:
             self.response(400, 'Please send a file to upload.')
 
+
 class RelativesHandler(BaseHandler):
     SUPPORTED_METHODS = ("GET", "PUT", "POST", "DELETE")
 
-    @asynchronous
-    @engine
     @web_authenticated
-    def get(self, lion_id=''):
+    async def get(self, lion_id=''):
         if lion_id:
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/lions/{}/relatives'.format(lion_id),
                 method='GET')
             self.set_json_output()
             if response.code == 404:
                 body = loads(response.body.decode("utf-8"))
                 self.finish(self.json_encode({
-                            'status': 'success',
-                            'message': body['message'],
-                            'data': []}))
+                    'status': 'success',
+                    'message': body['message'],
+                    'data': []}))
             else:
                 self.set_status(response.code)
                 self.finish(response.body)
         else:
             self.response(401, 'Invalid request, you must provide lion id.')
 
-    @asynchronous
-    @engine
     @web_authenticated
-    def post(self, lion_id=''):
+    async def post(self, lion_id=''):
         if lion_id:
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/lions/{}/relatives'.format(lion_id),
                 method='POST',
                 body=self.json_encode(self.input_data))
@@ -166,13 +148,10 @@ class RelativesHandler(BaseHandler):
         else:
             self.response(401, 'Invalid request, you must provide lion id.')
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def put(self, lion_id='', rurl=None, relat_id=''):
+    async def put(self, lion_id='', rurl=None, relat_id=''):
         if lion_id and relat_id:
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/lions/{}/relatives/{}'.format(lion_id, relat_id),
                 method='PUT',
                 body=self.json_encode(self.input_data))
@@ -184,13 +163,10 @@ class RelativesHandler(BaseHandler):
         else:
             self.response(401, 'Invalid request, you must provide relative lion id.')
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def delete(self, lion_id='', rurl=None, relat_id=''):
+    async def delete(self, lion_id='', rurl=None, relat_id=''):
         if lion_id and relat_id:
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/lions/{}/relatives/{}'.format(lion_id, relat_id),
                 method='DELETE')
             self.set_json_output()
@@ -201,16 +177,14 @@ class RelativesHandler(BaseHandler):
         else:
             self.response(401, 'Invalid request, you must provide a relative lion id.')
 
+
 class ImageSetsReqHandler(BaseHandler):
     SUPPORTED_METHODS = ('GET')
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def get(self, imageset_id='', cvrequirements=None):
+    async def get(self, imageset_id='', cvrequirements=None):
         if imageset_id:
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/imagesets/{}/cvrequirements'.format(imageset_id),
                 method='GET')
             self.set_json_output()
@@ -218,19 +192,15 @@ class ImageSetsReqHandler(BaseHandler):
             if response.code in [200, 409]:
                 self.finish(response.body)
             else:
-                self.finish(
-                    {'status': 'error', 'message': 'Fail to get image set requirements..'})
+                self.finish({'status': 'error', 'message': 'Fail to get image set requirements..'})
         else:
             self.response(400, 'Invalid request.')
 
 
 class ImageSetsListHandler(BaseHandler):
-    @asynchronous
-    @engine
     @web_authenticated
-    def get(self):
-        response = yield Task(
-            self.api_call,
+    async def get(self):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/imagesets/list',
             method='GET')
         self.set_json_output()
@@ -240,12 +210,9 @@ class ImageSetsListHandler(BaseHandler):
         else:
             self.finish({'status': 'error', 'message': 'Fail to get image sets list.'})
 
-    @asynchronous
-    @engine
     @web_authenticated
-    def post(self, imageset_id='', cvrequest=None):
-        response = yield Task(
-            self.api_call,
+    async def post(self, imageset_id='', cvrequest=None):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/imagesets/{}/cvrequest'.format(imageset_id),
             method='POST',
             body=self.json_encode(self.input_data))
@@ -258,12 +225,9 @@ class ImageSetsListHandler(BaseHandler):
 
 
 class ImagesListHandler(BaseHandler):
-    @asynchronous
-    @engine
     @web_authenticated
-    def get(self):
-        response = yield Task(
-            self.api_call,
+    async def get(self):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/images/list',
             method='GET')
         self.set_json_output()
@@ -276,10 +240,9 @@ class ImagesListHandler(BaseHandler):
 
 class LionsListHandler(BaseHandler):
     SUPPORTED_METHODS = ("GET", "POST")
-    @asynchronous
-    @engine
+
     @web_authenticated
-    def get(self):
+    async def get(self):
         resource_url = self.settings['API_URL'] + '/lions/list'
         org_id = self.get_argument('org_id', None)
         if org_id:
@@ -288,7 +251,7 @@ class LionsListHandler(BaseHandler):
         if token:
             resource_url += '?token=' + str(token)
 
-        response = yield Task(self.api_call, url=resource_url, method='GET')
+        response = await self.api_call(url=resource_url, method='GET')
 
         message = ''
         if hasattr(response, 'message'):
@@ -304,18 +267,15 @@ class LionsListHandler(BaseHandler):
         else:
             self.response(response.code, message)
 
-    @asynchronous
-    @engine
     @web_authenticated
-    def post(self):  # Execute a consult (POST)'===
+    async def post(self):  # Execute a consult (POST)'===
         org_id = self.get_argument('org_id', None)
         url = self.settings['API_URL'] + '/lions/list'
         if org_id:
             url += '?org_id=' + org_id
         body = self.json_encode(self.input_data)
         headers = {'Content-type': 'application/json'}
-        response = yield Task(
-            self.api_call, url=url, method='POST', body=body, headers=headers)
+        response = await self.api_call(url=url, method='POST', body=body, headers=headers)
         self.set_json_output()
         if response.code in [200, 201]:
             self.finish(response.body)
@@ -324,12 +284,9 @@ class LionsListHandler(BaseHandler):
 
 
 class OrganizationsListHandler(BaseHandler):
-    @asynchronous
-    @engine
     @web_authenticated
-    def get(self):
-        response = yield Task(
-            self.api_call,
+    async def get(self):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/organizations/list',
             method='GET')
         self.set_json_output()
@@ -341,17 +298,12 @@ class OrganizationsListHandler(BaseHandler):
 
 
 class CVResultsHandler(BaseHandler):
-    @asynchronous
-    @engine
     @web_authenticated
-    def get(self, res_id='', xlist=None):
+    async def get(self, res_id='', xlist=None):
         resource_url = self.settings['API_URL'] + '/cvresults/{}'.format(res_id)
         if xlist:
             resource_url += '/' + xlist
-        response = yield Task(
-            self.api_call,
-            url=resource_url,
-            method='GET')
+        response = await self.api_call(url=resource_url, method='GET')
         self.set_json_output()
         self.set_status(response.code)
         if response.code in [200, 201]:
@@ -359,12 +311,9 @@ class CVResultsHandler(BaseHandler):
         else:
             self.finish({'status': 'error', 'message': 'Fail to get cv results data.'})
 
-    @asynchronous
-    @engine
     @web_authenticated
-    def post(self):
-        response = yield Task(
-            self.api_call,
+    async def post(self):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/cvresults',
             method='POST',
             body=self.json_encode(self.input_data))
@@ -374,12 +323,9 @@ class CVResultsHandler(BaseHandler):
         else:
             self.finish({'status': 'error', 'message': 'Fail to submit cv results data.'})
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def put(self, res_id=''):
-        response = yield Task(
-            self.api_call,
+    async def put(self, res_id=''):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/cvresults/{}'.format(res_id),
             method='PUT',
             body=self.json_encode({"message": "updating resources"}))
@@ -391,12 +337,9 @@ class CVResultsHandler(BaseHandler):
 
 
 class CVRequestHandler(BaseHandler):
-    @asynchronous
-    @engine
     @web_authenticated
-    def get(self, req_id=''):
-        response = yield Task(
-            self.api_call,
+    async def get(self, req_id=''):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/cvrequests/' + req_id,
             method='GET')
         self.set_json_output()
@@ -406,12 +349,9 @@ class CVRequestHandler(BaseHandler):
         else:
             self.finish({'status': 'error', 'message': 'Fail to get cv requests data.'})
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def delete(self, req_id=''):
-        response = yield Task(
-            self.api_call,
+    async def delete(self, req_id=''):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/cvrequests/{}'.format(req_id),
             method='DELETE')
         self.set_status(response.code)
@@ -422,10 +362,8 @@ class CVRequestHandler(BaseHandler):
 
 
 class LionsHandler(BaseHandler):
-    @asynchronous
-    @engine
     @web_authenticated
-    def get(self, lion_id='', locations=None):
+    async def get(self, lion_id='', locations=None):
         resource_url = self.settings['API_URL'] + '/lions'
         api = self.get_argument('api', '')
         if lion_id:
@@ -435,10 +373,7 @@ class LionsHandler(BaseHandler):
         elif api:
             resource_url += '?api=true'
         info(resource_url)
-        response = yield Task(
-            self.api_call,
-            url=resource_url,
-            method='GET')
+        response = await self.api_call(url=resource_url, method='GET')
         self.set_json_output()
         self.set_status(response.code)
         if response.code in [200, 201]:
@@ -446,12 +381,10 @@ class LionsHandler(BaseHandler):
         else:
             self.finish({'status': 'error', 'message': 'Fail to get lions data.'})
 
-    @asynchronous
-    @engine
+
     @web_authenticated
-    def post(self):
-        response = yield Task(
-            self.api_call,
+    async def post(self):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/lions',
             method='POST',
             body=self.json_encode(self.input_data))
@@ -459,10 +392,8 @@ class LionsHandler(BaseHandler):
         self.set_status(response.code)
         self.finish(response.body)
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def put(self, lion_id=''):
+    async def put(self, lion_id=''):
         self.set_json_output()
         if lion_id:
             resource_url = '/lions/' + lion_id
@@ -470,8 +401,7 @@ class LionsHandler(BaseHandler):
             if "_xsrf" in data.keys():
                 del data["_xsrf"]
             info(data)
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + resource_url,
                 method='PUT',
                 body=self.json_encode(data))
@@ -484,12 +414,9 @@ class LionsHandler(BaseHandler):
             self.set_status(400)
             self.finish({'status': 'error', 'message': 'You must provide a lion id.'})
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def delete(self, lion_id=''):
-        response = yield Task(
-            self.api_call,
+    async def delete(self, lion_id=''):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/lions/{}'.format(lion_id),
             method='DELETE')
         self.set_json_output()
@@ -501,12 +428,9 @@ class LionsHandler(BaseHandler):
 
 
 class ImageSetsHandler(BaseHandler):
-    @asynchronous
-    @engine
     @web_authenticated
-    def get(self, imageset_id='', param=None):
-        response = yield Task(
-            self.api_call,
+    async def get(self, imageset_id='', param=None):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/imagesets/{}'.format(imageset_id),
             method='GET')
         self.set_json_output()
@@ -516,12 +440,9 @@ class ImageSetsHandler(BaseHandler):
         else:
             self.finish({'status': 'error', 'message': 'Fail to get image set data.'})
 
-    @asynchronous
-    @engine
     @web_authenticated
-    def post(self):
-        response = yield Task(
-            self.api_call,
+    async def post(self):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/imagesets',
             method='POST',
             body=self.json_encode(self.input_data))
@@ -532,10 +453,8 @@ class ImageSetsHandler(BaseHandler):
         else:
             self.finish({'status': 'error', 'message': 'Fail to submit image set data.'})
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def put(self, imageset_id=''):
+    async def put(self, imageset_id=''):
         self.set_json_output()
         if imageset_id:
             info(self.input_data)
@@ -543,8 +462,7 @@ class ImageSetsHandler(BaseHandler):
             if "_xsrf" in data.keys():
                 del data["_xsrf"]
             info(data)
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/imagesets/{}'.format(imageset_id),
                 method='PUT',
                 body=self.json_encode(data))
@@ -557,12 +475,9 @@ class ImageSetsHandler(BaseHandler):
             self.set_status(400)
             self.finish({'status': 'error', 'message': 'You must provide an image set id.'})
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def delete(self, imageset_id=''):
-        response = yield Task(
-            self.api_call,
+    async def delete(self, imageset_id=''):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/imagesets/{}'.format(imageset_id),
             method='DELETE')
         self.set_json_output()
@@ -574,12 +489,9 @@ class ImageSetsHandler(BaseHandler):
 
 
 class OrganizationsHandler(BaseHandler):
-    @asynchronous
-    @engine
     @web_authenticated
-    def get(self, organization_id=''):
-        response = yield Task(
-            self.api_call,
+    async def get(self, organization_id=''):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/organizations/{}'.format(organization_id),
             method='GET')
         self.set_json_output()
@@ -589,13 +501,10 @@ class OrganizationsHandler(BaseHandler):
         else:
             self.finish({'status': 'error', 'message': 'Fail to get organization data.'})
 
-    @asynchronous
-    @engine
     @web_authenticated
     @allowedRole('admin')
-    def post(self):
-        response = yield Task(
-            self.api_call,
+    async def post(self):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/organizations',
             method='POST',
             body=self.json_encode(self.input_data))
@@ -606,18 +515,15 @@ class OrganizationsHandler(BaseHandler):
         else:
             self.finish({'status': 'error', 'message': 'Fail to create a new organization.'})
 
-    @asynchronous
-    @coroutine
     @web_authenticated
     @allowedRole('admin')
-    def put(self, organization_id=''):
+    async def put(self, organization_id=''):
         self.set_json_output()
         if organization_id:
             data = dict(self.input_data)
             if "_xsrf" in data.keys():
                 del data["_xsrf"]
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/organizations/{}'.format(organization_id),
                 method='PUT',
                 body=self.json_encode(data))
@@ -630,12 +536,9 @@ class OrganizationsHandler(BaseHandler):
             self.set_status(400)
             self.finish({'status': 'error', 'message': 'You must provide an organization id.'})
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def delete(self, organization_id=''):
-        response = yield Task(
-            self.api_call,
+    async def delete(self, organization_id=''):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/organizations/{}'.format(organization_id),
             method='DELETE')
         self.set_json_output()
@@ -647,12 +550,9 @@ class OrganizationsHandler(BaseHandler):
 
 
 class UsersHandler(BaseHandler):
-    @asynchronous
-    @engine
     @web_authenticated
-    def get(self, user_id=''):
-        response = yield Task(
-            self.api_call,
+    async def get(self, user_id=''):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/users/{}'.format(user_id),
             method='GET')
         self.set_json_output()
@@ -662,13 +562,10 @@ class UsersHandler(BaseHandler):
         else:
             self.finish({'status': 'error', 'message': 'Fail to get users data.'})
 
-    @asynchronous
-    @engine
     @web_authenticated
     @allowedRole('admin')
-    def post(self):
-        response = yield Task(
-            self.api_call,
+    async def post(self):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/users',
             method='POST',
             body=self.json_encode(self.input_data))
@@ -679,18 +576,15 @@ class UsersHandler(BaseHandler):
         else:
             self.finish({'status': 'error', 'message': 'Fail to create the new user.'})
 
-    @asynchronous
-    @coroutine
     @web_authenticated
     @allowedRole('admin')
-    def put(self, user_id=''):
+    async def put(self, user_id=''):
         self.set_json_output()
         if user_id:
             data = dict(self.input_data)
             if "_xsrf" in data.keys():
                 del data["_xsrf"]
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/users/{}'.format(user_id),
                 method='PUT',
                 body=self.json_encode(data))
@@ -703,13 +597,10 @@ class UsersHandler(BaseHandler):
             self.set_status(400)
             self.finish({'status': 'error', 'message': 'You must provide an user id.'})
 
-    @asynchronous
-    @coroutine
     @web_authenticated
     @allowedRole('admin')
-    def delete(self, user_id=''):
-        response = yield Task(
-            self.api_call,
+    async def delete(self, user_id=''):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/users/{}'.format(user_id),
             method='DELETE')
         self.set_status(response.code)
@@ -721,15 +612,12 @@ class UsersHandler(BaseHandler):
 
 
 class ImagesHandler(BaseHandler):
-    @asynchronous
-    @engine
     @web_authenticated
-    def get(self, image_id=''):
+    async def get(self, image_id=''):
         self.set_json_output()
         download = self.get_argument('download', '')
         if download:
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/images?download={}'.format(download),
                 method='GET')
             if response and response.code in [200, 201]:
@@ -771,8 +659,7 @@ class ImagesHandler(BaseHandler):
                 self.response(500, 'Fail to get urls to download the images.')
                 return
         else:
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/images/{}'.format(image_id),
                 method='GET')
             self.set_status(response.code)
@@ -781,18 +668,15 @@ class ImagesHandler(BaseHandler):
             else:
                 self.finish({'status': 'error', 'message': 'Fail to get images data.'})
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def put(self, image_id=''):
+    async def put(self, image_id=''):
         self.set_json_output()
         if image_id:
             data = dict(self.input_data)
             if "_xsrf" in data.keys():
                 del data["_xsrf"]
             info(data)
-            response = yield Task(
-                self.api_call,
+            response = await self.api_call(
                 url=self.settings['API_URL'] + '/images/{}'.format(image_id),
                 method='PUT',
                 body=self.json_encode(data))
@@ -805,12 +689,9 @@ class ImagesHandler(BaseHandler):
             self.set_status(400)
             self.finish({'status': 'error', 'message': 'You must provide an image id.'})
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def delete(self, image_id=''):
-        response = yield Task(
-            self.api_call,
+    async def delete(self, image_id=''):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/images/{}'.format(image_id),
             method='DELETE')
         self.set_status(response.code)
@@ -821,10 +702,8 @@ class ImagesHandler(BaseHandler):
 
 
 class ImagesUploadHandler(BaseHandler, ProcessMixin):
-    @asynchronous
-    @engine
     @web_authenticated
-    def post(self):
+    async def post(self):
         if self.request.files:
             fileinfo = self.request.files['file'][0]
             body = fileinfo['body']
@@ -865,8 +744,7 @@ class ImagesUploadHandler(BaseHandler, ProcessMixin):
                     "exif_data": exif_data
                 }
                 body["image"] = fileencoded.decode('utf-8')
-                response = yield Task(
-                    self.api_call,
+                response = await self.api_call(
                     url=self.settings['API_URL'] + '/images/upload',
                     method='POST',
                     body=self.json_encode(body))
@@ -883,17 +761,17 @@ class ImagesUploadHandler(BaseHandler, ProcessMixin):
 
 
 class ImagesUploadVOCHandler(BaseHandler, ProcessMixin):
-    @asynchronous
-    @engine
     @web_authenticated
-    def post(self, process=False):
+    async def post(self, process=False):
         info(process)
         uploaded_files = appdir + "/lib/uploaded_files"
+
         def send_to_api(list_bodies):
             for body in list_bodies:
                 self.api_call(url=self.settings['API_URL'] + '/images/upload',
-                                method='POST',
-                                body=dumps(body))
+                              method='POST',
+                              body=dumps(body))
+
         if process == 'start' and not self.request.files:
             if os.path.exists(uploaded_files):
                 try:
@@ -901,16 +779,14 @@ class ImagesUploadVOCHandler(BaseHandler, ProcessMixin):
                     EXECUTOR = ThreadPoolExecutor(max_workers=2)
                     try:
                         future = EXECUTOR.submit(process_voc, uploaded_files)
-                        # future.add_done_callback(lambda future: info("Processing has been done.))
                         future.add_done_callback(lambda future: send_to_api(future.result()))
                     except Exception as e:
                         exception(e)
-                    # ret = yield future
                     dirfs = dirname(realpath(__file__))
                     info(dirfs)
                     self.response(200, 'Process successfuly started.'
-                                    ' You must wait the processing'
-                                    ' phase for your image.')
+                                       ' You must wait the processing'
+                                       ' phase for your image.')
                 except Exception as e:
                     info(e)
                     self.response(500, 'An error occurred when starting processing.')
@@ -919,7 +795,6 @@ class ImagesUploadVOCHandler(BaseHandler, ProcessMixin):
         else:
             if self.request.files:
                 for _file in self.request.files['file']:
-                    # fileinfo = self.request.files['file'][0]
                     fileinfo = _file
                     body = fileinfo['body']
                     fname = fileinfo['filename']
@@ -927,182 +802,41 @@ class ImagesUploadVOCHandler(BaseHandler, ProcessMixin):
                         info("Folder uploaded_files does not exists, creating it.")
                         try:
                             os.mkdir(uploaded_files)
-                        except FileExistsError as error:
+                        except FileExistsError:
                             info("Folder uploaded_files already exists")
-
-                    # if splitext(fname)[1] == ".jpg":
-                    #     image_type = self.get_argument("image_type", "cv")
-                    #     tagsl = self.get_argument("image_tags", [])
-                    #     is_public = self.get_argument("is_public", '')
-                    #     image_set_id = self.get_argument("image_set_id")
-                    #     iscover = self.get_argument("iscover", '')
-                    #     iscover = (iscover.lower() == 'true')
-                    #     if ',' in tagsl and not isinstance(tagsl, list):
-                    #         tagsl = [x for x in tagsl.split(',') if x.strip() != '']
-                    #     elif tagsl:
-                    #         tagsl = [tagsl]
-                    #     else:
-                    #         tagsl = []
-                    #     info(tagsl)
-                    #     image_tags = tagsl
-                    #     metadata = {"image_type": image_type,
-                    #                 "image_tags": image_tags,
-                    #                 "is_public": is_public,
-                    #                 "image_set_id": int(image_set_id),
-                    #                 "iscover": iscover
-                    #                 # "_xsrf": self.xsrf_token
-                    #                 }
-                    #     fh = open(uploaded_files + '/' + fname[:-4] + ".json", 'w')
-                    #     fh.write(dumps(metadata))
-                    #     fh.close()
                     info(fname)
                     fh = open(uploaded_files + '/' + fname, 'wb')
                     fh.write(body)
                     fh.close()
                 self.response(200, 'File successfully uploaded.')
-                # response = yield Task(
-                #         self.api_call,
-                #         url=self.settings['API_URL'] + '/images/upload',
-                #         method='POST',
-                #         body=dumps(body))
-                # if response.code in [200, 201]:
-                #     self.response(200, 'File successfully uploaded. You must wait the processing phase for your image.')
-                # elif response.code == 409:
-                #     self.response(409, 'The file already exists in the system.')
-                # elif response.code == 400:
-                #     self.response(400, 'The data or file sent is invalid.')
-                # else:
-                #     self.response(500, 'Fail to upload image.')
             else:
                 self.response(400, 'Please send a file to upload.')
 
 
 class ImagesVocHandler(BaseHandler, ProcessMixin):
-    @asynchronous
-    @engine
     @web_authenticated
-    def post(self, process=False):
+    async def post(self, process=False):
         if process == 'start' and not self.request.files:
             pass
-        # Receive files and send to API.
         elif self.request.files:
-                files_names = []
-                # Save all files received.
-                for fileinfo in self.request.files['file']:
-                    body = fileinfo['body']
-                    filename = fileinfo['filename']
-                    dirfs = dirname(realpath(__file__))
-                    info(dirfs)
-                    fh = open(dirfs + '/' + filename, 'wb')
-                    fh.write(body)
-                    fh.close()
-                    files_names.append(filename)
-                responses = []
-                for fname in files_names:
-                    # Check whether file is image.
-                    if splitext(fname)[1].lower() in [".jpg", ".png", ".jpeg",
-                                                    ".bmp", ".gif"]:
-                        info(splitext(fname)[1].lower())
-                        exif_data = get_exif_data(dirfs + '/' + fname)
-                        with open(dirfs + '/' + fname, "rb") as imageFile:
-                            fileencoded = b64encode(imageFile.read())
-                        os.remove(dirfs + '/' + fname)
-                        if fileencoded:
-                            is_public = self.get_argument("is_public", '')
-                            is_public = (is_public.lower() == 'true')
-                            image_set_id = self.get_argument("image_set_id")
-                            iscover = self.get_argument("iscover", '')
-                            iscover = (iscover.lower() == 'true')
-                            body = {
-                                "image_type": None,
-                                "image_tags": [],
-                                "is_public": is_public,
-                                "image_set_id": int(image_set_id),
-                                "iscover": iscover,
-                                "filename": fname,
-                                "exif_data": exif_data
-                            }
-                            body["image"] = fileencoded.decode('utf-8')
-                            body = {'image_file': body}
-                            response = yield Task(
-                                self.api_call,
-                                url=self.settings['API_URL'] + '/imagesvoc',
-                                method='POST',
-                                body=dumps(body))
-                            responses.append(response)
-                    # Check whether file is xml.
-                    elif splitext(fname)[1].lower() in [".xml"]:
-                        with open(dirfs + '/' + fname, "rb") as xmlFile:
-                            fileencoded = b64encode(xmlFile.read())
-                        os.remove(dirfs + '/' + fname)
-                        body = {'xml_file': {'name':fname, 'content':fileencoded.decode('utf-8')}}
-                        response = yield Task(
-                            self.api_call,
-                            url=self.settings['API_URL'] + '/imagesvoc',
-                            method='POST',
-                            body=dumps(body))
-                        responses.append(response)
-                    # If file isn't image or xml.
-                    else:
-                        self.response(400, 'The data or file sent is invalid.')
-                        return
-                if all(res.code in [200,201] for res in responses):
-                    self.response(200, 'File successfully uploaded. You must wait the processing phase for your image.')
-                    return
-                elif all(res.code in [400] for res in responses):
-                    self.response(400, 'The data or file sent is invalid.')
-                    return
-                else:
-                    self.response(500, 'Fail to upload image.')
-                    return
-                # if response.code in [200, 201]:
-                #     self.response(200, 'File successfully uploaded. You must wait the processing phase for your image.')
-                # elif response.code == 400:
-                #     self.response(400, 'The data or file sent is invalid.')
-                # else:
-                #     self.response(500, 'Fail to upload image.')
-        else:
-            self.response(400, 'Please send a file to upload.')
-
-
-class VocHandler(BaseHandler, ProcessMixin):
-    @asynchronous
-    @engine
-    @web_authenticated
-    def post(self, process=False):
-        info(process)
-        # Send request to start processing of received files.
-        if process == 'start' and not self.request.files:
-            response = yield Task(
-                        self.api_call,
-                        url=self.settings['API_URL'] + '/imagesvoc/start',
-                        method='POST',
-                        body=dumps({'API_URL':self.settings['API_URL'], 'Linc-Api-Authtoken':self.current_user.get('token', '')}))
-            if response.code in [200, 201]:
-                self.response(200, 'Processing voc files, you must wait the log email.')
-            elif response.code == 400:
-                self.response(400, 'The data or file sent is invalid.')
-            else:
-                self.response(500, 'Fail to start processing of voc files.')
-        # Receive file and send to API.
-        elif self.request.files['file'][0]:
-                fileinfo = self.request.files['file'][0]
+            files_names = []
+            for fileinfo in self.request.files['file']:
                 body = fileinfo['body']
-                fname = fileinfo['filename']
+                filename = fileinfo['filename']
                 dirfs = dirname(realpath(__file__))
                 info(dirfs)
-                # Save file received.
-                fh = open(dirfs + '/' + fname, 'wb')
+                fh = open(dirfs + '/' + filename, 'wb')
                 fh.write(body)
                 fh.close()
-                # Check whether file is image.
-                if splitext(fname)[1].lower() in [".jpg", ".png", ".jpeg",
-                                                ".bmp", ".gif"]:
+                files_names.append(filename)
+            responses = []
+            for fname in files_names:
+                if splitext(fname)[1].lower() in [".jpg", ".png", ".jpeg", ".bmp", ".gif"]:
                     info(splitext(fname)[1].lower())
                     exif_data = get_exif_data(dirfs + '/' + fname)
                     with open(dirfs + '/' + fname, "rb") as imageFile:
                         fileencoded = b64encode(imageFile.read())
-                    remove(dirfs + '/' + fname)
+                    os.remove(dirfs + '/' + fname)
                     if fileencoded:
                         is_public = self.get_argument("is_public", '')
                         is_public = (is_public.lower() == 'true')
@@ -1120,31 +854,86 @@ class VocHandler(BaseHandler, ProcessMixin):
                         }
                         body["image"] = fileencoded.decode('utf-8')
                         body = {'image_file': body}
-                        response = yield Task(
-                            self.api_call,
+                        response = await self.api_call(
                             url=self.settings['API_URL'] + '/imagesvoc',
                             method='POST',
                             body=dumps(body))
-                        if response.code in [200, 201]:
-                            self.response(200, 'File successfully uploaded. You must wait the processing phase for your image.')
-                        elif response.code == 400:
-                            self.response(400, 'The data or file sent is invalid.')
-                        else:
-                            self.response(500, 'Fail to upload image.')
-                    else:
-                        self.response(400, 'The data or file could not be encoded.')
-                # Check whether file is xml.
+                        responses.append(response)
                 elif splitext(fname)[1].lower() in [".xml"]:
                     with open(dirfs + '/' + fname, "rb") as xmlFile:
                         fileencoded = b64encode(xmlFile.read())
-                    remove(dirfs + '/' + fname)
+                    os.remove(dirfs + '/' + fname)
+                    body = {'xml_file': {'name': fname, 'content': fileencoded.decode('utf-8')}}
+                    response = await self.api_call(
+                        url=self.settings['API_URL'] + '/imagesvoc',
+                        method='POST',
+                        body=dumps(body))
+                    responses.append(response)
+                else:
+                    self.response(400, 'The data or file sent is invalid.')
+                    return
+            if all(res.code in [200, 201] for res in responses):
+                self.response(200, 'File successfully uploaded. You must wait the processing phase for your image.')
+                return
+            elif all(res.code == 400 for res in responses):
+                self.response(400, 'The data or file sent is invalid.')
+                return
+            else:
+                self.response(500, 'Fail to upload image.')
+                return
+        else:
+            self.response(400, 'Please send a file to upload.')
+
+
+class VocHandler(BaseHandler, ProcessMixin):
+    @web_authenticated
+    async def post(self, process=False):
+        info(process)
+        if process == 'start' and not self.request.files:
+            response = await self.api_call(
+                url=self.settings['API_URL'] + '/imagesvoc/start',
+                method='POST',
+                body=dumps({'API_URL': self.settings['API_URL'],
+                            'Linc-Api-Authtoken': self.current_user.get('token', '')}))
+            if response.code in [200, 201]:
+                self.response(200, 'Processing voc files, you must wait the log email.')
+            elif response.code == 400:
+                self.response(400, 'The data or file sent is invalid.')
+            else:
+                self.response(500, 'Fail to start processing of voc files.')
+        elif self.request.files['file'][0]:
+            fileinfo = self.request.files['file'][0]
+            body = fileinfo['body']
+            fname = fileinfo['filename']
+            dirfs = dirname(realpath(__file__))
+            info(dirfs)
+            fh = open(dirfs + '/' + fname, 'wb')
+            fh.write(body)
+            fh.close()
+            if splitext(fname)[1].lower() in [".jpg", ".png", ".jpeg", ".bmp", ".gif"]:
+                info(splitext(fname)[1].lower())
+                exif_data = get_exif_data(dirfs + '/' + fname)
+                with open(dirfs + '/' + fname, "rb") as imageFile:
+                    fileencoded = b64encode(imageFile.read())
+                remove(dirfs + '/' + fname)
+                if fileencoded:
+                    is_public = self.get_argument("is_public", '')
+                    is_public = (is_public.lower() == 'true')
+                    image_set_id = self.get_argument("image_set_id")
+                    iscover = self.get_argument("iscover", '')
+                    iscover = (iscover.lower() == 'true')
                     body = {
-                        'filename':fname,
-                        'content':fileencoded.decode('utf-8')
+                        "image_type": None,
+                        "image_tags": [],
+                        "is_public": is_public,
+                        "image_set_id": int(image_set_id),
+                        "iscover": iscover,
+                        "filename": fname,
+                        "exif_data": exif_data
                     }
-                    body = {'xml_file': body}
-                    response = yield Task(
-                        self.api_call,
+                    body["image"] = fileencoded.decode('utf-8')
+                    body = {'image_file': body}
+                    response = await self.api_call(
                         url=self.settings['API_URL'] + '/imagesvoc',
                         method='POST',
                         body=dumps(body))
@@ -1154,10 +943,30 @@ class VocHandler(BaseHandler, ProcessMixin):
                         self.response(400, 'The data or file sent is invalid.')
                     else:
                         self.response(500, 'Fail to upload image.')
-                # If not image or xml file returns error.
                 else:
+                    self.response(400, 'The data or file could not be encoded.')
+            elif splitext(fname)[1].lower() in [".xml"]:
+                with open(dirfs + '/' + fname, "rb") as xmlFile:
+                    fileencoded = b64encode(xmlFile.read())
+                remove(dirfs + '/' + fname)
+                body = {
+                    'filename': fname,
+                    'content': fileencoded.decode('utf-8')
+                }
+                body = {'xml_file': body}
+                response = await self.api_call(
+                    url=self.settings['API_URL'] + '/imagesvoc',
+                    method='POST',
+                    body=dumps(body))
+                if response.code in [200, 201]:
+                    self.response(200, 'File successfully uploaded. You must wait the processing phase for your image.')
+                elif response.code == 400:
                     self.response(400, 'The data or file sent is invalid.')
-                    return
+                else:
+                    self.response(500, 'Fail to upload image.')
+            else:
+                self.response(400, 'The data or file sent is invalid.')
+                return
         else:
             self.response(400, 'Please send a file to upload.')
 

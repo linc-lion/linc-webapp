@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3.10
 # -*- coding: utf-8 -*-
 
 # LINC is an open source shared database and facial recognition
