@@ -171,32 +171,7 @@ class LogoutHandler(BaseHandler):
 
 
 class RecoveryHandler(BaseHandler):
-    # SUPPORTED_METHODS = ("GET", "POST")
     SUPPORTED_METHODS = ("POST")
-
-    # async def get(self, code=None):
-    #     self.set_default_headers()
-    #     title = 'Invalid request'
-    #     msg = 'A code is required to use this resource.'
-    #     if code:
-    #         response = await self.api_call(
-    #             url=self.settings['API_URL'] + '/auth/recovery/' + code,
-    #             method='GET')
-    #         if hasattr(response, 'message'):
-    #             message = response.message
-    #         elif hasattr(response, 'body'):
-    #             message = loads(response.body.decode('utf-8'))['message']
-    #         else:
-    #             message = ''
-    #         if response.code in [200, 201]:
-    #             body = loads(response.body.decode('utf-8'))
-    #             data = body['data']
-    #             title = data['title']
-    #             msg = data['message']
-    #         elif response.code == 400:
-    #             msg = message
-    #     redirect = "5;url=" + self.settings['login_url']
-    #     self.render('message.html', message=msg, title=title, redirect=redirect)
 
     async def post(self):
         data_keys = self.input_data.keys()
