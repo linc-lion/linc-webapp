@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3.10
 # -*- coding: utf-8 -*-
 
 # LINC is an open source shared database and facial recognition
@@ -21,8 +21,7 @@
 # For more information or to contact visit linclion.org or email tech@linclion.org
 
 from json import loads, dumps
-from tornado.web import RequestHandler, asynchronous
-from tornado.gen import engine
+from tornado.web import RequestHandler
 import string
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest, HTTPError
 from tornado.httputil import HTTPHeaders
@@ -33,12 +32,13 @@ class BaseHandler(RequestHandler):
     """A class to collect common handler methods - all other handlers should
     inherit this one.
     """
+
     def get_current_user(self):
         cookieinfo = self.get_secure_cookie("userlogin")
         if cookieinfo:
             cookieinfo = loads(cookieinfo.decode('utf-8'))
         return cookieinfo
-    
+
     def get_template_namespace(self):
         namespace = super(BaseHandler, self).get_template_namespace()
         namespace.update({
@@ -49,8 +49,8 @@ class BaseHandler(RequestHandler):
     def prepare(self):
         self.input_data = dict()
         if self.request.method in ['POST', 'PUT'] and \
-           "Content-Type" in self.request.headers.keys() and \
-           self.request.headers["Content-Type"].startswith("application/json"):
+                "Content-Type" in self.request.headers.keys() and \
+                self.request.headers["Content-Type"].startswith("application/json"):
             try:
                 if self.request.body:
                     self.input_data = loads(self.request.body.decode("utf-8"))
@@ -61,9 +61,7 @@ class BaseHandler(RequestHandler):
                 info(e)
                 self.response(400, 'Fail to parse input data.')
 
-    @asynchronous
-    @engine
-    def api_call(self, url, method, body=None, headers=None, callback=None):
+    async def api_call(self, url, method, body=None, headers=None):
         AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
         http_client = AsyncHTTPClient()
         dictheaders = {"content-type": "application/json"}
@@ -83,7 +81,7 @@ class BaseHandler(RequestHandler):
             params['body'] = body
         request = HTTPRequest(**params)
         try:
-            response = yield http_client.fetch(request)
+            response = await http_client.fetch(request)
         except HTTPError as e:
             info('HTTTP error returned... ')
             info('Code: ' + str(e.code))
@@ -98,7 +96,7 @@ class BaseHandler(RequestHandler):
             # Other errors are possible, such as IOError.
             info("Other Errors: " + str(e))
             response = e
-        callback(response)
+        return response
 
     def response(self, code, message="", data=None, headers=None):
         output_response = {'status': None, 'message': message}

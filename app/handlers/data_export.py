@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3.10
 # -*- coding: utf-8 -*-
 
 # LINC is an open source shared database and facial recognition
@@ -22,23 +22,19 @@
 
 from lib.authentication import web_authenticated
 from base import BaseHandler
-import csv
 from logging import info
-from tornado.gen import engine, Task, coroutine
-from tornado.web import asynchronous, HTTPError
+from tornado.web import HTTPError
 from os import mkdir, remove
 from os.path import isdir
 from uuid import uuid4
 from json import loads
 from datetime import datetime, timedelta
-import csv
 
 
 class DataExportHandler(BaseHandler):
     SUPPORTED_METHODS = ('POST')
 
-    @engine
-    def generate_fn(self, callback=None):
+    async def generate_fn(self):
         workdir = self.settings['app_path'] + '/static/export'
         try:
             if not isdir(workdir):
@@ -48,11 +44,9 @@ class DataExportHandler(BaseHandler):
             raise HTTPError(
                 status_code=500, log_message='Fail to create the working directory for data export.')
         fn = workdir + '/' + str(uuid4()) + '.csv'
-        # info(fn)
-        callback(fn)
+        return fn
 
-    @engine
-    def write_csv(self, fn=None, data=None, callback=None):
+    async def write_csv(self, fn=None, data=None):
         resp = True
         lines = data['lines']
         fieldnames = ['"{}"'.format(x) for x in data['fnames']]
@@ -62,27 +56,23 @@ class DataExportHandler(BaseHandler):
                 f.write(';'.join(fieldnames) + '\n')
                 for v in lines:
                     f.write(';'.join(['"{}"'.format(str(x).replace('"',"'").replace('\n', ' ')) if x else '' for x in v]) + '\n')
-                f.close()
         except Exception as e:
             info(e)
             resp = False
-        callback(resp)
+        return resp
 
-    @asynchronous
-    @coroutine
     @web_authenticated
-    def post(self):
-        response = yield Task(
-            self.api_call,
+    async def post(self):
+        response = await self.api_call(
             url=self.settings['API_URL'] + '/data/export/',
             method='POST',
             body=self.json_encode(self.input_data))
         if response.code == 200:
             info(response)
             # Create the CSV file
-            fn = yield Task(self.generate_fn)
+            fn = await self.generate_fn()
             data = loads(response.body.decode('utf-8'))['data']
-            resp = yield Task(self.write_csv, fn=fn, data=data)
+            resp = await self.write_csv(fn=fn, data=data)
             info(resp)
             if resp:
                 dtexec = datetime.now() + timedelta(minutes=1)
@@ -98,7 +88,7 @@ class DataExportHandler(BaseHandler):
                 with open(fn, 'r') as f:
                     for line in f:
                         self.write(line)
-                        yield self.flush()
+                        await self.flush()
                 return
         self.response(response.code, loads(response.body)['message'])
 
