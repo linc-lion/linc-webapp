@@ -217,10 +217,12 @@ angular.module('linc.admin.images.controller', [])
       modalScope.submit = function(valid){
         if(valid){
           var data = { 
-            'url': modalScope.image.url,
-            'image_tags': modalScope.image.image_tags,
-            'image_set_id': modalScope.image.image_set_id,
-            'is_public': modalScope.image.is_public
+            '$set': {
+              'url': modalScope.image.url,
+              'image_tags': modalScope.image.image_tags,
+              'image_set_id': modalScope.image.image_set_id,
+              'is_public': modalScope.image.is_public
+            }
           };
           modalScope.dataSending = true;
           $scope.LincApiServices.Images({'method': 'put', 'image_id' : modalScope.image.id, 'data': data}).then(function(response){
