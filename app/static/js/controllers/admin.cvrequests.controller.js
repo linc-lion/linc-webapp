@@ -200,7 +200,7 @@ angular.module('linc.admin.cvrequests.controller', [])
             'request_body': modalScope.cvrequest.request_body
           };
           modalScope.dataSending = true;
-          $scope.LincApiServices.CVRequests({'method': 'put', 'cvrequest_id' : $scope.cvrequest.id, 'data': data}).then(function(response){
+          $scope.LincApiServices.CVRequests({'method': 'put', 'cvrequest_id' : $scope.cvrequest.id, 'data': {'$set': data}}).then(function(response){
             $scope.Notification.success({
               title: 'CV Request Info',
               message: 'CV Request data successfully updated',

@@ -191,7 +191,7 @@ angular.module('linc.admin.lions.controller', [])
             'dead': modalScope.lion.dead
           };
           modalScope.dataSending = true;
-          $scope.LincApiServices.Lions({'method': 'put', 'lion_id' : modalScope.lion.id, 'data': data}).then(function(response){
+          $scope.LincApiServices.Lions({'method': 'put', 'lion_id' : modalScope.lion.id, 'data': {'$set': data}}).then(function(response){
             $scope.Notification.success({
               title: 'Lion Info', 
               message: 'Lion data successfully updated',

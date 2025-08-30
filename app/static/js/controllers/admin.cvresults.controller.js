@@ -179,7 +179,7 @@ angular.module('linc.admin.cvresults.controller', [])
             'match_probability': modalScope.cvresult.match_probability
           };
           modalScope.dataSending = true;
-          $scope.LincApiServices.CVResults({'method': 'put', 'cvresult_id' : modalScope.cvresult.id, 'data': data}).then(function(response){
+          $scope.LincApiServices.CVResults({'method': 'put', 'cvresult_id' : modalScope.cvresult.id, 'data': {'$set': data}}).then(function(response){
             $scope.Notification.success({
               title: 'CV Result Info', 
               message: 'CV Result data successfully updated',

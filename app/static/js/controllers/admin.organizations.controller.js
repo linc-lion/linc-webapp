@@ -178,7 +178,7 @@ angular.module('linc.admin.organizations.controller', [])
             'name': modalScope.organization.name
           };
           modalScope.dataSending = true;
-          $scope.LincApiServices.Organizations({'method': 'put', 'organization_id' : modalScope.organization.id, 'data': data}).then(function(response){
+          $scope.LincApiServices.Organizations({'method': 'put', 'organization_id' : modalScope.organization.id, 'data': {'$set': data}}).then(function(response){
             $scope.Notification.success({
               title: 'Organization Info',
               message: 'Organization data successfully updated',

@@ -335,7 +335,7 @@ angular.module('linc.admin.imagesets.controller', [])
             data['is_verified'] = false;
           }
           modalScope.dataSending = true;
-          $scope.LincApiServices.ImageSets({'method': 'put', 'imageset_id' : modalScope.imageset.id, 'data': data}).then(function(response){
+          $scope.LincApiServices.ImageSets({'method': 'put', 'imageset_id' : modalScope.imageset.id, 'data': {'$set': data}}).then(function(response){
             $scope.Notification.success({
               title: 'Image Set Info', 
               message: 'Image Set data successfully updated',

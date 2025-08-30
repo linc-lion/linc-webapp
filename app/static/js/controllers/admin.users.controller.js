@@ -192,7 +192,7 @@ angular.module('linc.admin.users.controller', [])
             'admin': modalScope.user.admin
           };
           modalScope.dataSending = true;
-          $scope.LincApiServices.Users({'method': 'put', 'user_id' : modalScope.user.id, 'data': data}).then(function(response){
+          $scope.LincApiServices.Users({'method': 'put', 'user_id' : modalScope.user.id, 'data': {'$set': data}}).then(function(response){
             $scope.Notification.success({
               title: 'User Info',
               message: 'User data successfully updated',
