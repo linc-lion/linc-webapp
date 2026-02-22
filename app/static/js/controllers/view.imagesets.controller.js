@@ -161,8 +161,8 @@ angular.module('linc.view.imagesets.controller', [])
 
 			elem['location'] = (!element['latitude'] || !element['longitude']) ? null : new google.maps.LatLng(element['latitude'], element['longitude']);
 			//elem['location'] = new google.maps.LatLng(element['latitude'], element['longitude']);
-			if (element['tag_location']){
-				var circle = $scope.CreateCircle({'center': elem['location'], 'radius': element['tag_location']['value'] })
+			if (element['tag_location'] && elem['location']) {
+				var circle = $scope.CreateCircle({'center': elem['location'], 'radius': element['tag_location']['value'] });
 				elem['circle'] = $scope.CreateJstsPol(circle, 'circle');
 			}
 
